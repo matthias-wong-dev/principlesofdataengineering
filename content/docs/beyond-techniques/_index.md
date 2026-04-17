@@ -1,5 +1,5 @@
 ---
-title: Foundations
-weight: 3
+title: Beyond techniques
+weight: 8
 bookCollapseSection: false
 ---
