@@ -13,7 +13,7 @@ Maintained by [Matthias Wong](https://matthiaswong.me)
 
 The recurring theme of the book is:
 
-> Data engineering is the process of applying business interest to data to create information, and then insight.
+> Data engineering is the process of applying business intent to data to create information, and then insight.
 
 It is underpinned by a central premise:
 
