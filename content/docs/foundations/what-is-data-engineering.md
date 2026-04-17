@@ -12,7 +12,7 @@ What is insight? Insight is information analysed in the light of interest. Data 
 
 ## Why it is an engineering discipline
 
-There are other activities besides data engineering that seek insight. These include staff expert elicitation, customer feedback, and market research. In the case of government agencies, these activities include overt, and covert means such as diplomacy and espionage.
+There are other activities besides data engineering that seek insight. These include staff expert elicitation, customer feedback, and market research. In the case of government agencies, these activities include overt and covert means such as diplomacy and espionage.
 
 Data engineering distinguishes itself from other means of gaining insight through the nature of its methodology. Like other engineering disciplines, it focuses on systematic rigour, efficiency, and reproducibility, and achieve these through the application of scientific and mathematical principles. As with other engineering disciplines, data engineering arose in today's technological society as an effective tool to tackle complexity. The technical nature of data engineering is the subject of this text.
 
