@@ -59,6 +59,19 @@ jobs:
         with:
           path: ./public
 
+
+      - name: Inspect build output
+        run: |
+          echo "Root files:"
+          ls -la public
+          echo
+          echo "Check homepage:"
+          file public/index.html
+          head -20 public/index.html
+          echo
+          echo "Check RSS:"
+          head -20 public/index.xml
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
