@@ -7,7 +7,7 @@ weight: 1
 
 **Principles of Data Engineering** is a practical manual on building data systems that produce reliable business insight.
 
-The central premise of the book is simple:
+The central premise of the book is:
 
 > Data engineering is the process of applying business interest to data to create information, and then insight.
 
