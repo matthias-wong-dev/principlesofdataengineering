@@ -33,8 +33,8 @@ It could also be searched for specific topics such as dimensional modelling, or 
 
 A new reader should start with the three foundations chapters:
 
-- What is data engineering?
-- What is data?
+- [What is data engineering?](../docs/foundations/what-is-data-engineering/)
+- [What is data?](../docs/foundations/what-is-data/)
 - How does data operate in an organisation?
 
 And gain an overview of the book through scanning the table of contents.
