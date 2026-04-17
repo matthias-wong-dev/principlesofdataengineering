@@ -1,5 +1,5 @@
 ---
 title: Foundations
 weight: 3
-bookCollapseSection: false
+bookCollapseSection: true
 ---
