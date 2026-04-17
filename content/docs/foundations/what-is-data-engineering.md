@@ -4,6 +4,8 @@ weight: 1
 lede: The aim of data engineering is insight.
 ---
 
+## The aim is insight
+
 The aim of data engineering is insight.
 
 What is insight? Insight is information analysed in the light of interest. Data engineering, therefore, is an activity in which business interest is applied to data to create first information, then insight.
@@ -28,7 +30,7 @@ Second, the search for business insight is open-ended. If a client asks for a br
 
 ### Ambiguous goals
 
-Third, the search for business insight is ambiguous. Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business interests—are we concerned about profit, cost, market share, or negative externalities? And partly it is because of the wide range of stakeholders who need to be engaged-senior executives and operational staff have valid but different concerns—yet the data engineer is expected to meet all interests. This ambiguity of aim is akin to the challenge of planning a new city suburb to satisfy the needs of all residents. Again, this is a unique challenge for a data engineer.
+Third, the search for business insight is ambiguous. Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business interests—are we concerned about profit, cost, market share, or negative externalities? And partly it is because of the wide range of stakeholders who need to be engaged—senior executives and operational staff have valid but different concerns—yet the data engineer is expected to meet all interests. This ambiguity of aim is akin to the challenge of planning a new city suburb to satisfy the needs of all residents. Again, this is a unique challenge for a data engineer.
 
 The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim are all intrinsic characteristics of the search for business insights. We may loosely summarise these as the **fluid nature** of business insights.
 
