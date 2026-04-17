@@ -3,7 +3,11 @@ title: About
 weight: 1
 ---
 
+## Author
+Maintained by [Matthias Wong](https://matthiaswong.me)
+
 ## About
+
 
 **Principles of Data Engineering** is a practical manual on building data systems that produce reliable business insight.
 
