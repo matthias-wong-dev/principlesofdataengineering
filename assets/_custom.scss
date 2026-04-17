@@ -2,17 +2,37 @@
   Project-level Hugo Book overrides.
 */
 
+.book-menu .book-menu-content,
+.book-toc .book-toc-content {
+  background: #eef3f8;
+  border-inline-end: 1px solid rgba(61, 90, 128, 0.12);
+}
+
+.book-page {
+  background: #f8fafc;
+}
+
+.book-menu a.active,
+.book-toc a:hover,
+.book-toc a.active {
+  color: #274c77;
+}
+
+.book-toc {
+  color: #5b6c82;
+}
+
 .chapter-intro {
   margin: 0 0 2.5rem;
   padding: 1.25rem 1.5rem 1.4rem;
-  border-top: 1px solid rgba(17, 24, 39, 0.12);
-  border-bottom: 1px solid rgba(17, 24, 39, 0.08);
-  background: rgba(248, 248, 247, 0.7);
+  border-top: 1px solid rgba(61, 90, 128, 0.16);
+  border-bottom: 1px solid rgba(61, 90, 128, 0.1);
+  background: #f1f5f9;
 }
 
 .chapter-intro__eyebrow {
   margin: 0 0 0.15rem;
-  color: #6b7280;
+  color: #5b6c82;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -25,14 +45,35 @@
   line-height: 1.02;
   letter-spacing: -0.04em;
   max-width: none;
+  color: #122033;
 }
 
 .chapter-intro__lede {
   margin: 0.65rem 0 0;
   max-width: 40rem;
-  color: #4b5563;
+  color: #425466;
   font-size: 1.15rem;
   line-height: 1.45;
+}
+
+.markdown h2,
+.markdown h3 {
+  color: #274c77;
+}
+
+.markdown h2 {
+  margin-top: 1.8em;
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid rgba(61, 90, 128, 0.12);
+}
+
+.markdown h3 {
+  color: #355c7d;
+}
+
+.markdown blockquote {
+  border-inline-start-color: #5d7ea6;
+  background: rgba(93, 126, 166, 0.06);
 }
 
 .book-article > h1:first-child {

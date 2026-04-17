@@ -17,7 +17,6 @@ The central premise of the book is:
 
 The role of the data engineer is therefore not just to move or transform data, but to shape it into a form that reflects real business entities, processes, and decisions.
 
----
 
 ## What this book focuses on
 
@@ -35,7 +34,6 @@ Key areas include:
 
 The emphasis throughout is on **clarity, reuse, and long-term maintainability**, rather than short-term outputs.
 
----
 
 ## Intended audience
 
@@ -46,8 +44,6 @@ This book is written for practitioners who are:
 - Working with tools such as SQL, Power BI, or similar platforms  
 - Responsible for turning raw data into reliable information for decision-making  
 
----
-
 ## How to read this book
 
 The material can be read in two ways:
@@ -57,7 +53,6 @@ The material can be read in two ways:
 
 The concepts are designed to be applied directly in production systems.
 
----
 
 ## Origin and release
 
