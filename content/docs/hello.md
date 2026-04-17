@@ -5,8 +5,6 @@ weight: 2
 
 ## Hello World
 
-This is your first page in Hugo Book.
-
 ### Example code (SQL)
 
 ```sql
