@@ -1,16 +1,18 @@
 {{ define "main" }}
   <article class="markdown book-article">
-    <header class="chapter-intro">
-      {{ with .Parent }}
-        {{ if and .Title (ne .Title $.Site.Title) }}
-          <p class="chapter-intro__eyebrow">{{ .Title }}</p>
+    {{ if not .IsHome }}
+      <header class="chapter-intro">
+        {{ with .Parent }}
+          {{ if and .Title (ne .Title $.Site.Title) }}
+            <p class="chapter-intro__eyebrow">{{ .Title }}</p>
+          {{ end }}
         {{ end }}
-      {{ end }}
-      <h1 class="chapter-intro__title">{{ .Title }}</h1>
-      {{ with .Params.Lede }}
-        <p class="chapter-intro__lede">{{ . }}</p>
-      {{ end }}
-    </header>
+        <h1 class="chapter-intro__title">{{ .Title }}</h1>
+        {{ with .Params.Lede }}
+          <p class="chapter-intro__lede">{{ . }}</p>
+        {{ end }}
+      </header>
+    {{ end }}
 
     {{- .Content -}}
   </article>
