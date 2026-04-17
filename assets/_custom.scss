@@ -5,34 +5,39 @@
 .book-menu .book-menu-content,
 .book-toc .book-toc-content {
   background: #eef3f8;
-  border-inline-end: 1px solid rgba(61, 90, 128, 0.12);
+  border-inline-end: 1px solid rgba(58, 95, 133, 0.08);
 }
 
 .book-page {
-  background: #f8fafc;
+  background: #fbfcfe;
 }
 
 .book-menu a.active,
 .book-toc a:hover,
 .book-toc a.active {
-  color: #274c77;
+  color: #3a5f85;
 }
 
 .book-toc {
-  color: #5b6c82;
+  color: #708197;
+}
+
+.book-brand,
+.book-menu {
+  color: #25364a;
 }
 
 .chapter-intro {
   margin: 0 0 2.5rem;
   padding: 1.25rem 1.5rem 1.4rem;
-  border-top: 1px solid rgba(61, 90, 128, 0.16);
-  border-bottom: 1px solid rgba(61, 90, 128, 0.1);
-  background: #f1f5f9;
+  border-top: 1px solid rgba(58, 95, 133, 0.12);
+  border-bottom: 1px solid rgba(58, 95, 133, 0.08);
+  background: #f3f7fb;
 }
 
 .chapter-intro__eyebrow {
   margin: 0 0 0.15rem;
-  color: #5b6c82;
+  color: #71829a;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -45,35 +50,39 @@
   line-height: 1.02;
   letter-spacing: -0.04em;
   max-width: none;
-  color: #122033;
+  color: #1f2d3a;
 }
 
 .chapter-intro__lede {
   margin: 0.65rem 0 0;
   max-width: 40rem;
-  color: #425466;
+  color: #546477;
   font-size: 1.15rem;
   line-height: 1.45;
 }
 
 .markdown h2,
 .markdown h3 {
-  color: #274c77;
+  color: #3a5f85;
 }
 
 .markdown h2 {
   margin-top: 1.8em;
   padding-bottom: 0.15rem;
-  border-bottom: 1px solid rgba(61, 90, 128, 0.12);
+  border-bottom: 1px solid rgba(58, 95, 133, 0.1);
 }
 
 .markdown h3 {
-  color: #355c7d;
+  color: #527392;
 }
 
 .markdown blockquote {
-  border-inline-start-color: #5d7ea6;
-  background: rgba(93, 126, 166, 0.06);
+  border-inline-start-color: #6b7f99;
+  background: rgba(107, 127, 153, 0.08);
+}
+
+.markdown hr {
+  border-bottom-color: rgba(58, 95, 133, 0.12);
 }
 
 .book-article > h1:first-child {
