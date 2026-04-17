@@ -52,6 +52,7 @@ jobs:
           hugo \
             --gc \
             --minify \
+            --theme hugo-book \
             --baseURL "https://principlesofdataengineering.org/"
 
       - name: Upload artifact
