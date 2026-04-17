@@ -2,6 +2,14 @@
   Project-level Hugo Book overrides.
 */
 
+body,
+.book-menu,
+.book-toc,
+.book-search input,
+.book-brand {
+  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
 .book-menu .book-menu-content,
 .book-toc .book-toc-content {
   background: #eef3f8;
@@ -46,6 +54,7 @@
 
 .chapter-intro__title {
   margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", "Times New Roman", serif;
   font-size: clamp(2.4rem, 4vw, 3.8rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
@@ -61,19 +70,42 @@
   line-height: 1.45;
 }
 
+.markdown {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", "Times New Roman", serif;
+  font-size: 1.075rem;
+  line-height: 1.72;
+}
+
 .markdown h2,
 .markdown h3 {
+  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color: #3a5f85;
 }
 
 .markdown h2 {
   margin-top: 1.8em;
-  padding-bottom: 0.15rem;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0;
   border-bottom: 1px solid rgba(58, 95, 133, 0.1);
 }
 
 .markdown h3 {
+  margin-top: 1.4em;
+  margin-bottom: 0.45rem;
+  font-size: 1.06rem;
+  font-weight: 600;
   color: #527392;
+  letter-spacing: 0.02em;
+}
+
+.markdown p,
+.markdown ul,
+.markdown ol,
+.markdown blockquote {
+  max-width: 42rem;
 }
 
 .markdown blockquote {
