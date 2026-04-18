@@ -21,15 +21,13 @@ Data engineering distinguishes itself from other means of gaining insight throug
 
 Like other engineering disciplines, it focuses on systematic rigour, efficiency, and reproducibility—achieving these through the application of scientific and mathematical principles. As with other engineering disciplines, data engineering arose in today's technological society as an effective tool to tackle complexity. 
 
-The technical nature of data engineering is the subject of this text.
-
 ## Where data engineering is different
 
 Despite similarities in method, data engineering differs from other engineering disciplines in crucial ways.
 
 ### Easy substitutes
 
-The data engineer is confronted with the apparent availability of easy substitutes. 
+There are easy substitutes to data engineering.
 
 The business engaging a data engineer is seeking insight, and in many instances, there are seemingly simple alternatives to serious data engineering. For example, business clients may choose to rely on their own judgement or use one of the many available self-service data tools to rapidly create a visually stunning report with little effort. 
 
@@ -61,7 +59,8 @@ We summarise these as the **fluid nature** of data engineering.
 
 Certainly, the data engineering team can shut its eyes to these problems and insist on hard-and-fast requirements from stakeholders. This approach is unlikely to lead to quality outcomes. Instead, the data engineer's approach must adapt to the fluid nature of business insights.
 
-However, technical approach alone is insufficient. Instead, the data engineering team has an unparalleled need to combine flexibility, endurance of vision, and the ability to negotiate.
+At the end of the day, technical approach alone is insufficient. Instead, the data engineering team has an unparalleled need to combine flexibility, endurance of vision, and the ability to negotiate.
+
 Moreover, compared to other engineering firms, the non-technical capabilities sit in a small team—sometimes within a sole data engineer. A data engineering team must confidently wield these non-technical capabilities if it is to achieve excellence in an organisation.
 
 The search for business insights is both demanding in complexity and fluid in nature. This dual aspect makes data engineering one of the most engaging and rewarding disciplines.
