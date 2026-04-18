@@ -39,7 +39,9 @@ A new reader should start with the three foundations chapters:
 
 And gain an overview of the book through scanning the table of contents.
 
-A full-length PDF would also be made available (coming).
+This site is being transcribed from drafts of a previous manuscript: [Principles of Data Engineering (draft PDF)](/files/Principles%20of%20Data%20Engineering.pdf).
+
+Once the web edition is complete, a full-length PDF will also be made available.
 
 {{< hint note >}}
 **Under construction**
