@@ -1,6 +1,7 @@
 {{- $isHome := .IsHome -}}
-{{- $pageTitle := cond $isHome .Site.Title (printf "%s | %s" .Title .Site.Title) -}}
-{{- $description := or .Description .Params.Lede .Summary .Site.Params.Description -}}
+{{- $pageTitle := cond $isHome (printf "%s | Matthias Wong" .Site.Title) (printf "%s | %s" .Title .Site.Title) -}}
+{{- $homeDescription := "A practical manual on building data representations of business entities for reliable business insight." -}}
+{{- $description := cond $isHome $homeDescription (or .Description .Params.Lede .Summary .Site.Params.Description) -}}
 {{- $image := "og.png" | absURL -}}
 
 <meta property="og:title" content="{{ $pageTitle }}">
