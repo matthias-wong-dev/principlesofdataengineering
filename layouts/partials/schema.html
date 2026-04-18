@@ -1,0 +1,107 @@
+{{- $isHome := .IsHome -}}
+{{- $siteTitle := .Site.Title -}}
+{{- $siteDescription := .Site.Params.Description -}}
+{{- $pageDescription := or .Description .Params.Lede .Summary $siteDescription -}}
+{{- $image := "og.png" | absURL -}}
+{{- $authorName := "Matthias Wong" -}}
+{{- $authorURL := "https://matthiaswong.me/" -}}
+
+{{- if $isHome -}}
+  {{- $website := dict
+    "@context" "https://schema.org"
+    "@type" "WebSite"
+    "name" $siteTitle
+    "url" .Site.BaseURL
+    "description" $siteDescription
+    "inLanguage" "en-AU"
+    "author" (dict
+      "@type" "Person"
+      "name" $authorName
+      "url" $authorURL
+    )
+  -}}
+  {{- $book := dict
+    "@context" "https://schema.org"
+    "@type" "Book"
+    "name" $siteTitle
+    "headline" $siteTitle
+    "url" .Permalink
+    "description" $pageDescription
+    "inLanguage" "en-AU"
+    "image" $image
+    "bookFormat" "https://schema.org/EBook"
+    "author" (dict
+      "@type" "Person"
+      "name" $authorName
+      "url" $authorURL
+    )
+  -}}
+<script type="application/ld+json">
+{{ $website | jsonify | safeJS }}
+</script>
+<script type="application/ld+json">
+{{ $book | jsonify | safeJS }}
+</script>
+{{- else if .IsPage -}}
+  {{- $article := dict
+    "@context" "https://schema.org"
+    "@type" "TechArticle"
+    "headline" .Title
+    "name" .Title
+    "url" .Permalink
+    "description" $pageDescription
+    "inLanguage" "en-AU"
+    "image" $image
+    "author" (dict
+      "@type" "Person"
+      "name" $authorName
+      "url" $authorURL
+    )
+    "isPartOf" (dict
+      "@type" "Book"
+      "name" $siteTitle
+      "url" .Site.BaseURL
+    )
+  -}}
+  {{- with .Date }}
+    {{- $article = merge $article (dict "datePublished" (.Format "2006-01-02")) -}}
+  {{- end -}}
+  {{- with .Lastmod }}
+    {{- $article = merge $article (dict "dateModified" (.Format "2006-01-02")) -}}
+  {{- end -}}
+  {{- $breadcrumbItems := slice
+    (dict
+      "@type" "ListItem"
+      "position" 1
+      "name" $siteTitle
+      "item" .Site.BaseURL
+    )
+  -}}
+  {{- with .Parent }}
+    {{- if and .Title (ne .Title $siteTitle) -}}
+      {{- $breadcrumbItems = $breadcrumbItems | append (dict
+        "@type" "ListItem"
+        "position" 2
+        "name" .Title
+        "item" .Permalink
+      ) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $breadcrumbItems = $breadcrumbItems | append (dict
+    "@type" "ListItem"
+    "position" (add (len $breadcrumbItems) 1)
+    "name" .Title
+    "item" .Permalink
+  ) -}}
+  {{- $breadcrumbs := dict
+    "@context" "https://schema.org"
+    "@type" "BreadcrumbList"
+    "itemListElement" $breadcrumbItems
+  -}}
+<script type="application/ld+json">
+{{ $article | jsonify | safeJS }}
+</script>
+<script type="application/ld+json">
+{{ $breadcrumbs | jsonify | safeJS }}
+</script>
+{{- end -}}
