@@ -1,6 +1,7 @@
 baseURL = 'https://principlesofdataengineering.org/'
 locale = 'en-us'
 title = 'Principles of Data Engineering'
+disableKinds = ['taxonomy', 'term']
 
 [params]
   BookSection = 'docs'
