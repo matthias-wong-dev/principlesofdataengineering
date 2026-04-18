@@ -8,7 +8,11 @@ bookToC: false
 
 **Principles of Data Engineering** is a practical manual on building data systems that produce reliable business insight.
 
-The central premise of the book is that:
+The recurring theme of the book is:
+
+> Data engineering is the process of applying business intent to data to create information, and then insight.
+
+It is underpinned by a central premise:
 
 > Data is a fragment of reality.
 
@@ -16,7 +20,13 @@ The role of the data engineer is therefore not just to move or transform data, b
 
 This book is written from delivery experience and focuses on patterns that hold up in real systems. The emphasis throughout is on **clarity, reuse, and long-term maintainability**, rather than short-term outputs.
 
-## How to read this book
+## Start here
+
+- Begin with [What is data engineering?](../docs/foundations/what-is-data-engineering/)
+- Then read [What is data?](../docs/foundations/what-is-data/)
+- How does data operate in an organisation?
+
+## How to read this site
 
 The material is designed to be read sequentially from start to end.
 
@@ -29,15 +39,7 @@ The six sections are loosely independent and can be read on their own:
 - Efficient & stable pipeline
 - Beyond techniques
 
-It could also be searched for specific topics such as dimensional modelling, or incremental processing.
-
-A new reader should start with the three foundations chapters:
-
-- [What is data engineering?](../docs/foundations/what-is-data-engineering/)
-- [What is data?](../docs/foundations/what-is-data/)
-- How does data operate in an organisation?
-
-And gain an overview of the book through scanning the table of contents.
+It could also be searched for specific topics such as dimensional modelling, or incremental processing after the reader gains an overview of the book through scanning the table of contents.
 
 
 Once the web edition is complete, a full-length PDF will also be made available.
