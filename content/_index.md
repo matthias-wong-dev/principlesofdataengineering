@@ -6,7 +6,7 @@ bookToC: false
 
 ## Welcome
 
-**Principles of Data Engineering** is a practical manual on building data systems that produce reliable business insight.
+**Principles of Data Engineering** is a practical manual on building data representations of business reality.
 
 The recurring theme of the book is:
 

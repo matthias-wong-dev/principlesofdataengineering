@@ -5,4 +5,4 @@ title = 'Principles of Data Engineering'
 [params]
   BookSection = 'docs'
   BookFavicon = 'favicon.svg'
-  Description = 'A practical manual on building data representations of business entities.'
+  Description = 'A practical manual on building data representations of business reality.'
