@@ -15,19 +15,19 @@ Special thanks to E.D. and M.T. for their contribution and support throughout th
 
 ## Origin and release
 
-The broader work originates from material produced within the Department of Agriculture, Fisheries and Forestry and released under Freedom of Information, reference `35670`. The publication title for attribution purposes is `35670.pdf`.
+`Principles of Data Engineering` was originally written by Matthias Wong in the course of work undertaken at the Department of Agriculture, Fisheries and Forestry, and released under Freedom of Information, reference `35670`.
 
-The relevant source channel is the [DAFF Freedom of Information disclosure log](https://www.agriculture.gov.au/about/reporting/freedom-of-information/disclosure-log).
+The publication title for attribution purposes is `35670.pdf`. The relevant source channel is the [DAFF Freedom of Information disclosure log](https://www.agriculture.gov.au/about/reporting/freedom-of-information/disclosure-log).
 
-This web edition has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong, who was also the original author of the underlying manuscript while at the department.
+This website is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
 
 ## Attribution
 
-Material from the underlying work should be attributed as:
+Material from the underlying DAFF work should be attributed as:
 
-Department of Agriculture, Fisheries and Forestry. 2026. 35670.pdf
+Department of Agriculture, Fisheries and Forestry. 2026. `35670.pdf`.
 
-This web edition contains adapted and additional material by Matthias Wong while acknowledging the broader DAFF source.
+This web edition includes adapted and additional material by Matthias Wong.
 
 © Department of Agriculture, Fisheries and Forestry 2026  
 Web adaptation and additional material © Matthias Wong 2026
