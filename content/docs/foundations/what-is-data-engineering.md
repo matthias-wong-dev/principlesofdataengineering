@@ -60,14 +60,10 @@ We summarise these as the **fluid nature** of data engineering.
 
 Certainly, the data engineering team can shut its eyes to these problems and insist on hard-and-fast requirements from stakeholders. This approach is unlikely to lead to quality outcomes. Instead, the data engineer's approach must adapt to the fluid nature of business insights.
 
-However, technical approach alone is insufficient. Instead, the data engineering team has an unparalleled need to combine flexibility, endurance of vision, and the ability to negotiate. 
+However, technical approach alone is insufficient. Instead, the data engineering team has an unparalleled need to combine flexibility, endurance of vision, and the ability to negotiate.
 Moreover, compared to other engineering firms, the non-technical capabilities sit in a small team—sometimes within a sole data engineer. A data engineering team must confidently wield these non-technical capabilities if it is to achieve excellence in an organisation.
 
-The search for business insights is both demanding in complexity and fluid in nature. This dual aspect makes data engineering one of the most engaging and rewarding disciplines. 
-
-
-## 
-
+The search for business insights is both demanding in complexity and fluid in nature. This dual aspect makes data engineering one of the most engaging and rewarding disciplines.
 
 > [!NOTE]
 > **Key ideas**
@@ -75,4 +71,3 @@ The search for business insights is both demanding in complexity and fluid in na
 > Data engineering is an activity in which business intent is applied to data to create first information, then insight.
 >
 > The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim define the fluid nature of data engineering.
-
