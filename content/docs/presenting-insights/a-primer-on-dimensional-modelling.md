@@ -1,6 +1,6 @@
 ---
 title: A primer on dimensional modelling
-description: A practical primer on facts, dimensions, and the main building blocks of a Power BI dimensional model.
+description: A practical primer on facts, dimensions, and the core building blocks of a Power BI dimensional model, explained through how users interact with them.
 lede: Facts and dimensions are best understood through how users interact with them.
 weight: 3
 draft: true

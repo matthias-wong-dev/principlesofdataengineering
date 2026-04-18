@@ -1,6 +1,6 @@
 ---
 title: Tracking changes
-description: Covers the main techniques for detecting inserts, updates, and deletes so pipelines can respond precisely to real change.
+description: How to detect inserts, updates, and deletes in a data pipeline, the foundation of incremental processing and efficient data engineering.
 lede: Incremental work begins with knowing what has genuinely changed.
 weight: 5
 draft: true

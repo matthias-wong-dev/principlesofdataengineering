@@ -1,6 +1,6 @@
 ---
 title: Getting started as a data engineer
-description: Offers practical guidance for new data engineers on habits, exposure, discipline, and early professional growth.
+description: Practical guidance on developing habits, judgment, and professional discipline as a new data engineer, beyond tools and syntax.
 lede: A strong start in data engineering depends more on habits and judgment than on flashy technique.
 weight: 6
 draft: true
