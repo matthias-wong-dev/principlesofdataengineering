@@ -1,5 +1,7 @@
 ---
 title: Load stack
+description: Introduces the load stack as a practical way to sequence and manage materialised tables in a growing pipeline.
+lede: A load stack gives order to the build and maintenance of a pipeline.
 weight: 3
 draft: true
 ---

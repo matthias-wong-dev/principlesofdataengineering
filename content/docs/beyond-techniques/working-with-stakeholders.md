@@ -1,5 +1,7 @@
 ---
 title: Working with stakeholders
+description: Explores how data engineers build momentum by guiding stakeholder attention rather than simply reacting to stated requirements.
+lede: Successful data projects depend on guiding attention, not merely collecting requirements.
 weight: 2
 draft: true
 ---

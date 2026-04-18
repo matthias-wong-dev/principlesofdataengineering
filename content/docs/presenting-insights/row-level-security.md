@@ -1,5 +1,7 @@
 ---
 title: Row level security
+description: Introduces row level security as a way to limit data access while preserving analytical usefulness and business context.
+lede: Security should limit what users can see without breaking how the model is understood.
 weight: 6
 draft: true
 ---

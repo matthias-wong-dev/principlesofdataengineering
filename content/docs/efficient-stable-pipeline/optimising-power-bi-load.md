@@ -1,5 +1,7 @@
 ---
 title: Optimising Power BI load
+description: Explains practical ways to improve Power BI refresh performance through source design, partitions, and incremental load patterns.
+lede: Power BI performs best when the underlying pipeline is designed with loading in mind.
 weight: 7
 draft: true
 ---

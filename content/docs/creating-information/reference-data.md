@@ -1,5 +1,7 @@
 ---
 title: Reference data
+description: Shows how reference tables improve expressiveness, standardisation, and reuse within a single system before wider integration.
+lede: Reference data gives business meaning a stable place to live.
 weight: 4
 draft: true
 ---

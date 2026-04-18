@@ -1,5 +1,7 @@
 ---
 title: "Closing essay: Hallmarks of quality"
+description: A closing reflection on the habits and standards that mark high-quality data engineering work.
+lede: Quality is recognised through patterns of work that endure beyond the immediate feature.
 weight: 7
 draft: true
 ---

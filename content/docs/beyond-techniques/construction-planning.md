@@ -1,5 +1,7 @@
 ---
 title: Construction planning
+description: Shows how to turn discovery, vision, and scope into a practical construction plan for data delivery.
+lede: A strong construction plan creates momentum by giving delivery an orderly shape.
 weight: 3
 draft: true
 ---

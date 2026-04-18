@@ -1,5 +1,7 @@
 ---
 title: Responding to change
+description: Shows how downstream tables and models should respond when upstream data, logic, or structure changes over time.
+lede: Detecting change is only the first step; the pipeline must also respond intelligently.
 weight: 6
 draft: true
 ---

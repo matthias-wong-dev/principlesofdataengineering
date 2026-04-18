@@ -1,5 +1,7 @@
 ---
 title: Entity processing and entity tracking
+description: Distinguishes immutable and mutable business entities, and shows the different pipeline patterns used to process and track them.
+lede: Immutable and mutable entities call for different ways of engineering information.
 weight: 3
 draft: true
 ---

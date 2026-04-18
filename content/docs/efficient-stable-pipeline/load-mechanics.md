@@ -1,5 +1,7 @@
 ---
 title: Load mechanics
+description: Explains the mechanics of loading data safely through staging, checking, and applying changes in a controlled way.
+lede: Loading data well means controlling change rather than replacing everything blindly.
 weight: 2
 draft: true
 ---

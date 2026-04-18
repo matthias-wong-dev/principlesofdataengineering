@@ -1,5 +1,7 @@
 ---
 title: Load dependencies
+description: Explains how dependencies affect efficiency and stability, and how to manage them without creating unnecessary ripple effects.
+lede: Every dependency is a trade-off between reuse, efficiency, and stability.
 weight: 4
 draft: true
 ---

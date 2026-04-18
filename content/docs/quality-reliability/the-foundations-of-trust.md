@@ -1,5 +1,7 @@
 ---
 title: The foundations of trust
+description: Introduces quality and reliability as the conditions that make data products trustworthy for decision-making.
+lede: Quality and reliability are the foundations of trust in a data product.
 weight: 1
 draft: true
 ---

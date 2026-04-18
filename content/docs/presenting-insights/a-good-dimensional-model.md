@@ -1,5 +1,7 @@
 ---
 title: A good dimensional model
+description: Describes what a good dimensional model should achieve in practice, from business resonance and clarity to performance and usability.
+lede: A good dimensional model should feel intuitive, trustworthy, and ready for real questions.
 weight: 2
 draft: true
 ---

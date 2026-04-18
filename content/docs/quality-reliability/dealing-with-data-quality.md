@@ -1,5 +1,7 @@
 ---
 title: Dealing with data quality
+description: Surveys practical ways to handle data quality gaps through curation, precise business rules, and fuzzy logic.
+lede: Data quality is the work of closing the gap between recorded data and business intent.
 weight: 3
 draft: true
 ---

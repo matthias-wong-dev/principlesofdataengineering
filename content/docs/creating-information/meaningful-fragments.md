@@ -1,5 +1,7 @@
 ---
 title: Meaningful fragments
+description: Shows why narrow, reusable fragments are more expressive and maintainable than large all-purpose tables.
+lede: A good pipeline is built from fragments with clear informational purpose.
 weight: 7
 draft: true
 ---

@@ -1,5 +1,7 @@
 ---
 title: Fault tolerance
+description: Shows how to design pipelines that continue to function in the presence of partial errors and surface failures meaningfully.
+lede: A robust pipeline does not collapse just because one part of it goes wrong.
 weight: 5
 draft: true
 ---

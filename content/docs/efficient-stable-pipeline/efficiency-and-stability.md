@@ -1,5 +1,7 @@
 ---
 title: Efficiency and stability
+description: Defines pipeline efficiency and stability, and explains why both are necessary for reliable long-term delivery.
+lede: A mature pipeline must minimise unnecessary work while remaining stable under change.
 weight: 1
 draft: true
 ---

@@ -1,5 +1,7 @@
 ---
 title: Designing measures
+description: Explains how to design useful, business-centric measures in Power BI and how to think clearly about their role in a model.
+lede: A dimensional model is only as useful as the measures it makes easy to use.
 weight: 5
 draft: true
 ---

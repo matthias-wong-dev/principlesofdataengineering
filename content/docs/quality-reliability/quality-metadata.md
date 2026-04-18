@@ -1,5 +1,7 @@
 ---
 title: Quality metadata
+description: Explains how names, descriptions, and keys add interpretative context and make data products clearer, more reliable, and easier to trust.
+lede: Metadata is not an afterthought; it is part of how data becomes meaningful.
 weight: 2
 draft: true
 ---

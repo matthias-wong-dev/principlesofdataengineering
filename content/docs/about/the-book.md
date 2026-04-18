@@ -1,5 +1,7 @@
 ---
 title: The book
+description: Context, origin, acknowledgements, and attribution for Principles of Data Engineering and its web edition.
+lede: The context, origin, and attribution of this work.
 weight: 1
 ---
 

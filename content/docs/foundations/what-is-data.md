@@ -1,5 +1,6 @@
 ---
 title: What is data?
+description: "A short philosophical foundation for the book's central premise: data is a fragment of reality."
 weight: 2
 lede: Data is a fragment of reality.
 ---

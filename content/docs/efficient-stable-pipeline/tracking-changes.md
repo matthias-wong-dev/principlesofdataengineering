@@ -1,5 +1,7 @@
 ---
 title: Tracking changes
+description: Covers the main techniques for detecting inserts, updates, and deletes so pipelines can respond precisely to real change.
+lede: Incremental work begins with knowing what has genuinely changed.
 weight: 5
 draft: true
 ---

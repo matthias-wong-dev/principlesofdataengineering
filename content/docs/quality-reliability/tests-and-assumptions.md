@@ -1,5 +1,7 @@
 ---
 title: Tests and assumptions
+description: Explains how thoughtful tests and monitored assumptions help data engineers anticipate failure before it undermines trust.
+lede: Good engineering assumes that errors will happen and prepares for them.
 weight: 4
 draft: true
 ---

@@ -1,5 +1,7 @@
 ---
 title: The five principles of data engineering
+description: Summarises the book's five principles as a practical alternative to shallow, requirement-driven curation.
+lede: Good data engineering is guided by principles, not just techniques.
 weight: 1
 draft: true
 ---

@@ -1,5 +1,7 @@
 ---
 title: Anticipating questions
+description: Shows how to design analytical models that answer not just current requirements, but the broader set of questions users will ask.
+lede: A strong model anticipates questions before they are formally asked.
 weight: 7
 draft: true
 ---
