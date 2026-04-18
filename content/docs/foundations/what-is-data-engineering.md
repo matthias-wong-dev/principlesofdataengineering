@@ -66,12 +66,13 @@ Moreover, compared to other engineering firms, the non-technical capabilities si
 The search for business insights is both demanding in complexity and fluid in nature. This dual aspect makes data engineering one of the most engaging and rewarding disciplines. 
 
 
-## Key ideas
+## 
 
-{{< hint note >}}
-Data engineering is an activity in which business intent is applied to data to create first information, then insight.
-{{< /hint >}}
 
-{{< hint note >}}
-The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim define the fluid nature of data engineering.
-{{< /hint >}}
+> [!NOTE]
+> **Key ideas**
+>
+> Data engineering is an activity in which business intent is applied to data to create first information, then insight.
+>
+> The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim define the fluid nature of data engineering.
+

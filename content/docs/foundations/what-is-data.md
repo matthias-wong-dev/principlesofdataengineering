@@ -9,10 +9,7 @@ lede: Data is a fragment of reality.
 Data is a fragment of reality.
 
 
-## Key ideas
-
-{{< hint note >}}
-
-- Data is a fragment of reality.
-
-{{< /hint >}}
+> [!NOTE]
+> **Key ideas**
+>
+> Data is a fragment of reality.

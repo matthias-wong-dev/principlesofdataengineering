@@ -42,8 +42,7 @@ And gain an overview of the book through scanning the table of contents.
 
 Once the web edition is complete, a full-length PDF will also be made available.
 
-{{< hint note >}}
-**Under construction**
-
-This site is in active development and expected to complete by August 2026.
-{{< /hint >}}
+> [!NOTE]
+> **Under construction**
+>
+> This site is in active development and expected to complete by August 2026.
