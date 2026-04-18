@@ -1,4 +1,58 @@
-# About
+---
+title: "Principles of Data Engineering"
+author: "Matthias Wong"
+documentclass: book
+classoption:
+  - oneside
+  - openany
+  - 11pt
+geometry: margin=1in
+fontsize: 11pt
+linestretch: 1.15
+toc: true
+toc-depth: 3
+numbersections: false
+links-as-notes: false
+header-includes:
+  - |
+    \usepackage{microtype}
+  - |
+    \usepackage{setspace}
+  - |
+    \usepackage{titlesec}
+  - |
+    \usepackage{fancyhdr}
+  - |
+    \pagestyle{fancy}
+  - |
+    \fancyhf{}
+  - |
+    \fancyfoot[C]{\thepage}
+  - |
+    \renewcommand{\headrulewidth}{0pt}
+  - |
+    \titleformat{\chapter}[display]{\normalfont\bfseries\Huge}{}{0pt}{\Huge}
+  - |
+    \titlespacing*{\chapter}{0pt}{0pt}{24pt}
+---
+
+\thispagestyle{empty}
+
+\vspace*{0.25\textheight}
+
+\begin{center}
+
+{\Huge\bfseries Principles of Data Engineering\\}
+
+\vspace{1.5cm}
+
+{\Large Matthias Wong}
+
+\end{center}
+
+\newpage
+
+\tableofcontents
 
 \newpage
 
@@ -3190,3 +3244,5 @@ Elegant code (adherence to patterns, optimised code) Elegant code is key to sust
 These hallmarks of quality are not revolutionary. They have been around since code development began. The issue is not that developers do not know about them but that they do not do them because of lack of discipline or pressures to deliver. There is the idea that doing work properly cost time and delay delivery. The retort is that doing work improperly cost more time. Writing good tests help capture errors earlier and reduces the time it takes to fix things up. Crafted entities vastly reduce the time to deliver complex features because the model becomes more powerful. Writing a clear explanation helps all get on-board, establishes trust and builds momentum. On the other hand, technical debt quickly comes back with a vengeance. At the level of a single development cycle, doing the work properly may increase development time by 20 to 40%. Over the course of several months, the dividends of quality work pay off and enable faster delivery than hasty development could ever achieve. The developer is constantly under the pressures of deadlines. However, if one does not have time to do the work well, the solution is not to do the work poorly. The best way to achieve the hallmarks is simply consider these as part of, and not something in addition to, the work itself. Once we make the mental leap, it becomes more natural to build these into the daily work and to the pace of projects.
 
 \newpage
+
+# Example patterns

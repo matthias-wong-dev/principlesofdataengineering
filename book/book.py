@@ -9,7 +9,8 @@ from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parent
-DOCS_DIR = ROOT / "content" / "docs"
+PROJECT_ROOT = ROOT.parent
+DOCS_DIR = PROJECT_ROOT / "content" / "docs"
 DEFAULT_OUTPUT = ROOT / "book.md"
 LATEX_SAFE_REPLACEMENTS = {
     "\u00a9": "(c)",
@@ -32,6 +33,10 @@ class Page:
     weight: int
     body: str
     is_section: bool
+
+
+TITLE = "Principles of Data Engineering"
+AUTHOR = "Matthias Wong"
 
 
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
@@ -196,12 +201,77 @@ def render_chapter(page: Page) -> str:
     return f"# {title}"
 
 
+def render_front_matter() -> str:
+    return "\n".join(
+        [
+            "---",
+            f'title: "{TITLE}"',
+            f'author: "{AUTHOR}"',
+            'documentclass: book',
+            'classoption:',
+            "  - oneside",
+            "  - openany",
+            "  - 11pt",
+            "geometry: margin=1in",
+            "fontsize: 11pt",
+            "linestretch: 1.15",
+            "toc: true",
+            "toc-depth: 3",
+            "numbersections: false",
+            "links-as-notes: false",
+            "header-includes:",
+            "  - |",
+            "    \\usepackage{microtype}",
+            "  - |",
+            "    \\usepackage{setspace}",
+            "  - |",
+            "    \\usepackage{titlesec}",
+            "  - |",
+            "    \\usepackage{fancyhdr}",
+            "  - |",
+            "    \\pagestyle{fancy}",
+            "  - |",
+            "    \\fancyhf{}",
+            "  - |",
+            "    \\fancyfoot[C]{\\thepage}",
+            "  - |",
+            "    \\renewcommand{\\headrulewidth}{0pt}",
+            "  - |",
+            "    \\titleformat{\\chapter}[display]{\\normalfont\\bfseries\\Huge}{}{0pt}{\\Huge}",
+            "  - |",
+            "    \\titlespacing*{\\chapter}{0pt}{0pt}{24pt}",
+            "---",
+            "",
+            "\\thispagestyle{empty}",
+            "",
+            "\\vspace*{0.25\\textheight}",
+            "",
+            "\\begin{center}",
+            "",
+            f"{{\\Huge\\bfseries {TITLE}\\\\}}",
+            "",
+            "\\vspace{1.5cm}",
+            "",
+            f"{{\\Large {AUTHOR}}}",
+            "",
+            "\\end{center}",
+            "",
+            "\\newpage",
+            "",
+            "\\tableofcontents",
+            "",
+            "\\newpage",
+        ]
+    )
+
+
 def build_book() -> str:
-    chunks: list[str] = []
+    chunks: list[str] = [render_front_matter()]
 
     for section, children in section_pages():
-        chunks.append(render_section_title(section))
-        chunks.append(r"\newpage")
+        if section.title.lower() != "about":
+            chunks.append(render_section_title(section))
+            chunks.append(r"\newpage")
 
         for child in children:
             chunks.append(render_chapter(child))
