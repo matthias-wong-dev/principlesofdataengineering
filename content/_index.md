@@ -23,7 +23,7 @@ This book is written from delivery experience and focuses on patterns that hold 
 ## Start here
 
 - Begin with [What is data engineering?](../docs/foundations/what-is-data-engineering/)
-- Then read [What is data?](../docs/foundations/what-is-data/)
+- What is data?
 - How does data operate in an organisation?
 
 ## How to read this site
