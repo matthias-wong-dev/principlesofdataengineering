@@ -53,7 +53,11 @@ This ambiguity of aim is akin to the challenge of planning a new city suburb to 
 
 ## The fluid nature of data engineering
 
-The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim are all intrinsic characteristics of the search for business insights. 
+The search for business insights is shaped by three intrinsic characteristics:
+
+- the availability of easy substitutes
+- the open-endedness of the search
+- the ambiguity of aim
 
 We summarise these as the **fluid nature** of data engineering.
 
