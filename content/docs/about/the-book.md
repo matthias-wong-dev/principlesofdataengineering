@@ -27,7 +27,7 @@ This website is a web edition of that manuscript. It has been transcribed, edite
 
 Material from the underlying DAFF work should be attributed as:
 
-Department of Agriculture, Fisheries and Forestry. 2026. `35670.pdf`.
+Department of Agriculture, Fisheries and Forestry. 2026. *Principles of Data Engineering manual* [FOI Disclosure Log Reference 35670](https://www.agriculture.gov.au/sites/default/files/documents/35670.pdf).
 
 This web edition includes adapted and additional material by Matthias Wong.
 
