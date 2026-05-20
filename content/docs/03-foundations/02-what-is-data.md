@@ -1,7 +1,7 @@
 ---
 title: What is data?
 url: /docs/03-foundations/02-what-is-data/
-description: "A short philosophical foundation for the book: data is a fragment of reality, and that premise shapes everything that follows in data engineering practice."
+description: "A short philosophical foundation for the book: data is a fragment of reality captured by process, and that premise shapes everything that follows in data engineering practice."
 draft: true
 weight: 2
 lede: Data is a fragment of reality.
