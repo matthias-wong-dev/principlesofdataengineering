@@ -6,7 +6,9 @@ bookToC: false
 
 ## Welcome
 
-**Principles of Data Engineering** is a practical manual on building data representations of business entities in the real world.
+**Principles of Data Engineering** is the definitive guide to building data representations that make business reality visible.
+
+Most data engineering books teach pipelines, platforms, and patterns. This book is about something far more durable. It explains what data engineering is fundamentally for: turning fragments of reality into reliable information that organisations can use to understand, decide, and act.
 
 The recurring theme of the book is:
 
@@ -16,9 +18,19 @@ It is underpinned by a central premise:
 
 > Data is a fragment of reality.
 
-The role of the data engineer is therefore not just to move or transform data, but to shape it into a form that makes reality legible to business.
+That premise challenges how organisations have understood data until now. Data engineering is not merely the movement of records from one system to another. It is the discipline of reconstructing business reality from partial, imperfect operational traces.
 
-This book is written from delivery experience and focuses on patterns that hold up in real systems. The emphasis throughout is on **clarity, reuse, and long-term maintainability**, rather than short-term outputs.
+The role of the data engineer is therefore not just to transform data, but to make reality legible to business.
+
+This book is written from deep delivery experience and focuses on the patterns that survive real systems: expressive entities, meaningful fragments, reusable information, robust pipelines, dimensional models, and long-term maintainability.
+
+It is for data engineers, organisational leaders, and business stakeholders who want data systems that do more than run.
+
+Data representations that explain.
+
+Data representations that endure.
+
+Data representations that stop organisations from guessing.
 
 ## Start here
 
