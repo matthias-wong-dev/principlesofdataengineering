@@ -7,3 +7,9 @@ disableKinds = ['taxonomy', 'term']
   BookSection = 'docs'
   BookFavicon = 'favicon.svg'
   Description = 'A practical manual on building data representations of business entities in the real world.'
+
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
