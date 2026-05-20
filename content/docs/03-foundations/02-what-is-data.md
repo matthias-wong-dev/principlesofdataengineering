@@ -9,7 +9,14 @@ lede: Data is a fragment of reality.
 
 ## The central premise
 
-Data is a fragment of reality.
+Insight is information analysed in the light of interest. However, the data engineer starts one step further back than information. Data engineering starts with data.
+
+Data comes from Latin for “given.” Data is, therefore, what is given with no fixed interpretation, and thus not yet information. More precisely,
+
+> Data is a fragment of reality captured by process.
+
+
+
 
 
 > [!NOTE]
