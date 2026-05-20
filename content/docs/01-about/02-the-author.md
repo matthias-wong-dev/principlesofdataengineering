@@ -8,12 +8,14 @@ weight: 2
 
 ## About the author
 
-Matthias Wong holds a PhD in Computational Mathematics and has built his career at the intersection of theory and practice. After moving into the public sector, he led and trained advanced data engineering teams working on complex, high-stakes problems, with a focus on integrating diverse and often fragmented data sources into usable, decision-ready products.
+Matthias Wong's work examines how organisations see, understand, and act in complex environments. His writing spans organisational theory, data, AI, business, and people leadership.
 
-His work frequently required the creation of new solutions to unexpected challenges—ranging from intricate business rules and computational performance constraints to the need for systems that remain accessible and usable for non-technical stakeholders. 
+As part of this work, he has led and trained advanced data engineering teams working on high-stakes systems, with a focus on transforming fragmented operational data into usable, decision-ready information.
 
-Through this process, he guided teams from junior to senior capability, shaping both technical depth and practical judgment.
+*Principles of Data Engineering* forms the technical segment of this broader work: an account of how organisations make reality visible through data, and how engineers can build the representations organisations rely on to exercise sound judgement.
 
-This book distills those experiences: the principles, patterns, and trade-offs encountered in building real-world data systems that must not only work, but endure.
+He is especially passionate about uplifting staff from junior to advanced capability, and providing senior advisory to organisational leaders on the effective use of data to steer complex institutions.
 
-Fuller biography and contact is available on [matthiaswong.me](https://matthiaswong.me).
+Matthias holds a PhD in Computational Mathematics.
+
+For contact information, see [the author's website](https://matthiaswong.me).
