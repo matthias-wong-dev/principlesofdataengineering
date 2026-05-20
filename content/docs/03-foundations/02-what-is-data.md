@@ -28,6 +28,22 @@ This becomes especially important at scale. In a small organisation, leaders may
 
 ## How is data captured?
 
+Data is captured by process.
+
+This creates two sources of imperfection. The first is the process. The second is the capture. Between both sits the digital system: the medium through which business activity is encoded into data.
+
+A process may be imperfect because it was designed for operational work rather than analytical understanding. Most workflows exist to get something done. The digital systems that support those workflows are usually built around that operational goal.  Therefore, the process may not try to record everything a future analyst may need for business intent. This is especially the case when the source of data is not controlled by the business seeking to analyse it.
+<!-- 
+This is why the process that creates the data may differ from the business interest that later seeks to analyse it.
+
+The capture itself may also be imperfect. It can be technically difficult, costly, or impractical to record business events accurately. Some events are too complex to capture fully. Some occur across multiple systems. Some depend on human judgement. Some change faster than the system can adapt.
+
+This challenge is intensified by a rapidly evolving technological landscape. Business processes increasingly span cloud platforms, SaaS tools, legacy systems, APIs, spreadsheets, machine-generated logs, and AI-assisted workflows. Each may capture a different fragment of the same underlying reality, with different assumptions, constraints, and levels of reliability.
+
+Data is therefore never a simple copy of the world. It is a fragment of reality captured through a process, mediated by a digital system, and shaped by the purpose, limitations, and cost of capture.
+
+The work of the data engineer begins by understanding these imperfections. -->
+
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"
