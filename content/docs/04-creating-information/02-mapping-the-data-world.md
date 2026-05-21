@@ -16,7 +16,7 @@ Consequently, the data engineer sees each data record as an intermediary of the 
 
 A business entity can be a concrete object, such as a customer or a product. It can also be an abstract event, such as a business transaction.
 
-This shift from data record to business entity is the first practical step in expressiveness.
+This shift from data record to business entity is the first practical step in expressiveness. For many data engineers, it is also the first threshold: learning to see not the record itself, but the entity behind it.
 
 For a data engineer who starts with the data and reaches back to the business world, the tool of choice is the primary key.
 
@@ -94,4 +94,6 @@ The two major types of business entity, immutable and mutable, correspond to two
 >
 > The quality of a primary key depends on the quality of the business process that creates, retrieves, and maintains it.
 >
-> Immutable and mutable entities require different data engineering methods.
+> Immutable entities lead to entity processing.
+>
+> Mutable entities lead to entity tracking.
