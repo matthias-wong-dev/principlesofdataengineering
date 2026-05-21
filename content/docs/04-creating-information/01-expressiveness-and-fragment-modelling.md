@@ -24,7 +24,7 @@ This is the task of applying business intent to reshape data. When done successf
 
 The first and most important principle of data engineering is therefore the search for **expressiveness**.
 
-The data engineer's work is expressive when the tables and relationships created in the warehouse do not merely reflect data as it was found, but correspond strongly to real business entities and processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is attempting to approximate.
+The data engineer’s work is expressive when its outputs do not merely reflect data as it was found, but correspond strongly to real business entities and processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is attempting to approximate.
 
 If a reasonably competent layperson cannot easily relate the model to the real world, then the model is not expressive. Correspondence to the world by the organisation trying to influence it is therefore the final arbitrator of whether a data model is successful.
 
