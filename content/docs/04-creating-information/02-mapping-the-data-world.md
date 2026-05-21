@@ -90,11 +90,10 @@ The distinction between immutable and mutable entities shapes the overall approa
 |  | Immutable entities | Mutable entities |
 |---|---|---|
 | Basic question | What happened? | What changed? |
-| Entity behaviour | Treated as fixed once created | Changes over time while remaining the same entity |
+| Entity behaviour | Treated as fixed once created; changes are new versions | Changes over time while remaining the same entity |
 | Typical examples | Sales orders, bank transfers, import declarations | Customers, employees, suppliers, accounts |
-| Data engineering method | Entity processing | Entity tracking |
-| Usual pipeline focus | Process the entity through business logic | Track attributes, behaviour, and state over time |
-| Common output | Aggregated information at the entity grain | Timelines, histories, and end-of-period snapshots |
+| Data engineering approach | Entity processing | Entity tracking |
+| Pipeline focus | Process the entity through business logic | Track attributes, behaviour, and state over time |
 
 
 This the subject of the next two chapters.
