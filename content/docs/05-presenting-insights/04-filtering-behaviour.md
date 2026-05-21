@@ -1,6 +1,6 @@
 ---
 title: Filtering behaviour
-url: /docs/05-presenting-insights/04-filtering-behaviour/
+url: /docs/presenting-insights/filtering-behaviour/
 description: Examines how filtering works in Power BI and how dimensions, measures, and relationships shape user interaction with a model.
 lede: In Power BI, filtering behaviour is the heart of user interaction.
 weight: 4

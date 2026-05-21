@@ -1,6 +1,6 @@
 ---
 title: The craft of dimensional modelling
-url: /docs/05-presenting-insights/01-the-craft-of-dimensional-modelling/
+url: /docs/presenting-insights/the-craft-of-dimensional-modelling/
 description: Dimensional modelling in Power BI as the central craft for turning curated data into an analytical product business users can actually use.
 lede: Dimensional modelling is the craft of turning information into a usable analytical product.
 weight: 1

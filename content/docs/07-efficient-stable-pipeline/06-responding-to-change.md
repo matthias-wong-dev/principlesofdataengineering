@@ -1,6 +1,6 @@
 ---
 title: Responding to change
-url: /docs/07-efficient-stable-pipeline/06-responding-to-change/
+url: /docs/efficient-stable-pipeline/responding-to-change/
 description: Shows how downstream tables and models should respond when upstream data, logic, or structure changes over time.
 lede: Detecting change is only the first step; the pipeline must also respond intelligently.
 weight: 6

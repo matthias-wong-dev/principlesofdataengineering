@@ -1,6 +1,6 @@
 ---
 title: Tracking changes
-url: /docs/07-efficient-stable-pipeline/05-tracking-changes/
+url: /docs/efficient-stable-pipeline/tracking-changes/
 description: How to detect inserts, updates, and deletes in a data pipeline, the foundation of incremental processing and efficient data engineering.
 lede: Incremental work begins with knowing what has genuinely changed.
 weight: 5

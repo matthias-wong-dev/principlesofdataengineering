@@ -1,6 +1,6 @@
 ---
 title: Mapping the data world
-url: /docs/04-creating-information/02-mapping-the-data-world/
+url: /docs/creating-information/mapping-the-data-world/
 description: Explains how primary keys, immutable entities, and mutable entities help connect database records to real-world business meaning.
 lede: The data engineer's first task is to relate records back to the business entities behind them.
 weight: 2

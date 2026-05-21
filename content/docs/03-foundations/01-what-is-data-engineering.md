@@ -1,6 +1,6 @@
 ---
 title: What is data engineering?
-url: /docs/03-foundations/01-what-is-data-engineering/
+url: /docs/foundations/what-is-data-engineering/
 description: A first-principles definition of data engineering as the application of business intent to data and why that makes it different from other engineering disciplines.
 weight: 1
 lede: The aim of data engineering is insight.

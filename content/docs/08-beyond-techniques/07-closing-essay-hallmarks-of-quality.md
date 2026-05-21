@@ -1,6 +1,6 @@
 ---
 title: "Closing essay: Hallmarks of quality"
-url: /docs/08-beyond-techniques/07-closing-essay-hallmarks-of-quality/
+url: /docs/beyond-techniques/closing-essay-hallmarks-of-quality/
 description: A closing reflection on the habits and standards that mark high-quality data engineering work.
 lede: Quality is recognised through patterns of work that endure beyond the immediate feature.
 weight: 7

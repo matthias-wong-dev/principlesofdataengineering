@@ -1,6 +1,6 @@
 ---
 title: Optimising Power BI load
-url: /docs/07-efficient-stable-pipeline/07-optimising-power-bi-load/
+url: /docs/efficient-stable-pipeline/optimising-power-bi-load/
 description: Explains practical ways to improve Power BI refresh performance through source design, partitions, and incremental load patterns.
 lede: Power BI performs best when the underlying pipeline is designed with loading in mind.
 weight: 7

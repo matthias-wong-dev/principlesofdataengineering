@@ -1,13 +1,13 @@
 ---
 title: Tests and assumptions
-url: /docs/06-quality-reliability/04-tests-and-assumptions/
+url: /docs/quality-reliability/tests-and-assumptions/
 description: Explains how thoughtful tests and monitored assumptions help data engineers anticipate failure before it undermines trust.
 lede: Good engineering assumes that errors will happen and prepares for them.
 weight: 4
 draft: true
 ---
 
-The world is constantly changing. What is true today may not be true tomorrow. New data may arrive that fall outside previously conceived parameters. Business processes may evolve to meet emerging needs. Or another developer may alter existing code. For these reasons, the data engineer must continuously monitor for disruptive change. The world is also complex. Mistakes are easy to make. A data engineer may misinterpret business logic, overlook edge cases, or introduce technical errors when writing complex code. Thus, the third principle of data engineering is anticipating errors. Rather than focusing solely on what is working now, the data engineer must remain attuned to what may go wrong. Two explicit ways of doing this are to design thoughtful tests and to monitor assumptions. Tests and assumptions need to run regularly, such as once per data pipeline batch run. See [Automation](/docs/08-beyond-techniques/05-automation/).
+The world is constantly changing. What is true today may not be true tomorrow. New data may arrive that fall outside previously conceived parameters. Business processes may evolve to meet emerging needs. Or another developer may alter existing code. For these reasons, the data engineer must continuously monitor for disruptive change. The world is also complex. Mistakes are easy to make. A data engineer may misinterpret business logic, overlook edge cases, or introduce technical errors when writing complex code. Thus, the third principle of data engineering is anticipating errors. Rather than focusing solely on what is working now, the data engineer must remain attuned to what may go wrong. Two explicit ways of doing this are to design thoughtful tests and to monitor assumptions. Tests and assumptions need to run regularly, such as once per data pipeline batch run. See [Automation](/docs/beyond-techniques/automation/).
 
 ## Thoughtful tests
 

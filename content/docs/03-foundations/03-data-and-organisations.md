@@ -1,6 +1,6 @@
 ---
 title: Data and organisations
-url: /docs/03-foundations/03-data-and-organisations/
+url: /docs/foundations/data-and-organisations/
 description: "Explains how data helps organisations understand both their environment and themselves, and why data definitions become sites of organisational meaning."
 weight: 3
 lede: Data helps organisations see themselves.

@@ -1,6 +1,6 @@
 ---
 title: Expressiveness and fragment modelling
-url: /docs/04-creating-information/01-expressiveness-and-fragment-modelling/
+url: /docs/creating-information/expressiveness-and-fragment-modelling/
 description: "Introduces two core principles of data engineering: expressive entities and fragment modelling as the basis for reusable information."
 lede: Good data engineering begins by shaping data into expressive, reusable fragments.
 weight: 1

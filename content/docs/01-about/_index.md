@@ -1,6 +1,6 @@
 ---
 title: About
-url: /docs/01-about/
+url: /docs/about/
 weight: 1
 bookCollapseSection: true
 ---

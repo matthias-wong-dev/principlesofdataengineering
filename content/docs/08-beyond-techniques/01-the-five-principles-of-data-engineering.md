@@ -1,6 +1,6 @@
 ---
 title: The five principles of data engineering
-url: /docs/08-beyond-techniques/01-the-five-principles-of-data-engineering/
+url: /docs/beyond-techniques/the-five-principles-of-data-engineering/
 description: "Five principles for data engineering beyond shallow curation: expressive entities, meaningful fragments, anticipate errors, build momentum, and root cause."
 lede: Good data engineering is guided by principles, not just techniques.
 weight: 1

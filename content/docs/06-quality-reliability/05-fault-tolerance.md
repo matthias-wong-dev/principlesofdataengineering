@@ -1,6 +1,6 @@
 ---
 title: Fault tolerance
-url: /docs/06-quality-reliability/05-fault-tolerance/
+url: /docs/quality-reliability/fault-tolerance/
 description: Shows how to design pipelines that continue to function in the presence of partial errors and surface failures meaningfully.
 lede: A robust pipeline does not collapse just because one part of it goes wrong.
 weight: 5
@@ -27,7 +27,7 @@ The data engineer must express all uniqueness expectations in the warehouse. The
 
 - Apply automatic de-duplication, send the duplicates to a reject table, and allow
 
-the rest to proceed. The second approach is explained in [Load mechanics](/docs/07-efficient-stable-pipeline/02-load-mechanics/). In either case, the violation must be surfaced. A monitoring report should alert the user. If the violation is frequent, a different treatment is necessary. Repeated alerts can lead to the "cry-wolf" effect of dulling attention. In such cases, the data engineer should implement targeted handling for the table. For example, instead of relying on a uniqueness constraint, the pipeline can perform de-duplication during transformation and store duplicates in a separate table for review. Such techniques are illustrated in [Dealing with data quality](/docs/06-quality-reliability/03-dealing-with-data-quality/). Expressing uniqueness expectations consistently is one of the most effective ways to improve the correspondence between the data world and the real world. It is also one of the most direct ways to build trust.
+the rest to proceed. The second approach is explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/). In either case, the violation must be surfaced. A monitoring report should alert the user. If the violation is frequent, a different treatment is necessary. Repeated alerts can lead to the "cry-wolf" effect of dulling attention. In such cases, the data engineer should implement targeted handling for the table. For example, instead of relying on a uniqueness constraint, the pipeline can perform de-duplication during transformation and store duplicates in a separate table for review. Such techniques are illustrated in [Dealing with data quality](/docs/quality-reliability/dealing-with-data-quality/). Expressing uniqueness expectations consistently is one of the most effective ways to improve the correspondence between the data world and the real world. It is also one of the most direct ways to build trust.
 
 ## Existence
 

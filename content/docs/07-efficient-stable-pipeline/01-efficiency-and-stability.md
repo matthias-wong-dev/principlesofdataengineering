@@ -1,6 +1,6 @@
 ---
 title: Efficiency and stability
-url: /docs/07-efficient-stable-pipeline/01-efficiency-and-stability/
+url: /docs/efficient-stable-pipeline/efficiency-and-stability/
 description: Defines pipeline efficiency and stability, and explains why both are necessary for reliable long-term delivery.
 lede: A mature pipeline must minimise unnecessary work while remaining stable under change.
 weight: 1

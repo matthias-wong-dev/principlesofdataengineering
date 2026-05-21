@@ -1,6 +1,6 @@
 ---
 title: The author
-url: /docs/01-about/02-the-author/
+url: /docs/about/the-author/
 description: About Matthias Wong, his background in computational mathematics, and his work building practical, decision-ready data systems.
 lede: Matthias Wong writes from experience at the intersection of theory, systems, and delivery.
 weight: 2

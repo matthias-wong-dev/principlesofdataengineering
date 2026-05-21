@@ -1,6 +1,6 @@
 ---
 title: Storytelling
-url: /docs/04-creating-information/06-storytelling/
+url: /docs/creating-information/storytelling/
 description: Explores how data engineers add value by defining good and bad entities, aggregating detail, and shaping business narratives.
 lede: Data becomes useful when it is shaped into a story the business can act on.
 weight: 6

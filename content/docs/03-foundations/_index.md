@@ -1,6 +1,6 @@
 ---
 title: Foundations
-url: /docs/03-foundations/
+url: /docs/foundations/
 weight: 3
 bookCollapseSection: true
 ---

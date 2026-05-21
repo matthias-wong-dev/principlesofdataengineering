@@ -1,6 +1,6 @@
 ---
 title: Row level security
-url: /docs/05-presenting-insights/06-row-level-security/
+url: /docs/presenting-insights/row-level-security/
 description: Introduces row level security as a way to limit data access while preserving analytical usefulness and business context.
 lede: Security should limit what users can see without breaking how the model is understood.
 weight: 6

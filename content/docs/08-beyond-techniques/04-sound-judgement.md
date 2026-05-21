@@ -1,6 +1,6 @@
 ---
 title: Sound judgement
-url: /docs/08-beyond-techniques/04-sound-judgement/
+url: /docs/beyond-techniques/sound-judgement/
 description: Presents a diagnostic framework for identifying symptoms, triggers, root causes, and final effects in data engineering work.
 lede: Sound judgement means acting at the level where problems stop recurring.
 weight: 4

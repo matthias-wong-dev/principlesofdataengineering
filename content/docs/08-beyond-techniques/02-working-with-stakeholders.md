@@ -1,6 +1,6 @@
 ---
 title: Working with stakeholders
-url: /docs/08-beyond-techniques/02-working-with-stakeholders/
+url: /docs/beyond-techniques/working-with-stakeholders/
 description: Explores how data engineers build momentum by guiding stakeholder attention rather than simply reacting to stated requirements.
 lede: Successful data projects depend on guiding attention, not merely collecting requirements.
 weight: 2

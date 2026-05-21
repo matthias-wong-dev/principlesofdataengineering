@@ -1,6 +1,6 @@
 ---
 title: Load stack
-url: /docs/07-efficient-stable-pipeline/03-load-stack/
+url: /docs/efficient-stable-pipeline/load-stack/
 description: Introduces the load stack as a practical way to sequence and manage materialised tables in a growing pipeline.
 lede: A load stack gives order to the build and maintenance of a pipeline.
 weight: 3
