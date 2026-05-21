@@ -3,7 +3,7 @@ title: Meaningful fragments
 url: /docs/creating-information/meaningful-fragments/
 description: Shows why narrow, reusable fragments are more expressive and maintainable than large all-purpose tables.
 lede: A good pipeline is built from fragments with clear informational purpose.
-weight: 7
+weight: 9
 draft: true
 ---
 

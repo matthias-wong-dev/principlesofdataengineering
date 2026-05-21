@@ -3,11 +3,11 @@ title: Reference data
 url: /docs/creating-information/reference-data/
 description: Shows how reference tables improve expressiveness, standardisation, and reuse within a single system before wider integration.
 lede: Reference data gives business meaning a stable place to live.
-weight: 4
+weight: 6
 draft: true
 ---
 
-In the chapters *Entity processing* and *Entity tracking*, reference data emerged as an effective tool for expressiveness. Reference tables describe business processes succinctly, provide a place to add descriptive or analytical columns, and can be annotated with metadata to support business meaning.
+In the chapters [Entity processing](/docs/creating-information/entity-processing/) and [Entity tracking](/docs/creating-information/entity-tracking/), reference data emerged as an effective tool for expressiveness. Reference tables describe business processes succinctly, provide a place to add descriptive or analytical columns, and can be annotated with metadata to support business meaning.
 
 Beyond expressiveness, reference data is also the cornerstone of integration. This chapter outlines the fundamentals of reference data when applied to a single system. These foundations support the integration of information across multiple systems, which is the focus of the next chapter, [Conforming systems](/docs/creating-information/conforming-systems/).
 
