@@ -8,16 +8,16 @@ lede: Data helps organisations see themselves.
 
 ## Data and organisational self-understanding
 
-Data helps organisations perceive reality. This includes the reality of the environment in which they operate, but also the reality of the organisation itself.
+Data is a fragment of reality. This includes the reality of the environment in which they operate, but also the reality of the organisation itself.
 
-Understanding this matters not only for why data engineering is valued, but for how it is done in practice. The veteran data engineer instinctively works within the entanglement between data and organisation.
+This has implications for how data engineering work is done in practice. The veteran data engineer instinctively works within the entanglement between data and organisation.
 
 To understand this, it is useful to visualise an organisation as a feedback loop.
 
 
 ## The organisation agency cycle
 
-Data is a fragment of reality captured by process. This can be interpreted as a feedback loop around three components: business processes, digital systems, and captured data.  Business processes define digital systems. Digital systems collect data. That data, representing reality, then feeds back into business understanding, influencing future decisions and actions. This relationship is illustrated in Figure 1.
+The central premise "Data is a fragment of reality captured by process" can be interpreted as a feedback loop around three components: business processes, digital systems, and captured data. This relationship is illustrated in Figure 1.
 
 
 {{< svg >}}
@@ -111,22 +111,20 @@ Figure 1. Business intent defines business process, business process defines dig
 
 Like many cycles, an organisation's feedback loop can become vicious or virtuous. Business intent is the determinant. An organisation moving toward its intent is in a virtuous cycle; an organisation drifting away from its intent is in a vicious cycle.
 
-A key point of the cycle is that data is, for the most part, not passive “facts and figures” from the world. Data consists of records of the world the organisation is interacting with, and records of that interaction.
-
-The feedback loop is therefore a model of how an organisation exercises its goals in the world. It is an **agency cycle**.
+A key point of the cycle is that data is not passive “facts and figures” from the world. Data consists of records of the world the organisation is interacting with, and records of that interaction. The feedback loop is therefore a model of how an organisation exercises its goals in the world.
 
 The implication is that what the organisation does is shaped by what it sees, and what it sees is shaped by what it does. Data is the medium of this double movement.
 
-Consequently, data is one way an organisation perceives itself. Data engineering is not one capability among others. It is the capability through which other capabilities become visible.
+Consequently, data is central to an organisation's self-understanding. Data engineering is not one capability among others. It is the capability through which other capabilities become visible.
 
 
 ## Implications for data engineering
 
 There are two important implications for data engineering work.
 
-First, recorded data is not simply “what is in the system.” It is downstream of business processes and digital systems. The data engineer is always working inside this context, and this context shapes the scope and options for action.
+First, recorded data is not simply “what is in the system.” It is downstream of business processes and digital capture. The data engineer is always working inside this context, and this context shapes the scope and options for action within a project.
 
-Second, the data engineer’s work is not neutral. The output of data engineering is often the first time an organisation encounters the outcome of its own work in a stable form. For this reason, the output may be contested, especially when multiple business areas are involved. Interpretation becomes inseparable from the work: what is good, what is bad, what is reportable, what is not, which record is authoritative, and which definition should be canonical?
+Second, the data engineer’s work itself is not neutral. The output of data engineering is often the first time an organisation encounters the outcome of its own work in a stable form. For this reason, the output may be contested, especially when multiple business areas are involved. Interpretation becomes inseparable from the work: what is good, what is bad, what is reportable, what is not, which record is authoritative, and which definition should be canonical?
 
 Organisations do not simply use data. Data is also where meaning is negotiated.
 
