@@ -131,3 +131,35 @@ body,
     max-width: none;
   }
 }
+
+@media screen and (max-width: 72rem) {
+  .book-toc {
+    display: none;
+  }
+
+  .book-header {
+    display: block;
+  }
+
+  .book-header label[for="menu-control"] {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #toc-control {
+    display: inline;
+  }
+
+  #toc-control:checked ~ main {
+    .book-header aside {
+      display: block;
+    }
+  }
+}
+
+@media screen and (max-width: $mobile-breakpoint) {
+  .book-header label[for="menu-control"] {
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
