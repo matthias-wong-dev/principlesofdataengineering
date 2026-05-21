@@ -45,7 +45,7 @@ Translating business knowledge into precise rules allow for their automation and
 
 ## Defining analytical concepts
 
-Since business insight is information analysed in light of business interest, a direct way of improving data quality is to formulate this analysis as a defined concept. This concept becomes a lens through which the data is interpreted. It allows the business users to see the data in a way that is more expressive of business intent.
+Since business insight is information analysed in light of business intent, a direct way of improving data quality is to formulate this analysis as a defined concept. This concept becomes a lens through which the data is interpreted. It allows the business users to see the data in a way that is more expressive of business intent.
 
 ## Good and bad entities
 

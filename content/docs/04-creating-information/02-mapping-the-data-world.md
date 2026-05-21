@@ -7,7 +7,7 @@ weight: 2
 draft: true
 ---
 
-Business is not interested in data for data’s sake. It is interested in the business reality behind the data. From this perspective, data is not an end in itself. Its function is to bridge the business processes that collect the data and the business interest that seeks insight.
+Business is not interested in data for data’s sake. It is interested in the business reality behind the data. From this perspective, data is not an end in itself. Its function is to bridge the business processes that collect the data and the business intent that seeks insight.
 
 Consequently, the data engineer sees each data record as an intermediary of the business entity that generated it. A business entity can be a concrete object, such as a customer or a product. It can also be an abstract event, such as a business transaction.
 
@@ -48,10 +48,10 @@ It is helpful to divide business entities into two broad types: immutable and mu
 
 Immutable entities are those that do not change. If they do change, the change is treated as the creation of a different entity, and the latest version is considered the “correct” one. In other words, neither the entity nor its attributes evolve over time. Examples include a completed bank transfer or an importer lodging an import declaration into a country. If the import declaration is altered, it is regarded as a new entity. Products can also be treated as immutable. A new model of phone is considered a different product from the previous version.
 
-Mutable entities are those that may change over time while still being considered the same entity. A customer may change purchasing habits, or an employee in an HR system may update personal details or gain new qualifications. These changes are important but, according to business interest, still part of the same entity.
+Mutable entities are those that may change over time while still being considered the same entity. A customer may change purchasing habits, or an employee in an HR system may update personal details or gain new qualifications. These changes are important but, according to business intent, still part of the same entity.
 
 This distinction is helpful because most business processes are built with one of these perspectives in mind. A digital system may have sub-systems that manage both. For example, a sales system may record purchases as immutable entities, treat products themselves as immutable, but also register information about customers whose attributes and behaviour are mutable.
 
-One way to distinguish mutable from immutable entities is the presence of a datetime component in the primary key to indicate the validity period of the record. In warehousing terminology, such a record is a Type II record. The datetime signals that it is important to track changes to the entity’s attributes over time. This tracking may be implemented in the source system and maintained by business processes, or it may be absent and later added by a data engineer to meet business interest.
+One way to distinguish mutable from immutable entities is the presence of a datetime component in the primary key to indicate the validity period of the record. In warehousing terminology, such a record is a Type II record. The datetime signals that it is important to track changes to the entity’s attributes over time. This tracking may be implemented in the source system and maintained by business processes, or it may be absent and later added by a data engineer to meet business intent.
 
 The two major types of business entity, immutable and mutable, correspond to two major types of data engineering methods. These are entity processing and entity tracking.

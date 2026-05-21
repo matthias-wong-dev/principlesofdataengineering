@@ -7,13 +7,13 @@ weight: 1
 draft: true
 ---
 
-Insight is information analysed in the light of interest. However, the data engineer starts one step further back than information. Data engineering starts with data.
+Insight is information analysed in the light of intent. However, the data engineer starts one step further back than information. Data engineering starts with data.
 
 Data comes from Latin for “given.” Data is, therefore, what is given with no fixed interpretation, and thus not yet information. Starting with the late 1980s, business discovered that data can be mined as a valuable source of information. Over time, this gave rise to the discipline of data engineering. Data engineering is now one of the most privileged disciplines in the modern era because it is the prerequisite step to convert data to information and become the avenue to business insight.
 
-Data is collected by business processes. This collection can be seen as a projection of the business world into the data world of databases. This projection is often imperfect. First, it can be technically challenging and costly to accurately record business events. Moreover, the business processes making the data record may differ from the business interest of the analyst, for example when the source of data is not controlled by the business seeking to analyse it. The most important goal of a data engineer is to deal with these imperfections so that the data is ready for business interest.
+Data is collected by business processes. This collection can be seen as a projection of the business world into the data world of databases. This projection is often imperfect. First, it can be technically challenging and costly to accurately record business events. Moreover, the business processes making the data record may differ from the business intent of the analyst, for example when the source of data is not controlled by the business seeking to analyse it. The most important goal of a data engineer is to deal with these imperfections so that the data is ready for business intent.
 
-In this perspective, data engineering is the task of taking data projected by business processes and refashioning it into a shape required by business interest.
+In this perspective, data engineering is the task of taking data projected by business processes and refashioning it into a shape required by business intent.
 
 > [!NOTE]
 > **TODO**
@@ -26,7 +26,7 @@ How would the data engineer go about achieving this effectively? By the end of t
 
 ## Expressiveness
 
-Insight is information analysed in the light of interest. A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise the data in a way that makes sense for business decisions. This is the task of applying business interest to reshape data. When done successfully, the output is expressive of business interest. The first, and most important, principle of data engineering is therefore the search for expressiveness.
+Insight is information analysed in the light of intent. A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise the data in a way that makes sense for business decisions. This is the task of applying business intent to reshape data. When done successfully, the output is expressive of business intent. The first, and most important, principle of data engineering is therefore the search for expressiveness.
 
 Expressive entities refer to the idea that the tables and relationships created in the data warehouse should not merely reflect the data as it was found, but correspond strongly to real business processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is attempting to approximate. If a reasonably competent layperson cannot easily relate the model to the real world, then the model is not expressive. Correspondence to the world by the agent trying to influence it is therefore the final arbitrator of whether a data model is successful.
 
@@ -36,7 +36,7 @@ Expressiveness lies in everything, from the way the engineer designs tables, cho
 
 ## Fragment modelling
 
-The fluid nature of business insights means that the data engineer cannot know in advance what needs to be built. At a micro level, this applies to a single data engineering project. At a macro level, discovering business insights can be a journey of years over multiple teams. Moreover, in a large organisation different teams will want to see the same information in different ways to reflect specific business interests.
+The fluid nature of business insights means that the data engineer cannot know in advance what needs to be built. At a micro level, this applies to a single data engineering project. At a macro level, discovering business insights can be a journey of years over multiple teams. Moreover, in a large organisation different teams will want to see the same information in different ways to reflect specific business intents.
 
 These explain why the goal of a data engineer is to produce reusable blocks of information rather than focus solely on building complete data products. When the data engineer shifts focus from building complete products to creating blocks that can be reused for multiple products, this leads to a shift from seeing the warehouse as a repository of data models to seeing it as a fragment store of valuable information. A data engineering approach focused on creating a store of valuable fragments is fragment modelling.
 

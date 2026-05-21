@@ -9,7 +9,7 @@ draft: true
 
 Many refer to the principle of garbage-in, garbage-out. This principle is well known, but the challenge to the data engineer goes further. It is not only about avoiding poor inputs. It is about the need to proactively add information by reorganising the data or by annotating it with context to create a new, meaningful way of seeing the data that resonates with business decision-making.
 
-So far, the focus has been on achieving this through the creation of expressive entities, ensuring that each object in the model corresponds clearly to business interest. This chapter explores three additional approaches: defining the concept of “good” and “bad” entities, trading details for insights, and the use of storytelling dimensions.
+So far, the focus has been on achieving this through the creation of expressive entities, ensuring that each object in the model corresponds clearly to business intent. This chapter explores three additional approaches: defining the concept of “good” and “bad” entities, trading details for insights, and the use of storytelling dimensions.
 
 ## Good and bad entities
 
@@ -134,4 +134,4 @@ Arriving at the right story is only possible through visual checks. These checks
 
 In complex cases, more than one storytelling dimension may be necessary. For example, `Helpdesk.RefCaseEscalation` may tell the story of the work to escalate, but another `Helpdesk.RefCaseSla` may need to tell the story of whether the case was resolved within service-level agreement with a `[Is within SLA]` column.
 
-Storytelling dimensions are one of the most powerful tools in a data engineer’s toolkit. They allow the engineer to take a fresh look at the raw data and prioritise the perspective of business interest by capturing the journey of an entity in a way that aligns with how the business makes decisions. When done well, they become an effective bridge between data and business understanding.
+Storytelling dimensions are one of the most powerful tools in a data engineer’s toolkit. They allow the engineer to take a fresh look at the raw data and prioritise the perspective of business intent by capturing the journey of an entity in a way that aligns with how the business makes decisions. When done well, they become an effective bridge between data and business understanding.

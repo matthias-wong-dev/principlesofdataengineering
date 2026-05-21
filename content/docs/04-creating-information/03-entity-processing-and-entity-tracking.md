@@ -74,7 +74,7 @@ Reference tables are important because they are:
 
 The data engineer can use reference tables from source systems for inspiration, but should not be limited by them. Application reference tables are often designed to support system functionality, not business insight. There are several ways to add value and make reference data more expressive:
 
-- Rename incoming tables and columns to reflect business interest.
+- Rename incoming tables and columns to reflect business intent.
 - Combine fragmented application reference tables when that better clarifies the business concept.
 - Create new reference tables from scratch for analytical use.
 - Add default rows such as “Unknown product” where analytical use requires them.
@@ -142,7 +142,7 @@ The outputs of this pass are valuable building blocks. In business intelligence 
 
 ### Summary of the three passes
 
-When complete, the pipeline should create a reusable block of valuable information, expressed in a way that reflects business interest, supported by good metadata, and delivered through an efficient and robust pipeline. These blocks of information are immediately ready for different purposes, including self-service dimensional models and feature engineering.
+When complete, the pipeline should create a reusable block of valuable information, expressed in a way that reflects business intent, supported by good metadata, and delivered through an efficient and robust pipeline. These blocks of information are immediately ready for different purposes, including self-service dimensional models and feature engineering.
 
 ## Common problems
 
@@ -259,7 +259,7 @@ For example, joining `Bank.AccountTimeline` on the validity period to a distinct
 
 ## Building the pipeline to track behaviour
 
-The first and second passes apply the same techniques from entity processing onto behaviour records, such as audit results or records of an entity’s actions in business processes. These steps filter and structure the raw behavioural data into clean fragments, then compute reusable blocks of information that reflect business interest.
+The first and second passes apply the same techniques from entity processing onto behaviour records, such as audit results or records of an entity’s actions in business processes. These steps filter and structure the raw behavioural data into clean fragments, then compute reusable blocks of information that reflect business intent.
 
 The third pass is where the data engineer infers performance from behaviour. This is still the reduce step, as it involves aggregating detailed behavioural information into insights about the entity. The inference can be simple, such as identifying entities that failed an audit for the first time, or those that have failed three consecutive audits. It can also be complex, requiring statistical techniques such as time series analysis to detect changing trends.
 

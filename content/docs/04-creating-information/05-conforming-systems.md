@@ -121,7 +121,7 @@ This approach integrates the data cleanly without distorting the grain of either
 
 ## Finer-grained integration
 
-Sometimes, business interest demands integration at a finer level than conformed reference tables offer. For example, a company may want to understand how specific production batches relate to sales. However, the data may not capture this link directly.
+Sometimes, business intent demands integration at a finer level than conformed reference tables offer. For example, a company may want to understand how specific production batches relate to sales. However, the data may not capture this link directly.
 
 Suppose the business proposes a rule: cakes produced in a region are sold in the same region, in the same month, in the order they were produced. This logic is fuzzy because there may be multiple production batches per region per month.
 

@@ -153,7 +153,7 @@ This interminability of aim means that a data engineering project is likewise op
 
 The search for business insight is ambiguous.
 
-Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business interests---are we concerned about profit, cost, market share, or negative externalities?
+Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business intents---are we concerned about profit, cost, market share, or negative externalities?
 
 And partly it is because of the wide range of stakeholders who need to be engaged---senior executives and operational staff have valid but different concerns---yet the data engineer is expected to meet all interests.
 
@@ -198,13 +198,13 @@ Data is a fragment of reality.
 
 # Expressiveness and fragment modelling
 
-Insight is information analysed in the light of interest. However, the data engineer starts one step further back than information. Data engineering starts with data.
+Insight is information analysed in the light of intent. However, the data engineer starts one step further back than information. Data engineering starts with data.
 
 Data comes from Latin for "given." Data is, therefore, what is given with no fixed interpretation, and thus not yet information. Starting with the late 1980s, business discovered that data can be mined as a valuable source of information. Over time, this gave rise to the discipline of data engineering. Data engineering is now one of the most privileged disciplines in the modern era because it is the prerequisite step to convert data to information and become the avenue to business insight.
 
-Data is collected by business processes. This collection can be seen as a projection of the business world into the data world of databases. This projection is often imperfect. First, it can be technically challenging and costly to accurately record business events. Moreover, the business processes making the data record may differ from the business interest of the analyst, for example when the source of data is not controlled by the business seeking to analyse it. The most important goal of a data engineer is to deal with these imperfections so that the data is ready for business interest.
+Data is collected by business processes. This collection can be seen as a projection of the business world into the data world of databases. This projection is often imperfect. First, it can be technically challenging and costly to accurately record business events. Moreover, the business processes making the data record may differ from the business intent of the analyst, for example when the source of data is not controlled by the business seeking to analyse it. The most important goal of a data engineer is to deal with these imperfections so that the data is ready for business intent.
 
-In this perspective, data engineering is the task of taking data projected by business processes and refashioning it into a shape required by business interest.
+In this perspective, data engineering is the task of taking data projected by business processes and refashioning it into a shape required by business intent.
 
 > **TODO.**
 >
@@ -216,7 +216,7 @@ How would the data engineer go about achieving this effectively? By the end of t
 
 ## Expressiveness
 
-Insight is information analysed in the light of interest. A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise the data in a way that makes sense for business decisions. This is the task of applying business interest to reshape data. When done successfully, the output is expressive of business interest. The first, and most important, principle of data engineering is therefore the search for expressiveness.
+Insight is information analysed in the light of intent. A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise the data in a way that makes sense for business decisions. This is the task of applying business intent to reshape data. When done successfully, the output is expressive of business intent. The first, and most important, principle of data engineering is therefore the search for expressiveness.
 
 Expressive entities refer to the idea that the tables and relationships created in the data warehouse should not merely reflect the data as it was found, but correspond strongly to real business processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is attempting to approximate. If a reasonably competent layperson cannot easily relate the model to the real world, then the model is not expressive. Correspondence to the world by the agent trying to influence it is therefore the final arbitrator of whether a data model is successful.
 
@@ -226,7 +226,7 @@ Expressiveness lies in everything, from the way the engineer designs tables, cho
 
 ## Fragment modelling
 
-The fluid nature of business insights means that the data engineer cannot know in advance what needs to be built. At a micro level, this applies to a single data engineering project. At a macro level, discovering business insights can be a journey of years over multiple teams. Moreover, in a large organisation different teams will want to see the same information in different ways to reflect specific business interests.
+The fluid nature of business insights means that the data engineer cannot know in advance what needs to be built. At a micro level, this applies to a single data engineering project. At a macro level, discovering business insights can be a journey of years over multiple teams. Moreover, in a large organisation different teams will want to see the same information in different ways to reflect specific business intents.
 
 These explain why the goal of a data engineer is to produce reusable blocks of information rather than focus solely on building complete data products. When the data engineer shifts focus from building complete products to creating blocks that can be reused for multiple products, this leads to a shift from seeing the warehouse as a repository of data models to seeing it as a fragment store of valuable information. A data engineering approach focused on creating a store of valuable fragments is fragment modelling.
 
@@ -242,7 +242,7 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 
 # Mapping the data world
 
-Business is not interested in data for data's sake. It is interested in the business reality behind the data. From this perspective, data is not an end in itself. Its function is to bridge the business processes that collect the data and the business interest that seeks insight.
+Business is not interested in data for data's sake. It is interested in the business reality behind the data. From this perspective, data is not an end in itself. Its function is to bridge the business processes that collect the data and the business intent that seeks insight.
 
 Consequently, the data engineer sees each data record as an intermediary of the business entity that generated it. A business entity can be a concrete object, such as a customer or a product. It can also be an abstract event, such as a business transaction.
 
@@ -283,11 +283,11 @@ It is helpful to divide business entities into two broad types: immutable and mu
 
 Immutable entities are those that do not change. If they do change, the change is treated as the creation of a different entity, and the latest version is considered the "correct" one. In other words, neither the entity nor its attributes evolve over time. Examples include a completed bank transfer or an importer lodging an import declaration into a country. If the import declaration is altered, it is regarded as a new entity. Products can also be treated as immutable. A new model of phone is considered a different product from the previous version.
 
-Mutable entities are those that may change over time while still being considered the same entity. A customer may change purchasing habits, or an employee in an HR system may update personal details or gain new qualifications. These changes are important but, according to business interest, still part of the same entity.
+Mutable entities are those that may change over time while still being considered the same entity. A customer may change purchasing habits, or an employee in an HR system may update personal details or gain new qualifications. These changes are important but, according to business intent, still part of the same entity.
 
 This distinction is helpful because most business processes are built with one of these perspectives in mind. A digital system may have sub-systems that manage both. For example, a sales system may record purchases as immutable entities, treat products themselves as immutable, but also register information about customers whose attributes and behaviour are mutable.
 
-One way to distinguish mutable from immutable entities is the presence of a datetime component in the primary key to indicate the validity period of the record. In warehousing terminology, such a record is a Type II record. The datetime signals that it is important to track changes to the entity's attributes over time. This tracking may be implemented in the source system and maintained by business processes, or it may be absent and later added by a data engineer to meet business interest.
+One way to distinguish mutable from immutable entities is the presence of a datetime component in the primary key to indicate the validity period of the record. In warehousing terminology, such a record is a Type II record. The datetime signals that it is important to track changes to the entity's attributes over time. This tracking may be implemented in the source system and maintained by business processes, or it may be absent and later added by a data engineer to meet business intent.
 
 The two major types of business entity, immutable and mutable, correspond to two major types of data engineering methods. These are entity processing and entity tracking.
 
@@ -361,7 +361,7 @@ Reference tables are important because they are:
 
 The data engineer can use reference tables from source systems for inspiration, but should not be limited by them. Application reference tables are often designed to support system functionality, not business insight. There are several ways to add value and make reference data more expressive:
 
-- Rename incoming tables and columns to reflect business interest.
+- Rename incoming tables and columns to reflect business intent.
 - Combine fragmented application reference tables when that better clarifies the business concept.
 - Create new reference tables from scratch for analytical use.
 - Add default rows such as "Unknown product" where analytical use requires them.
@@ -429,7 +429,7 @@ The outputs of this pass are valuable building blocks. In business intelligence 
 
 ### Summary of the three passes
 
-When complete, the pipeline should create a reusable block of valuable information, expressed in a way that reflects business interest, supported by good metadata, and delivered through an efficient and robust pipeline. These blocks of information are immediately ready for different purposes, including self-service dimensional models and feature engineering.
+When complete, the pipeline should create a reusable block of valuable information, expressed in a way that reflects business intent, supported by good metadata, and delivered through an efficient and robust pipeline. These blocks of information are immediately ready for different purposes, including self-service dimensional models and feature engineering.
 
 ## Common problems
 
@@ -545,7 +545,7 @@ For example, joining `Bank.AccountTimeline` on the validity period to a distinct
 
 ## Building the pipeline to track behaviour
 
-The first and second passes apply the same techniques from entity processing onto behaviour records, such as audit results or records of an entity's actions in business processes. These steps filter and structure the raw behavioural data into clean fragments, then compute reusable blocks of information that reflect business interest.
+The first and second passes apply the same techniques from entity processing onto behaviour records, such as audit results or records of an entity's actions in business processes. These steps filter and structure the raw behavioural data into clean fragments, then compute reusable blocks of information that reflect business intent.
 
 The third pass is where the data engineer infers performance from behaviour. This is still the reduce step, as it involves aggregating detailed behavioural information into insights about the entity. The inference can be simple, such as identifying entities that failed an audit for the first time, or those that have failed three consecutive audits. It can also be complex, requiring statistical techniques such as time series analysis to detect changing trends.
 
@@ -779,7 +779,7 @@ This approach integrates the data cleanly without distorting the grain of either
 
 ## Finer-grained integration
 
-Sometimes, business interest demands integration at a finer level than conformed reference tables offer. For example, a company may want to understand how specific production batches relate to sales. However, the data may not capture this link directly.
+Sometimes, business intent demands integration at a finer level than conformed reference tables offer. For example, a company may want to understand how specific production batches relate to sales. However, the data may not capture this link directly.
 
 Suppose the business proposes a rule: cakes produced in a region are sold in the same region, in the same month, in the order they were produced. This logic is fuzzy because there may be multiple production batches per region per month.
 
@@ -800,7 +800,7 @@ Whether it is the vertical integration or the horizontal integration approach, t
 
 Many refer to the principle of garbage-in, garbage-out. This principle is well known, but the challenge to the data engineer goes further. It is not only about avoiding poor inputs. It is about the need to proactively add information by reorganising the data or by annotating it with context to create a new, meaningful way of seeing the data that resonates with business decision-making.
 
-So far, the focus has been on achieving this through the creation of expressive entities, ensuring that each object in the model corresponds clearly to business interest. This chapter explores three additional approaches: defining the concept of "good" and "bad" entities, trading details for insights, and the use of storytelling dimensions.
+So far, the focus has been on achieving this through the creation of expressive entities, ensuring that each object in the model corresponds clearly to business intent. This chapter explores three additional approaches: defining the concept of "good" and "bad" entities, trading details for insights, and the use of storytelling dimensions.
 
 ## Good and bad entities
 
@@ -924,7 +924,7 @@ Arriving at the right story is only possible through visual checks. These checks
 
 In complex cases, more than one storytelling dimension may be necessary. For example, `Helpdesk.RefCaseEscalation` may tell the story of the work to escalate, but another `Helpdesk.RefCaseSla` may need to tell the story of whether the case was resolved within service-level agreement with a `[Is within SLA]` column.
 
-Storytelling dimensions are one of the most powerful tools in a data engineer's toolkit. They allow the engineer to take a fresh look at the raw data and prioritise the perspective of business interest by capturing the journey of an entity in a way that aligns with how the business makes decisions. When done well, they become an effective bridge between data and business understanding.
+Storytelling dimensions are one of the most powerful tools in a data engineer's toolkit. They allow the engineer to take a fresh look at the raw data and prioritise the perspective of business intent by capturing the journey of an entity in a way that aligns with how the business makes decisions. When done well, they become an effective bridge between data and business understanding.
 
 \newpage
 
@@ -1100,7 +1100,7 @@ number of journeys. This provides the best possible high-level portal for users 
 
 ## Facts and measures
 
-Power BI is designed such that the primary way of interacting with the data is through dimensions and measures rather than facts. This is explained in greater depth in Filtering behaviour. For now, it suffices to note that an indicator of a good Power BI dimensional model is a reduced prominence of the fact tables. In the ideal case, all fact tables are hidden from the user. A related indicator is the absence of, or at least limited use of, degenerate dimensions in fact tables. A proliferation of degenerate dimensions suggests the model is working against the inherent nature of Power BI to propagate filters. It also indicates that certain business information are left as miscellaneous attributes of the business processes instead of being articulated as standalone properties that deserves a dimension table. Measures play a more prominent role that corresponds to the diminished role of fact tables. An indicator of a good dimensional model is one that invests heavily in measures. A rough rule-of-thumb is that each fact table, representing a business process, should have at least ten measures. This simply reflects that there are usually at least ten metrics to understand a business process. For instance, a process such as sales would have measures for sales volume, turnaround time, profit, and cost. If a model has implemented the concept of "good" and "bad", this leads to sub-measures for individual categories. In addition, there will be measures for percentages and other derivatives. This rapidly adds up to more than ten. If a user can easily grab-and-go to use measures with minimal effort to arrive at desired answers, then it is an indicator of a good model. It shows that the data engineer has thought deeply about the business processes and is able to put the necessary information at the user's fingertips. Conversely, the of lack ready-to-use measures mean that the data engineer has not sufficiently engaged with the business interest of the user. When there are many measures in a model, it can become unwieldy. Good measure management places all measures into a single table at the top of the field list. A suitable name for this table is simply Measure. Power BI promotes this behaviour. If all
+Power BI is designed such that the primary way of interacting with the data is through dimensions and measures rather than facts. This is explained in greater depth in Filtering behaviour. For now, it suffices to note that an indicator of a good Power BI dimensional model is a reduced prominence of the fact tables. In the ideal case, all fact tables are hidden from the user. A related indicator is the absence of, or at least limited use of, degenerate dimensions in fact tables. A proliferation of degenerate dimensions suggests the model is working against the inherent nature of Power BI to propagate filters. It also indicates that certain business information are left as miscellaneous attributes of the business processes instead of being articulated as standalone properties that deserves a dimension table. Measures play a more prominent role that corresponds to the diminished role of fact tables. An indicator of a good dimensional model is one that invests heavily in measures. A rough rule-of-thumb is that each fact table, representing a business process, should have at least ten measures. This simply reflects that there are usually at least ten metrics to understand a business process. For instance, a process such as sales would have measures for sales volume, turnaround time, profit, and cost. If a model has implemented the concept of "good" and "bad", this leads to sub-measures for individual categories. In addition, there will be measures for percentages and other derivatives. This rapidly adds up to more than ten. If a user can easily grab-and-go to use measures with minimal effort to arrive at desired answers, then it is an indicator of a good model. It shows that the data engineer has thought deeply about the business processes and is able to put the necessary information at the user's fingertips. Conversely, the of lack ready-to-use measures mean that the data engineer has not sufficiently engaged with the business intent of the user. When there are many measures in a model, it can become unwieldy. Good measure management places all measures into a single table at the top of the field list. A suitable name for this table is simply Measure. Power BI promotes this behaviour. If all
 
 columns in a table are hidden and it contains at least one measure, Power BI places this table at the top. This indicates a model that elevates measures to first-class. The measures in the measure table should be organised by display folders. By default, folders should be grouped by business process. For example, a business system with the processes Manufacture, Order, and Shipping can have at least three folders: "Manufacture", "Order", and "Shipping." > [!NOTE]
 > TODO: Insert manuscript screenshot or diagram from the source draft. The prominence of measures, their business-centricity, and their organisation through business processes are strong contributors to the look and feel of a good data model.
@@ -1847,7 +1847,7 @@ Database keys include primary keys, foreign keys, and unique keys. They, too, ar
 
 Data without metadata is data without context. Consequently, the primary purpose of metadata is not governance, tagging, discoverability, or data exchange. These are all important, but they are secondary effects.
 
-Instead, metadata should be seen in the context of the data engineer's task is to shape data in light of business interest. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business realities. Without this context, interpretation is left to the user who must fill in the gap by guesswork. When the user must guess, the data engineer has failed to shape the data to meet business interest. Quality metadata is not difficult to do. It comes naturally with the habit of looking at the product from the user's perspective, and a taste for the satisfaction that comes from articulate writing. Finally, whether it be names, descriptions or keys, metadata should be stored and available as data. Instead of recording them in diagrams, specialist tools, or database constructs alone, they need to be available as tables. Treating metadata as data enhances the ability to distribute them, perform automation, or surface to appropriate tools using APIs. This maximises the impact of metadata. Large language models are also adept at reasoning with such structures and putting them to good use. Creating standalone names makes it easier for large language models to reason correctly on top of metadata.
+Instead, metadata should be seen in the context of the data engineer's task is to shape data in light of business intent. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business realities. Without this context, interpretation is left to the user who must fill in the gap by guesswork. When the user must guess, the data engineer has failed to shape the data to meet business intent. Quality metadata is not difficult to do. It comes naturally with the habit of looking at the product from the user's perspective, and a taste for the satisfaction that comes from articulate writing. Finally, whether it be names, descriptions or keys, metadata should be stored and available as data. Instead of recording them in diagrams, specialist tools, or database constructs alone, they need to be available as tables. Treating metadata as data enhances the ability to distribute them, perform automation, or surface to appropriate tools using APIs. This maximises the impact of metadata. Large language models are also adept at reasoning with such structures and putting them to good use. Creating standalone names makes it easier for large language models to reason correctly on top of metadata.
 
 \newpage
 
@@ -1891,7 +1891,7 @@ Translating business knowledge into precise rules allow for their automation and
 
 ## Defining analytical concepts
 
-Since business insight is information analysed in light of business interest, a direct way of improving data quality is to formulate this analysis as a defined concept. This concept becomes a lens through which the data is interpreted. It allows the business users to see the data in a way that is more expressive of business intent.
+Since business insight is information analysed in light of business intent, a direct way of improving data quality is to formulate this analysis as a defined concept. This concept becomes a lens through which the data is interpreted. It allows the business users to see the data in a way that is more expressive of business intent.
 
 ## Good and bad entities
 

@@ -46,7 +46,7 @@ This interminability of aim means that a data engineering project is likewise op
 
 The search for business insight is ambiguous. 
 
-Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business interests—are we concerned about profit, cost, market share, or negative externalities? 
+Quite often, when stakeholders begin a data engineering project, they do not know what business insights they are after. Partly this is because business areas first need to discover the information before they know what questions to ask. Partly it is due to the wide-ranging and sometimes conflicting business intents—are we concerned about profit, cost, market share, or negative externalities? 
 
 And partly it is because of the wide range of stakeholders who need to be engaged—senior executives and operational staff have valid but different concerns—yet the data engineer is expected to meet all interests. 
 
