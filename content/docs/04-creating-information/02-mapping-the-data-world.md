@@ -85,6 +85,21 @@ In warehousing terminology, such a record is a Type II record. The datetime sign
 
 The two major types of business entity, immutable and mutable, correspond to two major types of data engineering methods: **entity processing** and **entity tracking**.
 
+The distinction between immutable and mutable entities shapes the overall approach for the downstream pipeline. 
+
+|  | Immutable entities | Mutable entities |
+|---|---|---|
+| Basic question | What happened? | What changed? |
+| Entity behaviour | Treated as fixed once created | Changes over time while remaining the same entity |
+| Typical examples | Sales orders, bank transfers, import declarations | Customers, employees, suppliers, accounts |
+| Data engineering method | Entity processing | Entity tracking |
+| Usual pipeline focus | Process the entity through business logic | Track attributes, behaviour, and state over time |
+| Common output | Aggregated information at the entity grain | Timelines, histories, and end-of-period snapshots |
+
+
+This the subject of the next two chapters.
+
+
 > [!NOTE]
 > **Key ideas**
 >
