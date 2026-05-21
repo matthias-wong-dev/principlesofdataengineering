@@ -126,6 +126,13 @@ body,
   background: transparent;
 }
 
+.markdown > svg {
+  display: block;
+  width: 100%;
+  max-width: 42rem;
+  height: auto;
+}
+
 .markdown blockquote {
   border-inline-start-color: #6b7f99;
   background: rgba(107, 127, 153, 0.08);
