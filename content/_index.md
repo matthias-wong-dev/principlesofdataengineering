@@ -34,9 +34,9 @@ Data representations that stop organisations from guessing.
 
 ## Start here
 
-- Begin with [What is data engineering?](../docs/03-foundations/01-what-is-data-engineering/)
-- What is data?
-- How does data operate in an organisation?
+- [What is data engineering?](../docs/03-foundations/01-what-is-data-engineering/)
+- [What is data?](../docs/03-foundations/02-what-is-data/)
+- [Data and organisations](../docs/03-foundations/03-data-and-organisations/)
 
 ## How to read this site
 
