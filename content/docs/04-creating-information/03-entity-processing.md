@@ -169,6 +169,126 @@ When complete, the pipeline should create a reusable block of valuable informati
 
 These blocks of information are immediately ready for different purposes, including self-service dimensional models and feature engineering.
 
+An overview of the three passes and examples is summarised in Figure 1.
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
+     style="background:#ffffff" role="img"
+     aria-label="Three passes of entity processing with purpose and example artefacts">
+
+  <defs>
+    <marker id="arrowhead-entity-processing" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- Filter -->
+  <rect x="45" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="190" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Filter</text>
+
+  <text x="190" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">remove noise</text>
+  <text x="190" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">establish keys</text>
+  <text x="190" y="158" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">define reference tables</text>
+
+  <line x1="75" y1="180" x2="305" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="190" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">Sales</text>
+  <text x="190" y="228" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">SalesItem</text>
+  <text x="190" y="249" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">ItemSupplierCost · RefProduct</text>
+
+  <!-- Map -->
+  <rect x="395" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="540" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Map</text>
+
+  <text x="540" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">compute reusable</text>
+  <text x="540" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">business meaning</text>
+  <text x="540" y="158" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">isolate complex logic</text>
+
+  <line x1="425" y1="180" x2="655" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="540" y="217" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">SalesItemMargin</text>
+  <text x="540" y="239" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">RefSalesItemMargin</text>
+
+  <!-- Reduce -->
+  <rect x="745" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="890" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Reduce</text>
+
+  <text x="890" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">aggregate detail</text>
+  <text x="890" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">to entity grain</text>
+  <text x="890" y="158" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">produce usable outputs</text>
+
+  <line x1="775" y1="180" x2="1005" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="890" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">SalesProfit</text>
+  <text x="890" y="228" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">RefSalesProfit</text>
+  <text x="890" y="249" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">SalesProcessMilestone</text>
+
+  <!-- Arrows -->
+  <line x1="350" y1="162" x2="375" y2="162"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-entity-processing)"/>
+
+  <line x1="700" y1="162" x2="725" y2="162"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-entity-processing)"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="text-align: center; font-size: 0.95rem; color: #666; margin-top: 0.5rem;">
+Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.
+</div>
+
 ## Common problems
 
 New data engineers benefit from being aware of common mistakes in entity processing.
