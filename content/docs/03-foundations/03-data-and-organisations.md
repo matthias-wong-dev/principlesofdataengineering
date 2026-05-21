@@ -111,20 +111,33 @@ Figure 1. Business intent defines business process, business process defines dig
 
 Like many cycles, an organisation's feedback loop can become vicious or virtuous. Business intent is the determinant. An organisation moving toward its intent is in a virtuous cycle; an organisation drifting away from its intent is in a vicious cycle.
 
+A key point of the cycle is that data is, for the most part, not passive “facts and figures” from the world. Data consists of records of the world the organisation is interacting with, and records of that interaction.
+
 The feedback loop is therefore a model of how an organisation exercises its goals in the world. It is an **agency cycle**.
 
-The agency cycle also shows both the work and the organisational influence of the data engineer.
-
-It shows the work because the data engineer reshapes imperfectly captured data in light of intent, so it can feed back into business understanding. It shows the influence because this feedback determines what the organisation can see about itself.
+The implication is that what the organisation does is shaped by what it sees, and what it sees is shaped by what it does. Data is the medium of this double movement.
 
 Consequently, data is one way an organisation perceives itself. Data engineering is not one capability among others. It is the capability through which other capabilities become visible.
+
+
+## Implications for data engineering
+
+There are two important implications for data engineering work.
+
+First, recorded data is not simply “what is in the system.” It is downstream of business processes and digital systems. The data engineer is always working inside this context, and this context shapes the scope and options for action.
+
+Second, the data engineer’s work is not neutral. The output of data engineering is often the first time an organisation encounters the outcome of its own work in a stable form. For this reason, the output may be contested, especially when multiple business areas are involved. Interpretation becomes inseparable from the work: what is good, what is bad, what is reportable, what is not, which record is authoritative, and which definition should be canonical?
+
+Organisations do not simply use data. Data is also where meaning is negotiated.
+
+The data engineer cannot stand outside this negotiation. The engineer can help the organisation navigate meaning with expertise, defer to consensus without judgement, or allow the work to fail because meaning was never clear.
+
+The agency cycle therefore shows why no part of data work is neutral. The business process that defines the digital system is not neutral. The digital capture is not neutral. Most importantly, the data engineer’s work to create feedback is not neutral. All are evaluated by intent. This is why data engineering reshapes data in light of intent.
 
 
 > [!NOTE]
 > **Key ideas**
 >
-> Data is a fragment of reality captured by process.
+> What the organisation does is shaped by what it sees; what it sees is shaped by what it does. Data is the medium of this loop.
 >
-> At scale, data is the means by which reality remains visible.
->
-> Data engineering shapes the feedback through which organisations understand themselves.
+> Organisations do not simply use data; data is also where meaning is negotiated.
