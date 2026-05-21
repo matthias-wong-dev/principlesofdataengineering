@@ -108,6 +108,24 @@ body,
   max-width: 42rem;
 }
 
+.markdown > table {
+  width: 100%;
+  max-width: 42rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  background: transparent;
+}
+
+.markdown > table tr th,
+.markdown > table tr td {
+  padding: 0.45rem 0.6rem;
+  background: transparent;
+}
+
+.markdown > table tr:nth-child(2n) {
+  background: transparent;
+}
+
 .markdown blockquote {
   border-inline-start-color: #6b7f99;
   background: rgba(107, 127, 153, 0.08);
