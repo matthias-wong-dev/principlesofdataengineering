@@ -142,6 +142,37 @@ body,
   height: auto;
 }
 
+.markdown .book-codeblock-with-toggle {
+  max-width: 42rem;
+}
+
+.markdown .book-codeblock-wrap-toggle {
+  display: block;
+  margin: 1rem 0 -0.5rem auto;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid rgba(58, 95, 133, 0.2);
+  border-radius: var(--border-radius);
+  background: #eef3f8;
+  color: #3a5f85;
+  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.markdown .book-codeblock-wrap-toggle:hover {
+  background: #dbe4ee;
+}
+
+.markdown .book-codeblock-with-toggle.is-wrapped pre {
+  white-space: pre-wrap;
+}
+
+.markdown .book-codeblock-with-toggle.is-wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .markdown blockquote {
   border-inline-start-color: #6b7f99;
   background: rgba(107, 127, 153, 0.08);
