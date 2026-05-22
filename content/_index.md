@@ -22,6 +22,16 @@ That premise challenges how organisations have understood data until now. Data e
 
 The role of the data engineer is therefore not just to transform data, but to make reality legible to business.
 
+The book is organised around five principles:
+
+1. **Expressive entities**—make data recognisably correspond to the business world.
+2. **Meaningful fragments**—build reusable blocks of information instead of giant tables.
+3. **Anticipate errors**—design for the failures that real systems produce.
+4. **Build momentum**—guide attention so the work keeps moving toward insight.
+5. **Diagnose root causes**—go beyond symptoms to the conditions that produce them.
+
+The approach taught in this book is **fragment modelling**: the discipline of building expressive, reusable blocks of information from imperfect operational data.
+
 This book is written from deep delivery experience and focuses on the patterns that survive real systems: expressive entities, meaningful fragments, reusable information, robust pipelines, dimensional models, and long-term maintainability.
 
 It is for data engineers, organisational leaders, and business stakeholders who want data systems that do more than run.
@@ -51,8 +61,7 @@ The six sections are loosely independent and can be read on their own:
 - Efficient & stable pipeline
 - Beyond techniques
 
-It could also be searched for specific topics such as dimensional modelling, or incremental processing after the reader gains an overview of the book through scanning the table of contents.
-
+It can also be searched for specific topics such as dimensional modelling or incremental processing after the reader gains an overview of the book through scanning the table of contents.
 
 Once the web edition is complete, a full-length PDF will also be made available.
 
