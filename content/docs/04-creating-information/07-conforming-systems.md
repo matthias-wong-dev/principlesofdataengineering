@@ -288,7 +288,7 @@ The overall workflow would look like:
 </svg>
 {{< /svg >}}
 
-<div style="max-width:42rem;margin:0.5rem auto 0 auto;text-align:center;font-size:0.95rem;color:#666;">
+<div style="max-width:42rem;margin:0.5rem;text-align:center;font-size:0.95rem;color:#666;">
 Figure 1. Vertical integration. Local systems are modelled separately, mapped to conformed references, and then integrated into a unified transaction table.
 </div>
 
