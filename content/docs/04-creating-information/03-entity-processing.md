@@ -66,6 +66,7 @@ In versioning, a typical application might use `[Sales ID]` and `[Previous sales
 In header-detail structures, detail rows are often stored as simple lists. For example, a `[Sales ID]` may be associated with multiple `[Sales item ID]` entries. Introducing `[Sales item sequence number]` can clarify the relationship between the order and its line items.
 
 Keys do not need to be enforced as physical constraints. They can be stored in metadata tables. What matters is that they communicate meaning and can be looked up by consumers of the data.
+
 #### Defining reference tables
 
 Reference tables are small, slow-moving, descriptive tables that describe the content of larger, fast-moving transaction tables.
@@ -104,6 +105,24 @@ Filtering is not only for efficiency. It removes noise and improves clarity for 
 Transactional inconsistency is an important case. During batch extraction, inconsistency can arise within the batch. Depending on business use, early records may need to be filtered out until the next batch, provided the next extraction picks up the skipped records.
 
 The transaction table should be as narrow as possible. Pass as much descriptive information as possible to reference tables.
+
+**Example extracted tables**
+
+`SalesItem`
+
+| Sales ID | Item ID | Quantity | Sale value |
+|---|---|---:|---:|
+| 1001 | A | 2 | 40 |
+| 1001 | B | 1 | 20 |
+| 1002 | A | 3 | 60 |
+
+`ItemSupplierCost`
+
+| Item ID | Supplier cost |
+|---|---:|
+| A | 12 |
+| B | 15 |
+
 
 When these steps are applied, the data engineer will have:
 
@@ -148,6 +167,15 @@ The full set of tables would look like this.
 
 - `SalesItemMargin`—profitability of each sales item after accounting for sale value, refunds, and costs.
 
+**Example structure of `SalesItemMargin`**
+
+| Sales ID | Item ID | Sale value | Supplier cost | Margin |
+|---|---|---:|---:|---:|
+| 1001 | A | 40 | 24 | 16 |
+| 1001 | B | 20 | 15 | 5 |
+| 1002 | A | 60 | 36 | 24 |
+
+
 ### Third pass—Reduce
 
 The third pass focuses on aggregation.
@@ -161,6 +189,21 @@ Continuing the earlier example, suppose the first pass produced `Sales`, `SalesI
 In the third pass, this information can be aggregated to the sales level to produce `SalesProfit`. This table combines the total margin from all items in the sale, applies any additional business rules, and arrives at a final profit figure for the sale. A reference table, `RefSalesProfit`, can include a binary flag indicating whether the sale was profitable.
 
 This pass is also where the data engineer computes when an entity reaches specific milestones. A sales order may have milestones for placement, confirmation, shipment, and completion. These dates can be recorded in `SalesProcessMilestone`.
+
+
+**Example structure of `SalesProfit`**
+
+| Sales ID | Total margin | Is profitable |
+|---|---:|---|
+| 1001 | 21 | true |
+| 1002 | 24 | true |
+
+**Example structure of `SalesProcessMilestone`**
+
+| Sales ID | Placed date | Confirmed date | Shipped date | Completed date | Is meeting SLA |
+|---|---|---|---|---|---|
+| 1001 | 2023-01-03 | 2023-01-04 | 2023-01-06 | 2023-01-09 | true |
+| 1002 | 2023-01-05 | 2023-01-06 | 2023-01-08 | 2023-01-15 | false |
 
 The outputs of this pass are valuable building blocks.
 
@@ -215,7 +258,10 @@ An overview of the three passes and examples is summarised in Figure 1.
         font-size="13" fill="#333333">SalesItem</text>
   <text x="190" y="249" text-anchor="middle"
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">ItemSupplierCost · RefProduct</text>
+        font-size="13" fill="#333333">ItemSupplierCost</text>
+  <text x="190" y="270" text-anchor="middle"
+      font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+      font-size="13" fill="#333333">SalesItemRefund · RefProduct</text>        
 
   <!-- Map -->
   <rect x="395" y="45" width="290" height="235" rx="16"
