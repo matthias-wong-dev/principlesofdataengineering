@@ -18,7 +18,7 @@ It is underpinned by a central premise:
 
 > Data is a fragment of reality.
 
-That premise challenges how organisations have understood data until now. Data engineering is not merely the movement of records from one system to another. It is the discipline of reconstructing business reality from partial, imperfect operational traces.
+That premise challenges how organisations have understood data. Data engineering is not merely the movement of records from one system to another. It is the discipline of reconstructing business reality from partial, imperfect operational traces.
 
 The role of the data engineer is therefore not just to transform data, but to make reality legible to business.
 
