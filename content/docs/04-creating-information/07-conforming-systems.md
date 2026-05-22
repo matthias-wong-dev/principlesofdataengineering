@@ -178,9 +178,9 @@ In practice, simplifications may be appropriate. The decision to simplify should
 The overall workflow would look like:
 
 {{< svg >}}
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="560" viewBox="0 0 1080 560"
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620"
      style="background:#ffffff" role="img"
-     aria-label="Vertical integration flow from local systems to conformed references and integrated transactions">
+     aria-label="Vertical integration flow from local systems to conformed references and conformed transactions">
 
   <defs>
     <marker id="arrowhead-vertical-integration" markerWidth="10" markerHeight="8"
@@ -189,101 +189,65 @@ The overall workflow would look like:
     </marker>
   </defs>
 
-  <!-- CakeV1 -->
-  <rect x="120" y="50" width="280" height="95" rx="16"
+  <!-- Local systems -->
+  <rect x="100" y="50" width="280" height="95" rx="16"
         fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="260" y="88" text-anchor="middle"
+  <text x="240" y="88" text-anchor="middle"
         font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="23" font-weight="700" fill="#111111">
-    CakeV1
-  </text>
-
-  <text x="260" y="118" text-anchor="middle"
+        font-size="23" font-weight="700" fill="#111111">CakeV1</text>
+  <text x="240" y="118" text-anchor="middle"
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">
-    CakeV1.Sales · CakeV1.RefStatus
-  </text>
+        font-size="13" fill="#333333">CakeV1.Sales · CakeV1.RefStatus</text>
 
-  <!-- CakeV2 -->
-  <rect x="680" y="50" width="280" height="95" rx="16"
+  <rect x="700" y="50" width="280" height="95" rx="16"
         fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="820" y="88" text-anchor="middle"
+  <text x="840" y="88" text-anchor="middle"
         font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="23" font-weight="700" fill="#111111">
-    CakeV2
-  </text>
-
-  <text x="820" y="118" text-anchor="middle"
+        font-size="23" font-weight="700" fill="#111111">CakeV2</text>
+  <text x="840" y="118" text-anchor="middle"
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">
-    CakeV2.Sales · CakeV2.RefStatus
-  </text>
+        font-size="13" fill="#333333">CakeV2.Sales · CakeV2.RefStatus</text>
+
+  <!-- Cake warehouse boundary -->
+  <rect x="305" y="220" width="470" height="335" rx="22"
+        fill="#ffffff" stroke="#999999" stroke-width="1.6" stroke-dasharray="7 6"/>
+
+  <text x="540" y="255" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="22" font-weight="700" fill="#333333">Cake</text>
 
   <!-- Conformed references -->
-  <rect x="365" y="250" width="350" height="105" rx="16"
+  <rect x="365" y="285" width="350" height="105" rx="16"
         fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="540" y="290" text-anchor="middle"
+  <text x="540" y="325" text-anchor="middle"
         font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="23" font-weight="700" fill="#111111">
-    Conformed references
-  </text>
-
-  <text x="540" y="320" text-anchor="middle"
+        font-size="23" font-weight="700" fill="#111111">Conformed references</text>
+  <text x="540" y="355" text-anchor="middle"
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">
-    Cake.RefStatus · Cake.RefCampaign
-  </text>
+        font-size="13" fill="#333333">Cake.RefStatus · Cake.RefCampaign</text>
 
-  <!-- Integrated transaction -->
-  <rect x="365" y="450" width="350" height="75" rx="16"
+  <!-- Conformed transactions -->
+  <rect x="365" y="455" width="350" height="75" rx="16"
         fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="540" y="482" text-anchor="middle"
+  <text x="540" y="487" text-anchor="middle"
         font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="23" font-weight="700" fill="#111111">
-    Cake.Sales
-  </text>
-
-  <text x="540" y="508" text-anchor="middle"
+        font-size="23" font-weight="700" fill="#111111">Conformed transactions</text>
+  <text x="540" y="513" text-anchor="middle"
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">
-    CakeV1.Sales ∪ CakeV2.Sales
-  </text>
+        font-size="13" fill="#333333">Cake.Sales = CakeV1.Sales ∪ CakeV2.Sales</text>
 
   <!-- Arrows -->
-  <line x1="260" y1="145" x2="455" y2="250"
+  <line x1="240" y1="145" x2="455" y2="285"
         stroke="#222222" stroke-width="2.1"
         marker-end="url(#arrowhead-vertical-integration)"/>
 
-  <line x1="820" y1="145" x2="625" y2="250"
+  <line x1="840" y1="145" x2="625" y2="285"
         stroke="#222222" stroke-width="2.1"
         marker-end="url(#arrowhead-vertical-integration)"/>
 
-  <line x1="540" y1="355" x2="540" y2="450"
+  <line x1="540" y1="390" x2="540" y2="455"
         stroke="#222222" stroke-width="2.1"
         marker-end="url(#arrowhead-vertical-integration)"/>
-
-  <!-- Labels moved off arrows -->
-  <text x="300" y="215" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="13" fill="#666666">
-    map local meaning
-  </text>
-
-  <text x="780" y="215" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="13" fill="#666666">
-    map local meaning
-  </text>
-
-  <text x="610" y="405" text-anchor="start"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="13" fill="#666666">
-    integrate transactions
-  </text>
 
 </svg>
 {{< /svg >}}
