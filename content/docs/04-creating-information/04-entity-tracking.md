@@ -189,6 +189,128 @@ With this table, a consumer should not need to recalculate balances or scan tran
 
 At an advanced level, behavioural fragments can themselves become Type II attributes. For example, once `Bank.AccountValue` identifies whether an account is a millionaire at each period, the data engineer can convert that repeated period-level result into a history of millionaire status over time.
 
+### Summary of the three passes
+
+When complete, the pipeline produces reusable tracking blocks: expressive business entities, clear management of time, in computationally compact form.
+
+These blocks are ready for downstream use where users can access information without struggling with error-prone process of writing time-based queries.
+
+An overview of the three passes and examples is summarised in Figure 1.
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
+     style="background:#ffffff" role="img"
+     aria-label="Three passes of entity tracking with purpose and example artefacts">
+
+  <defs>
+    <marker id="arrowhead-entity-tracking" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- Filter -->
+  <rect x="45" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="190" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Filter</text>
+
+<text x="190" y="116" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">normalise validity periods</text>
+<text x="190" y="137" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">compress change history</text>
+
+  <line x1="75" y1="180" x2="305" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="190" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountTypeHistory</text>
+  <text x="190" y="228" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountLevelHistory</text>
+  <text x="190" y="249" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountStatusHistory</text>
+  <text x="190" y="270" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">BankTransaction</text>
+
+  <!-- Map -->
+  <rect x="395" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="540" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Map</text>
+
+  <text x="540" y="116" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">build timelines of</text>
+  <text x="540" y="137" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">overlapping windows</text> 
+
+  <line x1="425" y1="180" x2="655" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="540" y="217" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountTimeline</text>
+  <text x="540" y="239" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountTransactionSummary</text>
+
+  <!-- Reduce -->
+  <rect x="745" y="45" width="290" height="235" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="890" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Reduce</text>
+
+  <text x="890" y="116" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">create end-of-period snapshots</text>
+  <text x="890" y="137" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">aggregate entity behaviour</text>
+  <text x="890" y="158" text-anchor="middle"
+      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+      font-size="14" fill="#555555">to entity signal</text>
+
+  <line x1="775" y1="180" x2="1005" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="890" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountEndOfMonth</text>
+  <text x="890" y="228" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">AccountValue</text>
+  <text x="890" y="249" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">RefAccountValue</text>
+
+  <!-- Arrows -->
+  <line x1="350" y1="162" x2="375" y2="162"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-entity-tracking)"/>
+
+  <line x1="700" y1="162" x2="725" y2="162"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-entity-tracking)"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="text-align: center; font-size: 0.95rem; color: #666; margin-top: 0.5rem;">
+Figure 1. The three passes of entity tracking, showing both the purpose of each pass and example artefacts produced in a bank account pipeline.
+</div>
 
 ## Common problems
 
