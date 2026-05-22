@@ -65,7 +65,7 @@ A sales process may appear noisy when analysed by individual city but reveal a c
 
 During development, business stakeholders will often ask for the nth detail. This is understandable, but it can obscure an essential perspective. The problem becomes acute in fast-paced projects where teams tick off requirements and move on. The data engineer must proactively compensate for this tendency. Aggregation should be built into the work plan from the outset.
 
-The data engineer has three common ways of doing trading details for insights:
+The data engineer has three common ways of trading details for insights:
 
 - Creating categories
 - Pivoting combinations
@@ -89,6 +89,8 @@ A special case of this is the use of binary columns. Suppose a help desk workflo
 Creating a column such as `[Is escalated]`, defined as false for `Tier 1` and true for `Tier 2` and above, can be immediately useful for business users seeking to understand escalation behaviour.
 
 A further special case of binary columns is to link categories to good and bad. For example, an inspection is a common business process. The system records inspection results selected from a finite list.
+
+Binary columns also play an important role in filtering and creating measures, as will be discussed in following chapters.
 
 **Example structure of `Cake.RefInspectionResult`**
 
@@ -215,18 +217,18 @@ Continuing the help desk example:
 
 **Example structure of `Helpdesk.RefCaseEscalation`**
 
-| Case escalation ID | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Highest escalation | Escalation path | Escalation summary | Display order |
-|---:|---|---|---|---|---|---|---|---:|
-| 1 | true | false | false | false | Tier 1 | Not escalated | Closed without escalation | 1 |
-| 2 | true | true | false | false | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 | 2 |
-| 3 | true | true | true | false | Tier 3 | Progressive escalation | Closed after progressive escalation to Tier 3 | 3 |
-| 4 | true | true | true | true | Tier 4 | Progressive escalation | Closed after progressive escalation to Tier 4 | 4 |
-| 5 | false | true | false | false | Tier 2 | Direct escalation | Closed after direct escalation to Tier 2 | 5 |
-| 6 | false | false | true | false | Tier 3 | Direct escalation | Closed after direct escalation to Tier 3 | 6 |
-| 7 | false | false | false | true | Tier 4 | Direct escalation | Closed after direct escalation to Tier 4 | 7 |
-| 8 | true | false | true | false | Tier 3 | Escalated with skipped tier | Closed after escalation with skipped tier to Tier 3 | 8 |
-| ... | ... | ... | ... | ... | ... | ... | ... | ... |
-| 16 | false | false | false | false | Not applicable | Not applicable | Case still open | 99 |
+| Case escalation ID | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Is escalated | Highest escalation | Escalation path | Escalation summary | Display order |
+|---:|---|---|---|---|---|---|---|---|---:|
+| 1 | true | false | false | false | false | Tier 1 | Not escalated | Closed without escalation | 1 |
+| 2 | true | true | false | false | true | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 | 2 |
+| 3 | true | true | true | false | true | Tier 3 | Progressive escalation | Closed after progressive escalation to Tier 3 | 3 |
+| 4 | true | true | true | true | true | Tier 4 | Progressive escalation | Closed after progressive escalation to Tier 4 | 4 |
+| 5 | false | true | false | false | true | Tier 2 | Direct escalation | Closed after direct escalation to Tier 2 | 5 |
+| 6 | false | false | true | false | true | Tier 3 | Direct escalation | Closed after direct escalation to Tier 3 | 6 |
+| 7 | false | false | false | true | true | Tier 4 | Direct escalation | Closed after direct escalation to Tier 4 | 7 |
+| 8 | true | false | true | false | true | Tier 3 | Escalated with skipped tier | Closed after escalation with skipped tier to Tier 3 | 8 |
+| ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| 16 | false | false | false | false | false | Not applicable | Not applicable | Case still open | 99 |
 
 This single reference table contains several layers of interpretation:
 
@@ -292,6 +294,7 @@ select
     ,     cast([Tier 3].value as bit)            as [Tier 3]
     ,     cast([Tier 4].value as bit)            as [Tier 4]
 
+    ,     ...                                    as [Is escalated]
     ,     ...                                    as [Highest escalation]
     ,     ...                                    as [Escalation path]
     ,     ...                                    as [Escalation summary]
@@ -323,6 +326,17 @@ Once the storytelling dimension exists, the entity of interest can be mapped to 
 The calculation should be done at the grain of the entity of interest during the reduce stage of the pipeline, as described in the chapter on [Entity Processing](/docs/creating-information/entity-processing/).
 
 The calculation can be added to an existing aggregation table if appropriate or implemented as a new fragment. Continuing the help desk example, this would result in a `Helpdesk.CaseEscalation` table paired with `Helpdesk.RefCaseEscalation`.
+**Example result after joining to `Helpdesk.RefCaseEscalation`**
+
+| Case ID | Is escalated | Highest escalation | Escalation path | Escalation summary |
+|---|---|---|---|---|
+| H1001 | true | Tier 3 | Progressive escalation | Closed after progressive escalation to Tier 3 |
+| H1002 | false | Tier 1 | Not escalated | Closed without escalation |
+| H1003 | true | Tier 4 | Direct escalation | Closed after direct escalation to Tier 4 |
+| H1004 | true | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 |
+
+
+A table like this tells the business far more about the case than a simple list of escalation events ever could.
 
 ### Step 3—Visual check
 
