@@ -175,7 +175,7 @@ The relevant fragments—timelines and end-of-period tables— are discussed in 
 
 Business processes often do not record relationships at the grain required for analysis. 
 
-Sometimes this granularity is impractical because busienss processes do not operate in the neat way expected by the business.
+Sometimes this granularity is impractical because processes do not operate in the neat way expected by the business.
 
 Sometimes the recording is imperfect, such as through nearest temporal join. These relationships can be approximated using fuzzy logic.
 
