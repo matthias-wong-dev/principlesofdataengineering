@@ -203,6 +203,17 @@ If a mapping can be expressed directly and maintained safely, `Cake.CountryMap` 
 
 The full pattern exists because it scales well. Simpler systems can often adopt lighter variations without losing the underlying principle.
 
+## The discipline of separation
+
+The pattern is simple, but easy to damage in practice.
+
+Most mistakes come from collapsing distinctions that should remain separate: treating a source-system table as the warehouse reference, hard-coding mappings into reports, applying shared references too early, or merging mapping logic into the reference table itself.
+
+The pattern in this chapter has been tested in complex settings. It is the path of least regret.
+
+Above all, it is a discipline of separation, not a mechanical implementation recipe.
+
+
 > [!NOTE]
 > **Key ideas**
 >
