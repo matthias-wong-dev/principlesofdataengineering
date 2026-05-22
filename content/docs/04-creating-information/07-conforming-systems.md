@@ -126,6 +126,45 @@ If a column exists only in one system, the other system should be populated with
 
 During the union, the mapping tables translate system-specific codes to conformed references. This allows `Cake.Sales` to use shared meanings rather than system-specific values.
 
+Example SQL would be:
+
+```SQL
+select
+      v1.[Sales ID]
+    , v1.[Sales date]
+    , sm.[Status ID]        as [Status ID]
+    , -1                    as [Campaign ID]
+    , v1.[Sales value]
+    , 'CakeV1'              as [Source system]
+from      CakeV1.Sales      v1
+left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV1'
+                              and sm.[Source status code] = v1.[Status code]
+
+union all
+
+select
+      v2.[Sales ID]
+    , v2.[Sales date]
+    , sm.[Status ID]        as [Status ID]
+    , cm.[Campaign ID]      as [Campaign ID]
+    , v2.[Sales value]
+    , 'CakeV2'              as [Source system]
+from      CakeV2.Sales      v2
+left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV2'
+                              and sm.[Source status code] = v2.[Status code]
+left join Cake.CampaignMap  cm on  cm.[System]             = 'CakeV2'
+                              and cm.[Source campaign code] = v2.[Campaign code];
+```
+
+The union does not preserve the system-specific status codes. It replaces them with the conformed `[Status ID]`. `CakeV1` has no campaign, so it receives the default campaign key. The resulting `Cake.Sales` table is therefore not merely a stack of two source tables. It is a conformed sales table. A sample result is:
+
+| Sales ID | Sales date | Status ID | Campaign ID | Sales value | Source system |
+|---|---|---:|---:|---:|---|
+| 10001 | 2025-06-01 | 1 | -1 | 120.00 | CakeV1 |
+| 10002 | 2025-06-03 | 2 | -1 | 340.00 | CakeV1 |
+| 20001 | 2025-06-02 | 1 | 5 | 180.00 | CakeV2 |
+| 20002 | 2025-06-05 | 4 | 7 | 95.00 | CakeV2 |
+
 The final structure includes:
 
 - `Cake.Sales`—the unified transaction table
@@ -135,6 +174,123 @@ The final structure includes:
 
 The separation into three steps—modelling, reference building, and integration—allows each system to be developed independently, supports incremental delivery, and makes it easier to refactor or extend the model later.
 In practice, simplifications may be appropriate. The decision to simplify should be left to the data engineer, guided by expressiveness, fragment modelling, and the need to build a stable pipeline.
+
+The overall workflow would look like:
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="560" viewBox="0 0 1080 560"
+     style="background:#ffffff" role="img"
+     aria-label="Vertical integration flow from local systems to conformed references and integrated transactions">
+
+  <defs>
+    <marker id="arrowhead-vertical-integration" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- CakeV1 -->
+  <rect x="120" y="50" width="280" height="95" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="260" y="88" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="23" font-weight="700" fill="#111111">
+    CakeV1
+  </text>
+
+  <text x="260" y="118" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">
+    CakeV1.Sales · CakeV1.RefStatus
+  </text>
+
+  <!-- CakeV2 -->
+  <rect x="680" y="50" width="280" height="95" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="820" y="88" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="23" font-weight="700" fill="#111111">
+    CakeV2
+  </text>
+
+  <text x="820" y="118" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">
+    CakeV2.Sales · CakeV2.RefStatus
+  </text>
+
+  <!-- Conformed references -->
+  <rect x="365" y="250" width="350" height="105" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="540" y="290" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="23" font-weight="700" fill="#111111">
+    Conformed references
+  </text>
+
+  <text x="540" y="320" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">
+    Cake.RefStatus · Cake.RefCampaign
+  </text>
+
+  <!-- Integrated transaction -->
+  <rect x="365" y="450" width="350" height="75" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="540" y="482" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="23" font-weight="700" fill="#111111">
+    Cake.Sales
+  </text>
+
+  <text x="540" y="508" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">
+    CakeV1.Sales ∪ CakeV2.Sales
+  </text>
+
+  <!-- Arrows -->
+  <line x1="260" y1="145" x2="455" y2="250"
+        stroke="#222222" stroke-width="2.1"
+        marker-end="url(#arrowhead-vertical-integration)"/>
+
+  <line x1="820" y1="145" x2="625" y2="250"
+        stroke="#222222" stroke-width="2.1"
+        marker-end="url(#arrowhead-vertical-integration)"/>
+
+  <line x1="540" y1="355" x2="540" y2="450"
+        stroke="#222222" stroke-width="2.1"
+        marker-end="url(#arrowhead-vertical-integration)"/>
+
+  <!-- Labels moved off arrows -->
+  <text x="300" y="215" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#666666">
+    map local meaning
+  </text>
+
+  <text x="780" y="215" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#666666">
+    map local meaning
+  </text>
+
+  <text x="610" y="405" text-anchor="start"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#666666">
+    integrate transactions
+  </text>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:42rem;margin:0.5rem auto 0 auto;text-align:center;font-size:0.95rem;color:#666;">
+Figure 1. Vertical integration. Local systems are modelled separately, mapped to conformed references, and then integrated into a unified transaction table.
+</div>
 
 ## Horizontal integration
 
