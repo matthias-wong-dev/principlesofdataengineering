@@ -262,12 +262,16 @@ The same combination can also support `[Escalation path]`, with values such as:
 
 These values describe how the case moved through the escalation process, not merely where it ended.
 
-The story can then be enriched further with `[Escalation summary]`, which combines the escalation path with the highest escalation and case status. Example summaries include:
+The story can then be enriched with `[Escalation summary]`, which combines escalation path, highest escalation, and case status into a small set of business-facing categories.
 
-- Closed after direct escalation to Tier 4
-- Closed after progressive escalation to Tier 3
+Example summaries include:
+
 - Closed without escalation
+- Closed after escalation
+- Closed, started with escalation
 - Case still open
+
+When creating a summary, resist the temptation to include too much detail. A summary is useful because it compresses many possibilities into a handful of categories the business can hold mentally. Adding detail creates more combinations and defeats the point of the summary.
 
 These summaries often imply a ranking. A `[Display order]` column should be included to support this ranking in visualisations and filters.
 
