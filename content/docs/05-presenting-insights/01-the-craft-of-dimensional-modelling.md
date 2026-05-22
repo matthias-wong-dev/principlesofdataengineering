@@ -1,10 +1,57 @@
 ---
 title: The craft of dimensional modelling
 url: /docs/presenting-insights/the-craft-of-dimensional-modelling/
-description: Dimensional modelling in Power BI as the central craft for turning curated data into an analytical product business users can actually use.
+description: Explains dimensional modelling in Power BI as the craft of turning reusable information into analytical products business users can understand and use.
 lede: Dimensional modelling is the craft of turning information into a usable analytical product.
 weight: 1
-draft: true
+# draft: true
 ---
 
-Creating information focused on building reusable blocks of information. These are meaningful fragments. This part, Presenting insights, looks at turning them into consumable products that deliver answers in a way that is easy, intuitive and accurate. The modern rise of technology has propelled the ways in which data engineers are expected to embed data insights. Machine learning models, embedded analytics, and real-time applications have all areas where a data engineer may need to present insights. However, one method has stood the test of time and is thus the essential skill for a data engineer. It is the discipline of dimensional modelling. Dimensional modelling, pioneered by Ralph Kimball, remains a go-to approach for communicating business insights. More recently, Microsoft Power BI semantic models have become a popular tool for business intelligence. It is particularly adept at allowing non-technical business users to interact with their data in an intuitive way, thus lowering the barrier to data analysis. A Power BI semantic model is also useful for producing multiple reports. At its core, Power BI is also centred on dimensional models. Hence, a dimensional model in Power BI is a powerful vehicle for surfacing insights, and is the subject of this part of the text. While building a data pipeline is largely a scientific exercise grounded in computer science mindset of minimal information, creating a dimensional model in Power BI is more of an art. While technically demanding, its central challenge lies in anticipating how users will interact with the product. There is a focus on the model’s look and feel, its clarity, and its intuitive alignment with business intent. Dimensional modelling, therefore, is a craft shaped by experience and judgement. It is not difficult to build an effective dimensional model. If the data engineer has laid a strong foundation with meaningful information fragments that become facts, expressive reference tables ready to be converted into dimensions, and binary flag columns that simplify measure definitions, then building the model is simply a matter of assembling these elements in a way that anticipates user queries. The real challenge for a data engineer is not how to build the dimensional model, but what to build. A useful starting point for new data engineers is to become familiar with two guiding questions: What does a good dimensional model do? and What does a good dimensional model look and feel like?
+## From information to insight
+
+The previous section, [Creating information](/docs/creating-information/expressiveness-and-fragment-modelling/), focused on building reusable blocks of information. These are meaningful fragments: expressive entities, reference tables, timelines, mappings, storytelling dimensions, and other prepared pieces of business meaning.
+
+This section, **Presenting insights**, asks a different question.
+
+How should those fragments be assembled into a product that business users can explore, understand, and trust?
+
+Modern data engineers may present insights through machine learning models, embedded analytics, real-time applications, or custom tools. Yet one method remains central to business intelligence: **dimensional modelling**.
+
+Dimensional modelling, pioneered by Ralph Kimball, remains one of the most effective ways to organise information for business analysis. In the Microsoft ecosystem, Power BI semantic models make dimensional modelling especially important because they provide the layer through which many business users interact with data.
+
+A dimensional model in Power BI is therefore not merely a technical artefact. It is a product interface.
+
+## The craft
+
+Building a data pipeline is largely an engineering exercise. It requires correctness, reproducibility, performance, and maintainability.
+
+Building a dimensional model also requires those things, but its central difficulty is different.
+
+The data engineer must anticipate how users will think, filter, compare, drill, summarise, and ask follow-up questions. The model must not only be correct. It must feel natural to use.
+
+This is why dimensional modelling is a craft.
+
+It has technical rules, but rules are not enough. A good model depends on judgement: which tables should be visible, which columns should be hidden, which measures should be defined, which relationships should be active, and how the model should guide the user’s attention.
+
+If the previous section was about creating information, this section is about making that information usable.
+
+## The foundation matters
+
+Dimensional modelling becomes much easier when the upstream pipeline has been built well.
+
+Meaningful fragments become facts. Expressive reference tables become dimensions. Storytelling dimensions become natural filters. Binary flags simplify measures. Milestone fragments make duration analysis straightforward.
+
+When this foundation exists, the dimensional model does not need to compensate for missing business meaning. It can assemble prepared information into a form that supports analysis.
+
+The hard question is therefore not only:
+
+> How do I build the dimensional model?
+
+It is also:
+
+> What should the dimensional model make easy for the user to do?
+
+Two guiding questions organise the chapters in this section:
+
+- What does a good dimensional model do?
+- What does a good dimensional model look and feel like?

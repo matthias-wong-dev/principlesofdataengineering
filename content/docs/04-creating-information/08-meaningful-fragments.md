@@ -3,7 +3,7 @@ title: Meaningful fragments
 url: /docs/creating-information/meaningful-fragments/
 description: Explains fragment modelling as the discipline of building narrow, reusable information blocks instead of large all-purpose tables.
 lede: Fragment modelling makes complex business meaning easier to build, test, reuse, and change.
-weight: 9
+weight: 8
 ---
 
 ## Fragment modelling

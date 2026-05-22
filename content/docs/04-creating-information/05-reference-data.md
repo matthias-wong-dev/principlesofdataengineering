@@ -3,7 +3,7 @@ title: Reference data
 url: /docs/creating-information/reference-data/
 description: Explains how reference data gives business meaning a stable form, and how mapping tables connect local system records to shared references.
 lede: Reference data gives business meaning a stable place to live.
-weight: 6
+weight: 5
 # draft: true
 ---
 

@@ -3,7 +3,7 @@ title: Storytelling
 url: /docs/creating-information/storytelling/
 description: Explores how data engineers add value by defining good and bad entities, aggregating detail, and shaping business narratives.
 lede: Data engineering is not finished when the data is correct. It is finished when the business can see.
-weight: 8
+weight: 7
 # draft: true
 ---
 

@@ -3,7 +3,7 @@ title: Conforming systems
 url: /docs/creating-information/conforming-systems/
 description: Explains how to integrate multiple systems through conformed reference data without losing clarity of grain or business meaning.
 lede: Systems should be integrated only after the nature of their sameness is understood.
-weight: 7
+weight: 6
 # draft: true
 ---
 
