@@ -15,7 +15,7 @@ This chapter takes the next step. The goal is to introduce reference data into t
 
 Two constructs are important for this purpose: **reference tables** and **mapping tables**. Reference tables define the meanings the business wants to use. Mapping tables connect local system values to those shared meanings.
 
-This chapter focuses on applying these ideas within a single system. The next chapter extends the same pattern across multiple systems.
+This chapter focuses on applying these ideas within a single system. The next chapter extends the same pattern across [multiple systems](/docs/creating-information/conforming-systems/).
 
 ## A point of reference
 
@@ -23,7 +23,7 @@ A reference table that applies to multiple business processes becomes a shared p
 
 The calendar is a simple example. Most business processes can map directly to a calendar table through a date column. A country table is another common example. Product categories, organisational structures, geographic hierarchies, and customer classifications often play the same role.
 
-Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition.
+Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition. This makes reference data one of the main ways a warehouse gives stable form to [negotiated organisational meaning](/docs/foundations/data-and-organisations/).
 
 The term **golden record** is also used, particularly when a single reference table represents the authoritative version of a concept.
 

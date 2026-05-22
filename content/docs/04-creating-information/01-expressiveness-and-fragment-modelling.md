@@ -8,7 +8,7 @@ weight: 1
 
 ## From data to reusable information
 
-Data engineering reshapes imperfect fragments of reality into forms the business can use.
+Data engineering reshapes [fragments of reality](/docs/foundations/what-is-data/) into forms the business can use.
 
 This work must be done efficiently, reproducibly, and over sustained periods of time. The goal is not merely to produce isolated reports or one-off datasets, but to create a cost-effective and robust pipeline of valuable, reusable blocks of information that are conducive to business insight.
 
@@ -21,7 +21,7 @@ This book introduces five principles of data engineering. The first two are **ex
 
 ## Expressiveness
 
-Insight is information analysed in the light of intent. A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise data in a way that makes sense for business decisions.
+Insight is [information analysed in the light of intent](/docs/foundations/what-is-data-engineering/). A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise data in a way that makes sense for business decisions.
 
 This is the task of applying business intent to reshape data. When done successfully, the output is expressive of business intent.
 
@@ -43,7 +43,7 @@ Expressiveness encompasses all aspects of a good data engineer’s work. It lies
 
 ## Fragment modelling
 
-The fluid nature of business insight means that the data engineer cannot know in advance exactly what needs to be built.
+The [fluid nature of business insight](/docs/foundations/what-is-data-engineering/) means that the data engineer cannot know in advance exactly what needs to be built.
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 

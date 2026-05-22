@@ -8,13 +8,13 @@ weight: 8
 
 ## Fragment modelling
 
-The earlier chapters introduced entity processing, entity tracking, reference data, conforming systems, and storytelling. Each depended on the same discipline: break complexity into individual fragments and connect them deliberately. 
+The earlier chapters introduced [entity processing](/docs/creating-information/entity-processing/), [entity tracking](/docs/creating-information/entity-tracking/), [reference data](/docs/creating-information/reference-data/), [conforming systems](/docs/creating-information/conforming-systems/), and [storytelling](/docs/creating-information/storytelling/). Each depended on the same discipline: break complexity into individual fragments and connect them deliberately. 
 
 This approach is **fragment modelling**.
 
 This chapter closes the section on creating information by making fragment modelling explicit. It steps back from those specific patterns and names the broader practice. It then introduces additional fragment patterns that commonly appear in real business pipelines: milestones, current-version selectors, timelines, mappings, distribution weights, and hubs.
 
-The key idea is summarised by the second principle of data engineering:
+The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/):
 
 > Instead of building giant tables, create meaningful fragments.
 

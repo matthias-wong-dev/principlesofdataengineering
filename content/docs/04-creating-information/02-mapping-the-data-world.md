@@ -96,7 +96,7 @@ The distinction between immutable and mutable entities shapes the overall approa
 | Pipeline focus | Process the entity through business logic | Track attributes, behaviour, and state over time |
 
 
-These are the subjects of the next two chapters.
+These are the subjects of the next two chapters: [Entity processing](/docs/creating-information/entity-processing/) and [Entity tracking](/docs/creating-information/entity-tracking/).
 
 
 > [!NOTE]

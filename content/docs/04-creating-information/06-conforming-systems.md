@@ -15,7 +15,7 @@ Business often needs to see multiple systems together. A legacy system may be re
 
 New engineers often fall into two traps: forcing a union of tables that do not naturally fit, or performing large joins that create ambiguous grain and duplicated data. Both approaches can produce outputs that run but no longer mean what they appear to mean.
 
-Conforming systems is the discipline of integrating information without distorting the business entities being represented. Fragment modelling handles this by refusing to collapse meaning into convenience.
+Conforming systems is the discipline of integrating information without distorting the [business entities](/docs/creating-information/mapping-the-data-world/) being represented. Fragment modelling handles this by refusing to collapse meaning into convenience.
 
 There are two approaches:
 
@@ -58,7 +58,7 @@ At this stage, no union is required. The goal is to represent each incoming syst
 
 ### Step 2—Build conformed references
 
-The second step is to build references that express shared business meaning across both systems.
+The second step is to build [reference data](/docs/creating-information/reference-data/) that expresses shared business meaning across both systems.
 
 For example, suppose the two systems record sales status differently.
 

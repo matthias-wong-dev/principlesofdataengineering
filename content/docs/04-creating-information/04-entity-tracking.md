@@ -9,11 +9,11 @@ weight: 4
 
 ## Tracking mutable entities
 
-Entity tracking is the main pattern for mutable business entities: those that change over time while still being considered the same entity.
+Entity tracking is the main pattern for [mutable business entities](/docs/creating-information/mapping-the-data-world/): those that change over time while still being considered the same entity.
 
 Examples include a customer whose contact details, preferences, or purchasing behaviour evolve; an employee whose qualifications, role, or performance record changes; or a supplier whose compliance status shifts over time.
 
-Entity processing asks what happened to a fixed entity. Entity tracking asks how an entity changed while remaining itself.
+[Entity processing](/docs/creating-information/entity-processing/) asks what happened to a fixed entity. Entity tracking asks how an entity changed while remaining itself.
 
 Mutable entities share common characteristics:
 
@@ -49,7 +49,7 @@ The same three-pass structure applies to both modes, but with different emphasis
 
 ## Building the pipeline
 
-Much of the approach from entity processing still applies. The data engineer must identify the entity of interest, craft expressive reference tables, preserve necessary detail, and tell a coherent story.
+Much of the approach from entity processing still applies. The data engineer must identify the entity of interest, craft [expressive reference tables](/docs/creating-information/reference-data/), preserve necessary detail, and tell a coherent story.
 
 The difference is that mutable entities introduce time into the entity itself. In entity processing, time usually appears around the entity: orders, confirmation, shipment, completion. In entity tracking, time defines the state of the entity.
 

@@ -9,7 +9,7 @@ weight: 3
 
 ## Processing immutable entities
 
-Entity processing is the main pattern for immutable business entities: entities that are treated as fixed once created.
+Entity processing is the main pattern for [immutable business entities](/docs/creating-information/mapping-the-data-world/): entities that are treated as fixed once created.
 
 Examples include a sales order, a bank transfer, or an import declaration. If such an entity changes, the change is treated as though it were a different entity. For immutable entities, the business objective is to process the entity according to defined business logic. Hence the term **entity processing**.
 
@@ -37,7 +37,7 @@ Usually this is clear. Sometimes it is not. A sales transaction may have multipl
 
 The correct lens is the one that supports business action.
 
-Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. Fragment modelling is suited to this task because different aspects of the entity can be maintained in different fragments.
+Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](/docs/creating-information/expressiveness-and-fragment-modelling/) is suited to this task because different aspects of the entity can be maintained in different fragments.
 
 ## Building the pipeline
 
@@ -57,7 +57,7 @@ It has three stages: identifying keys, defining reference tables, and extracting
 
 The first task is to identify the business keys that serve as primary keys to the raw data. These may be defined as database constraints in the source data, or inferred through exploratory analysis.
 
-Defining primary and foreign keys is a simple but powerful way to bridge the data world and the business world.
+Defining primary and foreign keys is a simple but powerful way to [bridge the data world and the business world](/docs/creating-information/mapping-the-data-world/).
 
 In some cases, key columns need to be created. For immutable entities, the two common scenarios are versioning and sequence numbers.
 

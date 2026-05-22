@@ -211,7 +211,7 @@ The business no longer needs to inspect every individual inspection result. The 
 
 A storytelling dimension brings multiple acts of interpretation together into a single reusable business view.
 
-Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through a reference table rather than in the transaction table itself.
+Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through [reference data](/docs/creating-information/reference-data/) rather than in the transaction table itself.
 
 Continuing the help desk example:
 
@@ -360,17 +360,18 @@ The distribution may reveal unexpected patterns, data-quality issues, or opportu
 
 Visual checks are therefore not merely validation. They are part of the iterative design process.
 
-## Additional comments
+### Multiple storytelling dimensions
 
 Complex business processes may require multiple storytelling dimensions.
 
 A help desk workflow may need one dimension describing escalation behaviour and another describing service-level agreement outcomes. A production process may need one dimension describing inspection outcomes and another describing manufacturing quality. 
+## Storytelling and the organisation
 
 Storytelling is important because correctness is not enough. A table can be accurate and still fail to show the business what happened.
 
-The data engineer’s task is to create forms of information that make the business visible: its outcomes, patterns, and journeys.
+The data engineer’s task is to create forms of information that make the business visible: its outcomes, patterns, and journeys. 
 
-Storytelling is how this can be done.
+This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](/docs/foundations/data-and-organisations/), and where the data engineer plays an influential role in how organisation understands its own business.
 
 ## Key ideas
 
