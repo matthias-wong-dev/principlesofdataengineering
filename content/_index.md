@@ -36,9 +36,9 @@ This book is written from deep delivery experience and focuses on the patterns t
 
 It is for data engineers, organisational leaders, and business stakeholders who want data systems that do more than run.
 
-Data representations that explain.
+Data representations that make reality visible.
 
-Data representations that endure.
+Data representations that survive real systems.
 
 Data representations that stop organisations from guessing.
 
