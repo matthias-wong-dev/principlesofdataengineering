@@ -220,13 +220,13 @@ Continuing the help desk example:
 | Case escalation ID | Tier 1 | Tier 2 | Tier 3 | Tier 4 | Is escalated | Highest escalation | Escalation path | Escalation summary | Display order |
 |---:|---|---|---|---|---|---|---|---|---:|
 | 1 | true | false | false | false | false | Tier 1 | Not escalated | Closed without escalation | 1 |
-| 2 | true | true | false | false | true | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 | 2 |
-| 3 | true | true | true | false | true | Tier 3 | Progressive escalation | Closed after progressive escalation to Tier 3 | 3 |
-| 4 | true | true | true | true | true | Tier 4 | Progressive escalation | Closed after progressive escalation to Tier 4 | 4 |
-| 5 | false | true | false | false | true | Tier 2 | Direct escalation | Closed after direct escalation to Tier 2 | 5 |
-| 6 | false | false | true | false | true | Tier 3 | Direct escalation | Closed after direct escalation to Tier 3 | 6 |
-| 7 | false | false | false | true | true | Tier 4 | Direct escalation | Closed after direct escalation to Tier 4 | 7 |
-| 8 | true | false | true | false | true | Tier 3 | Escalated with skipped tier | Closed after escalation with skipped tier to Tier 3 | 8 |
+| 2 | true | true | false | false | true | Tier 2 | Progressive escalation | Closed after escalation | 2 |
+| 3 | true | true | true | false | true | Tier 3 | Progressive escalation | Closed after escalation | 2 |
+| 4 | true | true | true | true | true | Tier 4 | Progressive escalation | Closed after escalation | 2 |
+| 5 | false | true | false | false | true | Tier 2 | Direct escalation | Closed, started with escalation | 3 |
+| 6 | false | false | true | false | true | Tier 3 | Direct escalation | Closed, started with escalation | 3 |
+| 7 | false | false | false | true | true | Tier 4 | Direct escalation | Closed, started with escalation | 3 |
+| 8 | true | false | true | false | true | Tier 3 | Escalated with skipped tier | Closed after escalation | 2 |
 | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 | 16 | false | false | false | false | false | Not applicable | Not applicable | Case still open | 99 |
 
@@ -330,11 +330,10 @@ The calculation can be added to an existing aggregation table if appropriate or 
 
 | Case ID | Is escalated | Highest escalation | Escalation path | Escalation summary |
 |---|---|---|---|---|
-| H1001 | true | Tier 3 | Progressive escalation | Closed after progressive escalation to Tier 3 |
+| H1001 | true | Tier 3 | Progressive escalation | Closed after escalation |
 | H1002 | false | Tier 1 | Not escalated | Closed without escalation |
-| H1003 | true | Tier 4 | Direct escalation | Closed after direct escalation to Tier 4 |
-| H1004 | true | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 |
-
+| H1003 | true | Tier 4 | Direct escalation | Closed, started with escalation |
+| H1004 | true | Tier 2 | Progressive escalation | Closed after escalation |
 
 A table like this tells the business far more about the case than a simple list of escalation events is able to.
 
@@ -349,8 +348,8 @@ For example:
 | Escalation summary | Cases |
 |---|---:|
 | Closed without escalation | 8,450 |
-| Closed after progressive escalation | 2,130 |
-| Closed after direct escalation to Tier 4 | 18 |
+| Closed after escalation | 2,130 |
+| Closed, started with escalation | 18 |
 | Case still open | 742 |
 
 The distribution may reveal unexpected patterns, data-quality issues, or opportunities to refine the storytelling dimension itself. A quick bar chart may reveal that there are almost no directly escalated records, and these cases occur only due to data entry errors. Alternatively, the chart may show a high number of directly escalated cases, suggesting a deeper operational issue or a more nuanced story worth exploring.
