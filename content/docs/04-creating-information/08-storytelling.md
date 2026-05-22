@@ -336,7 +336,7 @@ The calculation can be added to an existing aggregation table if appropriate or 
 | H1004 | true | Tier 2 | Progressive escalation | Closed after progressive escalation to Tier 2 |
 
 
-A table like this tells the business far more about the case than a simple list of escalation events ever could.
+A table like this tells the business far more about the case than a simple list of escalation events is able to.
 
 ### Step 3—Visual check
 
