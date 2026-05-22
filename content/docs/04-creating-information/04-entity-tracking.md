@@ -138,8 +138,8 @@ In this example, we use inner join for simplicity. Real systems also require car
 > [!NOTE]
 > **Advanced note: two kinds of time**
 >
-> Some tracking problems involve more than one temporal dimension, also known as bi-temporal modelling.
->
+> Some tracking problems involve more than one temporal dimension.
+> 
 > For example, a user may report an account status for a business-effective period, then later change that reported period. The status has business dates describing when it was effective, but the system also has architectural dates describing when that report was recorded or changed.
 >
 > This creates questions such as:
@@ -199,7 +199,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="background:#ffffff" role="img"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
      aria-label="Three passes of entity tracking with purpose and example artefacts">
 
   <defs>
@@ -308,7 +308,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 </svg>
 {{< /svg >}}
 
-<div style="text-align: center; font-size: 0.95rem; color: #666; margin-top: 0.5rem;">
+<div style="max-width:42rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
 Figure 1. The three passes of entity tracking, showing both the purpose of each pass and example artefacts produced in a bank account pipeline.
 </div>
 

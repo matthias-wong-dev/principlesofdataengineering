@@ -219,7 +219,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="background:#ffffff" role="img"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
      aria-label="Three passes of entity processing with purpose and example artefacts">
 
   <defs>
@@ -334,7 +334,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 </svg>
 {{< /svg >}}
 
-<div style="text-align: center; font-size: 0.95rem; color: #666; margin-top: 0.5rem;">
+<div style="max-width:42rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
 Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.
 </div>
 
