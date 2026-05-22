@@ -34,7 +34,9 @@ The approach taught in this book is **fragment modelling**: the discipline of bu
 
 This book is written from deep delivery experience and focuses on the patterns that survive real systems: expressive entities, meaningful fragments, reusable information, robust pipelines, dimensional models, and long-term maintainability.
 
-It is for data engineers, organisational leaders, and business stakeholders who want data systems that do more than run.
+Whether you are learning data engineering for the first time or refining an existing data platform, the book provides practical data engineering best practices drawn from real-world delivery experience.
+
+It is for organisations that want data representations that do more than run.
 
 Data representations that make reality visible.
 
