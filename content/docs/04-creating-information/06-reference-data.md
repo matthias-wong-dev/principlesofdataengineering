@@ -147,7 +147,7 @@ select
     , rc.[Region]
 from      Cake.Sales s
 left join Cake.CountryMap     cm on cm.[Country code] = s.[Country code]
-left join Location.RefCountry rc on rc.[Country ID] = cm.[Country ID];
+left join Location.RefCountry rc on rc.[Country ID]   = cm.[Country ID];
 ```
 
 The result is:

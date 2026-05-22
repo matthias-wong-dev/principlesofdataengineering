@@ -125,9 +125,9 @@ select
     , least(   th.[End date],   lh.[End date],   sh.[End date]  )   as [End date]
 from Bank.AccountTypeHistory   th
 inner join Bank.AccountLevelHistory  lh  on   lh.[Account ID] = th.[Account ID]
-                                    and greatest(th.[Start date], lh.[Start date]) < least(th.[End date], lh.[End date])
+                                         and greatest(th.[Start date], lh.[Start date])                   < least(th.[End date], lh.[End date])
 inner join Bank.AccountStatusHistory sh  on   sh.[Account ID] = th.[Account ID]
-                                    and greatest( th.[Start date], lh.[Start date], sh.[Start date]) < least(th.[End date], lh.[End date], sh.[End date] );
+                                         and greatest( th.[Start date], lh.[Start date], sh.[Start date]) < least(th.[End date], lh.[End date], sh.[End date] );
 ```
 
 The timeline table is produced through a temporal join. Notice that, without the time component, this is an ordinary join on the entity key. This is worth remembering. The timeline table is simply what the join would have looked like "at that point in time", but pre-computed for all time intervals in the most computationally compact form.
