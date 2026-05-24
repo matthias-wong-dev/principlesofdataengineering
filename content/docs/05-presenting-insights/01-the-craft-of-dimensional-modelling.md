@@ -14,9 +14,9 @@ This section, **Presenting insights**, asks the next question.
 
 How should that information be assembled into a product that business users can explore, understand, and trust?
 
-Modern data engineers may present insights through machine learning models, embedded analytics, real-time applications, or custom tools. Yet one method remains central to business intelligence: **dimensional modelling**.
+Modern data engineers may present insights through a variety of ways. Yet one method has remained central: **dimensional modelling**.
 
-Dimensional modelling, systematised by Ralph Kimball, remains one of the most effective ways to organise information for business analysis. In the Microsoft ecosystem, Power BI semantic models make dimensional modelling especially important because they provide the layer through which many business users interact with data.
+In the Microsoft ecosystem, Power BI semantic models make dimensional modelling especially important because they provide the layer through which many business users interact with data.
 
 A dimensional model in Power BI is therefore best understood as a product interface.
 
