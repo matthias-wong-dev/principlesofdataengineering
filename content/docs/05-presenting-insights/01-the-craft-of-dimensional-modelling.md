@@ -1,7 +1,7 @@
 ---
 title: The craft of dimensional modelling
 url: /docs/presenting-insights/the-craft-of-dimensional-modelling/
-description: Explains dimensional modelling in Power BI as the craft of turning reusable information into analytical products business users can understand and use.
+description: Learn dimensional modelling in Power BI and how to turn reusable data into analytical models business users can understand, explore, and trust.
 lede: Information does not become insight until users can see it, touch it, and ask it questions.
 weight: 1
 ---
