@@ -137,7 +137,7 @@ The second is the storytelling dimension. It sits at the opposite end of the spe
 
 The presence of both ID dimensions and storytelling dimensions suggests that the data engineer has considered a broad range of user needs. It is not a guarantee of quality, but it is a useful sign.
 
-The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/a-primer-on-dimensional-modelling/).
+The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/dimensional-modelling-for-ux/).
 
 ### Facts and measures
 

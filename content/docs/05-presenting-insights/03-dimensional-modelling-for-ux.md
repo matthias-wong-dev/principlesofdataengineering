@@ -1,7 +1,7 @@
 ---
-title: A primer on dimensional modelling
-url: /docs/presenting-insights/a-primer-on-dimensional-modelling/
-description: Learn dimensional modelling in Power BI through facts, dimensions, filtering, interactivity, and practical modelling patterns for business users.
+title: Dimensional modelling for UX
+url: /docs/presenting-insights/dimensional-modelling-for-ux/
+description: Learn how facts, dimensions, filtering, and interaction patterns shape the user experience of a Power BI dimensional model.
 lede: In an interactive model, dimensions are what users touch; facts are what respond.
 weight: 3
 ---
@@ -12,7 +12,7 @@ Dimensional modelling is usually taught as a distinction between table types—f
 
 That distinction is correct, but not enough to achieve the expectations of a [good dimensional model](/docs/presenting-insights/a-good-dimensional-model/). The more important distinction is between what the user can touch and what responds—dimensions are what the user touches; facts are what respond.
 
-A model is good when the user can answer questions without guessing. This chapter explains facts and dimensions from that point of view.
+A model is good when the user can answer questions without guessing. This chapter explains facts and dimensions from that point of view. That is, dimensional modelling for user experience (UX).
 
 ## Understanding facts and dimensions
 
