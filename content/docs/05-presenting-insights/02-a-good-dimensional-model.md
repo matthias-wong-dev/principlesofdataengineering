@@ -23,8 +23,8 @@ A good dimensional model in Power BI should:
 - Resonate with the business view
 - Be intuitive and unambiguous—it should "just work"
 - Anticipate questions
-- Be both high-level and detailed
-- Be performant to use
+- Support both summary and detail
+- Perform quickly
 
 ### Resonate with the view from business intent
 
@@ -62,7 +62,7 @@ In practice, this means a business process should either be outside the model, o
 
 Achieving this is easier than it sounds, and is the subject of the chapter on anticipating questions.
 
-### Be both high-level and detailed
+### Support both summary and detail
 
 One of the most powerful features of Power BI is the ability for users to move interactively through data by cross-filtering and drill-through.
 
@@ -72,7 +72,7 @@ The opposite path is also common. Users who operate at the detailed level often 
 
 A data engineer cannot ignore the need to support both high-level and detailed views. While individual reports may emphasise one or the other, the underlying model often needs to support both.
 
-### Be performant to use
+### Perform quickly
 
 Most queries should return in under a second. Complex or infrequent queries should complete in under two seconds. Longer runtimes are acceptable only in rare cases.
 
@@ -101,7 +101,7 @@ Names should be explicit. For example, `[Sales date]` is better than `[Date]`. I
 
 Visible names should not repeat across the model. When a user searches for a name in the field list, it should return one result. If a column appears more than once, it presents an immediate ambiguity.
 
-If the repeated columns are genuinely the same, but all are visible, the model may need to be reworked to remove duplication. If the columns are different but share the same name by accident, they should be renamed rather than relying on table context to resolve the ambiguity rather than relying on outer context for resolution.
+If the repeated columns are genuinely the same, but all are visible, the model may need to be reworked to remove duplication. If the columns are different but share the same name by accident, they should be renamed rather than relying on table context to resolve the ambiguity.
 
 Dimensions represent information or attributes, while facts represent business processes. As such, dimensions should be nouns, while business process facts should be verbal nouns or carry a sense of action.
 
@@ -135,7 +135,7 @@ The first is the ID dimension. This is a table of the primary keys of a business
 
 The second is the storytelling dimension. It sits at the opposite end of the spectrum. As explained in the Storytelling chapter, a storytelling dimension categorises business entities into a digestible number of journeys. It is often the front door of the model: the first high-level lens through which users enter the data.
 
-The presence of both ID dimensions and storytelling dimensions suggests that the data engineer has considered the broad range of needs the data engineer is expected to meet. It is not a guarantee of quality, but it is a useful sign.
+The presence of both ID dimensions and storytelling dimensions suggests that the data engineer has considered a broad range of user needs. It is not a guarantee of quality, but it is a useful sign.
 
 The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/a-primer-on-dimensional-modelling/).
 
@@ -145,7 +145,7 @@ Power BI is designed so that users primarily interact with dimensions and measur
 
 For now, it is enough to note that a good Power BI dimensional model usually reduces the prominence of fact tables. In the ideal case, fact tables are hidden from the user.
 
-A related sign is the absence, or at least limited use, of degenerate dimensions in fact tables. A proliferation of degenerate dimensions suggests that the model is working against the natural filtering behaviour of Power BI. It also indicate that business information has been left as miscellaneous attributes of business processes rather than articulated as standalone properties that deserve dimension tables.
+A related sign is the absence, or at least limited use, of degenerate dimensions in fact tables. A proliferation of degenerate dimensions suggests that the model is working against the natural filtering behaviour of Power BI. It also indicates that business information has been left as miscellaneous attributes of business processes rather than articulated as standalone properties that deserve dimension tables.
 
 Measures become more prominent as fact tables become less visible. A good dimensional model invests heavily in measures.
 
@@ -204,17 +204,13 @@ The common theme is business centricity and intuitive use. A good model implemen
 
 The Zen of Python is a useful guide to designing a dimensional model. Its emphasis on explicit over implicit, and on having one—and preferably only one—obvious way of doing something, applies directly to Power BI model design.
 
-## Key ideas
-
 > [!NOTE]
 > **Key ideas**
 >
 > A good dimensional model lets users ask real business questions without guessing.
 >
-> It should resonate with the business view, feel intuitive and unambiguous, anticipate reasonable questions, support both high-level and detailed use, and perform quickly.
+> It should resonate with the business view, feel intuitive and unambiguous, anticipate reasonable questions, support both summary and detail, and perform quickly.
 >
 > A dimensional model is judged by the experience it creates for users, not only by whether it is technically correct.
->
-> The clearest signs of a good model are business-friendly names and metadata, useful dimensions, hidden fact tables, ready-to-use measures, and relationships that support natural filtering.
 >
 > A strong model makes answers appear naturally because the data engineer has already made the hard design decisions.
