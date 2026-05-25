@@ -19,7 +19,7 @@ There are two indicators of good measures, business centricity and technical sim
 
 Every aspect of a measure should reflect business meaning. This includes its definition, name, its hover text, its display folder, and its placement alongside related measures.
 
-### Alignment to business reality
+#### Alignment to business reality
 
 When designing measures, one of the most important criteria is alignment to real-world events. A common mistake is to perform a distinct count on a database key and assume it reflects a meaningful metric — even when the key has no real-world correspondence.
 
@@ -35,7 +35,7 @@ The second option is particularly useful across a wide range of scenarios — wh
 
 It is easily implemented when the entity of interest has been clearly defined from the outset, and when the pipeline consistently computes and aggregates information at that grain. This is one of the purposes of the Reduce step in the pipeline.
 
-### Business explicit
+#### Business explicit
 
 The definition of a measure should be explicit on its business meaning, rather than generic. A common misstep among new data engineers is to create a single technical measure—such as [Employee count], a distinct count of employees in an end-of-period fact table—and assume that users will derive all other insights through manual filtering.
 
@@ -55,21 +55,21 @@ These examples illustrate the breadth of possible measures beyond a generic [Emp
 
 In most cases, a technical measure such as [Employee count] which is a distinct count of all employees across the organisation’s history, offers little business value. If not directly useful, such measures are better omitted. Where technical measures are needed to support other calculations, they can be hidden from the interface and prefixed with an underscore. For example, [_Employee count] and [_Employee count] end of period may serve as internal components for more meaningful outputs.
 
-### Names
+#### Names
 
 Names must be explicit, grammatical, and able to stand alone. Measures can be dragged anywhere on the canvas, so the name should carry its context. Prefer [Employee count] to [Count]. Avoid non-standard abbreviations. Saving a few characters does not help the user or the next engineer.
 
-### Description
+#### Description
 
 Hover-text descriptions should also reflect business meaning. Users should not be expected to accept complex logic without explanation. As the first point of contact for many users, the measure description is an opportunity to build trust. Descriptions should articulate the business logic behind the measure, not restate the DAX syntax.
 
 For more intricate cases, near-pseudocode in business language may be appropriate.
 
-### Display folder
+#### Display folder
 
 Display folders offer a practical way to reinforce business centricity. Measures can be grouped by business process, while technical or dashboard-specific measures such as those for colour formatting or data currency can be placed in folders like “Dashboard” or “Data currency.”
 
-### Proximity to other measures
+#### Proximity to other measures
 
 The business centricity of a measure is influenced by its proximity to other measures.
 
@@ -83,7 +83,7 @@ A data engineer can take advantage of the proximity effect by consciously placin
 
 Measures in Power BI should be technically simple. The foundations for technical simplicity are laid when building the data pipeline, not when designing the dimensional model. There are two ways to achieve this – precomputing complex information and relying on binary flags for simplification.
 
-### Precomputing complex information
+#### Precomputing complex information
 
 Complex information should be computed and stored in the data layer. This frees the measures from the burden of handling business logic and allows them to focus solely on supporting user interaction. If the DAX is non-trivial, it is a sign that the model design may be sub-optimal.
 
@@ -97,7 +97,7 @@ In some cases, precomputation can even lead to wrong results, such as taking ave
 
 In general, precomputing complex information should not result in an awkward distortion of the dimensional model. Data engineers can avoid this by being familiar with the content of Filtering behaviour and the techniques introduced later in this chapter.
 
-### Preparing binary flags
+#### Preparing binary flags
 
 Binary flags are columns with true or false values. Their main place is in the reference tables, and hence dimensions in the dimensional model. For example, an ‘Employee leave’ dimension may have an [Is on long service leave] column to indicate whether the employee is on service leave at the end of the period of the ‘Employee end of month’ fact table.
 

@@ -66,7 +66,7 @@ Dimensions:
 8. Transaction or search dimension, a sub-type being the ID dimension
 9. Degenerate dimension
 
-## Facts
+### Facts
 
 Measurable facts are the basic transactions and are what people usually think of when they think of facts. Examples include inspections, sales, and audit events. What makes measurable facts stand out is that they are designed to work with aggregated measures, such as SUMX and COUNTX, and their content are presented via these measures. Measurable facts form the backbone of most analytical models and are the primary source of business metrics. They are the default facts for entity processing scenarios.
 
@@ -87,7 +87,7 @@ Often, a measure is still needed to display the additional details in a controll
 
 In linguistics, an adjunct noun is a noun that functions as an adjective to describe another noun, such as vegetable in vegetable soup. In this sense, an annotation fact is an adjunct fact.
 
-## Dimensions
+### Dimensions
 
 Business dimensions are the common dimensions that most people think of when thinking of dimensions. Examples include processing statuses, locations, officers, inspection types. They are usually available out-of-the-box from source systems, though they may be supplemented with additional useful columns by the data engineer. These dimensions are necessary for presenting basic information and form the foundation of most models.
 
