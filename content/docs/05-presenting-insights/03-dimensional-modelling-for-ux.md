@@ -77,10 +77,10 @@ Dimensions:
 
 1. Business dimension
 2. Role-playing dimension
-3. Combination dimension
-4. Choices dimension
-5. Sankey dimension
-6. Histogram dimension
+3. Histogram dimension
+4. Combination dimension
+5. Choices dimension
+6. Sankey dimension
 7. Storytelling dimension
 8. Search dimension, a sub-type being the ID dimension
 9. Degenerate dimension
