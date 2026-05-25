@@ -145,7 +145,7 @@ Power BI is designed so that users primarily interact with dimensions and measur
 
 For now, it is enough to note that a good Power BI dimensional model usually reduces the prominence of fact tables. In the ideal case, fact tables are hidden from the user.
 
-A related sign is the absence, or at least limited use, of degenerate dimensions in fact tables. A proliferation of degenerate dimensions suggests that the model is working against the natural filtering behaviour of Power BI. It also indicates that business information has been left as miscellaneous attributes of business processes rather than articulated as standalone properties that deserve dimension tables.
+A related sign is the absence, or at least limited use, of degenerate dimensions (attributes stored directly in the fact table rather than in a separate dimension) in fact tables. A proliferation of degenerate dimensions suggests that the model is working against the natural filtering behaviour of Power BI. It also indicates that business information has been left as miscellaneous attributes of business processes rather than articulated as standalone properties that deserve dimension tables.
 
 Measures become more prominent as fact tables become less visible. A good dimensional model invests heavily in measures.
 
