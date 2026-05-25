@@ -217,8 +217,10 @@ The Zen of Python is a useful guide to designing a dimensional model. Its emphas
 >
 > A good dimensional model lets users ask real business questions without guessing.
 >
+> A dimensional model is judged by the experience it creates for users, not only by whether has the technically correct information.
+>
 > It should resonate with the business view, feel intuitive and unambiguous, anticipate reasonable questions, support both summary and detail, and perform quickly.
 >
-> A dimensional model is judged by the experience it creates for users, not only by whether it is technically correct.
+> The signs of a good model are business-friendly names and metadata, useful dimensions, ready-to-use measures, and relationships that support natural filtering.
 >
 > A strong model makes answers appear naturally because the data engineer has already made the hard design decisions.
