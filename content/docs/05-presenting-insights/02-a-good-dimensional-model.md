@@ -178,13 +178,21 @@ Following the theme of using dimensions as the main point of interaction, dimens
 
 A good sign is that, if a piece of information is known to a business process, the dimension representing that information should filter the corresponding fact.
 
-For example, consider a business system with three processes: `Manufacture`, `Order`, and `Shipping`. The `Product` dimension should filter all three facts because all three processes know about the product.
+For example, consider a model with two processes: `Manufacture` and `Shipping`.
 
-By contrast, the `Shipping date` should filter only the `Shipping` fact. It normally should not filter `Order` or `Manufacture`, because only the shipping process knows the shipping date.
+The `Product` dimension should filter both facts if both processes know the product. `Manufacture` captures the product directly. `Shipping` inherits the product because shipped items trace back to what was manufactured.
 
-This does not mean that each business process is filtered only by its own attributes. For example, all fact tables may be filtered by `Manufacture date` if shipment tracks back to order, and order tracks back to manufacture. In that case, all processes can reasonably know about the manufacture date.
+By contrast, the `Shipping date` dimension should filter only the `Shipping` fact. It should not filter `Manufacture`, because shipping occurs at the shipping grain. One manufactured batch may be shipped across multiple dates, so there is no single shipping date that naturally belongs to the manufacture process.
 
-The criterion is whether the information can be reasonably related to the business process at the time.
+This does not mean that each business process is filtered only by its own attributes. For example, all fact tables may be filtered by `Manufacture date` if the shipment tracks back to a manufacture batch.
+
+The criterion is whether the dimension belongs naturally to the grain of the fact being filtered.
+
+| Dimension | Manufacture | Shipping |
+|---|---|---|
+| Product | 1 → * | 1 → * |
+| Manufacture date | 1 → * | 1 → * |
+| Shipping date |  | 1 → * |
 
 Relationships are explored in greater depth in the chapter on [anticipating questions](/docs/presenting-insights/anticipating-questions/).
 
