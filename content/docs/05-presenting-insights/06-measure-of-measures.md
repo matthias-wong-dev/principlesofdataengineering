@@ -1,189 +1,357 @@
 ---
 title: Measure of measures
 url: /docs/presenting-insights/measure-of-measures/
-description: Introduces the measure of measures pattern for structuring related Power BI measures and managing derived calculations.
-lede: Measures can be organised as a business dimension, not just a list of calculations.
+description: Learn how to use switch measures in Power BI to model structured families of measures with a measure table and formatting calculation group.
+lede: Sometimes the measures themselves have dimensional structure, and that structure should be modelled.
 weight: 6
-draft: true
+# draft: true
 ---
 
-In a complex organisation, there are always multiple business processes, and multiple measures per process. Quite often, there is an underlying structure to these measures.
+## Measures as a modelled structure
 
-Consider a company that handles its own manufacturing, orders, and shipping. These are three business processes, each represented by a measurable fact table:
+The previous chapter described measures as the face of facts. A measure compresses fact-table content into business meaning, then unpacks that meaning in user context.
 
-Manufacture, Orders, and Shipping.
+This chapter extends that idea.
 
-Each process has three metrics for operational efficiency:
+When the measures themselves have dimensional structure, that structure should be modelled.
 
-1. Process volume
+The main idea is that a family of measures may have business dimensions of its own. Measures may vary by process stage, metric type, or reporting perspective. If these dimensions exist only inside measure names, the structure is hidden from the model.
 
-2. Median time to process
+A measure of measures makes this structure explicit.
 
-3. Volume processed on schedule
+This should be distinguished from other Power BI approaches that look similar on the surface: create a disconnected table of measure names, let the user choose a measure, and use a `switch` measure to return the selected result. That can be useful, but it is not the main idea here.
 
-This results in nine base measures:
+Instead, **measure of measures** refers to the modelling pattern of making the underlying structure of measures explicit for user interaction. The `switch` measure is only one component of that pattern.
 
-1. [Manufacture process volume]
+## The problem
 
-2. [Manufacture median time to process (days)]
+Consider a company that manages three operational stages:
 
-3. [Manufacture volume processed on schedule]
+- Manufacture
+- Orders
+- Shipping
 
-4. [Orders process volume]
+Each stage has three operational metrics:
 
-5. [Orders median time to process (days)]
+- Process volume
+- Median time to process
+- Volume processed on schedule
 
-6. [Orders volume processed on schedule]
+This creates nine base measures. 
 
-7. [Shipping process volume]
+These measures have a clear two-axis structure:
 
-8. [Shipping median time to process (days)]
+- Process stage
+- Metric
 
-9. [Shipping volume processed on schedule]
 
-These are base measures and is one of the types of measures in Designing measures.
+| Process stage | Metric | Base measure |
+|---|---|---|
+| Manufacture | Process volume | `[Manufacture process volume]` |
+| Manufacture | Median time to process | `[Manufacture median time to process (days)]` |
+| Manufacture | Volume processed on schedule | `[Manufacture volume processed on schedule]` |
+| Orders | Process volume | `[Orders process volume]` |
+| Orders | Median time to process | `[Orders median time to process (days)]` |
+| Orders | Volume processed on schedule | `[Orders volume processed on schedule]` |
+| Shipping | Process volume | `[Shipping process volume]` |
+| Shipping | Median time to process | `[Shipping median time to process (days)]` |
+| Shipping | Volume processed on schedule | `[Shipping volume processed on schedule]` |
 
-From these, two derived measures are needed:
+That structure matters to business intent. A manager may want to compare process volume across stages. Another may want to see whether time to process is deteriorating across years. Another may want to view operational performance by stage and metric in a single matrix.
 
-1. Percentage processed on schedule
+If the structure exists only in measure names, the user cannot interact with this structure directly. The report builder has to manually place many separate measures into visuals and repeat derived logic.
 
-2. National comparison
+Moreover, the complexity quickly explodes. For example, if two additional concepts need to be measured:
 
-Calculating percentage processed on schedule for each process stage leads to 3 additional measures and 12 total. If national versions are created for all 12, the total becomes 24. This is manageable, but there are two problems with this approach.
+- Percentage processed on schedule
+- National comparison
 
-- Unarticulated structure. The measures clearly have a structure to them, but this is not expressed formally. They exist only in the naming convention of the measures.
+Calculating percentage processed on schedule for each process stage leads to 3 additional measures and 12 total. If national versions are created for all 12, the total becomes 24.
 
-- Complex DAX maintenance. Even a simple set up of three processes lead to 24 measures just on basic measures and not including other metrics such as quality control or profitability. This could easily overwhelm.
 
-## Pattern for a measure of measures
+## The measure of measures pattern
 
-The measure of measures pattern introduces structure to the measures. Building it requires three elements:
+The measure of measures pattern introduces four elements:
 
 1. A measure table
+2. A switch measure
+3. Derived measures
+4. A formatting calculation group
 
-2. Switch measure
 
-3. Formatting calculation group
+### Step 1—Create a measure table
 
-The measure table is simply a list of measure names, annotated by columns that describe the measure. Continuing with the example, a table called ‘Operational metric’ with three columns:
+The measure table is a small table that lists the measures and annotates them with business attributes.
 
-4. [Measure name] – the names of all the nine measures
+In this example, create a table called `'Operational metric'`.
 
-5. [Process stage] – “Manufacture”, “Orders”, and “Sales”
+**Example structure of `'Operational metric'`**
 
-6. [Metric] – “Process volume”, “Time to process”, “Volume processed on schedule”
+| Operational metric SK | Measure name | Process stage | Process stage display order | Metric | Metric display order |
+|---:|---|---|---:|---|---:|
+| 1 | Manufacture process volume | Manufacture | 1 | Process volume | 1 |
+| 2 | Manufacture median time to process (days) | Manufacture | 1 | Median time to process | 2 |
+| 3 | Manufacture volume processed on schedule | Manufacture | 1 | Volume processed on schedule | 3 |
+| 4 | Orders process volume | Orders | 2 | Process volume | 1 |
+| 5 | Orders median time to process (days) | Orders | 2 | Median time to process | 2 |
+| 6 | Orders volume processed on schedule | Orders | 2 | Volume processed on schedule | 3 |
+| 7 | Shipping process volume | Shipping | 3 | Process volume | 1 |
+| 8 | Shipping median time to process (days) | Shipping | 3 | Median time to process | 2 |
+| 9 | Shipping volume processed on schedule | Shipping | 3 | Volume processed on schedule | 3 |
 
-The full table is thus nine rows, one for each measure:
+This table is not a fact table. It is also not a normal business dimension over transactional data. It is a dimension over the measures themselves.
 
-| Measure name | Process stage | Metric |
-| --- | --- | --- |
-| Manufacture process volume | Manufacture | Process volume |
-| Manufacture median time to process (days) | Manufacture | Time to process |
-| Manufacture volume processed on schedule | Manufacture | Volume processed on schedule |
-| Orders process volume | Orders | Process volume |
-| Orders median time to process (days) | Orders | Time to process |
-| Orders volume processed on schedule | Orders | Volume processed on schedule |
-| Shipping process volume | Shipping | Process volume |
-| Shipping median time to process (days) | Shipping | Time to process |
-| Shipping volume processed on schedule | Shipping | Volume processed on schedule |
+With the table, the model now knows that `[Manufacture process volume]`, `[Orders process volume]`, and `[Shipping process volume]` are the same kind of metric applied to different process stages.
 
-In defining this table, it is important to apply a display order where there is a rank. For example, [Process stage] is in order of manufacture, orders, and shipping. It happens these are already ordered correctly alphabetically and the [Process stage display order] is not necessary in this case. In general, such ranking columns are necessary to express the business order.
+The display order columns are important. Alphabetical order is rarely the same as business order. For example, `[Process stage]` is in order of manufacture, orders, and shipping.
 
-The switch measure returns the correct base measure based on the selected row in ‘Operational metric’:
+### Step 2—Create a switch measure
 
-This is a switch measure because it uses a switch to decide on the calculation. And since the switch is simply to select the value of another measure, it is thus a measure of measures.
+The switch measure returns the correct base measure depending on the selected row in `'Operational metric'`.
 
-After defining [Operational metric], three business metrics can be defined by filtering [Operational metric] on the [Metric] value:
+A simplified version of the measure `[Operational metric]` looks like this:
 
-Derived measures can now be written once rather than 3 times:
+```DAX
+Operational metric =
+var selected_metric =
+    selectedvalue ( 'Operational metric'[Measure name] )
+return
+    switch (
+        selected_metric,
+        "Manufacture process volume", [Manufacture process volume],
+        "Manufacture median time to process (days)", [Manufacture median time to process (days)],
+        "Manufacture volume processed on schedule", [Manufacture volume processed on schedule],
+        "Orders process volume", [Orders process volume],
+        "Orders median time to process (days)", [Orders median time to process (days)],
+        "Orders volume processed on schedule", [Orders volume processed on schedule],
+        "Shipping process volume", [Shipping process volume],
+        "Shipping median time to process (days)", [Shipping median time to process (days)],
+        "Shipping volume processed on schedule", [Shipping volume processed on schedule]
+    )
+```
 
-National comparisons can also be written once:
+The measure table provides the selection. The switch measure provides the value.
 
-In this case, the nine base measures are first order measures, while [Operational metric], [Process volume], [Percentage processed on schedule], [National operational metric] are second order measures because they are calculated base off the switching of the first order measures.
+The ordinary underlying measures can be called base measures. They calculate directly from facts or from ordinary dimensional context. The switch measure is the first measure that operates over the structure of those base measures.
 
-The final element is a formatting calculation group. Power BI does not support dynamic formatting in switch measures by default. Consequently, all values returned by the switch measure do not honour the original format. A calculation group can reapply the format with the appropriate formatStringDefinition:
+### Step 3—Define derived measures
 
-```dax
-switch(
-    selectedvalue('Measure'[Measure name]),
-    “Manufacture process volume”, ‘TODO’,
-    “Orders process volume”, ‘TODO’,
-    “Shipping process volume”, ‘TODO’,
-    …,
-    selectedmeasureformatstring()
+Once the switch measure exists, the data engineer can define derived measures over the structure of the measure table.
+
+Suppose the business wants percentage processed on schedule. Without a measure of measures, the data engineer may create one percentage measure per process stage:
+
+- `[Manufacture percentage processed on schedule]`
+- `[Orders percentage processed on schedule]`
+- `[Shipping percentage processed on schedule]`
+
+With the measure table, the data engineer can define a more general derived measure.
+
+For example, the model may contain these derived measures:
+
+```DAX
+Process volume =
+calculate (
+    [Operational metric],
+    keepfilters ( 'Operational metric'[Metric] = "Process volume" )
 )
 ```
 
+```DAX
+Volume processed on schedule =
+calculate (
+    [Operational metric],
+    keepfilters ( 'Operational metric'[Metric] = "Volume processed on schedule" )
+)
+```
+
+The percentage measure can then be written once:
+
+```DAX
+Percentage processed on schedule =
+divide (
+    [Volume processed on schedule],
+    [Process volume]
+)
+```
+
+A national comparison can also be written once:
+
+```DAX
+National operational metric =
+calculate (
+    [Operational metric],
+    removefilters ( 'Region' )
+)
+```
+
+The same measure works across process stages because `[Process stage]` remains in the filter context.
+
+For example, when the process stage is filtered to `Manufacture`, `[Process volume]` resolves to `[Manufacture process volume]`, and `[Volume processed on schedule]` resolves to `[Manufacture volume processed on schedule]`.
+
+When the process stage is filtered to `Orders`, the same measure resolves to the order measures.
+
+### Step 4—Handle formatting
+
+A switch measure does not automatically preserve the original format of each underlying measure.
+
+In practice, this can be handled with a calculation group or another dynamic format-string pattern.
+
+A simplified format string expression may look like this:
+
+```DAX
+switch (
+    selectedvalue ( 'Operational metric'[Measure name] ),
+    "Manufacture process volume", "#,0",
+    "Orders process volume", "#,0",
+    "Shipping process volume", "#,0",
+    "Manufacture median time to process (days)", "#,0.0",
+    "Orders median time to process (days)", "#,0.0",
+    "Shipping median time to process (days)", "#,0.0",
+    "Manufacture volume processed on schedule", "#,0",
+    "Orders volume processed on schedule", "#,0",
+    "Shipping volume processed on schedule", "#,0",
+    selectedmeasureformatstring ()
+)
+```
+
+The exact implementation depends on the model and the calculation group design. The important point is that dynamic measure selection also requires deliberate formatting design.
+
+Without this step, the measure of measures may return correct numbers but display them poorly.
+
+> [!NOTE]
+> In practice, long `switch` measures and matching format-string expressions should usually be generated by code when this pattern is used regularly.
+
 ## Benefits
 
-The measure of measures has important implications for measure management and report building. In some cases, it is the only viable solution without creating a tangle of DAX definitions or nightmare reports.
+The measure of measures pattern has several benefits.
 
-The first benefit is simplified DAX management. Instead of repeating near-identical logic across multiple measures, such as three versions of percentage processed on schedule or twelve national metrics, the measure of measures allows a single point of definition.
+### Simplified DAX management
 
-The second benefit is explicit structure. The underlying logic of the nine base measures is now expressed explicitly in a single table. This enables visuals that are otherwise impossible. For example, a matrix with [Metric] as rows, [Process stage] as columns, and [Operational metric] as values:
+Instead of repeating similar logic across many measures, the data engineer can define reusable derived measures.
 
-| Metric | Manufacture | Order | Shipping |
-| --- | --- | --- | --- |
-| Time to complete | | | |
-| Process volume | | | |
-| Volume completed on time | | | |
-| Percentage processed on schedule | | | |
+This reduces duplication and lowers maintenance cost. In some cases, it is the only viable solution without creating a tangle of DAX definitions or nightmare reports.
 
-The formatting calculation group can be used here to ensure all the measure values are presented in the correct format – whole numbers, decimals, percentages.
 
-This visual is impossible to build with 12 separate measures.
+### Explicit business structure
 
-The third benefit is powerful reporting. A matrix with [Process stage], [Metric] as rows, [Reporting year] as columns, and [Operational metric] as values allows immediate comparison across years, with conditional formatting to highlight deterioration:
+The measure table expresses the structure of the metrics directly.
+
+Process stage, metric, display order, and other annotations become part of the model rather than being hidden inside measure names.
+
+For example, a matrix can place `[Metric]` on rows, `[Process stage]` on columns, and `[Operational metric]` as the value.
+
+| Metric | Manufacture | Orders | Shipping |
+|---|---:|---:|---:|
+| Process volume | 12,400 | 11,850 | 11,200 |
+| Median time to process | 2.1 | 1.4 | 3.8 |
+| Volume processed on schedule | 11,780 | 10,960 | 9,520 |
+
+The numbers are returned by different underlying measures, but the row and column structure comes from `'Operational metric'`.
+
+This visual is difficult to build with separate measures. 
+
+### More powerful reporting
+
+The third benefit is powerful reporting. A visual can place `[Process stage]` and `[Metric]` on rows, `[Reporting year]` on columns, and `[Operational metric]` as the value.
 
 | Process stage | Metric | 2022 | 2023 | 2024 |
-| --- | --- | --- | --- | --- |
-| Manufacture | Time to complete | | | |
-| Manufacture | Process volume | | | |
-| Manufacture | Volume completed on time | | | |
-| Manufacture | Percentage processed on schedule | | | |
-| Orders | Time to complete | | | |
-| Orders | Process volume | | | |
-| Orders | Volume completed on time | | | |
-| Orders | Percentage processed on schedule | | | |
-| Shipping | Time to complete | | | |
-| Shipping | Process volume | | | |
-| Shipping | Volume completed on time | | | |
-| Shipping | Percentage processed on schedule | | | |
+|---|---|---:|---:|---:|
+| Manufacture | Process volume | 10,800 | 11,600 | 12,400 |
+| Manufacture | Median time to process | 2.4 | 2.2 | 2.1 |
+| Manufacture | Volume processed on schedule | 9,900 | 10,850 | 11,780 |
+| Orders | Process volume | 10,200 | 11,100 | 11,850 |
+| Orders | Median time to process | 1.7 | 1.5 | 1.4 |
+| Orders | Volume processed on schedule | 9,300 | 10,100 | 10,960 |
+| Shipping | Process volume | 9,800 | 10,600 | 11,200 |
+| Shipping | Median time to process | 3.2 | 3.5 | 3.8 |
+| Shipping | Volume processed on schedule | 8,950 | 9,350 | 9,520 |
 
-This allows the user to see the changes of all measures changing across years in a single visual, with conditional formatting to highlight any significant deterioration.
+This gives the business a compact view of many measures across time. For example, shipping volume is increasing, but median time to process is also deteriorating. Conditional formatting can then highlight deterioration or improvement.
 
-There are many ways to use the structure expressed by 'Operational metric'. The [Process stage] column can be used for small multiples in line charts, creating a series of visuals in a controlled and automated manner. It can also serve as a legend to compare metrics directly, such as identifying lags or discrepancies in [Process volume] between manufacture, orders, and shipping.
+There are many ways to use the structure expressed by `'Operational metric'`. The `[Process stage]` column can be used for small multiples in line charts, creating a series of visuals in a controlled and automated manner. It can also serve as a legend to compare metrics directly, such as identifying lags or discrepancies in `[Process volume]` between manufacture, orders, and shipping.
 
-If each process is managed by a different team, [Process stage] can be used as a report page filter to tailor the view to each manager’s concern.
+If each process is managed by a different team, `[Process stage]` can be used as a report page filter to tailor the view to each manager’s concern.
 
 Used appropriately, the measure of measures enables powerful reports that would otherwise be impractical or impossible.
 
-Finally, the measure of measures allows the users to perform operations on the measures rather than the fact tables behind the measures. Inexperienced data engineers attempting the similar outcomes often would try to tackle the problem by forcing the fact table rows into an awkward union. The measure of measures avoids this. In the perspective of Conforming systems, the measure of measures allow the data engineer to use the horizontal integration pattern when the vertical integration pattern is not appropriate.
+### Avoiding awkward fact-table unions
+
+Inexperienced data engineers sometimes try to solve the same problem by forcing fact tables into an awkward union so that different process stages can appear as rows in a single table.
+
+That may be appropriate in some models, but not always. If the processes are genuinely different and already have good measures, it may be better to structure the measures rather than reshape the facts.
+
+The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](/docs/creating-information/conforming-systems/) when vertical integration of the underlying facts is not appropriate.
 
 ## Dangers
 
-Data engineers should use a measure of measures judiciously.
+The measure of measures pattern is powerful, but it should be used judiciously.
 
-The SWITCH function can be suboptimal when filtering on a column other than the switch value, such as [Metric] instead of [Measure name], or a conformed dimension off [Process stage]. With 40 or 50 branches, performance degrades noticeably. The pattern should be tested in practice for each model.
+### Performance
 
-Dynamism can be overused. In theory, any list of measures can be placed into a switch, but this is not always helpful. The criterion is business expressiveness. The pattern is appropriate when the measures form a coherent structure such as process stages, business lines, or quality criteria in a product line. The pattern is not appropriate when the measures are unrelated or when the structure is unclear.
+Large `switch` measures can perform poorly, especially when the selected field is not the same column used by the switch.
 
-Report builders can also get carried away. Dynamism is often a sign of bad design. If users must click before seeing what is important, the report is likely poor. A report with ten selectable metrics is not intuitive. The measure of measures should be used to create explicitly expressive visuals, not to hide information behind implicit interaction.
+For example, performance may be worse when the visual filters on `[Metric]` or `[Process stage]`, but the switch branches on `[Measure name]`.
 
-Finally, the measure of measures requires the user to select enough of the measure table’s primary key columns to resolve to a specific measure. Without this, the switch returns no value. For example, selecting [Metric] = "Process volume" without specifying [Process stage] will not return a result. This is by design. The pattern is intentionally built not to aggregate across measures by default. It prevents accidental errors such as summing what should not be summed or averaging averages. If aggregation across measures is needed, such as summing [Process volume] across all stages or computing a weighted average of [Median time to process], then it must be explicitly defined and tailored to the metric.
+With many branches, performance should be tested in practice.
 
-## Conclusions
+### Dynamism for its own sake
 
-Most discussions of the SWITCH function in Power BI focus on its technical role — selecting between multiple measures based on user input, typically via a disconnected slicer table. This is often described as a UI convenience or a way to reduce visual clutter.
+Dynamism can be overused.
 
-However, the measure of measures is not about UI convenience but is about business meaning. Instead of using SWITCH merely to toggle between measures, it is used here to express the structure of the measures themselves. The measure table is a business dimension that categorises measures by meaningful attributes like process stage, metric type, or quality indicator. Consequently, the measure of measures serves, not merely as a technical trick, but a modelling technique that:
+In theory, any list of measures can be placed into a switch. That does not mean it should be done.
 
-- Makes the business metrics, as implemented by the measures, explicit and navigable
+The criterion is business expressiveness. The pattern is appropriate when the measures form a coherent structure: process stages, business lines, quality criteria, product families, or similar.
 
-- Enables structured reporting (e.g. matrix visuals by metric and process)
 
-- Supports derived measures (e.g. percentages, comparisons) without duplication
+### Hiding important information behind clicks
 
-In short, the measure of measures is another application of the principles of expressiveness and fragment modelling. Without the anchor in expressiveness, the data engineer is at risk of creating dynamism for its own sake and creating a frustrating report for the user.
+A dynamic report is not automatically a good report.
 
-Finally, the pattern highlights the philosophy of a good Power BI dimensional model that measures are the face of fact tables, and can be directly manipulated rather than reshaping the facts. The pattern is a natural fit within the horizontal integration pattern from Conforming systems.
+If users must keep clicking before they can see what matters, the report may be poorly designed. A report with ten selectable metrics is often less intuitive than a report that shows the important comparisons directly.
+
+The measure of measures should be used to create explicitly expressive visuals, not to hide information behind unnecessary interaction.
+
+### Ambiguous aggregation across measures
+
+The measure table often has a composite key. In the example above, `[Process stage]` and `[Metric]` together identify a specific measure.
+
+If the user selects `[Metric] = Process volume` without selecting `[Process stage]`, the switch measure returns blank. This is often correct. The default behaviour prevents summing over items that should not be summed.
+
+If aggregation across measures is required, it should be explicitly defined and tailored to the metric.
+
+## Relationship to switch measures
+
+Many discussions of `switch` measures in Power BI focus on technical convenience: allowing users to choose a measure from a slicer, reducing visual clutter, or reusing a visual for different metrics.
+
+Those uses can be valid, but they are not the main point here.
+
+A measure of measures is not a slicer trick. It is a modelling technique for expressing business intent. The measure table allows the data engineer to:
+
+- make business metrics explicit and navigable;
+- build structured visuals by metric and process;
+- define derived measures without duplication.
+
+Without anchor in business meaning, dynamic measure selection can easily become frustrating. The model may become clever, but not clearer.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Sometimes the measures themselves have dimensional structure, and that structure should be modelled.
+>
+> Measures can themselves be modelled as a business object.
+>
+> A measure of measures is useful when measures have a coherent structure, such as process stage by metric.
+>
+> The important idea is not merely that a `switch` measure can change what is displayed. The important idea is that the measure family may have dimensional structure worth modelling.
+>
+> The pattern uses a measure table, a switch measure, derived measures, and usually a formatting calculation group.
+>
+> The measure table makes the structure of the measures explicit rather than hiding it in measure names.
+>
+> Derived measures can often be written once because the process or metric structure is carried by the measure table.
+>
+> The pattern should be used for business expressiveness, not dynamism for its own sake.
+>
+> Aggregating across measures must be defined deliberately. Blank results are often a useful safeguard against accidental nonsense.
