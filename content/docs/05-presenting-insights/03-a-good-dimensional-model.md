@@ -60,7 +60,7 @@ This requires the data engineer to think beyond the immediate request and consid
 
 In practice, this means a business process should either be outside the model, or, if included, represented in a form that supports its expected usage. All information captured by that process should be accessible in a way that allows users to ask sensible questions of it.
 
-Achieving this is easier than it sounds, and is the subject of the chapter on anticipating questions.
+This is subject of the chapter [anticipating questions](/docs/presenting-insights/anticipating-questions/).
 
 ### Support both summary and detail
 
