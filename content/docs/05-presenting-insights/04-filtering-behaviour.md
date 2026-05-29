@@ -322,7 +322,7 @@ At the sales order level, the measure returns the value of one transaction. At t
 | Current context | Result |
 |---|---:|
 | `SO1001` | `[Total sales amount] = 100` |
-| `Janurary` | `[Total sales amount] = 250` |
+| `January` | `[Total sales amount] = 250` |
 
 This sounds complex in the backend, but it is seamless for the user. In the ideal setup, `'Sale'` and `'Sale'[Sales amount]` are hidden. The user sees `[Total sales amount]`, not both the measure and the raw fact column.
 
