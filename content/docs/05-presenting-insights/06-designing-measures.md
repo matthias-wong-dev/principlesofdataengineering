@@ -3,7 +3,7 @@ title: Designing measures
 url: /docs/presenting-insights/designing-measures/
 description: Learn how to design Power BI measures that compress fact-table content into business meaning and re-express it through user-selected dimensions.
 lede: Measures compress facts into business meaning, then unpack that meaning in user context.
-weight: 5
+weight: 6
 # draft: true
 ---
 

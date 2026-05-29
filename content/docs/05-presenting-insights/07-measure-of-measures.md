@@ -3,7 +3,7 @@ title: Measure of measures
 url: /docs/presenting-insights/measure-of-measures/
 description: Learn how to use switch measures in Power BI to model structured families of measures with a measure table and formatting calculation group.
 lede: Sometimes the measures themselves have dimensional structure, and that structure should be modelled.
-weight: 6
+weight: 7
 # draft: true
 ---
 

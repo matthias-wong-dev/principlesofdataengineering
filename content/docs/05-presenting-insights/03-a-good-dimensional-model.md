@@ -3,7 +3,7 @@ title: A good dimensional model
 url: /docs/presenting-insights/a-good-dimensional-model/
 description: Learn what makes a good Power BI dimensional model, including business-friendly naming, intuitive dimensions, useful measures, clear relationships, and strong performance.
 lede: A good dimensional model lets users ask real business questions without guessing.
-weight: 2
+weight: 3
 # draft: true
 ---
 

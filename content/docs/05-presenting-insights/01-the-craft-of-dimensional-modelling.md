@@ -36,13 +36,14 @@ This is why dimensional modelling is a craft.
 
 In practice, this craft appears in modelling decisions, many of which are not questions of correctness alone: which tables should be visible, which columns should be hidden, which measures should be defined, which relationships should be active, and how the model should guide the user’s attention.
 
-The hard question is therefore not only: How do I build the dimensional model?
+The hard question is therefore not only: "How do I build the dimensional model?"
 
 It is also:
 
-> How should the dimensional model behave?
+> How should the dimensional model behave to anticipate user needs?
 
-Two guiding questions organise the chapters in this section:
+Three guiding questions organise the chapters in this section:
 
+- How do we know what the user will do with the model?
 - What does a good dimensional model look and feel like?
 - What modelling tools are available to anticipate a range of user behaviours?

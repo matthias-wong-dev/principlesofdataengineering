@@ -3,7 +3,7 @@ title: Filtering behaviour
 url: /docs/presenting-insights/filtering-behaviour/
 description: Learn how Power BI filtering works through relationships, measures, visual-level filters, DAX filter context, and dimensional model design.
 lede: Filtering design is what makes a Power BI model feel intuitive—or frustrating.
-weight: 4
+weight: 5
 # draft: true
 ---
 

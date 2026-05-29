@@ -3,7 +3,7 @@ title: Dimensional modelling for UX
 url: /docs/presenting-insights/dimensional-modelling-for-ux/
 description: Learn how facts, dimensions, filtering, and interaction patterns shape the user experience of a Power BI dimensional model.
 lede: In an interactive model, dimensions are what users touch; facts are what respond.
-weight: 3
+weight: 4
 ---
 
 ## Facts and dimensions as interaction
