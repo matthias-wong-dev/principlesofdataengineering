@@ -673,7 +673,7 @@ The better solution is to notice that the information is already in the model. I
 
 Measure-defined filtering provides the answer.
 
-The DAX pattern is to concatenate values from `'Sales product'[Product name]` while using `calculate` and `crosfilter` to temporarily allow `'Refund calendar'` to filter `'Sales product'`.
+The DAX pattern is to concatenate values from `'Sales product'[Product name]` while using `calculate` and `crossfilter` to temporarily allow `'Refund calendar'` to filter `'Sales product'`.
 
 Conceptually:
 
@@ -818,7 +818,7 @@ In the ordinary Type II model, `'Employee end of month'` relates to `'Organisati
 
 In the example, Team `T1001` belonged to `Group A` in June, then moved to `Group B` in July.
 
-If the user selects August and asks for commencements in the last twelve months, they may expect all activity for Team `T1001` to appear under `Group B`, because that is the organisation structure as at August. The correct answer is a total of 4 commencements
+If the user selects August and asks for commencements in the last twelve months, they may expect all activity for Team `T1001` to appear under `Group B`, because that is the organisation structure as at August. The correct answer is a total of 4 commencements.
 
 The ordinary Type II relationship does not do that. It reports each fact row using the organisation structure that was valid at the time of the row. June remains under `Group A`; July and August appear under `Group B`. This returns 2 commencements, the incorrect result.
 
@@ -861,7 +861,7 @@ Under this filter, the table behaves like a one-to-many join for that evaluation
 
 For August 2023, `T1001` resolves to the row where `[Group name] = Group B`. The measure can then report prior-period activity using the August 2023 organisation view.
 
-But creates a problem. The original `'Organisation unit'` no longer behaves as before. This could be problematic. If the original behaviour needs to be preserved, there are two broad implementation options.
+This creates a problem. The original `'Organisation unit'` no longer behaves as before. This could be problematic. If the original behaviour needs to be preserved, there are two broad implementation options.
 
 #### Option A—Keep one dimension and switch in measures
 
