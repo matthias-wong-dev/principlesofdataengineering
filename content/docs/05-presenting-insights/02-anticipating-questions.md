@@ -9,7 +9,7 @@ weight: 2
 
 ## Designing for questions not yet asked
 
-A good dimensional model does not merely answer the questions already written in requirements. It preserves enough business structure to answer all the questions users will reasonably ask during the model’s lifetime.
+A good dimensional model does not merely answer the questions already written in requirements. It preserves enough business structure to answer all the questions users are likely to ask during the model’s lifetime.
 
 This expectation can surprise data engineers who come from an application-development background. In application development, the work often begins by defining requirements with stakeholders and building accordingly. Even when development is iterative, it is still usually organised around delivering stated requirements.
 
@@ -23,7 +23,9 @@ The data engineer cannot predict every future question. But good design can pres
 
 This is the purpose of anticipating questions.
 
-Power BI dimensional models are well suited to this task because facts represent business processes, dimensions represent business information, and relationships determine which questions can be answered through filtering.  Instead of focusing on ticking off stated requirements, the data engineer should focus on the blocks of information captured in business processes, present them as dimensions in a dimensional model, and paying attention to what information are shared by multiple processes.
+Power BI dimensional models are well suited to this task because facts represent business processes, dimensions represent business information, and relationships determine which questions can be answered through filtering.
+
+Instead of ticking off stated requirements, the data engineer should identify the business processes, the information known to those processes, and the information shared across processes. These become the facts, dimensions, and relationships of the dimensional model.
 
 To develop a model that anticipates questions and captures the breadth of information, the data engineer can remember a simple three-step process:
 
@@ -35,17 +37,13 @@ Each step has an artefact to help the data engineer and business stakeholders ch
 
 ## All the facts
 
-The first step to building a dimensional model that can anticipate all questions is to ensure it captures all the relevant business processes. For ease of memory, this is the step to capture “all the facts.”
+The first step to building a dimensional model that can anticipate all reasonable questions is to ensure it captures all the relevant business processes. For ease of memory, this is the step to capture “all the facts.”
 
 This step can be non-trivial for two reasons.
 
-First, in a complex business, many teams work together to complete a single goal.
+First, in a complex business, many teams work together to complete a single goal. These teams often operate across different business processes. The data engineer and project team are usually working with a particular stakeholder group that focuses on specific processes rather than the full set. For example, some may focus on manufacturing, some on ordering, and others on quality control.
 
-These teams often operate across different business processes. The data engineer and project team are usually working with a particular stakeholder group that focuses on specific processes rather than the full set. For example, some may focus on manufacturing, some on ordering, and others on quality control.
-
-Second, different stakeholders often take different views of the same process.
-
-Operational staff may focus on detailed steps, while others take a broader, strategic view. Speaking with any one group always results in a skewed perspective.
+Second, different stakeholders often take different views of the same process. Operational staff may focus on detailed steps, while others take a broader, strategic view. Speaking with any one group always results in a skewed perspective.
 
 In other words, the data engineer faces two challenges—how much to include, and how zoomed out the view should be.
 
@@ -75,13 +73,13 @@ Research and development, by contrast, may be considered peripheral.
 
 For the question “how zoomed out should the view be?”, the answer is to work at a level that makes sense for decision-making. It does not help to model the lowest-level details such as sending emails or looking up documents. On the other hand, it is also not helpful to see manufacturing and quality control as one large step.
 
-Zooming out often involves grouping sub-processes into a single process, or denormalising detail rows into header-level structures which would expand the grain.
+Zooming out often involves grouping sub-processes into a single process, or denormalising detail rows into header-level structures that expose a broader grain.
 
 For example, the quality control process may involve multiple testing steps for different criteria. Rather than creating one fact table for quality samples and another for quality sample tests, it may be more expressive to model the process as a single fact called `'Quality control'`, with the lower-level testing detail embedded where appropriate.
 
 Power BI’s flexibility with its DAX engine supports this approach. In simple cases, a `distinctcount` can recover the embedded grain, such as counting headers by their ID. In more complex cases, DAX can still retrieve the embedded grain, as explained in [Designing measures](/docs/presenting-insights/designing-measures/).
 
-This question often poses a challenge for engineers trained in traditional dimensional modelling and learning Power BI for the first time. The classical approach tends to split facts by grain rather than by business process. This can obscure the business view.
+This question often challenges engineers trained in traditional dimensional modelling who are learning Power BI for the first time. The classical approach tends to split facts by grain rather than by business process. This can obscure the business view.
 
 The artefact for this step is the linear process diagram. A linear process diagram is a business process diagram using only linear steps with no branching, cycles, or decision trees. Readers find linear diagrams much easier to understand than diagrams with arrows pointing in all directions. The constraint of linearity forces the business analyst to abstract the process to a level that is useful for themselves and others. This is especially true for executive audiences.
 
@@ -216,7 +214,7 @@ Identifying the business processes is the hardest part of anticipating questions
 
 ## All the dimensions
 
-The second step, after identifying the business processes in scope, is to identify all the business information known to those processes. This ensures that all questions about the processes included in the model can be answered. For ease of memory, this is the step to capture “all the dimensions.”
+The second step, after identifying the business processes in scope, is to identify all the business information known to those processes. This ensures that all reasonable questions about the processes included in the model can be answered. For ease of memory, this is the step to capture “all the dimensions.”
 
 The key distinction is between information a process captures and information a process knows.
 
@@ -224,7 +222,7 @@ This step is more straightforward than identifying the processes. Business stake
 
 The nuance for the data engineer is to distinguish between what is captured by a business process and what is known to it. The general rule is that downstream processes inherit information from upstream ones.
 
-Consider the following example. Suppose these are the information captured by each process:
+Consider the following example. Suppose each process captures the following information:
 
 - Manufacturing—Product type, Manufacture details (date, batch number)
 - Quality control—Testing details (manufacture sample, date, criteria, results)
@@ -244,7 +242,7 @@ Rows are business information. Columns are business processes. `C` means the pro
 
 It is also helpful to annotate the diagram with where the information is physically stored—which database or table holds each attribute. This helps assess what can be reasonably answered and informs project planning.
 
-The diagram for the example is below to convey what information is known to each business process.
+The example below shows what information is known to each business process.
 
 The linear process diagram describes the real-world business processes. The cumulative information diagram builds on the linear process diagram by showing how information flows through those processes and where it is stored in the database world.
 
@@ -262,19 +260,19 @@ The linear process diagram describes the real-world business processes. The cumu
 | Feedback details | | | | | C |
 | Database storage | XYZ SQL database | ABC diagnostics database | XYZ SAP ERP | XYZ SAP ERP | Salesforce analytics |
 
-In other words, the cumulative information diagram maps the real-world processes to the database world.
+In other words, the cumulative information diagram maps real-world processes to database storage.
 
 Since business information becomes dimensions in a dimensional model, this step can be remembered as “all the dimensions.”
 
 ## All the relationships
 
-The final step is to ensure that the business processes and their known information are reflected in the dimensional model through filtering relationships. If all relevant processes are captured, all relevant information is identified, and valid relationships are correctly implemented, then the model can truly anticipate all questions.
+The final step is to ensure that the business processes and their known information are reflected in the dimensional model through filtering relationships. If all relevant processes are captured, all relevant information is identified, and valid relationships are correctly implemented, then the model can anticipate all reasonable questions.
 
 A relationship is not only a technical join. In a Power BI model, a relationship is a path by which a user’s question can reach a fact.
 
 The rule of thumb is simple. If a business process knows a piece of information, whether by direct capture or by inheritance, then the corresponding dimension should filter that fact table.
 
-Continuing with the earlier example, suppose `'Order ID'`, `'Order calendar'`, and `'Customer'` are dimensions, and `'Order'` is the fact table. These dimensions should directly filter `'Order'`. The `'Shipping'` fact table should also be filtered by `'Order ID'`, since shipping needs to know the order number. In this case, `'Order ID'` is a conformed ID dimension for both processes. The `'Order calendar'` and `'Customer'` dimensions should also filter `'Shipping'`, because this process inherits them through the order number.
+Continuing with the earlier example, suppose `'Order ID'`, `'Order calendar'`, and `'Customer'` are dimensions, and `'Orders'` is the fact table. These dimensions should directly filter `'Orders'`. The `'Shipping'` fact table should also be filtered by `'Order ID'`, since shipping needs to know the order number. In this case, `'Order ID'` is a conformed ID dimension for both processes. The `'Order calendar'` and `'Customer'` dimensions should also filter `'Shipping'`, because this process inherits them through the order number.
 
 New data engineers often forget about inheritance. This creates a frustrating experience for users who expect to retrieve all shipments for a customer but find the model does not support the question due to a missing relationship.
 
@@ -284,15 +282,15 @@ For example, suppose the quality control process usually tests manufactured batc
 
 It may be sufficient to use a role-playing `'Reporting calendar'` that filters `'Manufacture'` on manufacture date and `'Quality control'` on testing date. This avoids misleading results. If the relationship is implemented, the report design must be careful not to mislead users with incorrect numbers caused by unintended filters.
 
-Usually, upstream processes tend not to know about downstream processes. This means that `'Customer'` should not filter `'Manufacture'` because this information does not exist at the time of manufacture. However, the data engineer has the benefit of hindsight, so some information can be brought back to the earlier process. For example, while the results of quality control of a manufacture batch are not known at the time of manufacture, the result can be associated to the batch number afterwards.
+Usually, upstream processes tend not to know about downstream processes. This means that `'Customer'` should not filter `'Manufacture'` because this information does not exist at the time of manufacture. However, the data engineer has the benefit of hindsight, so some information can be brought back to the earlier process. For example, while the quality-control results of a manufactured batch are not known at the time of manufacture, the result can be associated to the batch number afterwards.
 
-To express this back at the batch number grain, multiple quality control criteria may need to be rolled back to the batch for an overall pass or fail. A dimension for `'Batch quality outcome'` can be used to filter `'Manufacture'`. In general, storytelling dimensions summarise the journey of an entity through the whole business process and can be associated to all steps of the process in hindsight.
+To express this at the batch-number grain, multiple quality control criteria may need to be rolled back to the batch for an overall pass or fail. A dimension for `'Batch quality outcome'` can be used to filter `'Manufacture'`. In general, storytelling dimensions summarise the journey of an entity through the whole business process and can be associated to all steps of the process in hindsight.
 
 The artefact for this step is the chronological bus. A bus matrix is a table that lists dimensions as rows and facts as columns, showing which dimensions filter which facts. In Power BI, this should reflect the actual filtering relationships, including their cardinality. A chronological bus matrix is one where the facts and dimensions are sorted in chronological order of their occurrence in the business.
 
 The chronological bus is the main planning artefact of the dimensional model. It shows, at a glance, which information can filter which business processes.
 
-The diagram for our example is below. The symbol `1 -> *` is used to indicate one-to-many, while `* -> *`, which is used for product type and customer feedback, indicates a many-to-many relationship. The latter would mean that one customer feedback may be on several products at once.
+The diagram for our example is below. The symbol `1 -> *` is used to indicate one-to-many, while `* -> *`, which is used for product type and customer feedback, indicates a many-to-many relationship. The latter means one customer-feedback record may relate to several products at once.
 
 | Dimension | Manufacture | Quality control | Orders | Shipping | Customer feedback |
 |---|---|---|---|---|---|
@@ -321,11 +319,11 @@ The chronological bus can be used to evaluate what questions are answered by the
 
 In the above example, because `'Customer'` is a conformed dimension for `'Orders'`, `'Shipping'`, and `'Customer feedback'`, it is possible to identify customers by the volume of orders, shipping delays, and feedback results.
 
-Because `'Product type'` is a conformed dimension on all processes, it is the attribute that the model can answer most questions for, such as the results of quality control versus customer feedback. Note, however, the many-to-many relationship between `'Product type'` and `'Customer feedback'` indicates that any assignment of feedback to product is approximate and may double count.
+Because `'Product type'` is a conformed dimension on all processes, it is the attribute that the model can answer most questions for, such as comparing quality-control results with customer feedback. Note, however, the many-to-many relationship between `'Product type'` and `'Customer feedback'` indicates that any assignment of feedback to product is approximate and may double-count.
 
 Because `'Manufacture ID'` is a conformed ID dimension from `'Manufacture'` to `'Shipping'`, the model can support traceback of faulty products that have been shipped.
 
-On the other hand, it is not possible to analyse the effect of shipping on customer feedback because the relationship between the dimension and fact does not exist.
+On the other hand, it is not possible to directly analyse the effect of shipping on customer feedback because shipping information does not filter the customer-feedback fact.
 
 Such analysis may be possible indirectly through `'Reporting calendar'`, `'Product type'` and `'Customer'`, which together may narrow the transactions down to a segment that correlates shipping status and shipping company with feedback sentiment. If this can be done systematically, it can be introduced as precomputed information in the data pipeline.
 
@@ -341,38 +339,38 @@ The same information becomes much less useful when sorted alphabetically:
 
 | Dimension | Customer feedback | Manufacture | Orders | Quality control | Shipping |
 |---|---|---|---|---|---|
-| Arrival date |  |  |  |  | 1 -> * |
-| Batch number |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Batch quality outcome |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Customer | 1 -> * |  | 1 -> * |  | 1 -> * |
-| Feedback calendar | 1 -> * |  |  |  |  |
-| Feedback sentiment (star ratings) | 1 -> * |  |  |  |  |
-| Manufacture calendar |  | 1 -> * | 1 -> * |  | 1 -> * |
-| Manufacture ID |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Order calendar |  |  | 1 -> * |  |  |
-| Order ID |  |  | 1 -> * |  | 1 -> * |
-| Order status |  |  | 1 -> * |  | 1 -> * |
+| Arrival date | | | | | 1 -> * |
+| Batch number | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Batch quality outcome | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Customer | 1 -> * | | 1 -> * | | 1 -> * |
+| Feedback calendar | 1 -> * | | | | |
+| Feedback sentiment (star ratings) | 1 -> * | | | | |
+| Manufacture calendar | | 1 -> * | 1 -> * | | 1 -> * |
+| Manufacture ID | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Order calendar | | | 1 -> * | | |
+| Order ID | | | 1 -> * | | 1 -> * |
+| Order status | | | 1 -> * | | 1 -> * |
 | Product type | * -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Quality criteria |  |  |  | 1 -> * |  |
+| Quality criteria | | | | 1 -> * | |
 | Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Shipping calendar |  |  |  |  | 1 -> * |
-| Shipping company |  |  |  |  | 1 -> * |
-| Shipping status |  |  |  |  | 1 -> * |
-| Testing date |  |  |  | 1 -> * |  |
-| Testing ID |  |  |  | 1 -> * |  |
-| Testing result |  |  |  | 1 -> * |  |
+| Shipping calendar | | | | | 1 -> * |
+| Shipping company | | | | | 1 -> * |
+| Shipping status | | | | | 1 -> * |
+| Testing date | | | | 1 -> * | |
+| Testing ID | | | | 1 -> * | |
+| Testing result | | | | 1 -> * | |
 
-In comparison, this matrix is difficult to read. This is the case even though the dimension names have already been purposely prefixed to group similar attributes together, and “Manufacture”, “Order” and “Shipping” happen to sort chronologically. In any other instance, the bus matrix would be incomprehensible.
+In comparison, this matrix is difficult to read. This remains true even though the dimension names have been deliberately prefixed to group similar attributes together, and “Manufacture”, “Order” and “Shipping” happen to sort roughly chronologically. In any other instance, the bus matrix would be incomprehensible.
 
-Consequently, the three-step process of linear process diagram, cumulative information diagram, and the chronological bus is not an accident. It is designed to make it simple for the data engineer to keep track of information, visualise what questions can be answered, and thus accomplish the goal of anticipating questions.
+Consequently, the three-step process of linear process diagram, cumulative information diagram, and chronological bus is not an accident. It is designed to make it simple for the data engineer to keep track of information, visualise what questions can be answered, and thus accomplish the goal of anticipating questions.
 
-The bus matrix is also a chance to check naming. Dimensions should be nouns because they represent business attributes or information. Facts should be verbal because they represent business processes.
+The bus matrix is also a chance to check naming. Dimensions should be nouns because they represent business attributes or information. Fact names should usually be process-oriented because facts represent business processes.
 
 The relationship between business information and business processes is mirrored in the relationship between dimensions and facts. Hence this step can be remembered as “all the relationships.”
 
 ## Conclusion
 
-The three-step approach guides the data engineer to work on the information captured in business processes, rather than the stated requirements of “I would like to see X by Z”. The focus is on preserving information, not on answering specific questions.
+The three-step approach guides the data engineer to work on the information captured in business processes, rather than the stated requirements of “I would like to see X by Y”. The focus is on preserving information, not on answering specific questions.
 
 The three steps and their artefacts can be summarised in a table like this:
 
@@ -386,7 +384,9 @@ Following these three steps ensures the full range of information is preserved, 
 
 This breadth of information requires a variety of modelling techniques. The later chapters in this section explain how filtering, measures, measure families, and security patterns make the preserved structure usable.
 
-In future, when the user asks a different question, if the information is captured in the model, it can be answered because it has already been articulated in the dimensional model. This is how the data engineer anticipates questions.
+In future, when a user asks a different question, the model can answer it if the relevant information has already been articulated in the dimensional model.
+
+This is how the data engineer anticipates questions.
 
 ## Key ideas
 
