@@ -1,102 +1,281 @@
 ---
-title: Row level security
-url: /docs/presenting-insights/row-level-security/
-description: Introduces row level security as a way to limit data access while preserving analytical usefulness and business context.
-lede: Security should limit what users can see without breaking how the model is understood.
+title: Interactive row level security
+url: /docs/presenting-insights/interactive-row-level-security/
+description: Learn how to preserve unit-record interactivity and population context when implementing row level security in Power BI.
+lede: RLS should limit access without destroying unit-record interactivity.
 weight: 7
-draft: true
+# draft: true
 ---
 
-Row level security (RLS) in Power BI means exposing to users only the rows they are allowed to see. This filtering is implemented through a hidden DAX expression based on the user’s security role. The filter is applied at a layer above the model—so even the model itself is unaware that the filter has been applied.
+## Security without losing context
 
-Limiting data is the easy part. The challenge is not in hiding sensitive information, but in exposing population-level context for comparison without leaking sensitive details. For example, enabling a regional team to compare its sales performance against national figures—filterable by product type, sales period, and other dimensions—without inadvertently revealing sensitive data from the national population.
+Row level security (RLS) in Power BI means exposing to users only the rows they are allowed to see. This is implemented through a DAX filter attached to the user’s security role.
+
+The important subtlety is that an RLS filter is not visible to DAX as an ordinary, inspectable filter. Functions such as `isfiltered()` or `isinscope()` cannot detect that RLS is active. A formula simply evaluates over the rows available to the user after security has been applied.
+
+This makes restriction straightforward but comparison difficult. If a regional user is restricted to regional rows, then ordinary measures automatically evaluate over that regional population. A national comparison cannot be recovered by asking DAX to notice and remove the RLS filter. The wider population must be deliberately modelled.
+
+A common solution is to summarise the wider population into aggregate tables. This can reduce disclosure risk, and it may be the right approach for highly sensitive data. However, summary tables do not preserve unit-record interactivity. They also introduce their own modelling complexity, because every supported comparison must be anticipated in the summary design.
+
+This chapter focuses on approaches that preserve unit-record interactivity while still allowing comparison with a wider population.
 
 This leads to two distinct tasks in implementing RLS:
 
-- Limiting what users can see
+- limiting what users can see;
+- preserving population context.
 
-- Showing population context
+## Limiting what users can see
 
-## Limiting what the users can see
+RLS first needs an access-control pattern. There are two common approaches:
 
-Power BI implements RLS by applying a DAX expression to the semantic model, based on the user’s membership in a role group. The expression can be simple or arbitrarily complex.
+- static roles;
+- dynamic roles.
 
-There are two main techniques for ensuring different users see different information:
+This choice determines how the permitted population is assigned to each user.
 
-Multiple RLS group and RLS group with dynamic logic.
+### Static roles
 
-### Multiple RLS groups
+Static roles use one RLS role per access category.
 
-This approach is straightforward. The administrator creates a separate role group for each user category. For example, one group is created per continent. Each group is assigned a DAX filter that restricts access to the relevant rows. A global team can be assigned to a group with no filter, allowing full access. A recommended name for this group is “Unlimited”.
+For example, the model may have separate roles for `North`, `South`, `West`, and `Unlimited`.
 
-This method becomes difficult to maintain if the number of user categories grows. In such cases, a dynamic approach is preferable.
+The `North` role may apply this filter to `'Region'`:
 
-### RLS group with dynamic logic
-
-The identity of the user is available via the DAX function USERPRINCIPALNAME(). This allows filtering the model using a mapping table that links each user to the rows they are permitted to see. The mapping table behaves as a many-valued dimension.
-
-This table can be as complex as needed. It may map users to teams, teams to data rows, or supervisors to their direct and indirect reports. Ultimately, it maps the user principal name to a row identifier in the model.
-
-From a performance perspective, the filter should be applied as close as possible to the sensitive data—ideally directly on the fact tables. If the sensitive data resides in dimensions, the filter can be applied via a snowflake relationship. For example, if the model includes a Customer table and the rule is that customers see only their own data.
-
-Multiple copies of the user table may be needed if filtering applies across multiple dimensions. In such cases, care must be taken to avoid conflicting filters, which would result in an unintended “AND” condition.
-
-As with multiple RLS groups, unrestricted users can be placed in a group with no DAX filter. A clear naming convention is helpful—Limited and Unlimited are preferable to Restricted and Unrestricted, which can be ambiguous because “restricted” can mean access to restricted data, or that the user is restricted from accessing data.
-
-The dynamic approach pushes security logic into the data layer, allowing transparent, auditable control. However, it shifts administration to managing the access table, which may be populated manually or via automated jobs. The database administration must have adequate controls that are commensurate with the security needs.
-
-If there are complex mapping logic, the user mapping table should be clearly annotated with metadata to explain the assignment in business language.
-
-## Showing population context
-
-The challenge with RLS is not just hiding sensitive data—it’s enabling comparison with the wider population without leaking sensitive information. For example, allowing a regional team to compare its sales performance against national figures, filterable by product type, sales period, and other dimensions, without inadvertently exposing sensitive details from the national population.
-
-There are two approaches to solving this problem: the anonymous approach, which duplicates the facts, and the pseudonymous approach, which doubles the dimensions.
-
-### Anonymous (duplicating the facts)
-
-The simplest and safest way to retain population data in the model without risk of leaking sensitive information is to create copies of each fact table, removing all columns that contain sensitive information. If the sensitive information is linked via relationships to dimensions, those relationships should be removed. Without these links, the new fact tables are exempt from the RLS DAX filter.
-
-A naming convention helps. The duplicated tables can be suffixed with 'anonymous'.
-
-For example, if the original table is 'Sales' and it contains team details via a relationship with 'Sales team' dimension, the duplicate table would be 'Sales anonymous', with the relationship removed.
-
-All measures that refer to the original fact tables must be duplicated. For example, if [Sales volume] refers to 'Sales', a new measure [Sales volume anonymous] would use 'Sales anonymous' instead. The formula remains the same but the table reference changes.
-
-This duplication allows safe comparisons. For example:
-
-```dax
-[Regional sales proportion] = [Sales volume] / [Sales volume anonymous]
+```DAX
+'Region'[Region name] = "North"
 ```
 
-Every interaction, including dimensional filters, will work as expected. When a user selects a particular product or time period, the measure will behave correctly without linking to any sensitive information.
+The `South` role may apply:
 
-When there are many measure pairs, maintaining derived measures can become tedious. In this case, the measure of measures pattern can simplify the measure management. That is, create a switch measure for user data and another for population data. For example, they can be [Regional measure] and [National measure] respectively. All derivatives or comparison measures can be defined on the two switch measures rather than original ones.
+```DAX
+'Region'[Region name] = "South"
+```
 
-### Pseudonymous (double the dimensions)
+The `West` role may apply:
 
-The pseudonymous approach assumes sensitive information is contained in dimensions. For example, the 'Sales team' dimension may include team member names and locations. In this approach, dimension rows are duplicated via a union, and identifying values are replaced with placeholders such as “(masked)”. A binary column [Is masked] is added to indicate whether the row is masked.
+```DAX
+'Region'[Region name] = "West"
+```
 
-The relationship is converted from one-to-many to many-to-many on the original primary key of the ‘Sales team’ dimension. The RLS rule then filters users to either the masked or unmasked rows. In the simplest case, where a user either sees all sensitive information or none, only two RLS groups—Limited and Unlimited—are needed.
+The `Unlimited` role has no filter. Users assigned to this role can see all rows allowed by the model.
 
-Once defined, the model behaves as normal without additional re-work. Users see all information as expected, but sensitive values are replaced with masked placeholders.
+This is simple to understand and easy to test. Each role has its own DAX filter, and users are assigned to the role that matches their access.
 
-Care must be taken when masking. In some cases, the primary key itself is sensitive.
+The weakness is maintenance. Static roles work when the access categories are few and stable. They become awkward when users have many different access combinations, when access changes often, or when permissions need to follow organisational hierarchy.
 
-For example, if the primary key is a social security number. In such cases, the business key must be replaced with a surrogate key.
+A clear naming convention is important. `Limited` and `Unlimited` are often clearer than `Restricted` and `Unrestricted`, because `restricted` can mean either access to restricted data or restriction from data.
 
-### Comparison of approaches
+### Dynamic roles
 
-The anonymous approach is safe and straightforward. It cleanly separates sensitive data by duplicating the fact tables and removing sensitive columns and relationships.
+Dynamic roles use a security mapping table and the user’s identity, usually through `userprincipalname()`.
 
-This ensures that population-level data is available for comparison without risk of leakage. However, it doubles the model size and increases load time. Maintaining parallel measures can also become tedious, especially when there are many user–population pairs. In such cases, the measure of measures pattern with switch measures like [Regional measure] and [National measure] can simplify maintenance.
+Instead of creating one role per access category, the model has a role that looks up which rows the current user is allowed to see. The mapping table may connect users to regions, teams, programs, customers, or other secured entities.
 
-The pseudonymous approach is lightweight and preserves interactivity. It duplicates dimension rows and masks sensitive values, allowing the same model structure to serve both restricted and unrestricted users. This approach avoids duplicating fact tables and keeps the model compact. However, because the original primary key is retained, it exposes more detail than the anonymous approach. An informed user may still infer identities from unique combinations of attributes. If the primary key itself is sensitive, it must be replaced with a surrogate key.
+For example, a simple user-region mapping table may look like this.
 
-Both approaches allow unit-level interactivity. This is intentional to promote the maximum interactivity with all available dimensions. However, this level of granularity allows an educated user may deduce identities from distinctive patterns. For example, “There’s only one team in the country that sells this product at this volume, so this record must pertain to that team.” If this risk is unacceptable, the anonymous approach remains viable but requires additional aggregation to obscure identifying details.
+**Example structure of `'User access'`**
 
-The choice between the anonymous and pseudonymous approach depends on the sensitivity of the data and the risk profile of the user base.
+| User principal name | Region |
+|---|---|
+| alice@example.com | North |
+| ben@example.com | South |
+| clara@example.com | West |
+| dana@example.com | North |
+| dana@example.com | South |
+| dana@example.com | West |
 
-The anonymous approach is appropriate when the data contains highly sensitive information where the risk of inference or reverse engineering is unacceptable. The pseudonymous approach can be used when the access requirements are simple, and the risk of intentional, malicious reverse engineering is low.
+The RLS rule can then filter the model by the regions assigned to the current user.
 
-This decision is not purely technical—it reflects the organisation’s appetite for risk, its governance requirements, and the expected behaviour of its users.
+A DAX expression may look like this:
+
+```DAX
+'User access'[User principal name] = userprincipalname ()
+```
+
+In practice, the filter often applies through relationships from the access table to a secured dimension or directly to the fact table.
+
+Dynamic roles are more flexible and auditable. They allow access rules to be maintained in data rather than hard-coded into many RLS roles. They are especially useful when permissions are numerous, changing, hierarchical, or managed outside Power BI.
+
+The trade-off is that the access table becomes part of the security infrastructure. It must be governed, tested, and documented. If the mapping logic is complex, the table should include metadata explaining why each assignment exists.
+
+From a performance perspective, the filter should be applied as close as possible to the sensitive data. If the sensitive data resides in fact tables, the filter should ideally reach those fact tables directly. If the sensitive data resides in dimensions, the filter may apply through a snowflake relationship.
+
+Multiple copies of the access table may be needed if filtering applies across multiple dimensions. In such cases, care must be taken to avoid conflicting filters that accidentally combine as an unintended `and` condition.
+
+Whether access is static or dynamic, the result is the same: each user sees only their permitted rows. The harder problem is what happens when the user needs to compare those rows with a wider population.
+
+## Preserving population context
+
+RLS removes rows from the user’s visible population. If the user needs comparison against a wider population, that wider population must remain available through another modelling path.
+
+For example, a regional team may need to compare its sales performance against national sales. The comparison may need to remain filterable by product type, sales period, customer segment, or other dimensions.
+
+A measure such as this cannot recover rows removed by RLS:
+
+```DAX
+National sales volume =
+calculate (
+    [Sales volume],
+    removefilters ( 'Sales team' )
+)
+```
+
+`removefilters()` can remove ordinary filter context. It cannot bypass security. If RLS has already restricted the user to regional rows, then the national rows are not available to the measure.
+
+There are two approaches to preserving population context while retaining unit-record interactivity:
+
+- anonymous facts;
+- pseudonymous dimensions.
+
+### Anonymous facts
+
+The anonymous approach duplicates the fact table and removes sensitive columns and sensitive relationship paths.
+
+For example, suppose the model contains:
+
+- a fact table `'Sales'`;
+- a sensitive dimension `'Sales team'`;
+- a measure `[Sales volume]`.
+
+The restricted user should see only their permitted rows in `'Sales'`, but should also compare against the wider population.
+
+The data engineer can create a second fact table:
+
+- `'Sales anonymous'`
+
+This table contains the population sales rows, but removes columns and relationships that identify the sensitive team or user. The relationship to `'Sales team'` is removed. Any sensitive columns are removed. The table is therefore not filtered by the same RLS path.
+
+A population measure can then be defined over the anonymous fact:
+
+```DAX
+Population sales volume =
+sum ( 'Sales anonymous'[Sales volume] )
+```
+
+The user-facing comparison measure might be:
+
+```DAX
+Regional sales proportion =
+divide (
+    [Sales volume],
+    [Population sales volume]
+)
+```
+
+The ordinary `[Sales volume]` measure reflects the user’s restricted rows. `[Population sales volume]` reflects the wider anonymous population. Both can still respond to safe shared dimensions such as calendar, product, or region grouping where appropriate.
+
+For example, if both `'Sales'` and `'Sales anonymous'` relate to `'Calendar'` and `'Product'`, the user can still compare their regional sales with population sales by month and product type.
+
+The anonymous approach preserves interactivity by keeping the population fact at the grain needed for analysis, while removing the sensitive columns and relationship paths that would identify restricted entities.
+
+When there are many pairs of user and population measures, maintaining the measures can become tedious. The measure of measures pattern can help by creating one switch measure for restricted measures and another for population measures. Derived comparison measures can then be defined over the two switch measures rather than repeated for every metric.
+
+### Pseudonymous dimensions
+
+The pseudonymous approach assumes sensitive information is contained in dimensions.
+
+For example, the sensitive information may be in `'Sales team'`, which contains team names, staff names, locations, or other identifying attributes.
+
+Instead of duplicating the fact table, the data engineer duplicates the dimension rows through a union. One set of rows contains the real values. The other set contains masked values.
+
+**Example structure of `'Sales team'`**
+
+| Sales team SK | Sales team ID | Team name | Region | Is masked |
+|---:|---|---|---|---|
+| 1 | T001 | North Metro Team | North | false |
+| 2 | T002 | South Coast Team | South | false |
+| 101 | T001 | (masked) | North | true |
+| 102 | T002 | (masked) | South | true |
+
+The access table determines which doubled dimension rows each user principal may see. Since each `[Sales team ID]` has both a masked and unmasked row, the access table grants access to the appropriate `[Sales team SK]` for each user.
+
+For example, one user may see the unmasked row for `T001` but the masked row for `T002`. Another user may have the reverse access. A national manager may see unmasked rows for all sales teams. The access table may look like this:
+
+**Example structure of `'User sales team access'`**
+
+| User principal name | Sales team SK |
+|---|---:|
+| alice@example.com | 1 |
+| alice@example.com | 102 |
+| ben@example.com | 101 |
+| ben@example.com | 2 |
+| clara@example.com | 1 |
+| clara@example.com | 2 |
+
+This user access table filters the `'Sales team'` dimension on `[Sales team SK]`. The RLS rule is applied to `'User sales team access'` using `[User principal name]`. The filtered access table then filters `'Sales team'` through `[Sales team SK]`, leaving only the masked or unmasked rows the user is allowed to see.
+
+The relationship from the fact table to `'Sales team'`, based on `[Sales team ID]`, becomes many-to-many. Since `[Sales team SK]` has multiple values in the access table, it is also many-to-many.
+
+The relationships can be summarised as a bus matrix.
+
+| Dimension / access table | `'Sales team'` | `'Sales'` |
+|---|---|---|
+| `'User sales team access'` |  * → * via `[Sales team SK]` | |
+| `'Sales team'` | |  * → * via `[Sales team ID]`  | 
+
+
+Following the previous example, these would be the view for each user.
+
+**Alice’s view**
+
+| Team name | Region | Goals reached |
+|---|---|---:|
+| North Metro Team | North | 84 |
+| (masked) | South | 57 |
+
+**Ben’s view**
+
+| Team name | Region | Goals reached |
+|---|---|---:|
+| (masked) | North | 84 |
+| South Coast Team | South | 57 |
+
+**Clara’s view**
+
+| Team name | Region | Goals reached |
+|---|---|---:|
+| North Metro Team | North | 84 |
+| South Coast Team | South | 57 |
+
+In this case, each user can only see the full details of the teams they are granted access to. The fact table is unaffected because RLS is selecting visible dimension rows rather than removing fact rows directly. This means population measures can still use the same fact table through `removefilters()` where the security design permits it.
+
+Care must be taken when masking. In some cases, the primary key itself is sensitive. For example, if the business key is a social security number or another identifying value, it should not be exposed as the relationship key. A surrogate key or non-sensitive mapping key is required.
+
+The pseudonymous approach is lighter than duplicating facts, but it is also riskier. Because the same underlying facts remain available, an informed user may infer identities from distinctive combinations of values.
+
+## Choosing an approach
+
+The anonymous and pseudonymous approaches solve the same problem in different ways.
+
+The anonymous approach duplicates the population facts and removes sensitive columns and relationship paths. It is safer and easier to reason about, but it increases model size and requires parallel population measures.
+
+The pseudonymous approach doubles dimension rows and masks sensitive values. It keeps the model smaller and preserves the same fact table. However, because the same underlying fact rows remain available, it exposes more detail than the anonymous approach.
+
+It is most useful when the identity of the row is not itself the main concern, but particular attributes need to be hidden. For example, a user may be allowed to see all traveller records and analyse their activity, but should not see sensitive values such as passport numbers, phone numbers, or personal identifiers.
+
+Both approaches can preserve unit-level interactivity. This is intentional. The goal is to keep dimensional filtering, drillthrough, and detailed comparison available while limiting exposure of sensitive attributes.
+
+This also means both approaches carry inference risk. A user may deduce identities from distinctive combinations of values, even when direct identifiers are removed or masked.
+
+If that risk is unacceptable, the required design is no longer merely anonymous or pseudonymous RLS. It becomes a summary-table problem, with specific applications of mitigation strategies. This is outside the scope of this chapter.
+
+The choice between anonymous population facts and pseudonymous dimensions is not purely technical. It reflects the organisation’s appetite for risk, governance requirements, security obligations, and expected user behaviour.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> RLS should limit access without destroying analytical context.
+>
+> DAX cannot detect RLS as an ordinary filter. Measures evaluate over the rows available after security has been applied.
+>
+> `removefilters()` cannot recover rows removed directly by RLS. Population context must be preserved through modelling design.
+>
+> RLS has two distinct tasks: limiting what users can see, and preserving population context.
+>
+> Anonymous population facts preserve wider population context by duplicating facts and removing sensitive columns and relationship paths.
+>
+> Pseudonymous dimensions preserve population context by masking sensitive dimension values while keeping the model interactive.
+>
+> Both anonymous and pseudonymous approaches preserve unit-record interactivity, but both carry inference risk.
