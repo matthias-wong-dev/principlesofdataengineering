@@ -47,10 +47,8 @@ Suppose both systems have sales and status, but `CakeV2` also has a marketing ca
 The local tables might be:
 
 - `CakeV1.Sales`
-- `CakeV1.RefSales`
 - `CakeV1.RefStatus`
 - `CakeV2.Sales`
-- `CakeV2.RefSales`
 - `CakeV2.RefStatus`
 - `CakeV2.RefCampaign`
 
@@ -131,11 +129,11 @@ Example SQL would be:
 ```SQL
 select
       v1.[Sales ID]
+    , 'CakeV1'              as [Source system]
     , v1.[Sales date]
     , sm.[Status ID]        as [Status ID]
     , -1                    as [Campaign ID]
     , v1.[Sales value]
-    , 'CakeV1'              as [Source system]
 from      CakeV1.Sales      v1
 left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV1'
                               and sm.[Source status code] = v1.[Status code]
@@ -144,11 +142,11 @@ union all
 
 select
       v2.[Sales ID]
+    , 'CakeV2'              as [Source system]
     , v2.[Sales date]
     , sm.[Status ID]        as [Status ID]
     , cm.[Campaign ID]      as [Campaign ID]
     , v2.[Sales value]
-    , 'CakeV2'              as [Source system]
 from      CakeV2.Sales      v2
 left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV2'
                               and sm.[Source status code] = v2.[Status code]
@@ -156,19 +154,24 @@ left join Cake.CampaignMap  cm on  cm.[System]             = 'CakeV2'
                               and cm.[Source campaign code] = v2.[Campaign code];
 ```
 
-The union does not preserve the system-specific status codes. It replaces them with the conformed `[Status ID]`. `CakeV1` has no campaign, so it receives the default campaign key. The resulting `Cake.Sales` table is therefore not merely a stack of two source tables. It is a conformed sales table. A sample result is:
+A sample result is:
 
-| Sales ID | Sales date | Status ID | Campaign ID | Sales value | Source system |
-|---|---|---:|---:|---:|---|
-| 10001 | 2025-06-01 | 1 | -1 | 120.00 | CakeV1 |
-| 10002 | 2025-06-03 | 2 | -1 | 340.00 | CakeV1 |
-| 20001 | 2025-06-02 | 1 | 5 | 180.00 | CakeV2 |
-| 20002 | 2025-06-05 | 4 | 7 | 95.00 | CakeV2 |
+| Sales ID | Source system | Sales date | Status ID | Campaign ID | Sales value |
+|---|---|---|---:|---:|---:|
+| 10001 | CakeV1 | 2025-06-01 | 1 | -1 | 120.00 |
+| 10002 | CakeV1 | 2025-06-03 | 2 | -1 | 340.00 |
+| 10001 | CakeV2 | 2025-06-02 | 1 | 5 | 180.00 |
+| 10002 | CakeV2 | 2025-06-05 | 4 | 7 | 95.00 |
+
+
+`CakeV1` and `CakeV2` may use overlapping [Sales ID] values, the primary key for the union is `[Sales ID], [Source system]`. A new `[Sales SK]` surrogate key may be necessary if a single-column primary key is needed.
+
+
+The union does not preserve the system-specific status codes. It replaces them with the conformed `[Status ID]`. `CakeV1` has no campaign, so it receives the default campaign key. The resulting `Cake.Sales` table is therefore not merely a stack of two source tables. It is a conformed sales table. 
 
 The final structure includes:
 
 - `Cake.Sales`—the unified transaction table
-- `Cake.RefSales`—the conformed reference for sales
 - `Cake.RefStatus`—the conformed status reference
 - `Cake.RefCampaign`—the conformed campaign reference
 
@@ -285,21 +288,45 @@ This allows comparisons such as:
 An example SQL would be 
 
 ```SQL
+with production as (
+    select
+          [Production date]
+        , [Region ID]
+        , sum([Production volume])      as [Production volume]
+        , sum([Production cost])        as [Production cost]
+        , count(distinct [Staff ID])    as [Production staff count]
+    from Cake.Production
+    group by
+          [Production date]
+        , [Region ID]
+),
+sales as (
+    select
+          [Sales date]
+        , [Region ID]
+        , sum([Sales volume])           as [Sales volume]
+        , sum([Sales value])            as [Sales value]
+        , count(distinct [Staff ID])    as [Sales staff count]
+    from Cake.Sales
+    group by
+          [Sales date]
+        , [Region ID]
+)
 select
       c.[Month start date]
     , r.[Region name]
-    , sum(p.[Production volume])   as [Production volume]
-    , sum(s.[Sales volume])        as [Sales volume]
-    , sum(p.[Production cost])     as [Production cost]
-    , sum(s.[Sales value])         as [Sales value]
-    , count(distinct p.[Staff ID]) as [Production staff count]
-    , count(distinct s.[Staff ID]) as [Sales staff count]
+    , sum(p.[Production volume])        as [Production volume]
+    , sum(s.[Sales volume])             as [Sales volume]
+    , sum(p.[Production cost])          as [Production cost]
+    , sum(s.[Sales value])              as [Sales value]
+    , sum(p.[Production staff count])   as [Production staff count]
+    , sum(s.[Sales staff count])        as [Sales staff count]
 from       Cake.RefCalendar c
 cross join Cake.RefRegion   r
-left join  Cake.Production  p  on  p.[Production date] = c.[Calendar date]
-                               and p.[Region ID]       = r.[Region ID]
-left join  Cake.Sales       s  on  s.[Sales date]      = c.[Calendar date]
-                               and s.[Region ID]       = r.[Region ID]
+left join  production       p on p.[Production date] = c.[Calendar date]
+                              and p.[Region ID]       = r.[Region ID]
+left join  sales            s on s.[Sales date]      = c.[Calendar date]
+                              and s.[Region ID]      = r.[Region ID]
 group by
       c.[Month start date]
     , r.[Region name];
