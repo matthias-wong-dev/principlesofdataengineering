@@ -1,470 +1,963 @@
 ---
 title: Filtering behaviour
 url: /docs/presenting-insights/filtering-behaviour/
-description: Examines how filtering works in Power BI and how dimensions, measures, and relationships shape user interaction with a model.
-lede: In Power BI, filtering behaviour is the heart of user interaction.
+description: Learn how Power BI filtering works through relationships, measures, visual-level filters, DAX filter context, and dimensional model design.
+lede: Filtering design is what makes a Power BI model feel intuitive—or frustrating.
 weight: 4
-draft: true
+# draft: true
 ---
 
-Filtering is the driver for an interactive user experience in Power BI. Filtering occurs when a slice of the model’s data is selected for display or calculation based on a user action.
+## Filtering as interaction design
 
-Filtering can also be complex. If used inappropriately, the model can quickly become frustrating or error prone. Consequently, data engineers need to have a deep, almost second-nature understanding of how Power BI filtering works in practice, and the options available for different scenarios.
+Filtering design is what makes a Power BI model feel intuitive—or frustrating.
 
-Newcomers to Power BI often use bidirectional relationships incorrectly. An early and deep understanding of Power BI filtering behaviour will allow data engineers to use the right configuration instead of bidirectional relationships.
+Many engineers stop too early, treating the job as complete once the correct answer is reachable through some combination of filters.
+
+That is not enough.
+
+A self-service model is not a puzzle for the user to solve. The user should not have to discover the one valid route through the model. They should be able to approach the model from different directions—starting with a date, a product, an ID, a measure, or a business process—and still receive sensible results at each step.
+
+The data engineer’s task is therefore not only to make the correct answer possible. It is to anticipate how users will try to reach that answer. More generally, it is to anticipate what buttons the user will click, and what effects the model should produce.
+
+A good dimensional model is designed around the interaction between [buttons and effects](/docs/presenting-insights/dimensional-modelling-for-ux/). Filtering is the mechanism through which this interaction takes place.
+
+This chapter explains how filtering works so the data engineer can anticipate user interaction and design the model’s response deliberately.
+
+The chapter proceeds in two parts.
+
+First, it explains the main ways filtering occurs in Power BI. These are the basic mechanisms the data engineer needs to understand: relationship filtering, common-fact filtering, non-blank measure filtering, visual-level filtering, and measure-defined filtering.
+
+Second, it applies those mechanisms to tricky modelling scenarios. These include displaying unit records, coordinating multiple business processes, cascading filters, aggregating dimension values, filter-by-having, and dynamic Type I behaviour.
+
+The purpose is not to memorise tricks. The purpose is to understand how Power BI responds when users interact with the model, so the data engineer can design those responses deliberately.
 
 ## Ways of filtering
 
-There are five common ways of filtering in Power BI:
+There are five common ways filtering appears in Power BI:
 
-- Directly through a table relationship
+- Relationship filtering
+- Common-fact filtering
+- Non-blank measure filtering
+- Visual-level filtering
+- Measure-defined filtering
 
-- Indirectly through common filtered tables
+### Relationship filtering
 
-- In a table by a non-blank measure value
+Relationship filtering is the standard case of filtering.
 
-- In a visual by a visual-level filter
+When table X filters table Y, a user who selects a value from X narrows the rows in Y based on the relationship between the two tables. In a dimensional model, the most important case is when dimensions filter facts.
 
-- On-demand through a measure formula
+The user touches the dimension. The fact responds.
 
-### Directly through a table relationship
+**Example structure of `'Product'`**
 
-This is the standard case of filtering. When a table X filters another table Y, a user who selects a value from X will narrow down to the rows in Y based on the primary key and foreign key relationship.
+| Product SK | Product name |
+|---:|---|
+| 1 | Cake |
+| 2 | Bread |
+| 3 | Pastry |
 
-The most important case of table relationship is when dimension tables filter fact tables. Dimension tables are typically small in cardinality, and the resulting relationship is highest performing.
+**Example structure of `'Sale'`**
 
-New engineers often ask, “Why do we need dimensions at all? Why not leave all the information in the fact table? It is simpler.” That is, why not rely solely on degenerate dimensions? There are three reasons for this.
+| Sale ID | Product SK |
+|---|---:|
+| S1001 | 1 |
+| S1002 | 1 |
+| S1003 | 2 |
 
-First, nonexistence is impossible to express with degenerate dimensions. For instance, if the full set of reference values are “Red”, “Blue”, and “Yellow”, but the transaction table does not have “Yellow”, then this absence cannot be communicated without a dimension that has the full list.
+If the user selects `Cake` from `'Product'`, the model filters `'Sale'` to `S1001` and `S1002`. If the user selects `Bread`, it filters to `S1003`. If the user selects `Pastry`, there are no matching sales rows.
 
-Second, a proper dimension table is important for expressiveness. If the attributes are embedded in a fact table, the set of attributes, such as demographic details, become lost in the fact. Indeed, even the grain becomes unclear when attributes are denormalised into a fact table. A user would have to read every single row to reverse engineer the entity and its grain.
+New engineers often ask, “Why do we need dimensions at all? Why not leave all the information in the fact table? It is simpler.” That is, why not rely solely on degenerate dimensions?
 
-Third, cross filtering or drill through of multiple processes are impossible with degenerate dimensions. The simplest example is that of the calendar. Without a calendar dimension, each fact table would have its own business date for its business process, and these cannot be used to compare the measures between two processes.
+There are three common problems.
 
-Similar applies to other attributes such as region or product.
+First, non-existence becomes impossible to express. If product were only stored as a degenerate column inside `'Sale'`, then `Pastry` would not exist anywhere in the model. A user would not be able to know that no pastries were sold.
 
-### Indirectly through common denominators
+Second, the business meaning becomes buried. Attributes such as region, product, demographic group, or status are no longer presented as coherent business objects. They become miscellaneous columns inside a fact table. A user would have to read every single row to reverse engineer the entity and its grain.
 
-Filtering also propagates indirectly — through shared dimensions across multiple tables. This behaviour is often missed by new engineers but is just as essential.
 
-Consider two dimension tables Dim1 and Dim2, and a fact table Fact1. Suppose Dim1 filters Fact1. Now consider two cases:
+Third, cross-filtering and drillthrough across multiple business processes become harder. A conformed dimension such as `'Calendar'`, `'Product'`, or `'Region'` can filter several facts. A degenerate column inside one fact cannot naturally serve as a shared point of interaction.
 
-- If Dim2 does not filter Fact1, dragging Dim1 [X] and Dim2 [Y] into the same visual causes an error: “Can’t determine a relationship”. In this case, Power BI does not produce a cross product of all results.
 
-- If Dim2 does filter Fact1, Power BI returns only combinations of [X] and [Y] that share a row in Fact1. This behaviour is visible in the DAX query via the
+### Common-fact filtering
 
-Performance Analyzer.
+Filtering also appears indirectly through common filtered tables.
 
-If multiple fact tables (Fact2, Fact3, Fact4, etc) are filtered by both Dim1 and Dim2, then a visual containing Dim1 [X] and Dim2 [Y] will show combinations where any fact table has a matching row.
+This behaviour is often missed by new engineers, but it is essential to the intuitive experience of Power BI. When two dimensions both filter the same fact, Power BI can use the fact to determine which combinations of dimension values are valid.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT PERFORMANCE ANALYZER]`.
+Consider a simple sales model.
 
-This “upward” filtering from facts to dimensions enables the intuitive experience of a dimensional model. It is why dimensions alone can serve as the interface, even when facts are hidden. Mastering this behaviour is central to dimensional modelling.
+**Example structure of `'Product'`**
 
-### In a table by a non-blank measure value
+| Product SK | Product name |
+|---:|---|
+| 1 | Cake |
+| 2 | Bread |
+| 3 | Pastry |
 
-The previous method relies on implicit filtering via relationships. In simple models, this suffices. In complex models with five or more fact tables, it may not.
+**Example structure of `'Region'`**
 
-Measures can be used to explicitly control filtering.
+| Region SK | Region name |
+|---:|---|
+| 1 | North |
+| 2 | South |
+| 3 | West |
 
-Suppose Dim1 filters Fact1, and a measure [Measure1] counts rows in Fact1. Dragging Dim1 [X] into a table visual shows all values of [X]. But when [Measure1] is added, only values of [X] with a nonblank [Measure1] remain.
+**Example structure of `'Sale'`**
 
-If [Measure2], [Measure3], etc. are added, the visual retains only values of [X] where any measure returns a value.
+| Sale ID | Product SK | Region SK | Sales amount |
+|---|---:|---:|---:|
+| S1001 | 1 | 1 | 100 |
+| S1002 | 1 | 2 | 150 |
+| S1003 | 2 | 1 | 200 |
 
-This mirrors fact table filtering, but with greater control. The data engineer defines which values are retained, rather than relying on implicit row existence.
+If a visual contains `'Product'[Product name]` and `'Region'[Region name]`, Power BI returns only product-region combinations that exist in `'Sale'`.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT PERFORMANCE ANALYZER]`.
+The fact table acts as the common filtered table that makes the dimension combination valid.
 
-### In a visual by a visual-level filter
+The result would be:
 
-Sometimes the measure cannot be placed directly in the visual, as with slicers, or doing so would interfere with layout.
+| Product name | Region name |
+|---|---|
+| Cake | North |
+| Cake | South |
+| Bread | North |
 
-In these cases, the report developer can apply a visual level filter using the measure value. This allows filtering without altering the visual’s structure.
+`Pastry` does not appear because there is no matching row in `'Sale'`. `West` does not appear because there is no matching row in `'Sale'`. The missing combinations are not shown because they do not exist in the common fact.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
 
-If possible, this method should be avoided. The evaluation cost can be significant on a visual with a large number of rows for which to calculate the measure value.
+This common-fact behaviour is part of what makes a dimensional model feel natural. Users can place dimension fields together, and the model silently removes combinations that do not exist.
 
-### On-demand through a measure formula
+If two dimensions do not share any filtered fact table, Power BI cannot determine the valid combinations between them. In that case, the visual may return the Power BI error message: `Can't determine relationships between the fields.`
 
-The previous methods allow the report developer to control which dimensional values are displayed in a visual. The prototypical context is the columns in a table visual, but also the columns and rows in a matrix visual.
+If multiple fact tables are filtered by both dimensions, Power BI shows combinations where any fact table has a matching row. This behaviour is powerful, but it also means the data engineer must think carefully about which facts share which dimensions.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+<!-- TODO: Add Performance Analyzer screenshot showing the DAX query generated for common-fact filtering. -->
 
-There are occasions when the data engineer needs to apply filters directly on the data that feeds a measure. A measure, unlike dimension values, is not a fixed value in the data. It is defined by a formula and returns only one value at a time. The prime example is a visual card.
+This “upward” filtering from facts to dimensions enables the intuitive experience of a dimensional model. It is why dimensions alone can serve as the interface, even when facts are hidden. Mastering this behaviour is central to designing good Power BI models.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+### Non-blank measure filtering
 
-Usually, the need to apply a specific measure level filter arises because the standard model relationships do not support the intended outcome. In this circumstance, the filtering context must be created inside the measure definition.
+The previous method relies on implicit filtering through relationships and common facts. In simple models, this is often enough. In complex models with several fact tables, it may not be.
 
-Power BI supports this through DAX expressions such as USERELATIONSHIP and CROSSFILTER. These expressions allow the data engineer to activate a relationship between tables on demand, even if that relationship is not defined in the model schema.
+Measures can also control what appears in a visual.
+
+Suppose `'Product'` filters `'Sale'`, and `[Total sales amount]` sums the sales amount in `'Sale'`.
+
+**Visual before adding `[Total sales amount]`**
+
+| Product name |
+|---|
+| Cake |
+| Bread |
+| Pastry |
+
+**Visual after adding `[Total sales amount]`**
+
+| Product name | Total sales amount |
+|---|---:|
+| Cake | 250 |
+| Bread | 200 |
+
+`Pastry` disappears because `[Total sales amount]` is blank for that product in the current filter context.
+
+This is non-blank measure filtering. When a measure is added to a table or matrix visual, Power BI tends to retain rows where the measure returns a non-blank value.
+
+If several measures are added, the visual may retain rows where any measure returns a value.
+
+This mirrors fact table filtering, but gives the data engineer more control. Instead of relying only on row existence in a fact table, the data engineer can define the measure logic that determines which values should remain visible.
+
+<!-- TODO: Add Performance Analyzer screenshot showing a visual filtered by non-blank measure value. -->
+
+### Visual-level filtering
+
+Sometimes a measure cannot be placed directly in the visual, or doing so would interfere with the visual’s layout.
+
+For example, a slicer cannot simply display a helper measure as one of its fields. A table visual may also need to be filtered by a measure without showing that measure to the user.
+
+In these cases, the report developer can apply a visual-level filter using the measure value.
+
+For example, `[Has sales]` may return `1` when there is at least one sale in the current context. A slicer on `'Product'[Product name]` can then use `[Has sales]` as a visual-level filter so that only products with sales appear.
+
+<!-- TODO: Add screenshot showing measure used as a visual-level filter. -->
+
+This method is useful, but should be used with care. The evaluation cost can be significant when the visual has a large number of possible values and the measure must be calculated for each one.
+
+### Measure-defined filtering
+
+The previous methods control which dimension values appear in a visual. Sometimes the data engineer needs to apply filters directly inside the measure calculation itself.
+
+This is measure-defined filtering.
+
+Power BI supports this through DAX expressions such as `userelationship` and `crossfilter`. These expressions allow the data engineer to activate a relationship, modify a relationship direction, apply a virtual relationship, or otherwise change the filter context for the duration of the calculation.
+
+Consider a sales model where `'Sale'` has both `[Order date]` and `[Delivery date]`.
+
+**Example structure of `'Calendar'`**
+
+| Date | Month name |
+|---|---|
+| 2024-01-15 | January |
+| 2024-01-20 | January |
+| 2024-02-05 | February |
+
+**Example structure of `'Sale'`**
+
+| Sale ID | Product SK | Order date | Delivery date | Sales amount |
+|---|---:|---|---|---:|
+| S1001 | 1 | 2024-01-15 | 2024-01-20 | 100 |
+| S1002 | 1 | 2024-01-16 | 2024-02-05 | 150 |
+| S1003 | 2 | 2024-02-01 | 2024-02-06 | 200 |
+
+Suppose `'Calendar'[Date]` has an active relationship to `'Sale'[Order date]` and an inactive relationship to `'Sale'[Delivery date]`.
+
+A normal measure such as `[Total sales amount]` responds to the active relationship. If the user selects January, the measure returns sales ordered in January.
+
+```DAX
+Total sales amount =
+sum ( 'Sale'[Sales amount] )
+```
+
+But the user may also need sales delivered in January. The data engineer can define a second measure that activates the delivery-date relationship only for that calculation.
+
+```DAX
+Total delivered sales amount =
+calculate (
+    [Total sales amount],
+    userelationship ( 'Calendar'[Date], 'Sale'[Delivery date] )
+)
+```
+
+With the example above, selecting January gives `[Total sales amount] = 250`, because `S1001` and `S1002` were ordered in January. The delivered-sales measure gives `100`, because only `S1001` was delivered in January.
+
+The model relationship does not permanently change. The filtering path changes only while `[Total delivered sales amount]` is being evaluated.
+
+
+<!-- TODO: Add screenshot showing measure-defined filtering in a card visual. -->
+
+Measure-defined filtering is powerful because it allows precise behaviour without permanently changing the model. It is also dangerous because the filtering rule becomes hidden inside the measure. Used well, it solves specific interaction problems. Used carelessly, it creates a model where results are technically correct but difficult to explain.
 
 ## Filtering scenarios
 
-The five filtering patterns above can be combined to support a wide range of interactivity goals, all within the standard dimensional model framework of dimensions filtering facts using single directional relationships.
+The five filtering mechanisms above can be combined to support a wide range of interactivity goals while preserving the standard dimensional model pattern: dimensions filter facts using single-direction relationships.
 
-### Displaying unit records (single business process)
+The scenarios below are not exhaustive. Their purpose is to show how filtering design supports user interaction in real models.
 
-A common requirement is for business users to view all the details of a business process. Suppose we have a business process represented by the 'Sales' fact table. In the ideal setup, the 'Sales' fact table is hidden and represented through its dimensions and a single measure.
+### Displaying unit records for a single business process
 
-The set up is as follows:
+A common requirement is to show one row per business transaction.
 
-- A fact table ‘Sales’
+The obvious approach is to expose the fact table. For example, if the transaction is a sale, the user might expect to drag fields directly from `'Sale'`.
 
-- The ID dimension 'Sales ID' with business key [Sales order number]
+This is usually the wrong interface.
 
-- The calendar dimension 'Sales calendar'
+A better approach is to hide `'Sale'` and let dimensions and measures reconstruct the transaction view.
 
-- The business dimension 'Sales product'
+The point of hiding the fact table is not tidiness. It is to protect the user experience. If users interact directly with the fact table, they can produce technically valid but strange results. If they interact through dimensions and measures, the model is much more likely to behave sensibly no matter which direction they approach it from.
 
-- The measure [Total sales amount] which sums up the sales amount in Sales
 
-When you place dimension fields together with 'Sales ID'[Sales order number], Power BI returns only combinations of dimension values that correspond to existing rows in the fact. Since 'Sales ID'[Sales order number] is the business key for a sales transaction, it uniquely identifies the row in 'Sales'. Adding 'Sales ID'[Sales order number], 'Sales calendar'[Sales date], and 'Sales product'[Product name] returns the complete transaction context for each sale.
+#### The model setup
 
-Sales also have an amount recorded in 'Sales'[Sales amount] on the fact table. A simplistic approach is to place this column on the canvas, treating it like a degenerate dimension. A better approach is to use the measure [Total sales amount]. Because 'Sales ID'[Sales order number] uniquely identifies a single row, [Total sales amount] returns the correct result as the sum of that one row in the current context, which is the same numeric value as 'Sales'[Sales amount] for that transaction.
+Suppose there is a business process represented by the `'Sale'` fact table.
 
-While this sounds complex in the backend, it is seamless for the user. In the ideal setup, the fact table and thus 'Sales'[Sales amount] is hidden. The user only sees the measure [Total sales amount] and does not see both the measure and the raw 'Sales'[Sales amount] column, which removes ambiguity.
+The setup is as follows:
 
-This is far superior to exposing both the measure and the raw column. In this instance, both would show the same number for each transaction, which encourages users to treat them as interchangeable. In other contexts such as charts, aggregations, and time intelligence, only the measure behaves correctly. That inconsistency is confusing when something appears to work in one visual but not in another. With this setup, [Total sales amount] behaves intuitively across all situations, so users get consistent results without needing to remember special cases.
+- A fact table `'Sale'`
+- An ID dimension `'Sales ID'` with `[Sales order number]`
+- A calendar dimension `'Sales calendar'`
+- A business dimension `'Sales product'`
+- A measure `[Total sales amount]` that sums the sales amount in `'Sale'`
 
-It is important to consider how the user experience changes depending on the order in which fields are selected:
+**Example structure of `'Sale'`**
 
-- First 'Sales ID'[Sales order number], then 'Sales calendar'[Sales date]
+| Sales order number | Sales date | Product SK | Sales amount |
+|---|---|---:|---:|
+| SO1001 | 2024-01-15 | 1 | 100 |
+| SO1002 | 2024-01-16 | 2 | 150 |
 
-This immediately gives the valid combination of sales order numbers and sales date because the combination of dimension values is filtered by their common facts (second method of filtering). This gives desired unit-level transaction record because the business key selects the correct grain.
+**Example structure of `'Sales ID'`**
 
-- First 'Sales ID'[Sales order number], then [Total sales amount]
+| Sales order number |
+|---|
+| SO1001 |
+| SO1002 |
 
-This also immediately gives the unit-level transaction record. However, this time it is not because of the common fact (second method of filtering), but because [Total sales amount] returns a non-blank measure value for the [Sales order number] (third method of filtering). If there are sales order numbers without a sales amount (for example, unconfirmed sales), those order numbers will not appear. This is, for most use cases, the desired outcome.
+**Example structure of `'Sales calendar'`**
 
-- First [Total sales amount], then 'Sales product'[Product name]
+| Sales date | Month name |
+|---|---|
+| 2024-01-15 | January |
+| 2024-01-16 | January |
 
-This initially returns the total sales amount for the entire model as a single number, then breaks it down by product. When the user adds 'Sales ID'[Sales order number], the table expands to the unit record. In other words, the user experience is “correct” at every step.
+**Example structure of `'Sales product'`**
 
-What we see is that, regardless of the sequence of field selection, the model produces sensible business results at every step. This is the power of a properly designed dimensional model focused on dimensions and measures, with single-direction filters on facts.
+| Product SK | Product name |
+|---:|---|
+| 1 | Cake |
+| 2 | Bread |
 
-This seamless experience would not occur if the user had selected the degenerate 'Sales'[Sales amount] instead of [Total sales amount] in the last scenario. The user would first see a distinct list of sales amount values, then an incomprehensible combination of sales amount and product, and only after adding 'Sales ID'[Sales order number] would the table make sense. The experience would be jarring rather than seamless. This is another reason to hide 'Sales' altogether and avoid exposing any degenerate numeric values.
 
-There is also an additional consideration of what happens when there are existing filters on the canvas, such as a filter on product name or date. While all the previous sequences still work, the most seamless outcome occurs when the user starts with the measure [Total sales amount], as in the last sequence. We do not expand on this here and leave it as an exercise for the reader.
+#### Reconstructing the transaction row
 
-Even though this is a simple use case of presenting transaction records for a single business process, there is careful modelling work behind the scenes to create a seamless experience that caters to a staggering number of possibilities. All these possibilities are elegantly handled if the data engineer uses the best practice of focusing on dimensions and hiding facts.
+The user should reach the sale through:
 
-In this example, ‘Sales ID’[Sales order number] is a single column business key. If the business key were multi-columns, then all columns need to be used.
+- `'Sales ID'[Sales order number]`
+- `'Sales calendar'[Sales date]`
+- `'Sales product'[Product name]`
+- `[Total sales amount]`
 
-### Displaying unit records (two business processes)
+Together, these fields give the user the full sale record without exposing the fact table itself.
 
-Continuing with the previous example, consider the situation where sales can be refunded, modelled as follows:
+This works because Power BI returns only combinations of dimension values that correspond to existing rows in `'Sale'` (common-fact filtering).  Since `'Sales ID'[Sales order number]` uniquely identifies the sales transaction, adding `'Sales ID'[Sales order number]`, with either `'Sales calendar'[Sales date]` or `'Sales product'[Product name]` downfilters `'Sales'` to the transactions that exist.
 
-- A fact table 'Refund'
+#### Why use a measure for the amount?
 
-- The calendar dimension 'Refund calendar'
+`'Sale'` has an amount recorded in `[Sales amount]`. A simplistic approach is to expose `'Sale'[Sales amount]` to the user as though it were an ordinary field. Instead, a better approach is to expose `[Total sales amount]`.
 
-- Refunds can be tracked to the original sales order number and are filtered by all dimensions that filter 'Sales'
+Because `'Sales ID'[Sales order number]` uniquely identifies one row, `[Total sales amount]` returns the sum of that one row in the current context—that is, the same numeric value as `'Sale'[Sales amount]` at the transaction level (non-blank measure filtering).
 
-- There is no business key for a refund, and hence no 'Refund ID'
 
-- A measure [Total refund amount] which sums the refund amount. Because there can be partial refunds, this does not equal [Total sales amount] even for the same sales order
+At the sales order level, the measure returns the value of one transaction. At the product level, the same measure aggregates all matching transactions. The user does not need to choose between a transaction amount and an aggregate amount. The measure behaves correctly in both situations. For example:
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+| Current context | Result |
+|---|---:|
+| `SO1001` | `[Total sales amount] = 100` |
+| `Janurary` | `[Total sales amount] = 250` |
 
-In this model, the user may want to see the transactions for sales, for refund, and sometimes for both simultaneously.
+This sounds complex in the backend, but it is seamless for the user. In the ideal setup, `'Sale'` and `'Sale'[Sales amount]` are hidden. The user sees `[Total sales amount]`, not both the measure and the raw fact column.
+
+This is far superior to exposing both. At the transaction level, both may show the same number, which encourages users to treat them as interchangeable. But in charts, aggregations, and time intelligence, only the measure behaves correctly. That inconsistency is confusing. Something appears to work in one visual, then fails in another.
+
+With this setup, `[Total sales amount]` behaves consistently across situations. The user gets sensible results without needing to remember special cases.
+
+#### Why this remains intuitive
+
+The benefit is that the model behaves sensibly from multiple directions. The user can start with the sales order number, the date, the product, or the measure. In each case, Power BI’s filtering behaviour narrows the model toward valid sales records.
+
+First, suppose the user selects `'Sales ID'[Sales order number]`, then `'Sales calendar'[Sales date]`.
+
+Power BI immediately gives the valid combination of sales order numbers and sales dates because the dimension values are filtered by their common fact. This returns the desired transaction record because the business key selects the correct grain.
+
+Second, suppose the user selects `'Sales ID'[Sales order number]`, then `[Total sales amount]`.
+
+This also gives the transaction record. This time, it is not only because of the common fact. It is also because `[Total sales amount]` returns a non-blank value for the sales order number. If there are sales order numbers without a sales amount, such as unconfirmed sales, those order numbers will not appear. For most use cases, that is the desired outcome.
+
+Third, suppose the user selects `[Total sales amount]`, then `'Sales product'[Product name]`.
+
+The model first returns the total sales amount for the whole model as a single number, then breaks it down by product. When the user adds `'Sales ID'[Sales order number]`, the table expands to unit records.
+
+The experience is correct at every step.
+
+This is the power of a properly designed dimensional model focused on dimensions and measures. Regardless of the sequence of field selection, the model produces sensible business results.
+
+This seamless experience would not occur if the user selected the degenerate `'Sale'[Sales amount]` instead of `[Total sales amount]`. The user would first see a distinct list of sales amount values, then a confusing combination of sales amount and product, and only after adding `'Sales ID'[Sales order number]` would the table make sense.
+
+The experience would be jarring rather than seamless.
+
+
+Even this simple use case requires careful modelling work. The model must cater for a large number of possible user interaction sequences. These possibilities are handled elegantly when the data engineer focuses on dimensions and measures, and hides facts.
+
+In this example, `'Sales ID'[Sales order number]` is a single-column business key. If the business key has multiple columns, all columns need to be used.
+
+### Displaying unit records for two business processes
+
+The single-process case is difficult enough. The two-process case introduces a new problem: different business processes may share some controls but not others.
+
+Continuing the previous example, suppose sales can be refunded.
+
+The model contains:
+
+- A fact table `'Sale'`
+- A fact table `'Refund'`
+- A shared ID dimension `'Sales ID'`
+- A shared product dimension `'Sales product'`
+- A sales calendar dimension `'Sales calendar'`
+- A refund calendar dimension `'Refund calendar'`
+- A measure `[Total sales amount]`
+- A measure `[Total refund amount]`
+
+**Example structure of `'Sale'`**
+
+| Sales order number | Sales date | Product SK | Sales amount |
+|---|---|---:|---:|
+| SO1001 | 2024-01-15 | 1 | 100 |
+| SO1002 | 2024-01-16 | 2 | 150 |
+| SO1003 | 2024-01-17 | 1 | 200 |
+
+**Example structure of `'Refund'`**
+
+| Sales order number | Refund date | Refund amount |
+|---|---|---:|
+| SO1001 | 2024-01-20 | 50 |
+| SO1001 | 2024-01-20 | 50 |
+| SO1003 | 2024-01-22 | 75 |
+
+The dimensions relate to the two facts differently.
+
+Sales and refunds share a sales order and product. They do not share the same process date. Sales occur on sales dates; refunds occur on refund dates. Sales are usually one row per order; refunds may have multiple rows per order.
+
+
+| Dimension | `'Sale'` | `'Refund'` | Meaning |
+|---|---|---|---|
+| `'Sales ID'` | 1 → * | 1 → * | Shared sales order identifier |
+| `'Sales product'` | 1 → * | 1 → * | Product sold and later refunded |
+| `'Sales calendar'` | 1 → * |  | Date of sale |
+| `'Refund calendar'` |  | 1 → * | Date of refund |
+
+The data engineer therefore has to anticipate which process the user is trying to display. Showing sales, showing refunds, and showing sales with refunds are three different interaction problems.
+
+This is the source of the complexity.
+
+Some controls are shared. `'Sales ID'` and `'Sales product'` can filter both sales and refunds.
+
+Some controls are process-specific. `'Sales calendar'` filters sales. `'Refund calendar'` filters refunds.
+
+The model therefore behaves differently depending on what the user is trying to display:
+
+- Sales transactions
+- Refund transactions
+- Sales and refund information together
 
 ### Displaying sales
 
-When displaying records for sales, everything works as if there were only the 'Sales' fact table. This is because Power BI shows combinations of dimension values if there are valid rows in any of the fact tables they share. Since every refund comes from a sale, the 'Sales' fact table is a superset of 'Refund', so adding the refund fact table does not cause an issue.
+When displaying sales records, everything works as if there were only the `'Sale'` fact table.
 
-The fact that 'Sales' is a superset of 'Refund' is essential. If there were [Sales order number] values in 'Refund' that do not exist in 'Sales', then selecting 'Reporting calendar'[Reporting date] and 'Sales ID'[Sales order number] would not correctly identify the list of sales transactions.
+This is because every refund comes from a sale. `'Sale'` is therefore a superset of `'Refund'`. Adding `'Refund'` to the model does not interfere with the display of sales transactions.
 
-Furthermore, because filters are single-direction, even if the report canvas has a filter on 'Refund calendar', this filter does not interfere with the presentation of sales transactions. This would not be the case if there were bidirectional filters, which would return unexpected results.
+The superset relationship matters. If there were sales order numbers in `'Refund'` that did not exist in `'Sale'`, then selecting `'Sales calendar'[Sales date]` and `'Sales ID'[Sales order number]` would not correctly identify the list of sales transactions.
+
+Single-direction filters also matter. If the report canvas has a filter on `'Refund calendar'`, that filter does not interfere with the presentation of sales transactions because `'Refund calendar'` filters `'Refund'`, not `'Sale'`.
+
+This would not be true if the model used bidirectional filters carelessly. The refund date could unexpectedly affect sales visuals.
 
 ### Displaying refunds
 
-When displaying records for refunds, the user is interested in [Total refund amount], but it is also necessary to display the sales context of 'Sales ID'[Sales order number] and 'Sales product'[Product name]. If the user selects the [Total refund amount] column first, this would return the total measure value for the entire dataset and then adding the sales attribute dimensions would break this number down until the ID dimension is selected to return the unit-record transaction.
+When displaying refund records, the user is interested in `[Total refund amount]`, but they may also need the sales context, such as `'Sales ID'[Sales order number]` and `'Sales product'[Product name]`.
 
-If the user selects sales attributes first, Power BI displays the full list of sales orders and their products, regardless of whether they were refunded. When the user adds either 'Refund calendar'[Refund date] or the [Total refund amount] measure, the table filters down to refund transactions. This happens because these attributes are linked only to the 'Refund' table, not 'Sales'.
+While the outcome—displaying refund—is the same, the user may come from two angles: starting with refund information, or starting from sales information. Both need to work. In a properly designed dimensional model, that is the case.
 
-Whether the user selects the sales attribute first, and then the unique refund attributes or in the reverse order, a dimensional model gives a seamless and intuitive experience for the user.
+If the user selects `[Total refund amount]` first, the model returns the total refund amount for the whole dataset (non-blank measure filtering). Adding sales attributes breaks that number down. Adding the relevant ID dimension returns unit-level records.
 
-Nevertheless, the situation is not so simple as it appears. Consider a case where a sales order of $100 is refunded in two partial refunds of $50 on the same day. Because there is no primary key for refunds, the refund for that sales order appears as a single transaction with [Total refund amount] = $100, rather than two rows of $50. For most scenarios, this may be sufficient, but in some cases, it is not.
+If the user selects sales attributes first, Power BI initially displays the list of sales orders and products, regardless of whether they were refunded. When the user adds either `'Refund calendar'[Refund date]` or `[Total refund amount]`, the table filters down to refund transactions. The former because of common-fact filtering, the latter because of non-blank measure filtering. And both happens because those fields are linked to `'Refund'`.
 
-When it is necessary to see each transaction row as in the business process, the solution is to create a key that distinguishes each refund transaction. One option is to create a surrogate key [Refund SK], a unique integer for each refund, and expose this as 'Refund ID'[Refund SK]. However, this is not preferable for two reasons:
+Whether the user starts with the sales attributes or the refund-specific fields, the dimensional model gives a sensible path.
 
-- [Refund SK] is high cardinality, increasing model size due to the 'Refund ID' dimension and relationship columns.
+However, the situation is more complicated than it first appears.
 
-- [Refund SK] has no natural business meaning and would require additional learning curve.
+Suppose a sales order of `$100` (`SO1001` in the example) is refunded in two partial refunds of `$50` on the same day. Because there is no primary key for refunds, the refund for that sales order may appear as a single transaction with `[Total refund amount] = 100`, rather than two rows of `$50`.
 
-A better approach is to create a [Refund number], which is a sequence number for each refund action for a sales order, to form a composite primary key of [Sales order number] and [Refund number]. This effectively identifies each refund. The [Refund number] should be exposed 'Refund ID'[Refund number], which is a distinct list of integers with the maximum number equal to the highest number of refunds in a sale. This is a partial ID dimension because it has one part of the full key to identify a refund. This dimension is low cardinality, has minimal resource impact, and is natural for users. From the user’s perspective:
+For many scenarios, showing the total refund amount, regardless of the partial breakdowns, may be sufficient. In some cases, it is not.
 
-- Using [Total refund amount] gives the refund value for the transaction.
+When the user must see each refund action as a separate transaction, the data engineer needs a key that distinguishes each refund transaction.
 
-- Adding 'Refund ID'[Refund number] breaks this down into separate refund transactions.
+One option is to create `[Refund SK]`, a unique integer for each refund, and expose it as `'Refund ID'[Refund SK]`. This is usually not preferable:
 
-This is perfectly natural for the user where every step returns a meaningful result.
+- `[Refund SK]` is high cardinality, increasing model size through the `'Refund ID'` dimension and relationship columns.
+- `[Refund SK]` has no natural business meaning and creates an additional learning burden for users.
 
-The use of the measure [Total refund amount], rather than the degenerate ‘Refund’[Refund amount], is essential for correct result. Suppose the user selects the raw value 'Refund'[Refund amount] instead. In the absence of a refund primary key, Power BI would display the previous case as one single row of $50 for the sales order—an incorrect result. This is yet another example of why exposing degenerate numeric columns is problematic and why the fact tables are better hidden.
+A better approach is often to create `[Refund number]`, a sequence number for each refund action within a sales order. The composite key becomes `[Sales order number]` and `[Refund number]`.
 
-### Displaying both sales and refund
+`[Refund number]` can be exposed through `'Refund ID'[Refund number]`. This is a partial ID dimension because it supplies one part of the full key needed to identify a refund.
 
-The user may want to see details of the sales and refund business processes simultaneously. There are three possibilities:
+This dimension is low cardinality, has minimal model-size impact, and is natural for users.
 
-- The processes displayed side by side
+From the user’s perspective:
 
-- The sales transaction with supplementary details about refund
+- `[Total refund amount]` gives the refund value for the transaction.
+- Adding `'Refund ID'[Refund number]` breaks the sale into separate refund actions.
 
-- The refund transaction with the original sales amount
+This is natural at every step.
 
-Displaying the refund and sales processes side by side on the same report page is straightforward.
+The use of `[Total refund amount]`, rather than the degenerate `'Refund'[Refund amount]`, is essential. Suppose the user selects the raw value `'Refund'[Refund amount]` instead. In the absence of a refund primary key, Power BI may display one row of `$50` for the sales order rather than the correct total of `$100`.
 
-Suppose there is a table visual for sales with the columns:
+This is another example of why degenerate numeric columns are problematic and why fact tables are better hidden.
 
-- 'Sales ID'[Sales order number]
+### Displaying sales and refunds together
 
-- 'Sales product'[Product name]
+The user may want to see sales and refund business processes simultaneously. This is not one problem. There are three common intentions:
 
-- 'Sales calendar'[Sales date]
+- Show the sales and refund processes side by side.
+- Show sales transactions with supplementary refund detail.
+- Show refund transactions with the original sales amount.
 
-- The measure [Total sales amount]
+Each intention has a different grain and therefore a different filtering problem.
 
-And a table visual for refund with the columns:
+#### Side-by-side visuals
 
-- 'Sales ID'[Sales order number]
+Displaying sales and refunds side by side on the same report page is the simplest case.
 
-- 'Sales product'[Product name]
+Suppose there is a table visual for sales with:
 
-- 'Refund calendar'[Refund date]
+- `'Sales ID'[Sales order number]`
+- `'Sales product'[Product name]`
+- `'Sales calendar'[Sales date]`
+- `[Total sales amount]`
 
-- The measure [Total refund amount]
+And a table visual for refunds with:
 
-These two tables work well because of the dimensional model design.
+- `'Sales ID'[Sales order number]`
+- `'Sales product'[Product name]`
+- `'Refund calendar'[Refund date]`
+- `[Total refund amount]`
 
-If there is a slicer on 'Sales product'[Product name], and the user selects a particular product name, then both visuals filter down to that product.
+These two tables work well because each visual keeps its own business-process grain.
 
-Similarly, if there is a slicer on 'Sales ID'[Sales order number], the user can look up a specific sales order number and retrieve details of both the sale and any refund. In addition, a user can click on a row in the sales table and cross-filter to any refund. This works because 'Sales ID' is a conformed dimension for both Sales and Refund facts.
+**Shared dimensions behave well.**
 
-For the business user, this is exceedingly convenient navigating unit-records. This is why the ID dimension is one of the most powerful dimensions and an indicator of a good model. The same cannot be achieved if [Sales order number] were used as a degenerate dimension. If degenerate dimensions were used, the experience would be highly frustrating for the user because none of the filtering would work as expected.
+If there is a slicer on `'Sales product'[Product name]`, both visuals filter down to the selected product.
 
-The user experience is perfect when operating on the conformed dimensions 'Sales ID' and 'Sales product'. However, it becomes complicated with the two calendar dimensions: 'Sales calendar' and 'Refund calendar'.
+If there is a slicer on `'Sales ID'[Sales order number]`, the user can look up a specific sales order and retrieve details of both the sale and any refund.
 
-Users expect to slice by time. Neither calendar works perfectly:
+A user can also click on a row in the sales table and cross-filter to any refund. This works because `'Sales ID'` is a conformed dimension for both `'Sale'` and `'Refund'`.
 
-- A slicer on 'Refund calendar' has no effect on the sales table because it does not filter the Sales fact.
+For the business user, this is extremely convenient. It is one reason the ID dimension is one of the most powerful dimensions and an indicator of a good model.
 
-- A slicer on 'Sales calendar' correctly filters the sales table, but for the refund table, it returns refunds for products sold on that date—not refunds that occurred on that date.
+The same experience cannot be achieved if `[Sales order number]` is used only as a degenerate dimension inside `'Sale'`. If degenerate dimensions are used, the filtering experience becomes frustrating because the shared point of interaction is missing.
 
-In simple examples, users may interpret this correctly. In real-world scenarios with multiple dates, this nuance is often difficult to understand. In the worst case, it would silently mislead users.
+**Process-specific dimensions are harder.**
 
-The solution is to create a role-playing 'Reporting calendar' that links [Reporting date] to both 'Sales'[Sales date] and 'Refund'[Refund date]. When used as a slicer, both tables return rows for that date. This works because the selection filters the Sales and Refund facts directly (first method of filtering), and then the visuals filter out combinations without matching fact rows (second method of filtering). This chain of filtering behind the scenes is responsible for creating a seamless experience for the user.
+The user experience is seamless when operating on conformed dimensions such as `'Sales ID'` and `'Sales product'`.
 
-If, instead of having two tables side-by-side, the user wants a single table of sales transactions with refund amount, it suffices to use the sales table columns above and add [Total refund amount] as an additional column. The table visual then has two measures [Total sales amount] and [Total refund amount]. The result is that:
+It becomes more complicated with the process-specific calendar dimensions.
 
-- All sales transactions display as normal, with the [Total sales amount]
+Users expect to slice by time. But neither calendar works perfectly in every context:
 
-- Rows with refunds show a value in [Total refund amount]; others remain blank.
+- A slicer on `'Refund calendar'` has no effect on the sales table because it does not filter `'Sale'`.
+- A slicer on `'Sales calendar'` correctly filters the sales table, but in the refund table, it returns refunds for products sold on that date—not refunds that occurred on that date.
 
-The outcome works because Power BI displays rows where any measure is non-blank (third method of filtering). In addition, if a refund exists without a sales amount, the row stands out with a blank [Total sales amount] and a non-blank [Total refund amount].
+In simple examples, users may interpret this correctly. In real-world scenarios with multiple dates, this nuance is often difficult to understand. In the worst case, it silently misleads users.
 
-However, the user cannot add 'Refund calendar'[Refund date] to this visual.
+One solution is to create a role-playing `'Reporting calendar'` that links `[Reporting date]` to both `'Sale'[Sales date]` and `'Refund'[Refund date]`.
 
-Technically, this dimension relates only to Refund, not Sales. The business interpretation for this is because one sale can have multiple refunds on different days, and therefore it is not logically correct to add the refund date when the intent is to display one row per sales. If displaying refund dates is necessary, the data engineer can create a measure [Sales refund dates] that returns the unique refund date if there is one, or concatenates distinct dates if there are multiple.
+When used as a slicer, both tables return rows for the selected date. This works because the selection filters the sales and refund facts directly, and the visuals then filter out combinations without matching fact rows.
 
-The scenario with displaying sales does not mirror to refunds. Adding [Total sales amount] to the refund table causes Power BI to return incorrect results by cross-joining sales and refunds. This happens because 'Refund calendar'[Refund date] relates only to Refund and does not filter the Sales fact. There is no valid relationship path for [Total sales amount] to work.
+The chain of filtering behind the scenes creates a seamless experience for the user.
 
-Thus, users expect to drag [Total sales amount] into the refund table and see the original sales amount but instead get cross-join of rows. This is one of the situations where the default dimensional model is not intuitive out of the box and requires additional tuning.
+#### Sales with refund details
 
-There are multiple solutions while staying within the parameters of dimensional modelling:
+If the user wants a single table of sales transactions with refund amount, the visual should remain at the sales grain.
 
-- Define [Total sales amount] to behave differently depending on context using
+Use the sales table columns and add `[Total refund amount]`.
 
-DAX functions like TREATAS.
+The table visual then has two measures:
 
-- Denormalise 'Sales'[Sales amount] into the Refund table as [Sales amount before refund]. This remains intuitive because a keyword search for “sales amount” shows both measures. Clear naming and display folders grouped by business process help disambiguate.
+- `[Total sales amount]`
+- `[Total refund amount]`
 
-Since the Refund fact may have multiple rows per sale, [Sales amount before refund] is not a simple sum. The DAX is more complex and is explained in the Designing measures chapter.
+The result is:
 
-The first option of adjusting [Total sales amount] gives the most seamless experience for the user at a complexity and performance penalty for the measure itself. It is not advisable to complicate such a core business measure to satisfy a narrow use case.
+- All sales transactions display with `[Total sales amount]`.
+- Rows with refunds show a value in `[Total refund amount]`.
+- Rows without refunds show a blank refund amount.
 
-The second option adds a more narrowly defined [Sales amount before refund] measure to the model. The measure is unlikely to be useful in other scenarios.
+This works because Power BI displays rows where any measure is non-blank.
 
-However, it is more explicit, remains intuitive for the business, and maintains lower DAX complexity overall.
+In addition, if a refund exists without a sales amount, the row stands out with a blank `[Total sales amount]` and a non-blank `[Total refund amount]`.
 
-### Displaying unit records (three or more business processes)
+However, the user cannot simply add `'Refund calendar'[Refund date]` to this sales-grain visual.
 
-The techniques for displaying sales and refunds rely on conformed dimensions and the existence of fact rows to filter. In this, the ID dimension plays a special role.
+The technical reason is that `'Refund calendar'` relates only to `'Refund'`, not `'Sale'`. The business reason is that one sale can have multiple refunds on different days. It is therefore not logically correct to add refund date to a visual whose intent is one row per sale.
 
-This does not scale neatly. With three or more facts it becomes hard to know which combinations of dimension values still have at least one row in any fact. Managing multiple ID dimensions is also complicated because some are conformed against some facts but not others. Many processes will not have a ready business key.
+If displaying refund dates is necessary, the data engineer can create a measure such as `[Sales refund dates]` that returns the unique refund date if there is one, or concatenates distinct dates if there are several.
 
-A practical solution is to control the display with measures. The data engineer can create one display measure per business process that returns a value for that fact:
+#### Refunds with sales details
 
-- [Display sales transaction]
+The reverse scenario does not mirror cleanly.
 
-- [Display refund transaction]
+If the user creates a refund table and adds `[Total sales amount]`, Power BI may return incorrect results by cross-joining sales and refunds. This happens because `'Refund calendar'[Refund date]` relates only to `'Refund'` and does not filter `'Sale'`. There is no valid relationship path for `[Total sales amount]` to work naturally.
 
-- [Display … transaction]
+Users may expect to drag `[Total sales amount]` into the refund table and see the original sales amount. Instead, they may get a cross-join of rows.
 
-Each measure returns 1 when there is at least one row in its fact under the current filter context. These should be placed collectively in a display folder named “Display unit records”. A refinement is to return a value only when 'Sales ID'[Sales order number] is filtered so that unit records appear only after an order is selected. This can be done by checking the calculation for 'Sales ID'[Sales order number] context using ISINSCOPE.
+This is one of the situations where the default dimensional model is not intuitive out of the box and requires additional tuning.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+There are several solutions while staying within dimensional modelling:
 
-Adding one of these measures to a table visual filters dimension values to those that have a matching fact row (third method of filtering). The user can hide the helper column by renaming it and shrinking its width to zero.
+- Define `[Total sales amount]` to behave differently depending on context using DAX functions such as `treatas`.
+- Denormalise the sales amount into `'Refund'` as a value such as `[Sales amount before refund]`, then expose a specific measure for that use case.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+The first option gives the most seamless experience for the user, but adds complexity and performance cost to a core business measure. It is often not advisable to complicate a central measure for a narrow scenario.
 
-An alternative is to use the measure as a visual level filter the fourth method of filtering (fourth method of filtering). This is convenient but has noticeable performance penalty on large facts.
+The second option adds a more narrowly defined measure, such as `[Sales amount before refund]`. This is more explicit, easier to explain, and usually keeps DAX complexity lower overall.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT performance analyzer]`.
+The measure is unlikely to be useful everywhere, but it is useful in the refund context.
 
-While this has a learning curve for the user that involves a Power BI trick, it is a helpful clarification. A model that has more than four or five business processes are likely to be complicated to understand. An explicit selection of business processes through the “menu” of display unit-records measures can aid mental clarity.
+### Displaying unit records for three or more business processes
+
+The techniques above rely on conformed dimensions and the existence of fact rows to filter. The ID dimension plays a special role.
+
+This does not scale neatly.
+
+With three or more facts, it becomes difficult to know which combinations of dimension values still have at least one row in any fact. Managing multiple ID dimensions is also complicated because some are conformed across some facts but not others. Many processes also lack a ready business key.
+
+A practical solution is to control display with measures.
+
+The data engineer can create one display measure per business process:
+
+- `[Display sales transaction]`
+- `[Display refund transaction]`
+- `[Display ... transaction]`
+
+Each measure returns `1` when there is at least one row in its fact under the current filter context.
+
+These measures should be placed in a display folder named `Display unit records`.
+
+A refinement is to return a value only when the relevant ID is in scope. For example, `[Display sales transaction]` may return a value only when `'Sales ID'[Sales order number]` is being used. This can be done with functions such as `ISINSCOPE`.
+
+<!-- TODO: Add screenshot showing display unit-record measures in a table visual. -->
+
+Adding one of these measures to a table visual filters dimension values to those with a matching fact row. This is non-blank measure filtering.
+
+The user can hide the helper column by renaming it and shrinking its width to zero.
+
+<!-- TODO: Add screenshot showing helper display measure hidden by shrinking width. -->
+
+An alternative is to use the measure as a visual-level filter. This is convenient but may have a noticeable performance penalty on large facts.
+
+<!-- TODO: Add Performance Analyzer screenshot showing visual-level filter performance impact. -->
+
+This has a learning curve, but it can be helpful. A model with more than four or five business processes is already likely to be complicated. For a user dealing with this level of complexity, the additional complexity of display measures is minimal. In fact, an explicit menu of display measures can clarify which business process the user is trying to display.
 
 ### Cascading filters
 
-Cascading filters refer to the behaviour where selecting a value in one filter narrows the choices in another so that only valid options remain. For example, if a report page has a slicer for 'Sales product'[Product name] and another for 'Sales calendar'[Sales date], then choosing a product limits the dates to those where that product was sold, and choosing a date limits the products to those sold on that date.
+Cascading filters refer to the behaviour where selecting a value in one filter narrows the choices in another so that only valid options remain.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+For example, if a report page has a slicer for `'Sales product'[Product name]` and another for `'Sales calendar'[Sales date]`, then choosing a product should limit the dates to dates where that product was sold. Choosing a date should limit products to products sold on that date.
 
-The first method of filtering requires tables to have a chain of relationships that flow in from one to the other. In this case, no such path exists between the two dimensions.
+This feels obvious to users, but it is not always automatic.
 
-The second and third methods require two elements in a single visual—a dimension value and either another dimension or a measure—so they do not apply either.
+Relationship filtering requires a chain of relationships from one table to the other. In this case, there is no direct relationship path from `'Sales product'` to `'Sales calendar'`. Both filter `'Sale'`, but neither directly filters the other.
 
-The solution is to use a visual level filter, which is the fourth method of filtering. In this case, the measure [Total sales amount] can be used as a visual level filter. A more explicit option is to create a measure such as [Has sales] which returns 1 if the count of rows in the 'Sales' fact table is greater than zero.
+Common-fact filtering and non-blank measure filtering usually apply inside a single visual where dimension values and measures are evaluated together. They do not automatically make two slicers filter each other.
 
-Therefore, the solution is to rely on a common fact table and a measure that can pass information back to the dimension against the default filter direction.
+The solution is to use visual-level filtering. For example, a measure such as `[Has sales]` can return `1` if there is at least one row in `'Sale'` under the current filter context. The slicer can then use `[Has sales]` as a visual-level filter.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+A simple measure might be conceptually:
+
+```DAX
+Has sales =
+if (
+    countrows ( 'Sale' ) > 0,
+    1
+)
+```
+
+The slicer for `'Sales product'[Product name]` can then be filtered to values where `[Has sales]` is not blank. The same can be done for `'Sales calendar'[Sales date]`.
+
+<!-- TODO: Add screenshot showing cascading slicers implemented with a measure visual-level filter. -->
+
+The solution relies on a common fact table and a measure that passes information back to the dimension against the default filter direction.
+
+This is a case where the dimension is on the receiving end of the button-and-effect relationship. The data engineer can support this without using bidirectional relationships across the whole model.
 
 ### Aggregating dimension values
 
-Cascading filters aim to filter one dimension by another. Sometimes the goal is to aggregate a dimension by another dimension.
+Cascading filters aim to filter one dimension by another. Sometimes the goal is to aggregate dimension values by another dimension.
 
-Following the example of sales and refunds, suppose the user wants to display a concatenated list of distinct products refunded on each day. If [Product name] were already included in the 'Refund' fact table as a raw value, the measure would take the distinct values in 'Refund'[Product name], and apply CONCATENATEX on those values.
+Following the sales and refunds example, suppose the user wants to display a concatenated list of distinct products refunded on each refund date.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+If `[Product name]` were already included in `'Refund'` as a raw value, the measure could take the distinct values in `'Refund'[Product name]` and use `CONCATENATEX`.
 
-However, this approach is often not possible. For example, if 'Sales product'[Product name] is linked to 'Refund' via [Product ID] rather than the product name, or if the user wants to aggregate another column from 'Sales product' such as [Product type]. It is not practical to include all such columns in the fact table.
+However, this approach is often not available or desirable.
 
-An inexperienced data engineer might denormalise the required column into the fact table or even precompute string concatenation in the data layer so that the column can be used as a degenerate dimension. Sometimes it is pragmatic to include a frequently aggregated column in the fact table. In general, this is not desirable because it is heavy work to modify a large fact table for every column the user might want to aggregate. Pre-aggregation is also not ideal because it cannot respond to user filter context.
+For example:
 
-Instead, the solution is to notice that the information is already in the model, and it is just a matter of retrieving it. The fifth method of filtering—on-demand filtering in a measure—provides the answer. The DAX is to concatenate 'Sales product'[Product name] and wrap it in a CALCULATE context where CROSSFILTER is set to both directions. This temporarily changes the single direction relationship to bidirectional and allows 'Refund calendar' to filter 'Sales product'.
+- `'Sales product'[Product name]` may be linked to `'Refund'` through `[Product SK]`.
+- The user may want to aggregate another column from `'Sales product'`, such as `[Product type]`.
+- It is not practical to include all such columns in the fact table.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[TEST , SCREENSHOT]`.
+An inexperienced data engineer might denormalise the required column into the fact table, or even precompute string concatenation in the data layer so the column can be used like a degenerate dimension.
+
+Sometimes this is pragmatic. In general, it is not desirable. It is heavy work to modify a large fact table for every dimension column that users may want to aggregate. Pre-aggregation is also limited because it cannot respond flexibly to user filter context.
+
+The better solution is to notice that the information is already in the model. It only needs to be retrieved under the right filter context.
+
+Measure-defined filtering provides the answer.
+
+The DAX pattern is to concatenate values from `'Sales product'[Product name]` while using `calculate` and `crosfilter` to temporarily allow `'Refund calendar'` to filter `'Sales product'`.
+
+Conceptually:
+
+```DAX
+Refunded products =
+calculate (
+    concatenatex (
+        values ( 'Sales product'[Product name] ),
+        'Sales product'[Product name],
+        ", "
+    ),
+    crossfilter ( 'Sales product'[Product SK], 'Refund'[Product SK], both )
+)
+```
+
+The exact DAX depends on the model, but the principle is the same: temporarily change the filter path for this calculation only.
+
+<!-- TODO: Add screenshot showing refunded products measure and resulting visual. -->
+
+This avoids compromising the whole model with bidirectional relationships or denormalised columns. The model remains clean, and the special behaviour is contained inside the measure that needs it.
 
 ### Filter by having
 
-Consider the case of an organisation’s HR system. The dimensional model is set up as follows:
+Sometimes the user does not want to filter a dimension by the value it currently has. They want to filter by whether the entity has ever had an attribute.
 
-- A dimension 'Employee' that stores details such as name, email, and date of birth. This table is type II to reflect changes in employee attributes. The key columns are [Employee ID] and [Start datetime]. An [End datetime] signals the end of the validity period of a row. [Employee SK] is used as a surrogate key for Power BI relationships.
+This is filter by having.
 
-- A dimension 'Organisation unit' that stores the hierarchy of teams in columns [Department name], [Group name], [Branch name], and [Section name]. This table is also type II because names and hierarchy can change. The key columns are [Team unit ID] and [Start datetime]. An [End datetime] signals the end of the validity period of a row. [Team unit SK] is used as a surrogate key for Power BI relationships.
+Filter by having means: filter the entity by whether it has, or once had, a matching attribute, rather than filtering only the rows where the attribute currently appears.
 
-- An end-of-month fact table 'Employee end of month' that stores the employee’s attributes and organisation unit at the end of each month.
+Consider an organisation’s HR system. The model contains:
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+- A dimension `'Employee'` that stores details such as name, email, date of birth, and role.
+- `'Employee'` is Type II, so it stores historical changes to employee attributes.
+- The key columns are `[Employee ID]`, `[Start datetime]`, and `[End datetime]`.
+- `[Employee SK]` is used as the surrogate key for Power BI relationships.
+- An end-of-month fact table `'Employee end of month'` stores the employee’s attributes at the end of each month.
 
-The user wants to search an employee’s and organisation unit history by personal attributes such as name or role. Since 'Employee' is type II, a direct search returns only the end-of-period states that match the point-in-time attribute values. This is not the desired outcome. The user wants the full history of the employee using any historical attribute.
 
-This is an example of filtering dimensions by whether they have an attribute, rather than filtering on the attribute value itself. We call this filter by having. It applies to any scenario where a user would like to look up a header on a detail attribute and return all other details for that header. New data engineers often try to solve this by restructuring the fact table. This leads to complex code and artefacts that confuse other contexts.
+**Example structure of `'Employee'`**
 
-A simpler solution is to add a search dimension to the model, 'Employee search'. This can be a duplicate of 'Employee' and relates to 'Employee' on [Employee ID] in a snowflake configuration. The relationship is many-to-many and single direction.
+| Employee SK | Employee ID | Start date | End date | Employee name | Role |
+|---:|---|---|---|---|---|
+| 1 | E1001 | 2023-01-01 | 2023-06-30 | Alice Chen | Data analyst |
+| 2 | E1001 | 2023-07-01 | 9999-12-31 | Alice Chen | Senior analyst |
+| 3 | E1002 | 2023-01-01 | 9999-12-31 | Ben Smith | Finance officer |
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+**Example structure of `'Employee end of month'`**
 
-Using 'Employee search', the user can look up any attribute of the employee at any point in time, retrieve the [Employee ID], and return all rows in 'Employee' that match this ID.
+| Employee SK | Period end date | FTE |
+|---:|---|---:|
+| 1 | 2023-06-30 | 1.0 |
+| 2 | 2023-07-31 | 1.0 |
+| 2 | 2023-08-31 | 1.0 |
+| 3 | 2023-08-31 | 1.0 |
 
-Under this view, 'Employee search' and 'Employee' work together as one logical “dimension” that acts as an interface for searching the model. This pattern generalises.
+`'Employee'` is a dimension filtering the fact `'Employee end of month'`.
 
-The data engineer can add 'Compliance search' or any other derived attribute of [Employee ID] as additional search dimensions as more branches of the snowflake.
+| Dimension | `'Employee end of month'` | Meaning |
+|---|---|---|
+| `'Employee'` | 1 → * via `[Employee SK]` | Point-in-time employee attributes |
 
-From the user’s perspective, these are simply “search” tables that allow searching employees by their history. Unlike tampering with fact tables, this solution is non-destructive. It adds a few tables as an interface without modifying the rest of the model.
+In this model, filtering `'Employee'[Role]` filters the fact through `[Employee SK]`. This is correct for point-in-time reporting. It returns the employee-month rows where the selected Type II employee row is active.
 
-### Dynamic type I
+That is not always the desired search behaviour.
 
-Type II dimensions show an entity at its point-in-time attribute. Type I shows the latest attribute value. Dynamic type I shows the latest attribute value as at a user-selected time. This is the natural expectation in entity tracking.
+The user wants to search an employee’s history by personal attributes such as name or role.
 
-Consider employees and their organisation unit. The fact 'Employee end of month' returns employee attributes and organisation unit at the end of each month.
+Since `'Employee'` is Type II, a direct search returns only the end-of-period states that match the selected point-in-time attribute values. If the user filters `'Employee'[Role]` to `Data analyst`, the model returns only rows where the employee was a data analyst. In the example above, it returns Alice’s June row, but not Alice’s later history as a senior analyst.
 
-Suppose the user wants employee metrics for a group over a period, such as the total number of commencements and separations in the last 12 months. This is not the count as at the month end. It is all commencements and separations that happened in the 12 months prior.
+That is correct Type II behaviour, but it is not the desired search behaviour.
 
-The 'Organisation unit' dimension is type II, so the fact reflects the hierarchy as at each period. When units reshuffle often, teams that moved between groups do not bring their counts with them. A measure of commencements broken by [Group name] gives the wrong result. It only shows the hierarchy as at now and ignores teams that were in the group during the last 12 months.
+The desired behaviour is different. The user wants to find employees who have ever had `Data analyst` as a role, then return their full history.
 
-If the requirement were fixed to the latest view only, a type I version of 'Organisation unit' would suffice. However, the goal is to report against the hierarchy as it stood at the end of every 12 months period. This requires using the view of the organisation unit to change dynamically as selected by the user, and hence dynamic type I is needed.
+New data engineers often try to solve this by restructuring the fact table. This leads to complex code and confusing artefacts.
 
-The problem is notoriously complex to solve through amending the fact table. It requires associating all the organisation unit’s history to each fact row.
+A simpler solution is to note that `[Employee ID]` is the identifier of the "true" employee across time, and add a search dimension keyed on this column.
 
-Rewriting facts to carry the full hierarchy history is complex and fragile. The model already has the history in 'Organisation unit'. The solution is to surface it at query time.
+Create `'Employee search'` as a duplicate `'Employee'`. It relates to `'Employee'` on `[Employee ID]` in a snowflake configuration. The relationship is many-to-many and single direction.
 
-Two steps implement this approach
+**Example structure of `'Employee search'`**
 
-1. Broaden the relationship for evaluation
+| Employee ID | Employee name | Role |
+|---|---|---|
+| E1001 | Alice Chen | Data analyst |
+| E1001 | Alice Chen | Senior analyst |
+| E1002 | Ben Smith | Finance officer |
 
-Relate each fact row not to a single point-in-time row in 'Organisation unit', but to all rows for that [Team unit ID]. Use a many-to-many, single-direction relationship on [Team unit ID]. Each fact row now has the full history of its team available during calculation.
+The revised model looks like this.
 
-2. Select the valid row at query time
+| Dimension | `'Employee'` | `'Employee end of month'` | Meaning |
+|---|---|---|---|
+| `'Employee search'` | * → * via `[Employee ID]` |  | Search by any historical employee attribute |
+| `'Employee'` |  | 1 → * via `[Employee SK]` | Point-in-time employee attributes |
 
-In the measure, take the latest date in the current context and filter 'Organisation unit' to the row whose validity covers that date: [Start datetime] ≤ selected_date < [End datetime]. For a given [Team unit ID] this is unique because the primary key is [Team unit ID] and [Start datetime]. Under this filter the table behaves like a one-to-many join for that evaluation and the measure returns values only for the valid row. Other rows go blank and drop out by the third method of filtering on non-blank measure values.
+Using `'Employee search'`, the user can look up any historical attribute of the employee, retrieve `[Employee ID]`, and return all rows in `'Employee'` that match that ID.
 
-This alters how 'Organisation unit' behaves. There are two options that preserves the behaviour of the dimension.
+When the user selects `Data analyst` in `'Employee search'[Role]`, the model first finds `[Employee ID] = E1001`. It then filters `'Employee'` to all rows for `E1001`, not only the row where the role was `Data analyst`.
 
-Option A. Add a new dimension
+The user searched by a historical attribute, but the model returned the full entity history.
 
-- Duplicate 'Organisation unit' as 'End of period organisation unit'.
+Under this view, `'Employee search'` and `'Employee'` work together as one logical dimension that acts as a search interface for the model.
 
-- Add [Team unit ID] to 'Employee end of month'. The fact now carries [Team unit
+This pattern generalises. The data engineer can add `'Compliance search'`, `'Qualification search'`, or other derived attribute search dimensions as additional branches of the snowflake.
 
-SK] for the normal join to 'Organisation unit', and [Team unit ID] for the many-to-many join to 'End of period organisation unit'.
+From the user’s perspective, these are search tables that allow searching employees by their history.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT of model relationship]`.
+Unlike tampering with fact tables, this solution is non-destructive. The fact table has not changed. The ordinary point-in-time path remains intact. The search dimension adds a new interface path for a different user intention.
 
-- Wrap measures when dynamic type I is needed. For example, rename [Employee commencements] to [_Employee commencements]. Define [Employee commencements] that evaluates [_Employee commencements] inside CALCULATE, filtering 'End of period organisation unit' to the valid row as at the latest date in context.
+### Dynamic Type I
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT of DAX]`.
+A common workforce reporting request sounds like this: *"When I choose August, show me the last 12 months using the organisation structure as at August."*
 
-In this option, the user chooses perspective by choosing the dimension.'Organisation unit' gives type II. 'End of period organisation unit' gives dynamic type I.
+This sounds simple, but it is not the default behaviour of a Type II dimension.
 
-Option B. Keep one dimension and switch in measures
+Type II dimensions show an entity at its point-in-time attribute. Type I dimensions show the latest attribute value. Neither meets the user intention. What the user would like is Dynamic Type I—latest attribute value as at a user-selected time.
 
-- Keep the normal one to many single direction relationship on [Team unit SK].
 
-- Add a many to many single direction relationship on [Team unit ID]. It remains dormant.
+Consider employees and organisation units. The fact table `'Employee end of month'` returns employee metrics at the end of each month. The dimension `'Organisation unit'` is Type II because organisation structures change over time.
 
-- In measures that need dynamic type I, deactivate the SK path and let the [Team unit ID] path apply for the calculation. Then filter to the valid row as above.
+**Example structure of `'Organisation unit'`**
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT of DAX]`.
+| Team unit SK | Team unit ID | Start date | End date | Team name | Group name |
+|---:|---|---|---|---|---|
+| 1 | T1001 | 2023-01-01 | 2023-06-30 | Data engineering | Group A |
+| 2 | T1001 | 2023-07-01 | 9999-12-31 | Data engineering | Group B |
+| 3 | T1002 | 2023-01-01 | 9999-12-31 | Finance operations | Group A |
 
-In this implementation the dimension works as type II by default, and the user can choose the dynamic type I perspective on certain measures.
+**Example structure of `'Employee end of month'`**
 
-Under both options the original dimension 'Organisation unit' keeps its normal behaviour. All existing measures work as before. Both options are non-destructive. The distinction between them is whether the user chooses type II or dynamic type I through using different dimensions, or through using different measures.
+| Team unit SK | Team unit ID | Period end date | Commencements |
+|---:|---|---|---:|
+| 1 | T1001 | 2023-06-30 | 2 |
+| 2 | T1001 | 2023-07-31 | 1 |
+| 2 | T1001 | 2023-08-31 | 1 |
+| 3 | T1002 | 2023-08-31 | 1 |
+
+In the ordinary Type II model, `'Employee end of month'` relates to `'Organisation unit'` through `[Team unit SK]`.
+
+| Dimension | `'Employee end of month'` | Meaning |
+|---|---|---|
+| `'Organisation unit'` | 1 → * via `[Team unit SK]` | Point-in-time organisation hierarchy |
+
+In the example, Team `T1001` belonged to `Group A` in June, then moved to `Group B` in July.
+
+If the user selects August and asks for commencements in the last twelve months, they may expect all activity for Team `T1001` to appear under `Group B`, because that is the organisation structure as at August. The correct answer is a total of 4 commencements
+
+The ordinary Type II relationship does not do that. It reports each fact row using the organisation structure that was valid at the time of the row. June remains under `Group A`; July and August appear under `Group B`. This returns 2 commencements, the incorrect result.
+
+Thus, Dynamic Type I changes the lens. It says: use the selected reporting date to decide which organisation-unit row is current, then view the relevant historical facts through that selected-date structure.
+
+
+
+#### Solving Dynamic Type 
+The problem is notoriously complex to solve by amending the fact table. It requires associating the organisation unit’s full history with each fact row. That approach is complex, fragile, and expensive.
+
+The key is to recognise that the model already has the history in `'Organisation unit'`. The information is already in the model, and what's missing is to surface it. The better solution is to surface it at query time.
+
+There are two steps.
+
+First, broaden the relationship for evaluation.
+
+The problem with the existing relationship is that it is too "narrow"—locking the dimension into a smaller set of data than intuitive to business sense. The first step is to "unlock" this relationship between the organisation unit to the activity rows that are relevant to it.
+
+This means relating each fact row not only to a single point-in-time row in `'Organisation unit'`, but to all rows for that `[Team unit ID]`. This requires a many-to-many, single-direction relationship on `[Team unit ID]`. Each fact row now has the full history of its team available during calculation. 
+
+The relationship becomes:
+
+| Dimension | `'Employee end of month'` | Meaning |
+|---|---|---|
+| `'Organisation unit'` | * → * via `[Team unit ID]` | Relates all rows based on the persistent team unit identity |
+
+Second, select the valid row at query time.
+
+The consequence of the relationship is that, though the data is available in the filter context, too many rows are selected for display. We now need to narrow this again.
+
+In the measure, we take the latest date in the current context and filter `'Organisation unit'` to the row whose validity covers that date:
+
+```md
+[Start date] <= selected date < [End date]
+```
+
+For a given `[Team unit ID]`, this should return one row because the primary key is `[Team unit ID]` and `[Start date]`.
+
+Under this filter, the table behaves like a one-to-many join for that evaluation. The measure returns values only for the valid organisation-unit row. Other rows go blank and drop out through non-blank measure filtering.
+
+For August 2023, `T1001` resolves to the row where `[Group name] = Group B`. The measure can then report prior-period activity using the August 2023 organisation view.
+
+But creates a problem. The original `'Organisation unit'` no longer behaves as before. This could be problematic. If the original behaviour needs to be preserved, there are two broad implementation options.
+
+#### Option A—Keep one dimension and switch in measures
+
+The first option is to do the switching in the measure.
+
+In this scenario, we keep the normal one-to-many, single-direction relationship on `[Team unit SK]`, and then add a many-to-many, single-direction relationship on `[Team unit ID]`. It remains dormant by default.
+
+In measures that need dynamic Type I, deactivate the `[Team unit SK]` path and allow the `[Team unit ID]` path to apply for the calculation. Then filter to the valid row as above.
+
+<!-- TODO: Add screenshot of DAX for dynamic Type I measure using dormant relationship. -->
+
+In this implementation, `'Organisation unit'` works as Type II by default, and the user chooses the dynamic Type I perspective through measures.
+
+#### Option B—Add a new dimension
+
+The second option is to switch through dimensions. This is done by duplicating `'Organisation unit'` as `'End of period organisation unit'`, and adding `[Team unit ID]` to `'Employee end of month'`. 
+
+The fact now carries:
+
+- `[Team unit SK]` for the normal relationship to `'Organisation unit'`
+- `[Team unit ID]` for the many-to-many relationship to `'End of period organisation unit'`
+
+<!-- TODO: Add screenshot showing duplicate End of period organisation unit relationship. -->
+
+The revised evaluation model is therefore:
+
+| Dimension | `'Employee end of month'` | Meaning |
+|---|---|---|
+| `'Organisation unit'` | 1 → * via `[Team unit SK]` | Ordinary Type II path |
+| `'End of period organisation unit'`| * → * via `[Team unit ID]` | Dynamic Type I evaluation path |
+
+Measures that need dynamic Type I behaviour can be wrapped.
+
+For example, rename `[Employee commencements]` to `[_Employee commencements]`. Then define `[Employee commencements]` so that it evaluates `[_Employee commencements]` inside `calculate`, filtering `'End of period organisation unit'` to the valid row as at the latest date in context.
+<!-- TODO: Add screenshot of DAX for dynamic Type I measure using duplicate dimension. -->
+In this option, the user chooses perspective by choosing the dimension:
+
+- `'Organisation unit'` gives Type II.
+- `'End of period organisation unit'` gives dynamic Type I.
+
+
+Under both options, the original dimension keeps its normal behaviour. Existing measures continue to work. Both options are non-destructive.
+
+The distinction is whether the user chooses Type II or dynamic Type I through different dimensions, or through different measures.
+
+The important point is that Dynamic Type I does not rewrite history in the fact table. It changes the reporting lens at query time.
+
 
 ## Buttons and effects
 
-These scenarios are not intended to be an exhaustive list of filtering techniques or scenarios – this would be a book itself. Instead, their purpose is to illustrate a philosophy of seeing Power BI as an interface that users click to achieve an effect. In this philosophy every table has one of two roles:
+The take-away from above is not exhaustive list of filtering techniques. That would be a book in itself.
 
-- Tables that define the interface as buttons to click, usually the dimension tables
+Their purpose is to illustrate a philosophy of seeing Power BI as an interface that users touch to produce effects.
 
-- Tables that define the content which drives the effect, usually the fact tables
+In this philosophy, every table tends to have one of two roles:
 
-A good model keeps these roles separate. Every table serves a single purpose and not a mix. This is why an indicator of quality is that all fact tables are hidden.
+- Tables that define the interface as buttons to click, usually dimensions
+- Tables that define the content that drives the effect, usually facts
 
-The first three examples show how dimensions present information from facts using the more difficult case of displaying transaction records. They illustrate that the fact tables, which are the natural focus for new data engineers, are not the artefacts to expose to the users. In fact, trying to expose the fact tables and degenerate dimensions will only cause issues. Instead, the dimensions act as the entry point to the data.
+A good model keeps these roles separate.
 
-The same philosophy explains why degenerate dimensions and bidirectional relationships frustrate users. They blur the line between tables that act as buttons and tables that create the effect. The examples of cascading filters and aggregating dimension values show that the data engineer can handle occasions where a dimension is on the receiving end of the button and effect relationship without compromising the model with degenerate dimensions or creating bidirectional relationships.
+Every table should have one clear purpose. Tables should not mix interface and content unless there is a deliberate reason. This is why an indicator of quality is that fact tables are hidden.
 
-The final two examples generalise the idea of a dimension to a set of tables. For this purpose, a dimension is not simply a lookup table. If the user sees it as intuitive, and get the desired outcome unambiguously and rapidly, that is what matters. In this view, a dimension’s chief purpose is to be the user’s interface to the model. The final two examples also demonstrate Power BI’s flexibility of using many-to-many relationships that would otherwise require substantial modification to the model.
+The first scenarios showed how dimensions present information from facts through the difficult case of displaying transaction records. They illustrate that fact tables, which are the natural focus for new data engineers, are not the artefacts to expose to users.
 
-This is the philosophy of separation of concerns from software design. It maintains a clear distinction between the interface layer and the content layer. Power BI supports this through the five filtering mechanisms described at the start of the chapter. This perspective pushes the data engineer to see a data model as software and to design a clean interface that is business-centric and intuitive for the user.
+Trying to expose fact tables and degenerate dimensions causes issues. Dimensions should act as the entry point to the data.
+
+The same philosophy explains why degenerate dimensions and bidirectional relationships often frustrate users. They blur the line between tables that act as buttons and tables that create effects.
+
+The examples of cascading filters and aggregating dimension values show that the data engineer can handle cases where a dimension is on the receiving end of a button-and-effect relationship without compromising the model with degenerate dimensions or broad bidirectional relationships.
+
+The final examples generalise the idea of a dimension to a set of tables. A dimension is not simply a lookup table. If the user sees it as intuitive and gets the desired outcome unambiguously and quickly, that is what matters.
+
+In this view, a dimension’s chief purpose is to be the user’s interface to the model.
+
+This is the philosophy of separation of concerns from software design. It maintains a clear distinction between the interface layer and the content layer.
+
+Power BI supports this through the five filtering mechanisms described at the start of the chapter. This perspective pushes the data engineer to see a data model as software and to design a clean interface that is business-centric and intuitive for the user.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Filtering design is what makes a Power BI model feel intuitive—or frustrating.
+>
+> A self-service model is not a puzzle for the user to solve. The correct answer should not merely be reachable; it should be reachable through likely paths of interaction.
+>
+> Filtering is the mechanism that turns model structure into user experience.
+>
+> Dimensions usually provide the buttons: the things users select, slice, search, group, and compare.
+>
+> Facts and measures provide the effects: the activity, state, and values that respond.
+>
+> Power BI filtering commonly occurs through relationships, common facts, non-blank measures, visual-level filters, and measure-defined filtering.
+>
+> Degenerate dimensions and broad bidirectional relationships often blur the distinction between buttons and effects.
+>
+> Good filtering design anticipates how users will interact with the model and makes sensible behaviour occur naturally.
