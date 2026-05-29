@@ -339,29 +339,28 @@ The chronological bus only works if the data engineer has modelled information a
 
 The same information becomes much less useful when sorted alphabetically:
 
-```text
-Customer feedback | Manufacture | Orders | Quality control | Shipping
-Arrival date                                      | 1 -> *
-Batch number                       | 1 -> * | 1 -> * | 1 -> * | 1 -> *
-Batch quality outcome              | 1 -> * | 1 -> * | 1 -> * | 1 -> *
-Customer              | 1 -> *     | 1 -> * |         |         | 1 -> *
-Feedback calendar     | 1 -> *
-Feedback sentiment (star ratings) | 1 -> *
-Manufacture calendar               | 1 -> * | 1 -> * |         | 1 -> *
-Manufacture ID                     | 1 -> * | 1 -> * | 1 -> * | 1 -> *
-Order calendar                     |         | 1 -> * |         | 1 -> *
-Order ID                           |         | 1 -> * |         | 1 -> *
-Order status                       |         | 1 -> * |         | 1 -> *
-Product type          | * -> *     | 1 -> * | 1 -> * | 1 -> * | 1 -> *
-Quality criteria                              | 1 -> *
-Reporting calendar    | 1 -> *     | 1 -> * | 1 -> * | 1 -> *
-Shipping calendar                                          | 1 -> *
-Shipping company                                           | 1 -> *
-Shipping status                                            | 1 -> *
-Testing date                                  | 1 -> *
-Testing ID                                    | 1 -> *
-Testing result                                | 1 -> *
-```
+| Dimension | Customer feedback | Manufacture | Orders | Quality control | Shipping |
+|---|---|---|---|---|---|
+| Arrival date |  |  |  |  | 1 -> * |
+| Batch number |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Batch quality outcome |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Customer | 1 -> * |  | 1 -> * |  | 1 -> * |
+| Feedback calendar | 1 -> * |  |  |  |  |
+| Feedback sentiment (star ratings) | 1 -> * |  |  |  |  |
+| Manufacture calendar |  | 1 -> * | 1 -> * |  | 1 -> * |
+| Manufacture ID |  | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Order calendar |  |  | 1 -> * |  |  |
+| Order ID |  |  | 1 -> * |  | 1 -> * |
+| Order status |  |  | 1 -> * |  | 1 -> * |
+| Product type | * -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Quality criteria |  |  |  | 1 -> * |  |
+| Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Shipping calendar |  |  |  |  | 1 -> * |
+| Shipping company |  |  |  |  | 1 -> * |
+| Shipping status |  |  |  |  | 1 -> * |
+| Testing date |  |  |  | 1 -> * |  |
+| Testing ID |  |  |  | 1 -> * |  |
+| Testing result |  |  |  | 1 -> * |  |
 
 In comparison, this matrix is difficult to read. This is the case even though the dimension names have already been purposely prefixed to group similar attributes together, and “Manufacture”, “Order” and “Shipping” happen to sort chronologically. In any other instance, the bus matrix would be incomprehensible.
 
