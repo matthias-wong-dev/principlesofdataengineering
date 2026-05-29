@@ -1,313 +1,695 @@
 ---
 title: Designing measures
 url: /docs/presenting-insights/designing-measures/
-description: Explains how to design useful, business-centric measures in Power BI and how to think clearly about their role in a model.
-lede: A dimensional model is only as useful as the measures it makes easy to use.
+description: Learn how to design Power BI measures that compress fact-table content into business meaning and re-express it through user-selected dimensions.
+lede: Measures compress facts into business meaning, then unpack that meaning in user context.
 weight: 5
-draft: true
+# draft: true
 ---
 
-Measures are the face of facts. If dimensions are the interface of the model, measures present the effect of that interaction. Fact tables provide the content. Measures turn that content into answers. As explained in Filtering behaviour, measures also give the user an explicit way to control filtering. They are part of the interface and deserve deliberate design. For this purpose, Power BI’s implicit calculations can do more harm than good. For this reason, Discourage implicit measures should be turned on.
+## Measures as compression and re-expression
 
-This chapter covers three areas. First, indicators of good measures. Second, the four types of measures. Third, basic technical patterns for building measures. The next chapter, Measure of measures, introduces techniques for managing many measures in a structured way.
+A fact table may contain thousands, millions, or billions of rows. A measure compresses those rows into a business expression, then unpacks that expression again in user context.
 
-## Indicators of good measures
+A good measure therefore does not merely calculate correctly. It states clearly what business meaning is being compressed, and it behaves predictably as that meaning is re-expressed through the user’s selected dimensions.
 
-There are two indicators of good measures, business centricity and technical simplicity.
+Power BI’s implicit calculations can undermine this design. They encourage users to treat raw columns as ready-made measures, even when those columns do not express a clear business answer. For this reason, **Discourage implicit measures** should usually be turned on.
+
+This chapter covers three areas:
+
+- signs of good measures;
+- interface roles of measures;
+- technical patterns for building measures.
+
+The next chapter, [Measure of measures](/docs/presenting-insights/measure-of-measures/), introduces a pattern for managing structured families of measures.
+
+## Signs of good measures
+
+There are two signs of good measures:
+
+- business centricity;
+- technical simplicity.
 
 ### Business centricity
 
-Every aspect of a measure should reflect business meaning. This includes its definition, name, its hover text, its display folder, and its placement alongside related measures.
+A measure is not merely a calculation. It is a business expression made available to the user for unpacking.
+
+Every aspect of a measure should reflect business meaning. This includes its definition, name, description, display folder, and placement alongside related measures.
 
 #### Alignment to business reality
 
-When designing measures, one of the most important criteria is alignment to real-world events. A common mistake is to perform a distinct count on a database key and assume it reflects a meaningful metric — even when the key has no real-world correspondence.
+A measure should align with real-world events.
 
-For example, a data engineer might define a measure like [Inspection count] as the distinct count of [Inspection ID] in the Inspection fact table. However, [Inspection ID] may simply be a system-generated key used for record retrieval. It carries no inherent meaning. In the future, the system design might change its implementation to split one inspection into ten rows or merge ten into one for record-keeping purposes. This does not reflect a genuine change in inspection effort. The measure is misaligned with reality.
+A common mistake is to count a database key and assume that the result is a meaningful business metric.
 
-Instead, every measure should quantify real-world business events that users recognise and care about. In this example, the data engineer could:
+For example, a data engineer might define `[Inspection count]` as a distinct count of `[Inspection ID]` in the `'Inspection'` fact table. That may be fine if `[Inspection ID]` corresponds to a real inspection. But in many systems, `[Inspection ID]` is only a system-generated record key. It may exist for retrieval, workflow, or database convenience.
 
-1. Measure the time taken to conduct an inspection
+If the system later changes so that one real inspection is split into ten records, the measure changes even though inspection effort has not changed. Conversely, if ten records are merged into one, the measure falls even though no real-world activity has disappeared.
 
-2. Measure the number of entities inspected
+That is a measure misaligned with reality.
 
-The second option is particularly useful across a wide range of scenarios — whether counting entities inspected, entities failing a criterion, or entities reaching a milestone.
+A better measure quantifies something with real-world business meaning. Depending on the scenario, the data engineer may measure:
 
-It is easily implemented when the entity of interest has been clearly defined from the outset, and when the pipeline consistently computes and aggregates information at that grain. This is one of the purposes of the Reduce step in the pipeline.
+- inspection hours;
+- entities inspected.
 
-#### Business explicit
+The right choice depends on the business question.
 
-The definition of a measure should be explicit on its business meaning, rather than generic. A common misstep among new data engineers is to create a single technical measure—such as [Employee count], a distinct count of employees in an end-of-period fact table—and assume that users will derive all other insights through manual filtering.
+Even `inspection` itself can be unreliable as the basis for a measure. If new inspection types are introduced that are much lighter or heavier than the old ones, then `[Number of inspections]` may drift in meaning over time.
 
-This approach places undue burden on users, requiring them to memorise arcane filter combinations to arrive at answers. A more effective model presents a suite of measures that surface answers directly.
+By contrast, `[Total inspection hours]` remains close to concrete reality. An hour is still an hour, even when new inspections get added.
 
-In the case of employee metrics, this suite might include:
+This does not mean `[Number of inspections]` is always wrong. The point is that the data engineer should understand what the measure is really compressing, and where possible, stay closer to concrete reality than abstraction.
 
-- [Active employees end of period] — employees with an “active” [Employment status] at the end of each period. If unambiguous, this may be shortened to [Employees end of period].
+#### Business specificity
 
-- [Separated employees end of period] — employees with a “separated” status at the end of the period.
+Measures should be specific to the business question they answer.
 
-- [Current number of employees] — the latest value of [Active employees end of period], suitable for grab-and-go use.
+A common misstep is to create a single generic measure and expect users to combine it with filters to answer every question.
 
-- [Current employees on long service leave] — a subset of [Current number of employees] filtered by [Is on long service leave].
+For example, the model may contain a generic measure:
 
-These examples illustrate the breadth of possible measures beyond a generic [Employee count]. Requiring users to manually filter for each scenario is both error-prone and frustrating.
+```DAX
+Employee count =
+distinctcount ( 'Employee end of month'[Employee ID] )
+```
 
-In most cases, a technical measure such as [Employee count] which is a distinct count of all employees across the organisation’s history, offers little business value. If not directly useful, such measures are better omitted. Where technical measures are needed to support other calculations, they can be hidden from the interface and prefixed with an underscore. For example, [_Employee count] and [_Employee count] end of period may serve as internal components for more meaningful outputs.
+The data engineer may then expect users to filter manually for active employees, separated employees, employees on leave, current employees, and other cases.
+
+This turns the model into a puzzle. Users must remember which filters to apply, which dates matter, and which status values are valid for each business question.
+
+A better model presents specific measures that answer common business questions directly.
+
+For example:
+
+- `[Active employees end of period]`—employees with an active employment status at the end of the selected period.
+- `[Separated employees end of period]`—employees with a separated employment status at the end of the selected period.
+- `[Current employees]`—the latest value of `[Active employees end of period]`.
+- `[Current employees on long service leave]`—current employees who are on long service leave.
+
+These measures are not merely variants of `[Employee count]`. They are specific business expressions that make common questions directly available.
+
+A technical measure such as `[_Employee count]` and `[_Employee count end of period]` may still be useful internally. If it is not useful to users directly, it should be hidden to support business-facing measures without cluttering the interface.
 
 #### Names
 
-Names must be explicit, grammatical, and able to stand alone. Measures can be dragged anywhere on the canvas, so the name should carry its context. Prefer [Employee count] to [Count]. Avoid non-standard abbreviations. Saving a few characters does not help the user or the next engineer.
+Measure names should be explicit, grammatical, and able to stand alone.
 
-#### Description
+Measures can be dragged anywhere on the canvas. Their names should carry enough context to remain meaningful outside their original folder or visual.
 
-Hover-text descriptions should also reflect business meaning. Users should not be expected to accept complex logic without explanation. As the first point of contact for many users, the measure description is an opportunity to build trust. Descriptions should articulate the business logic behind the measure, not restate the DAX syntax.
+Prefer:
 
-For more intricate cases, near-pseudocode in business language may be appropriate.
+```md
+[Active employees end of period]
+```
 
-#### Display folder
+over:
 
-Display folders offer a practical way to reinforce business centricity. Measures can be grouped by business process, while technical or dashboard-specific measures such as those for colour formatting or data currency can be placed in folders like “Dashboard” or “Data currency.”
+```md
+[Count]
+```
 
-#### Proximity to other measures
+Avoid non-standard abbreviations. Saving a few characters does not help the user or the next engineer.
 
-The business centricity of a measure is influenced by its proximity to other measures.
+Names should also support search. Users often find measures by typing keywords in the field list. If the business calls something `commencements`, the measure name may include `commencements`. Anticipating the user search should be part of the measure design.
 
-The two ways of proximity are alphabetical placement within a display folder and keyword-based lookup in the field list. These interactions warrant deliberate consideration from the data engineer.
+#### Descriptions
 
-When similar measures are defined explicitly, they help users form a clearer mental model of the data. For example, the presence of [Separated employees end of period] reinforces the meaning of [Active employees end of period], reminding users of the separated employees that may have been unconsciously forgotten. Likewise, [Current number of employees] clarifies that [Active employees end of period] is a point-in-time measure. These compare-and-contrast relationships benefit from thoughtful naming that places related measures adjacent to one another.
+Descriptions should explain business meaning.
 
-A data engineer can take advantage of the proximity effect by consciously placing these compare-and-contrast measures next to each other through alphabetical naming.
+The description should not simply restate the DAX. Users are not asking for implementation trivia, nor should they be expected to accept complex logic without explanation. They want to know what the measure means and whether they can trust it.
+
+For simple measures, a description may be short:
+
+```md
+Counts employees with an active employment status at the end of the selected reporting period.
+```
+
+For more complex measures, near-pseudocode in business language may be appropriate:
+
+```md
+Counts employees who were active at the end of the selected period and whose leave status indicates long service leave. Uses the latest reporting period in the current user context.
+```
+
+The description is part of the interface. It is often the first explanation the user sees, and an opportunity to build trust.
+
+#### Display folders
+
+Display folders help measures appear in business-facing groups.
+
+Measures can be grouped by business process, such as:
+
+- `Workforce`
+- `Inspections`
+- `Sales`
+- `Refunds`
+
+Technical or report-specific measures can be placed in folders such as:
+
+- `Dashboard`
+- `Display unit records`
+
+#### Proximity to related measures
+
+The meaning of a measure is influenced by nearby measures.
+
+Related measures should be named so that they appear near each other.
+
+For example:
+
+- `[Active employees end of period]`
+- `[Separated employees end of period]`
+- `[Current employees]`
+- `[Current employees on long service leave]`
+
+The presence of `[Separated employees end of period]` reinforces the meaning of `[Active employees end of period]`. The presence of `[Current employees]` clarifies that `[Active employees end of period]` is a point-in-time measure.
+
+These compare-and-contrast relationships help users form a clearer mental model of the data.
+
+There are two practical forms of proximity:
+
+- alphabetical placement within a display folder;
+- keyword-based lookup in the field list.
+
+A data engineer can take advantage of the proximity effect during measure naming and placement.
 
 ### Technical simplicity
 
-Measures in Power BI should be technically simple. The foundations for technical simplicity are laid when building the data pipeline, not when designing the dimensional model. There are two ways to achieve this – precomputing complex information and relying on binary flags for simplification.
+Measures should be technically simple.
+
+This does not mean every measure must be trivial. It means complex business logic should usually be pushed upstream into the data pipeline.
+
+A measure should aggregate, filter, compare, or display information that is already well prepared.
+
+There are two important foundations for technical simplicity:
+
+- precomputing complex information;
+- preparing binary flags.
 
 #### Precomputing complex information
 
-Complex information should be computed and stored in the data layer. This frees the measures from the burden of handling business logic and allows them to focus solely on supporting user interaction. If the DAX is non-trivial, it is a sign that the model design may be sub-optimal.
+Complex business logic should usually be computed in the data layer.
 
-Throughout Creating information, the emphasis is on creating meaningful fragments that can be used as plug-and-play by users. For instance, if [Is on long service leave] is a complex calculation that requires windowing across an employee’s attendance, then this calculation can be precomputed in a fragment called HR.EmployeeLeave.
+This frees measures from carrying too much responsibility. A measure should not have to reconstruct a complicated business state every time a user clicks a slicer.
 
-The most important case of precomputing complex information is that of summary dimensions. In many scenarios, the complexity of information comes from having a lot of finer details in subprocesses for an entity of interest. Precomputing these, and pushing their expression to reference data tables, allows the data engineer to access all this complex information without repeating it in DAX. Of the summary dimensions, the most important is the storytelling dimension. These are explained in the Storytelling chapter.
+For example, suppose `[Is on long service leave]` requires analysing leave transactions, effective dates, overlapping periods, and employee status. That logic should usually be calculated in the pipeline and stored in a fragment such as `HR.EmployeeLeave` or a related reference table.
 
-Precomputing complex information can be overdone. Data engineers who are unfamiliar with the features of Power BI can end up repeating heavy computation that could be extracted from the model data itself with the appropriate configuration or DAX definitions. More significantly, precomputing information can lead to loss of interactivity, such as pre-aggregated string values that can no longer be filtered down.
+Then the measure can remain simple:
 
-In some cases, precomputation can even lead to wrong results, such as taking averages of averages rather than using the unit-record data in the model to calculate non-additive measures.
+```DAX
+Current employees on long service leave =
+calculate (
+    [Current employees],
+    keepfilters ( 'Employee leave'[Is on long service leave] )
+)
+```
 
-In general, precomputing complex information should not result in an awkward distortion of the dimensional model. Data engineers can avoid this by being familiar with the content of Filtering behaviour and the techniques introduced later in this chapter.
+The complexity has been moved to the data layer, where it can be tested and reused.
+
+Storytelling dimensions are an important example of this principle. When complex detail has been reduced into business-facing categories, paths, summaries, or special cases, measures can refer to those prepared structures instead of repeating the interpretation in DAX.
+
+Precomputation can be overdone. If the data engineer precomputes too much, the model may lose interactivity. A pre-aggregated string may no longer respond correctly to filters. An average stored at the wrong grain may produce wrong results when aggregated again.
+
+The rule is not “precompute everything.” The rule is:
+
+> Precompute business interpretation when doing so preserves interactivity and simplifies the model.
+
+The data engineer should understand the filtering behaviour of Power BI well enough to know which logic belongs in the pipeline and which logic belongs in a measure.
 
 #### Preparing binary flags
 
-Binary flags are columns with true or false values. Their main place is in the reference tables, and hence dimensions in the dimensional model. For example, an ‘Employee leave’ dimension may have an [Is on long service leave] column to indicate whether the employee is on service leave at the end of the period of the ‘Employee end of month’ fact table.
+Binary flags are true-or-false columns that express business logic clearly.
 
-Binary flags have a special place in simplifying DAX formulas. As an example, [Is on long service leave] can replace text filters such as [Leave status type] in (“Long service leave”, “Extended leave”). But they can also replace more complex calculations, such as checking the employee’s attendance, by pushing this to the data layer.
+Their most common place is in reference tables and dimensions. For example, an `'Employee leave'` dimension may contain `[Is on long service leave]` to indicate whether the employee is on long service leave at the end of the reporting period.
 
-Binary flags are preferred because, firstly, they are syntactically checked. A developer misspelling “Long service leave” in text does not result in a syntax error. However, the same spelling mistake in the column name [Is on long service leave] will result in an error. This is a small enhancement, but over a model with hundreds of measures, the possibility of spelling mistakes drastically adds up. Binary flags help mitigate the risk.
+Binary flags simplify measures.
 
-Secondly, binary flags are simple to use in a DAX formula. As a binary column, it does not require any equality operators. For example, instead of
+Instead of writing a measure that filters text values directly:
 
-```dax
-[Current employees on long service leave] =
-CALCULATE(
-    [Current number of employees]
-    , KEEPFILTERS(‘Employee leave’[Is on long service leave] = TRUE)
+```DAX
+Current employees on long service leave =
+calculate (
+    [Current employees],
+    keepfilters ( 'Employee leave'[Leave type] in { "Long service leave", "Extended long service leave" } )
 )
 ```
 
-The formula is simply:
+The measure can use the prepared binary flag:
 
-```dax
-[Current employees on long service leave] =
-CALCULATE(
-    [Current number of employees]
-    , KEEPFILTERS(‘Employee leave’[Is on long service leave])
+```DAX
+Current employees on long service leave =
+calculate (
+    [Current employees],
+    keepfilters ( 'Employee leave'[Is on long service leave] )
 )
 ```
 
-The reverse can be expressed with a NOT, as in:
+The reverse can be expressed with `not`:
 
-```dax
-KEEPFILTERS(NOT ‘Employee leave’[Is on long service leave])
+```DAX
+Current employees not on long service leave =
+calculate (
+    [Current employees],
+    keepfilters ( not 'Employee leave'[Is on long service leave] )
+)
 ```
 
-As a binary column, they participate elegantly in AND, and OR operators.
+Binary flags have two advantages.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+First, they are syntactically checked. If a developer mistypes `Long service leave` as text, the formula may still be valid but return the wrong result. If the developer mistypes the column name `[Is on long service leave]`, the formula fails visibly.
 
-As a binary column, they participate elegantly in AND and OR operators.
+Second, binary flags make the business logic readable. The measure says what it means.
 
-Using binary flags, the measures are faster performing, easier to maintain, and easier to understand. The business logic has been suitably abstracted so that each measure is self-explanatory.
+Binary flags also participate cleanly in `and` and `or` logic. For example:
 
-## Four types of measures
+```DAX
+Current employees on leave or acting =
+calculate (
+    [Current employees],
+    keepfilters (
+        'Employee status'[Is on leave]
+            || 'Employee status'[Is acting]
+    )
+)
+```
 
-It is useful to distinguish four types of measures. These are not technical categories, but functional ones.
+Using binary flags makes measures faster to write, easier to maintain, and easier to understand. The business logic has been named and surfaced in the model.
 
-- Aggregating measures
+## Interface roles of measures
 
-- Dimensional measures
+Measures do not all play the same role in the user experience. Some measures answer business questions directly. Some display contextual information. Some control whether rows appear. Some support the presentation of a dashboard.
 
-- Filtering measures
+These are interface roles. There are four common roles:
 
-- Dashboard measures
+- aggregating measures;
+- dimensional measures;
+- filtering measures;
+- dashboard measures.
 
 ### Aggregating measures
 
-Aggregating measures are the ones most people think of when they think of measures.
+Aggregating measures are the measures most people think of first.
 
-These include counts of rows or sums of values against the fact tables. In more complex cases, they may need to respond to the user’s evaluation context, such as calculating the number of employees at the end of a period.
+Examples include:
+
+- `[Total sales amount]`
+- `[Total inspection hours]`
+- `[Average inspection duration]`
+- `[Active employees end of period]`
+- `[Median time to resolve]`
+
+For measurable facts, aggregating measures may use functions such as `sum`, `countrows`, `distinctcount`, `averagex`, or `medianx`.
+
+For end-of-period facts, they often need to identify the relevant reporting period before aggregating. For example, `[Current employees]` may evaluate `[Active employees end of period]` at the latest period in the current filter context.
+
+Aggregating measures should usually be business-facing. They are the main way facts become visible to users.
 
 ### Dimensional measures
 
-Dimensions contain attributes that are generally used for grouping other measures.
+A dimensional measure turns dimension values into a measure result.
 
-Dimensional measures are those where dimensional values become measure values themselves. One example was described in the chapter Filtering behaviour under the scenario Aggregating dimension values. In that example, the requirement was to display all products that had been refunded on a particular day.
+This sounds unusual because dimensions are normally used for grouping or filtering. But sometimes a user wants a dimension value displayed as a measure.
 
-It is important to recognise dimensional measures as a separate category for two reasons. First, the values are often drawn from the dimension tables rather than the fact tables. This means they are not subject to the usual filtering setup in a dimensional model and may require special adjustment in DAX formulas to support interactive behaviour.
+For example, in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), the user may want to show all products refunded on a particular day. The product names come from `'Sales product'`, but the result is displayed as a measure.
 
-Second, dimensional measures are often mentally confused with the dimension value itself. A dimension value can be used to cross-filter, and can be placed as rows or columns in a matrix visual. A dimensional measure, however, cannot be used for either.
+A simplified example is:
 
-Its chief purpose is display and does not offer cross-filtering interactivity. That interactivity must come from other dimensions in the visual.
+```DAX
+Refunded products =
+calculate (
+    concatenatex (
+        values ( 'Sales product'[Product name] ),
+        'Sales product'[Product name],
+        ", "
+    ),
+    crossfilter ( 'Sales product'[Product SK], 'Refund'[Product SK], both )
+)
+```
 
-In the case of a degenerate dimension in a fact table, such as displaying a concatenated list of free-text comments in an annotation fact, it becomes academic whether the measure is dimensional or aggregating. The distinction is less important than recognising that attributes can become measure values as well, with its different filtering properties.
+This is not an aggregating measure in the normal sense. It is not summing or counting fact rows. It is retrieving dimension values under a particular filter context and turning them into display text.
+
+Dimensional measures can be confused with dimension columns.
+
+A dimension column such as `'Sales product'[Product name]` can be used in slicers, rows, columns, and cross-filtering.
+
+A dimensional measure such as `[Refunded products]` cannot do the same thing. It is a displayed result. It does not provide the same interactive control.
+
+Its chief purpose is display.
 
 ### Filtering measures
 
-As explained in Filtering behaviour, measures offer a way for the data engineer to explicitly control filtering. This is done through non-blank measure values and through use in a visual-level filter. Consequently, the model may contain measures whose sole purpose is to control filtering. These typically return either 1 or blank.
+Filtering measures exist to control what appears.
 
-Examples include the [Display unit records] measures described in Filtering behaviour.
+As explained in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), Power BI often retains visual rows where at least one measure returns a non-blank value. A measure can therefore be used as a filtering device.
 
-Other examples may be [Has sales] or [Has employee leave], which also return either 1 or blank. The difference is that [Display unit records] are intended to be used strictly with the ID dimensions to list out business transactions. This enforcement may be done via the function ISINSCOPE.
+Filtering measures typically return `1` or blank.
 
-Even in the case of filtering measures, they must remain meaningful for the user. The description should explain how the measure is to be used.
+Examples include:
+
+- `[Has sales]`
+- `[Has refund]`
+- `[Display sales transaction]`
+- `[Display refund transaction]`
+
+A simple filtering measure might be:
+
+```DAX
+Has sales =
+if (
+    countrows ( 'Sale' ) > 0,
+    1
+)
+```
+
+This can be added to a visual or used as a visual-level filter to show only products, dates, or IDs that have sales under the current filter context.
+
+Display unit-record measures are a special case. They are used to control whether transaction records should appear. They may include functions such as `isinscope` to ensure that rows appear only when the relevant ID dimension is present.
+
+Filtering measures are technical, but they still need business meaning. Their descriptions should explain how they are intended to be used.
 
 ### Dashboard measures
 
-Dashboard measures refer to measures designed specifically for creating a visually attractive and informative report. These may include coloured arrows, icons, or expressions that display the user’s selection context via SELECTEDVALUE. Power BI supports their use in a wide range of scenarios, including report titles, chart titles, and chart colours.
+Dashboard measures support report presentation.
 
-## Technical patterns
+They may provide:
 
-The following introduces technical patterns that cover a wide range of usage scenarios.
+- dynamic titles;
+- selected-value labels;
+- data currency messages;
+- conditional formatting values;
+- colour rules;
+- icons;
+- arrows;
+- warning messages.
+
+For example:
+
+```DAX
+Selected product label =
+if (
+    hasonevalue ( 'Sales product'[Product name] ),
+    selectedvalue ( 'Sales product'[Product name] ),
+    "Multiple products"
+)
+```
+
+Dashboard measures often inspect user context. They commonly use functions such as `selectedvalue`, `hasonevalue`, `isfiltered`, and `isinscope`.
+
+## Technical patterns for measures
+
+Most measures fall into a small number of technical patterns.
 
 The first three fall under the standard case:
 
-- Base measures
+- base measures;
+- derived measures;
+- context-aware measures.
 
-- Derived measures
+These patterns cover most ordinary scenarios.
 
-- Dashboard measures
+Some measures become difficult because the model contains a more demanding semantic problem. The final part of this section discusses three advanced scenarios:
 
-Then three more scenarios that are more complex:
+- polymorphic keys;
+- embedded grain;
+- unsupported relationships.
 
-1. Polymorphism
+These are not measure types. They are situations where the data engineer must be especially clear about grain, meaning, and filter context.
 
-2. Hidden grain
+The techniques in this section assume that the model has been prepared properly. They work best when the data engineer has preserved business keys, built useful dimensions, hidden facts, prepared binary flags, and created meaningful fragments in the pipeline.
 
-3. Unsupported relationships
-
-The next chapter will introduce an additional technical pattern using switch measures.
-
-Measures in Power BI require unit testing. This is especially the case for more complex ones. This is covered in the chapter on Automation.
+If those foundations are missing, the same DAX patterns may become difficult or impossible to apply. A measure cannot recover a grain if the key for that grain has been discarded. It cannot express a business category if the category has never been modelled. It cannot follow a relationship path if the relevant identifier has not been preserved.
 
 ### Base measures
 
-Base measures interact directly with the fact tables in a straightforward way.
+Base measures interact directly with fact tables.
 
-For measurable facts, these include SUMX, DISTINCTCOUNTNONBLANK, COUNTROWS, and similar aggregations.
+They are the first layer of measure design. They should usually be simple, explicit, and reusable.
 
-For end-of-period facts, these include an additional detection of evaluation context to find the latest date in context and then evaluate an aggregate measure for that period.
+For example:
 
-For annotation facts, these include CONCATENATEX to display detailed textual values.
+```DAX
+Total sales amount =
+sum ( 'Sale'[Sales amount] )
+```
 
-As explained in Technical simplicity, these measures should be simple and largely a direct aggregation of the fact tables, supported by a KEEPFILTERS on a binary column to narrow to specific business usage. For example, [Current employees on long service leave] should be derived from [Current number of employees] on the [Is on long service leave] column.
+```DAX
+Sales transaction count =
+countrows ( 'Sale' )
+```
+
+```DAX
+Total inspection hours =
+sum ( 'Inspection'[Inspection duration hours] )
+```
+
+For end-of-period facts, base measures often include logic to select a reporting period.
+
+For example, a current-state measure may select the latest period in context:
+
+```DAX
+Employees end of period =
+var latest_period =
+    max ( 'Reporting calendar'[Period end date] )
+return
+    calculate (
+        distinctcount ( 'Employee end of month'[Employee ID] ),
+        keepfilters ( 'Reporting calendar'[Period end date] = latest_period )
+    )
+```
+
+The exact formula depends on the calendar design, but the pattern is common: identify the relevant period, then evaluate the base measure there.
+
+For annotation facts, base measures may use `concatenatex` to display detail.
+
+For example:
+
+```DAX
+Inspection comments =
+concatenatex (
+    'Inspection comments',
+    'Inspection comments'[Comment text],
+    " , ",
+    'Inspection comments'[Comment sequence number]
+)
+```
+
+Base measures should carry as little business complexity as possible. They should aggregate prepared facts and use prepared dimensions. For example, failed inspections should be:
+
+```DAX
+Failed inspection count =
+calculate (
+    [Inspection count],
+    keepfilters ( 'Inspection outcome'[Is failed inspection] )
+)
+```
 
 ### Derived measures
 
-Derived measures are the next level from basic measures. These include ratios, time-intelligence, and population comparisons.
+Derived measures build on base measures.
 
-Ratios apply DIVIDE to two basic measures.
+They include ratios, rates, comparisons, rolling periods, and time-intelligence measures.
 
-Time-intelligence applies standard techniques for calculating rolling periods, same period last year, and similar scenarios.
+For example:
 
-Population measures “escape” from the filter context to compare the measure with a larger population, such as comparing a team’s metric with the national metric. These can be achieved using functions such as REMOVEFILTERS.
+```DAX
+Inspection failure rate =
+divide ( [Failed inspection count], [Inspection count] )
+```
 
-Derived measures often follow repetitive patterns such as calculating a number for the same period last year. This could be better managed using calculation groups or switch measures.
+Derived measures should usually be built from other measures rather than repeating base logic.
+
+Population comparison measures are another important derived pattern. These measures escape part of the filter context to compare the current value with a larger population.
+
+For example:
+
+```DAX
+National inspection count =
+calculate (
+    [Inspection count],
+    removefilters ( 'Region' )
+)
+```
+
+The meaning should be explicit. The user should understand which filters are removed and which remain.
 
 ### Context-aware measures
 
-Dashboard measures are one of the four types described earlier. They are designed to create visually attractive and informative dashboards. As such, they often need to “reach out” to inspect the filtering context that the user has chosen. For example, a report title may display the product name if one product is selected, or show “Multiple products” if more than one is selected.
+Context-aware measures inspect the user’s current selection and respond accordingly.
 
-DAX supports a wide range of context-awareness functions including ISFILTERED, ISINSCOPE, HASONEVALUE, and SELECTEDVALUE. They explicitly target what the user has selected. The functions VALUES and ISBLANK can be used to query dimensions to inspect what values exist in the filter context, which can inform the measure outcome.
+Dashboard measures are often context-aware, but aggregating and filtering measures can be context-aware too.
 
-Another common pattern is to select the maximum reporting date from the model’s chief reporting calendar to reflect the latest date selected by the user.
+Common functions include:
 
-For simple business processes, these patterns cover the bulk of usage scenarios.
+- `selectedvalue`
+- `hasonevalue`
+- `isfiltered`
+- `isinscope`
+- `values`
+- `isblank`
 
-However, there are occasions when the dimensional model does not allow such straightforward implementation. The following scenarios allow a DAX solution without making drastic changes to the model.
+A report title may use:
 
-### Polymorphism
-
-Polymorphism refers to the idea that the value of one column depends on the value of another. A common case is the header–details situation where actions can take place on either. For example, a business process may inspect travellers (header) and their bags (details) for contraband goods. The 'Inspection' table may record inspections on both. A column such as [Inspection item type] with values “Traveller” and “Bag” determines the meaning of [Inspected item SK].
-
-In this scenario, a simple DISTINCTCOUNT of [Inspection item SK] will not give the total number of distinct items inspected. In a well-designed dimensional model, the determining column would be expressed in a dimension. For example, an 'Inspection type' dimension would contain [Inspection item type], while the aggregated value [Inspection item SK] is in the 'Inspection' fact table.
-
-The solution is to create a temporary table using SUMMARIZE to group on the determining column, apply per-segment aggregation on the fact table, and then aggregate over the segments.
-
-```dax
-var inspection_per_type =
-    SUMMARIZE(
-        ‘Inspection type’    # group by dimension
-        , ‘Inspection type’[Inspection item type’   # on the polymorphic resolving column
-        , “Inspection count”
-        , DISTINCTCOUNTNOBLANK(‘Inspection’[Inspection item SK])  # aggregating fact per segment
+```DAX
+Sales title =
+"Sales for "
+    & if (
+        hasonevalue ( 'Sales product'[Product name] ),
+        selectedvalue ( 'Sales product'[Product name] ),
+        "all products"
     )
-return sumx(inspection_per_type, [Inspection count]) # adds up the result from each segment
 ```
 
-If there are any sub-selection necessary, KEEPFILTERS can be applied to SUMMARIZE by wrapping it inside CALCULATETABLE.
+A display measure may require an ID dimension before returning a value:
 
-New data engineers often tackle this sort of problem by creating an artificial single column, such as a concatenation of the item type name and the item SK, and applying a distinct count on that composite column. The approach above avoids any model change.
-
-As with many complex DAX challenges, the idea is to treat it almost as if it were a SQL problem and translate the solution to DAX.
-
-### Hidden grain
-
-A generalisation of the previous problem is the case of hidden grain. Power BI supports greater flexibility in DAX and has a more relaxed requirement on table grain compared to traditional dimensional modelling. This allows a single fact table to work at the details with the embedded header rather than having one for header and one for details.
-
-Or even present multiple subprocesses of incompatible granularity as one fact table.
-
-This is explored further in the chapter Anticipating questions.
-
-In these scenarios, the model may have granularity embedded through denormalisation, and not explicitly available as its own grain. In this case, some important aggregating measures such as SUMX, AVERAGEX, and MEDIANX no longer work.
-
-ID dimensions provide a ready solution. They preserve the primary keys of a business process and allow reconstruction of information at the grain defined by that key.
-
-The implementation is to use SUMMARIZE on the ID dimension, either directly or through its storage on the fact table as a relationship column, selecting any relevant columns to reconstruct the grain into a temporary table, and then performing aggregation on that table.
-
-Following the previous example of traveller inspection, there is a record of the total inspection time for the traveller which includes the inspection of the traveller as well as any bags on person. Suppose this is recorded as [Inspection duration (mins)] and [Traveller SK] and have been denormalised into the Inspection fact table. A measure that calculates [Median time to inspect a traveller] can do so by re-extracting the grain through SUMMARIZE:
-
-```dax
-var inspection_time_per_traveller = SUMMARIZE(
-    ‘Inspection’
-    , ‘Inspection’[Traveller SK]
-    , ‘Inspection’[Inspection duration (mins)]
-) # reconstruct the table at the traveller grain
-Return MEDIANX(inspection_time_per_traveller, [Inspection duration (mins)])
+```DAX
+Display sales transaction =
+if (
+    isinscope ( 'Sales ID'[Sales order number] )
+        && countrows ( 'Sale' ) > 0,
+    1
+)
 ```
 
-In SQL terms, this is similar to using “select distinct” on a set of columns in a denormalised table to retrieve the desired grain, and then aggregating over the result set. The selection of a primary key ensures the resulting grain is correct.
+Context-aware measures are useful because Power BI users interact with the model in many sequences. A measure can inspect the current context and choose an appropriate response.
 
-### Unsupported relationships
+But context-aware logic should remain explainable. If a measure behaves differently in different visuals, its description should make that behaviour clear.
 
-Unsupported relationships refer to scenario when the default filtering configuration of using single-direction, dimension to fact relationships does not easily support a query.
+### Advanced scenario: polymorphic keys
 
-Rather than making large structural changes to the model, the data engineer may approach the challenge through DAX.
+Polymorphic keys occur when the meaning of one key column depends on another column.
 
-The most powerful tools for writing queries not naturally supported by the model’s relationships are CROSSFILTER, TREATAS, and USERELATIONSHIP.
+For example, a business process may inspect travellers and bags. Both are recorded in the same `'Inspection'` fact table. A column such as `[Inspection item type]` has values such as `Traveller` and `Bag`. Another column, `[Inspected item SK]`, stores the inspected item key.
 
-As seen in Aggregating dimension values in Filtering behaviour, CROSSFILTER can be used to temporarily turn a relationship to bidirectional. This allows the retrieval of dimension values by another dimension.
+The meaning of `[Inspected item SK]` depends on `[Inspection item type]`.
 
-TREATAS allows the data engineer to work as if a relationship has been defined, even when none exists. This is particularly powerful in a model with ID dimensions that allow the lookup of any information at the unit-record level. There is a performance penalty for this sort of usage, but it can be the right tool for the correct situation, especially under tight timeframes where adding new relationships is not possible. TREATAS can still be used as long as the information is in the model.
+**Example structure of `'Inspection'`**
 
-If two tables have two relationships between them where one is active and one is inactive, then USERELATIONSHIP can activate the inactive one and use that as the filtering path. If both relationships are active, one will have precedence, and USERELATIONSHIP can be used to deactivate the primary one. This usage implies that the data engineer has consciously built an additional relationship to support specific measures that use a relationship path different from the model’s default. An example is described in Dynamic type I in Filtering behaviour.
+| Inspection SK | Inspection item type | Inspected item SK |
+|---:|---|---:|
+| 1 | Traveller | 1001 |
+| 2 | Traveller | 1002 |
+| 3 | Bag | 1001 |
+| 4 | Bag | 1003 |
+
+A simple distinct count of `[Inspected item SK]` gives the wrong answer. It treats traveller `1001` and bag `1001` as the same item.
+
+The correct logic must count distinct items within each item type, then add the results.
+
+In a well-designed model, the determining column should usually be expressed in a dimension such as `'Inspection type'`. The measure can then group by the determining column.
+
+Conceptually:
+
+```DAX
+Inspected item count =
+var inspection_per_type =
+    summarize (
+        'Inspection type', -- group by dimension
+        'Inspection type'[Inspection item type], -- on the polymorphic resolving column
+        "Inspection count",
+            distinctcountnoblank ( 'Inspection'[Inspected item SK] ) -- aggregating fact per segment
+    )
+return
+    sumx ( inspection_per_type, [Inspection count] ) -- adds up the result from each segment
+```
+
+If additional filters are needed, `summarize` can be wrapped inside `calculatetable` with `keepfilters`.
+
+New data engineers often solve this by concatenating item type and item key into a single artificial column. That can work, but it changes the model to solve a calculation problem. The approach above keeps the model stable and handles the polymorphism inside the measure.
+
+The idea is similar to SQL: group by the resolving column, aggregate each segment, then aggregate the result.
+
+### Advanced scenario: embedded grain
+
+Embedded grain occurs when a table is physically stored at one grain, but contains enough repeated keys or attributes to recover another grain.
+
+Power BI is more flexible than traditional dimensional modelling. A single fact table can sometimes contain detail rows with header-level values repeated on each row. This can be practical, but it creates a measure problem.
+
+For example, suppose `'Inspection'` records inspections at the traveller level, but also contains bag results.
+
+**Example structure of `'Inspection'`**
+
+| Inspection SK | Traveller SK | Bag SK | Inspection duration minutes |
+|---:|---:|---:|---:|
+| 1 | 1001 | 501 | 45 |
+| 1 | 1001 | 502 | 45 |
+| 3 | 1002 | 503 | 30 |
+
+The inspection duration for `SK = 1` is repeated on bag rows. If the data engineer averages or sums directly over `'Inspection'`, the row may be aggregated twice.
+
+The solution is to reconstruct the intended grain before aggregating.
+
+For example, to calculate median inspection duration per traveller:
+
+```DAX
+Median time to inspect traveller =
+var inspection_time_per_sk =
+    summarize (
+        'Inspection',
+        'Inspection'[Inspection SK],
+        'Inspection'[Inspection duration minutes]
+    )
+return
+    medianx (
+        inspection_time_per_sk,
+        [Inspection duration minutes]
+    )
+```
+
+In SQL terms, this is similar to using `select distinct` on the columns that define the intended grain, then aggregating over that result.
+
+ID dimensions can help because they preserve the keys needed to reconstruct the grain. This is another reason ID dimensions are powerful in Power BI models.
+
+The broader lesson is that measures must know the grain of the thing being measured. If the grain is embedded inside a denormalised fact, the measure may need to recover it explicitly.
+
+### Advanced scenario: unsupported relationships
+
+Unsupported relationships occur when the standard single-direction dimension-to-fact relationship structure does not naturally support the required calculation.
+
+The answer is not always to change the model. Sometimes the data engineer can use DAX to create the required filter path for one measure.
+
+The most useful tools are:
+
+- `crossfilter`
+- `treatas`
+- `userelationship`
+
+`crossfilter` temporarily changes relationship direction for a calculation. As shown in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), it can be used to retrieve dimension values through a relationship path that normally flows the wrong way.
+
+`treatas` applies values from one table as though they filtered another table. It is powerful when the information is already in the model but no physical relationship exists.
+
+For example, a refund table may need to retrieve the original sale amount through sales order numbers. If the default relationship path does not support the calculation, `treatas` may be used to apply the refund’s sales order numbers to `'Sale'` for that measure.
+
+`userelationship` activates an inactive relationship for the duration of a calculation.
+
+For example, suppose `'Calendar'[Date]` has an active relationship to `'Sale'[Order date]` and an inactive relationship to `'Sale'[Delivery date]`. A delivered-sales measure can activate the delivery-date relationship:
+
+```DAX
+Total delivered sales amount =
+calculate (
+    [Total sales amount],
+    userelationship ( 'Calendar'[Date], 'Sale'[Delivery date] )
+)
+```
+
+These functions are powerful because they allow specific measures to behave differently without changing the whole model.
+
+They should be used deliberately. If many measures require complex relationship overrides, the model may need redesign. But when the exception is narrow and well understood, measure-defined filtering is often cleaner than adding confusing bidirectional relationships or distorting facts.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Measures compress fact-table content into business meaning, then unpack that meaning in user context.
+>
+> Good measures should be business-centric and technically simple.
+>
+> Business-facing measures should answer common questions directly rather than forcing users to memorise filter combinations.
+>
+> Complex business logic should usually be prepared in the data pipeline, reference data, binary flags, or storytelling dimensions.
+>
+> Measures can play different interface roles: aggregating, dimensional, filtering, or dashboard-oriented.
+>
+> Business keys help with difficult measure challenges by preserving recoverable meaning across time, grain, and modelling complexity.
+>
+> If measure logic becomes difficult to explain, the data engineer should consider whether the model or pipeline should be improved.
