@@ -6,14 +6,21 @@ lede: Good engineering contains errors before they spread through the pipeline.
 weight: 5
 # draft: true
 ---
-
 ## Containing failure
 
 Good engineering contains failure before it spreads.
 
 A brittle pipeline treats every error as catastrophic. A fault-tolerant pipeline distinguishes between errors that should stop everything, errors that should stop one table, and errors that should be isolated to a small set of records.
 
-The goal is not to ignore errors. The goal is to keep the rest of the data product usable while surfacing the failure clearly.
+The goal is not to ignore errors. The goal is to keep the rest of the data product usable while surfacing failure clearly.
+
+On the other hand, surfacing failure is not the same as producing endless alerts.
+
+If the same warning appears every day and no one knows what to do with it, the warning becomes background noise rather than a warning.
+
+This is the cry-wolf problem of monitoring. Repeated, unactionable alerts train people to ignore the pipeline.
+
+For this reason, fault tolerance requires judgement. Some errors should abort a load. Some occasional errors should be isolated into reject tables while the rest of the pipeline proceeds. Some recurring errors should be given targeted handling so that the pipeline explicitly represents the known issue rather than repeatedly rediscovering it.
 
 This is fault tolerance.
 
@@ -47,7 +54,7 @@ The reverse can also occur. Two distinct real-world entities may be forced to oc
 
 Uniqueness violations can arise from business process failures, such as duplicate entry. They can also arise from mechanical failures, such as incremental load logic incorrectly loading the same record twice.
 
-The data engineer must express uniqueness expectations in the warehouse. While they may be implemented as technical constaints, they are better understood as statements of business intent.
+The data engineer must express uniqueness expectations in the warehouse. While they may be implemented as technical constraints, they are better understood as statements of business intent.
 
 If the constraint is violated, the pipeline has several possible responses:
 
@@ -171,7 +178,9 @@ Existence faults are especially important in batch and incremental pipelines. Ta
 
 The data engineer should not assume that every related record will always arrive in the expected order.
 
-For existence, the best mindset is to design the pipeline as if it were streaming:
+For existence, the best mindset is to design the pipeline as if it were streaming.
+
+Even in a batch pipeline, this is a useful design mindset:
 
 - tables may load continuously, or at least several times a day;
 - some tables may fail to load from time to time;
@@ -190,7 +199,7 @@ Stability faults occur when small real-world changes produce disproportionate ch
 
 A stable pipeline changes in proportion to the world it represents.
 
-If ten sales changed in the source system, the pipeline should not rewrite ten million historical sales records. If one reference value changed, the warehouse should not update half its records to match. 
+If ten sales changed in the source system, the pipeline should not rewrite ten million historical sales records. If one reference value changed, half the warehouse should not change as a side effect.
 
 Stability means that ordinary changes should produce ordinary effects.
 
@@ -233,7 +242,7 @@ Narrow meaningful fragments are more stable. When each table has a clear informa
 
 Another habit is to manage dependencies carefully. Small reference tables can have large downstream effects. If a country reference table fails to load, and downstream transformations depend on it early in the pipeline, country data may disappear across many products.
 
-These are studied in later chapters [Load meachnics](/docs/efficient-stable-pipeline/load-mechanics/) and [Load dependencies](/docs/efficient-stable-pipeline/load-dependencies/).
+These design habits are developed further in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) and [Load dependencies](/docs/efficient-stable-pipeline/load-dependencies/).
 
 ## Conclusion
 
@@ -243,7 +252,7 @@ It is not useful to enumerate every possible fault.
 
 The important thing is the mindset: anticipating errors.
 
-The experienced data engineer does not focus only on what is working right now, but also asks what can go wrong.
+The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
 
 A fault-tolerant pipeline expects errors, handles them, recovers from them, and above all, reports on them.
 
@@ -260,6 +269,14 @@ That is also the discipline of fault tolerance: not every error is fatal, but no
 >
 > Fault tolerance is the discipline of containing failure.
 >
+> Good engineering contains errors before they spread through the pipeline.
+>
 > A fault-tolerant pipeline distinguishes between errors that should stop everything, errors that should stop one table, and errors that should be isolated to a small set of records.
 >
-> Uniqueness, existence, and stability faults are common faults that can be mitigated with standard techniques.
+> Uniqueness faults occur when the relationship between real-world entities and database records breaks down.
+>
+> Existence faults occur when required records or values are missing, or when records remain after their real-world counterpart has disappeared.
+>
+> Stability faults occur when small real-world changes produce disproportionate changes in the data world.
+>
+> Not every error is fatal, but none should pass silently.
