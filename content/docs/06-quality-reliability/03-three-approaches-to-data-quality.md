@@ -51,7 +51,6 @@ Each approach contains recurring methods.
 | Applying assumptions | A practical assumption can handle most cases, but violations need expert review. |
 | Data quality reports | Issues are frequent, numerous, or easier to remediate in bulk. |
 
-
 **Precise rules**
 
 | Method | Use when... |
@@ -83,7 +82,7 @@ Human curation is appropriate when business judgement is needed and the data eng
 
 ### Data annotation
 
-The most common form of human curation is data annotation.
+Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
 
 For example, a digital system may record sale locations as entered by store address. A business expert may later annotate these locations into sales regions or company sites. This annotation occurs in the data pipeline, not the source system, and is commonly known as reference data management.
 
@@ -99,12 +98,11 @@ Whether the curation concerns reference data, master data, or other forms of ann
 
 ### Applying assumptions
 
-Another way for business experts to intervene in data quality issues is to apply assumptions and act when those assumptions are violated.
+Applying assumptions is useful when a practical assumption can handle most cases, but violations need expert review.
 
 Consider the recording of dates. If users manually enter dates, they may accidentally type 2300 instead of 2030. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
 
 One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to null. This assumption should be monitored. If it is violated, an alert should prompt a business expert to correct the source data.
-
 Another example is assuming uniqueness. If data entries are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness, ignore duplicates, and monitor for violations. If duplicates appear, a business expert can intervene at the source.
 
 This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation.
@@ -115,7 +113,29 @@ If data quality issues are frequent or systemic, a data quality report may be mo
 
 Data quality reports are suitable when issues are frequent, numerous, or easier to treat in bulk on a periodic basis.
 
-An effective implementation is to create a combination or choice dimension. A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
+An effective implementation is to create a [combination or choice dimension](/docs/presenting-insights/dimensional-modelling-for-ux/). A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
+
+**Example structure of `'Sales data quality'`**
+
+| Sales data quality SK | Is missing sales amount | Is invalid sales date | Is unknown customer | Data quality category |
+|---:|---|---|---|---|
+| 1 | false | false | false | No known issue |
+| 2 | true | false | false | Missing amount |
+| 3 | false | true | false | Invalid date |
+| 4 | false | false | true | Unknown customer |
+| ... | ... | ... | ... | ... |
+| 8 | true | true | true | Multiple issues |
+
+The fact table can then refer to the data quality dimension.
+
+**Example structure of `'Sales'`**
+
+| Sales ID | Sales date | Customer ID | Sales amount | Sales data quality SK |
+|---|---|---|---:|---:|
+| S1001 | 2025-04-01 | C001 | 120.00 | 1 |
+| S1002 | 2300-04-01 | C002 | 95.00 | 3 |
+| S1003 | 2025-04-03 | C999 | 80.00 | 4 |
+| S1004 | 2025-04-04 | C004 |  | 2 |
 
 Coupled with the ID dimension, this makes it easy to build a Power BI report that surfaces transactions requiring remediation by a business expert.
 
@@ -133,7 +153,7 @@ One way to look at these rules is to see them as “fixing issues” in the data
 
 Precise rules are appropriate when the business can say what should happen clearly enough for the data engineer to implement it.
 
-This chapter covers four recurring types of precise rule:
+This section covers four recurring types of precise rule:
 
 1. Defining analytical concepts
 2. Defining primary keys
@@ -142,13 +162,15 @@ This chapter covers four recurring types of precise rule:
 
 ### Defining analytical concepts
 
+Defining analytical concepts closes the quality gap between operational detail and business interpretation.
+
 Since business insight is information analysed in light of business intent, a direct way of improving data quality is to define the analytical concept that the business needs.
 
-This concept becomes a lens through which the data is interpreted. It allows users to see the data in a way that is more expressive of business intent.
+Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
 #### Good and bad entities
 
-A common example is defining “good” and “bad” entities.
+Good and bad entity definitions close the quality gap between detailed operational outcomes and the business’s need for a usable judgement.
 
 A business process may collect detailed information such as audit results, inspection results, incidents, sentiment, or sales volume. However, these details may not yet be formalised into a systematic judgement.
 
@@ -156,35 +178,102 @@ Sometimes numeric values such as star ratings need to be translated into good an
 
 For example, a manufacturing batch may have multiple quality-control criteria. The business may decide that failing one critical criterion, or multiple non-critical criteria, defines failure at the batch level.
 
-This closes the quality gap between detailed operational outcomes and the business’s need for a usable judgement.
+**Example structure of `'Batch quality criterion'`**
+
+| Batch ID | Quality criterion | Quality result | Is critical criterion |
+|---|---|---|---|
+| B1001 | Temperature control | Pass | true |
+| B1001 | Packaging integrity | Pass | false |
+| B1001 | Labelling accuracy | Fail | false |
+| B1002 | Temperature control | Fail | true |
+| B1002 | Packaging integrity | Pass | false |
+
+The analytical concept can then be expressed at the batch level.
+
+**Example structure of `'Batch quality outcome'`**
+
+| Batch ID | Critical criteria failed | Non-critical criteria failed | Batch quality outcome |
+|---|---:|---:|---|
+| B1001 | 0 | 1 | Pass |
+| B1002 | 1 | 0 | Fail |
+
+This gives the user immediate view of the business at the level of intent.
 
 It is not reasonable to expect operational systems to always define these concepts. Their primary job is to execute workflows while preserving records. The data engineer plays a role by adding the analytical lens.
 
+This implementation is studied in greater depth in [entity processing](/docs/creating-information/entity-processing/).
+
 #### Milestones
 
-Milestones are another important analytical definition.
+Milestones close the quality gap between messy workflow events and meaningful process control.
 
-A business process may have many detailed steps, some of which loop back. This mass of steps can bury insight in operational detail. A useful analytical view is to define major milestones that can be used to measure performance.
+A business process may have many detailed steps. Some may loop back. Some may start and stop multiple times. Some may occur repeatedly for the same business entity. This mass of events can bury insight in operational detail.
 
-To be useful, milestones should be limited in number. More importantly, each milestone should be associated with a specific control point or responsible owner who can act on the timeliness of reaching that milestone.
+A useful analytical view is to define a small number of major checkpoints that can be used to measure performance. These checkpoints are milestones.
 
-To deal with loops, the data engineer can define the earliest and latest time each event occurs.
+The difficulty is choosing the right level of abstraction. A milestone can be too narrow, in which case it merely reproduces operational noise. It can also be too broad, in which case it merges several different responsibilities into one measure.
 
-Milestones close the quality gap between messy workflow events and meaningful process control. This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
+A practical rule is that each milestone should have one main control point or responsible owner. If a milestone mixes responsibilities, then a delay becomes difficult to interpret. The business can see that something is late, but not who is able to act on it.
+
+For example, an HR recruitment process may contain dozens of operational steps: position approved, advertisement drafted, advertisement cleared, advertisement published, applications received, applications closed, eligibility checked, longlist completed, shortlist completed, interviews scheduled, interviews completed, referee checks completed, delegate approval received, offer issued, offer accepted, and commencement recorded.
+
+In practice, such an operational process may contain more than forty recorded steps. That level of detail is necessary for workflow execution, but too noisy for business decision-making.
+
+The solution is to define key milestones.
+
+**Example structure of `'Recruitment event'`**
+
+| Recruitment ID | Event datetime | Event type |
+|---|---|---|
+| R1001 | 2025-04-01 09:00 | Advertisement drafted |
+| R1001 | 2025-04-03 11:30 | Advertisement cleared |
+| R1001 | 2025-04-04 09:00 | Advertisement published |
+| R1001 | 2025-04-18 17:00 | Applications closed |
+| R1001 | 2025-04-21 10:00 | Eligibility checked |
+| R1001 | 2025-04-23 16:00 | Shortlist completed |
+| R1001 | 2025-04-29 09:00 | Interviews scheduled |
+| R1001 | 2025-05-02 16:30 | Interviews completed |
+| R1001 | 2025-05-07 10:00 | Delegate approved |
+| R1001 | 2025-05-09 14:00 | Offer accepted |
+| R1002 | 2025-04-03 09:00 | Advertisement drafted |
+| R1002 | 2025-04-05 10:00 | Advertisement returned for changes |
+| R1002 | 2025-04-08 13:00 | Advertisement cleared |
+| R1002 | 2025-04-09 09:00 | Advertisement published |
+| R1002 | 2025-04-23 17:00 | Applications closed |
+| R1002 | 2025-04-29 15:00 | Eligibility checked |
+| R1002 | 2025-05-05 15:00 | Shortlist completed |
+| R1002 | 2025-05-14 16:00 | Interviews completed |
+
+The data engineer can turn the event history into a milestone fragment.
+
+**Example structure of `'Recruitment milestone'`**
+
+| Recruitment ID | Advertisement published datetime | Interview completed datetime | Offer accepted datetime | Days from advertisement to interview | Days from interview to offer |
+|---|---|---|---|---:|---:|
+| R1001 | 2025-04-04 09:00 | 2025-05-02 16:30 | 2025-05-09 14:00 | 28.3 | 6.9 |
+| R1002 | 2025-04-09 09:00 | 2025-05-14 16:00 |  | 35.3 |  |
+
+The milestone fragment does not replace the event history. It gives the business a stable analytical view of the process.
+
+In this example, the three milestones correspond to different control points. Advertisement publication depends on the area preparing and clearing the advertisement. Shortlist completion depends on the assessment process after applications close. Offer acceptance depends on post-interview approval and candidate response. If these were collapsed into one broad measure such as `[Days to recruit]`, the business would know the process was slow but not where the delay occurred.
+
+To deal with loops and repeated events, the data engineer can define the earliest or latest relevant occurrence. For example, `[Advertisement published datetime]` may use the first publication event, while `[Offer accepted datetime]` may use the final accepted offer event.
+
+This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
 
 #### Conformed dimensions
 
-Another analytical concept is the conformed dimension.
+Conformed dimensions close the quality gap between local system categories and enterprise intent.
 
 A large organisation may have many processes, and many of them share similar concepts under different names. A conformed dimension reconciles these local concepts into a shared view.
 
 When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
+Conformed dimensions are studied in the chapter [reference data](/docs/creating-information/reference-data/).
 
-Conformed dimensions close the quality gap between local system categories and enterprise intent.
-
-Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
 ### Defining primary keys
+
+Defining primary keys closes the quality gap between database rows and real-world entities.
 
 Primary keys serve as the link between data records and their counterparts in the real world. Unfortunately, some business processes do not rigorously define primary keys.
 
@@ -198,49 +287,98 @@ Most primary keys can be traced by examining how a business process creates, ret
 
 #### Sequence numbers
 
+Sequence numbers close the quality gap where the source system stores a list, but the data product needs stable business identity for each row.
+
 Sequence numbers are useful when a header has multiple detail rows and the detail table lacks a meaningful primary key.
 
 For example, a sales order may have multiple items. The order is stored in `Sales`, with `[Order number]` as the primary key. The items are stored in `SalesItems`, which may be a miscellaneous list without a meaningful key.
 
 If each product can appear only once, then `[Order number]` and `[Product ID]` may suffice as a primary key. But if a product can appear more than once, this fails.
 
+**Example structure of `SalesItems` before sequence numbering**
+
+| Order number | Product ID | Sales item ID | Quantity |
+|---|---|---:|---:|
+| O1001 | P100 | 501 | 1 |
+| O1001 | P100 | 502 | 2 |
+| O1001 | P200 | 503 | 1 |
+
+`[Order number]`, `[Product ID]` cannot identify a row because `P100` appears twice for the same order.
+
 A simple solution is to treat the list of items as a sequence and create an artificial column `[Sales item sequence number]`, forming the key `[Order number]`, `[Sales item sequence number]`.
+
+**Example structure of `SalesItems` after sequence numbering**
+
+| Order number | Sales item sequence number | Product ID | Sales item ID | Quantity |
+|---|---:|---|---:|---:|
+| O1001 | 1 | P100 | 501 | 1 |
+| O1001 | 2 | P100 | 502 | 2 |
+| O1001 | 3 | P200 | 503 | 1 |
 
 Sometimes a system will implement a meaningless key such as `[Sales item ID]`, a simple integer used for UI or database constraints. Even in these cases, the data engineer may still define a sequence number and use `[Order number]`, `[Sales item sequence number]` as the business-facing primary key. `[Sales item ID]` can be retained for joins.
 
-In general, sequence numbers are effective wherever there is a miscellaneous list of line items within a header. Care must be taken to ensure the sequence is deterministic by breaking ties—using a surrogate key like [Sale items ID] as a sort order is a reliable approach.
+In general, sequence numbers are effective wherever there is a miscellaneous list of line items within a header. Care must be taken to ensure the sequence is deterministic by breaking ties—using a surrogate key like `[Sales item ID]` as a sort order is a reliable approach.
 
 #### Version numbers
 
-Version numbers are useful for entities whose changes should be preserved as new versions.
+Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
+
+Version numbers are useful for [entities whose changes should be preserved as new versions](/docs/creating-information/entity-processing/).
 
 For example, a customer order may be submitted, revised, and resubmitted before it is fulfilled. The business may still regard this as the same order, but each revision changes the content that was true at a particular point in time.
-
-The data engineer may model this using `[Order ID]`, `[Order version number]`.
 
 Digital systems are not always consistent in how they manage versions. A common but problematic approach is to allow the entity ID to change each time the record is revised and record the relationship using `[Previous order ID]` or `[Superseded order ID]`. This may work for rendering a web UI but can cause confusion in analysis.
 
 Where versioning is lost or muddled, the data engineer can restore clarity using a consistent pattern such as `[Entity ID]`, `[Version number]`.
 
-Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
+The order can be represented with a stable `[Order ID]` and a changing `[Order version number]`.
+
+**Example structure of `Sales.Order`**
+
+| Order ID | Customer ID | Current order version number | Order status |
+|---|---|---:|---|
+| O1001 | C042 | 3 | Submitted |
+| O1002 | C087 | 1 | Fulfilled |
+
+**Example structure of `Sales.OrderVersion`**
+
+| Order ID | Order version number | Version datetime | Product ID | Quantity | Order value |
+|---|---:|---|---|---:|---:|
+| O1001 | 1 | 2025-04-01 09:15 | P100 | 10 | 250.00 |
+| O1001 | 2 | 2025-04-01 11:40 | P100 | 12 | 300.00 |
+| O1001 | 3 | 2025-04-02 08:30 | P200 | 12 | 420.00 |
+| O1002 | 1 | 2025-04-03 14:10 | P300 | 5 | 175.00 |
+
+The primary key for `Sales.OrderVersion` is `[Order ID]`, `[Order version number]`.
+
 
 #### Temporality
 
-Temporality refers to tracking changes over time. In data warehousing, this is commonly handled through type II tracking.
+Temporality closes the quality gap where the business needs historical interpretation but the source system only presents the current state.
 
-Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the entity is mutable.
+Temporality refers to tracking changes over time. In data warehousing, this is commonly handled through Type II tracking.
 
-Mutable entities should usually be expressed through a primary key that includes a time component. The data engineer may define the key as `[Entity ID]`, `[Start datetime]`, with `[End datetime]` marking the end of the validity period.
+Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the [entity is mutable](/docs/creating-information/entity-tracking/).
 
-This is especially important if an entity can be deleted and recreated, because the start of one row is not necessarily the end of the previous row.
+Mutable entities should usually include a time component in their business key. The data engineer may define the business key as `[Employee ID]`, `[Start datetime]`, with `[End datetime]` marking the end of the validity period.
+
+In implementation, it is necessary to add a surrogate key as well.
+
+**Example structure of `Employee.TeamAssignment`**
+
+| Team assignment SK | Employee ID | Start datetime | End datetime | Team name |
+|---:|---|---|---|---|
+| 1 | E1001 | 2024-01-01 00:00 | 2025-03-15 09:30 | Finance |
+| 2 | E1001 | 2025-03-15 09:30 | 9999-12-31 00:00 | Analytics |
+| 3 | E1002 | 2024-07-01 00:00 | 9999-12-31 00:00 | Operations |
+
+The business key is `[Employee ID]`, `[Start datetime]`. `[End datetime]` marks the end of the validity period. `[Team assignment SK]` provides a simple surrogate key for joins, relationships, and downstream modelling.
 
 Recovering temporality depends on how history is stored. Sometimes it is available in audit tables. Sometimes it must be reconstructed with help from business experts.
 
-Temporality closes the quality gap where the business needs historical interpretation but the source system only presents the current state.
-
 ### Defining the primary record
 
-Defining the primary record is related to defining primary keys, but it solves a different problem.
+Defining the primary record closes the quality gap between multiple records and one underlying entity.
 
 This occurs when the database has primary keys, but different primary keys relate to the same underlying entity. It is common in business processes that gather decentralised observations.
 
@@ -248,21 +386,39 @@ Consider the example of whale sightings. A database may collect observations fro
 
 Multiple citizens may report sightings of the same whale. As a result, multiple `[Observation ID]` values relate to the same real-world entity.
 
-Suppose the business has a rule such as: "A whale species at one GPS proximity should only appear once within a day."
+**Example structure of `Whale.Observation`**
+
+| Observation ID | User ID | Observation number | Species | GPS area | Observation date |
+|---:|---|---:|---|---|---|
+| 101 | U01 | 1 | Blue whale | A17 | 2025-05-01 |
+| 102 | U02 | 1 | Blue whale | A17 | 2025-05-01 |
+| 103 | U03 | 1 | Humpback whale | B04 | 2025-05-01 |
+
+Suppose the business has a rule such as:
+
+> A whale species at one GPS proximity should only appear once within a day.
 
 This rule can be used to group observations and identify a representative record.
 
 The data engineer can express this by identifying the primary observation. For example, the pipeline may select the first observation of the day at a location and store it as `[Primary observation ID]` in a table called `Whale.PrimaryObservation`.
 
-This table might contain `[Observation ID]` and `[Primary observation ID]`, where `[Observation ID]` is the key for the original record and `[Primary observation ID]` identifies the chosen representative.
+**Example structure of `Whale.PrimaryObservation`**
+
+| Observation ID | Primary observation ID |
+|---:|---:|
+| 101 | 101 |
+| 102 | 101 |
+| 103 | 103 |
+
+`[Observation ID]` is the key for the original record. `[Primary observation ID]` identifies the chosen representative.
 
 Subsequent transformation can focus on the `[Primary observation ID]` grain. The same key can also be used in Power BI to return the true count of whale sightings.
 
 Care must be taken to resolve race conditions. If two users submit observations at the same time, only one record should be selected as primary. This can be resolved deterministically using a surrogate key such as `[Observation ID]`.
 
-Defining the primary record closes the quality gap between multiple observations and one underlying entity.
-
 ### Defining relationships
+
+Defining relationships closes the quality gap where analytically important relationships were not recorded by the source system.
 
 Digital systems are usually good at recording relationships needed by operational workflows. They are less reliable at recording relationships that are useful for analysis.
 
@@ -277,6 +433,8 @@ Two useful techniques are:
 
 #### Nearest temporal join
 
+Nearest temporal joins close the quality gap between related events whose relationship was not explicitly recorded.
+
 Sometimes two sets of events are related, but the relationship is not recorded as a database key.
 
 If business knowledge suggests that one set of events is expected to precede another, the relationship can sometimes be recovered by identifying the nearest preceding event. This technique is known as a nearest temporal join.
@@ -287,17 +445,36 @@ The check-in is recorded by the door scanner with `[Member ID]`, `[Check-in date
 
 Purchases are recorded separately at the register. These are stored in `Club.Purchase`, with `[Member ID]`, `[Purchase datetime]`, and `[Purchase item]`. There is a surrogate key `[Purchase event SK]`.
 
+**Example structure of `Club.Checkin`**
+
+| Check-in event SK | Member ID | Check-in datetime | Membership level |
+|---:|---|---|---|
+| 1 | M001 | 2025-04-01 18:00 | Gold |
+| 2 | M001 | 2025-04-08 17:30 | Diamond |
+
+**Example structure of `Club.Purchase`**
+
+| Purchase event SK | Member ID | Purchase datetime | Purchase item |
+|---:|---|---|---|
+| 101 | M001 | 2025-04-01 18:45 | Coffee |
+| 102 | M001 | 2025-04-08 18:10 | Cake |
+
 Although both tables contain `[Member ID]`, there is no direct relationship between a specific check-in and the purchases made during that visit. The system does not record which check-in a purchase belongs to. This makes it difficult to identify the membership level associated with the purchase.
 
 To support analysis, the data engineer can create a link using a nearest temporal join.
 
-For example, the rule might be: "A purchase belongs to the most recent check-in by the same member that occurred before the purchase."
+For example, the rule might be:
+
+> A purchase belongs to the most recent check-in by the same member that occurred before the purchase.
 
 The result can be stored in `Club.PurchaseCheckin` as a two-column table of `[Purchase event SK]` and `[Check-in event SK]`.
 
-One implementation is to identify the latest check-in for each purchase using a `max()` aggregation, then join back to retrieve the check-in event.
+**Example structure of `Club.PurchaseCheckin`**
 
-Another approach is to consider each check-in as a window from one check-in to the next, and for each purchase, find the corresponding check-in window.
+| Purchase event SK | Check-in event SK |
+|---:|---:|
+| 101 | 1 |
+| 102 | 2 |
 
 This table re-establishes the relationship between the purchase event and the check-in event.
 
@@ -307,9 +484,9 @@ For example, seed suppliers may distribute large batches to farms, and harvest y
 
 Similar patterns arise in regulatory compliance. Businesses may submit periodic declarations or claims, while auditors conduct inspections or reviews later. These audits are not tied to specific submissions but are temporally related. Nearest temporal joins allow the business to associate each audit with the most recent relevant declaration, enabling analysis of compliance patterns over time.
 
-Nearest temporal joins close the quality gap between related events whose relationship was not explicitly recorded.
-
 #### Mapping tables
+
+Mapping tables close the quality gap between entities that must be related analytically but are not related operationally.
 
 Mapping tables are introduced when the original system does not record relationships needed for analysis.
 
@@ -323,23 +500,40 @@ Consider a club restaurant with data captured in three tables:
 - `Club.TableCustomer`—club members identified by `[Member ID]`, linked to `[Table sitting ID]`
 - `Club.TableFoodOrder`—menu items ordered per `[Table sitting ID]`, with food items identified by `[Food item ID]`
 
+**Example structure of `Club.TableCustomer`**
+
+| Table sitting ID | Member ID |
+|---|---|
+| T001 | M001 |
+| T001 | M002 |
+
+**Example structure of `Club.TableFoodOrder`**
+
+| Table sitting ID | Food order ID | Food item ID | Food item cost |
+|---|---|---|---:|
+| T001 | FO001 | F100 | 12.00 |
+| T001 | FO002 | F200 | 18.00 |
+
 The system does not record which member ordered which item. For analysis, the business may wish to associate members with food items. However, this relationship is not captured in the source system.
 
-To support analysis, the data engineer may introduce a mapping table called `Club.CustomerFoodOrderMap`, with `[Table sitting ID]`, `[Member ID]`, and `[Food item ID]`.
+To support analysis, the data engineer may introduce a mapping table called `Club.CustomerFoodOrderMap`.
 
-The logic may be based on a business rule such as: "Every member at the table shares the cost of all items ordered."
+The logic may be based on a business rule such as:
 
-For implementation, the data engineer can join `Club.TableCustomer` and `Club.TableFoodOrder` on `[Table sitting ID]`.
+> Every member at the table shares the cost of all items ordered.
 
-Because a food item can be ordered multiple times, `[Table sitting ID]`, `[Member ID]`, and `[Food item ID]` do not yet form a primary key. Additional grouping is needed. The pipeline may calculate `[Food item occurrences]`, the number of times the food item was ordered at the table, and `[Number of members]`, the number of members seated at the table.
+**Example structure of `Club.CustomerFoodOrderMap`**
 
-The ratio of these values can be used as distribution weights in subsequent calculations.
+| Table sitting ID | Member ID | Food order ID | Allocation weight |
+|---|---|---|---:|
+| T001 | M001 | FO001 | 0.5 |
+| T001 | M002 | FO001 | 0.5 |
+| T001 | M001 | FO002 | 0.5 |
+| T001 | M002 | FO002 | 0.5 |
+
+Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
 
 Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
-
-Mapping tables close the quality gap between entities that must be related analytically but are not related operationally.
-
-Precise rules close data quality gaps by turning business intent into repeatable logic. Their main monitoring need is to detect rule violations, edge cases, and changes in the business process that make the rule unsafe.
 
 ## Fuzzy logic: when intent can only be approximated
 
@@ -401,7 +595,6 @@ The reject set should be inspected for false rejects. For example, valid mobile 
 Each adjustment changes the match set and reject set. It is usually better to tighten or loosen one thing at a time, then inspect the result.
 
 The key idea is that focusing only on matches creates a blind spot. The rejected records are equally significant. A useful pattern is found by examining both incorrect matches and incorrect rejects.
-
 
 ### Step 2—Random validation
 
