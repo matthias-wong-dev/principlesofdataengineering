@@ -1,181 +1,489 @@
 ---
 title: Tests and assumptions
 url: /docs/quality-reliability/tests-and-assumptions/
-description: Explains how thoughtful tests and monitored assumptions help data engineers anticipate failure before it undermines trust.
-lede: Good engineering assumes that errors will happen and prepares for them.
+description: Explains how tests and monitored assumptions make failure visible before errors undermine trust in a data product.
+lede: Good engineering makes failure visible before it reaches the user.
 weight: 4
-draft: true
+# draft: true
 ---
 
-The world is constantly changing. What is true today may not be true tomorrow. New data may arrive that fall outside previously conceived parameters. Business processes may evolve to meet emerging needs. Or another developer may alter existing code. For these reasons, the data engineer must continuously monitor for disruptive change.
+## Anticipating errors
 
-The world is also complex. Mistakes are easy to make. A data engineer may misinterpret business logic, overlook edge cases, or introduce technical errors when writing complex code.
+Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
 
-Thus, the third principle of data engineering is anticipating errors. Rather than focusing solely on what is working now, the data engineer must remain attuned to what may go wrong. Two explicit ways of doing this are to design thoughtful tests and to monitor assumptions.
+A data product is not trustworthy merely because it is correct today. It is trustworthy when users are not caught unawares by eventual failures.
 
-Tests and assumptions need to run regularly, such as once per data pipeline batch run.
+This is the third principle of data engineering: anticipate errors.
 
-See the chapter on Automation.
+The principle follows from two facts.
 
-## Thoughtful tests
+First, the world changes. What is true today may not be true tomorrow. New data may arrive outside previously conceived parameters. Business processes may evolve. Source systems may change. Another developer may alter existing code.
 
-The premise of testing is this - when the same problem is solved in two completely different ways, in a completely independent manner, by two different people who arrive at the same result, confidence in accuracy is justified. In other words, tests mean doing something twice, in two different ways.
+Second, engineers make mistakes. A data engineer may misinterpret business logic, overlook edge cases, or introduce technical errors when writing complex code.
 
-Consequently, a test has two parts. The first part is a query that returns the expected results. The second part is a query that returns the actual results. The test pass if they match exactly.
+The danger is not only that errors occur—errors are inevitable.
 
-In a data pipeline, the expected part of a test may be a query calculated from pre-transformed data, either raw or partway through the pipeline. The actual part uses post-transformed data. A simple example is comparing row counts between raw and curated data.
+The deeper danger is that errors occur silently.
 
-In a Power BI semantic model, the expected part of a test calculates results from the underlying data sources, such as SQL or a data lake, while the actual part calculates the same results using DAX. This approach is highly effective for validating complex DAX measures, especially those referencing hidden grain (see Designing Measures).
+A silent error allows a data product to remain polished and apparently authoritative while no longer being safe to use.
 
-Power BI tests are easy to create. The data engineer can drag and drop to build a table visual with dimensions and measures. The Performance Analyzer in Power BI Desktop reveals the DAX query behind the visual, which serves as the actual portion of the test.
+The data engineer therefore needs explicit mechanisms for making failure visible.
 
-The engineer then matches this DAX evaluation with a calculation from the underlying data source.
+This chapter covers two such mechanisms:
 
-Tests lose effectiveness when the expected query is a copy of the pipeline code that produced the actual results. This entanglement reduces independence and narrows the surface of possible errors caught by the test. A thoughtful test maximises the difference in logic between expected and actual results. For example, the expected part for a Power BI test should use fragments from the pipeline rather than the tables or views that directly feed Power BI. This helps catch errors in data source definitions.
+| Mechanism | Question | Output |
+|---|---|---|
+| Tests | Did two independent calculations produce the same result? | Pass or fail |
+| Monitored assumptions | Has something appeared that requires human attention? | A list of violating records |
 
-The way to write a good test is to ask, “Where is the most complex or most fragile part of the transformation, and how can this transformation, or a part of this transformation, be calculated in a completely different way?”
+A test performs the same calculation in two different ways and checks whether the results agree.
 
-The following are some ways for introducing independence in calculation to write thoughtful tests. They are not intended to be exhaustive, but intended to illustrate the mindset of checking weak points of an implementation by performing the same calculation completely differently to the original implementation.
+A monitored assumption checks whether a condition presumed to hold has been violated, and returns the records requiring attention.
+
+Both should run regularly, such as once per pipeline batch. Their purpose is not to eliminate failure entirely. Their purpose is to prevent avoidable failure from remaining hidden.
+
+## Tests: checking the same result two ways
+
+A data test is strongest when expected and actual results are calculated independently.
+
+The premise of testing is simple: when the same problem is solved in two different ways, and both methods arrive at the same result, confidence is justified.
+
+In data engineering, this means a test has two parts:
+
+| Test part | Meaning |
+|---|---|
+| Expected result | A calculation of what the result should be, preferably from a different source or logic path. |
+| Actual result | The result produced by the pipeline, model, or measure being tested. |
+
+The test passes if expected and actual results match.
+
+In a data pipeline, the expected part of a test may be calculated from raw or partly transformed data. The actual part uses the transformed output.
+
+In a Power BI semantic model, the expected part of a test may be calculated from the underlying data source, such as SQL or a data lake. The actual part may be calculated using DAX. This approach is effective for validating complex DAX measures, especially measures that rely on hidden grain.
+
+Power BI tests are easy to create. The data engineer can drag and drop to build a table visual with dimensions and measures. The Performance Analyzer in Power BI Desktop reveals the DAX query behind the visual. This can serve as the actual portion of the test. The engineer then compares the DAX evaluation with a calculation from the underlying data source.
+
+Tests lose effectiveness when the expected query is a copy of the pipeline code that produced the actual result. This entanglement reduces independence and narrows the surface of possible errors caught by the test.
+
+A thoughtful test maximises the difference in logic between expected and actual results.
+
+The way to write a good test is to ask:
+
+> Where is the most complex or fragile part of the transformation, and how can this result be calculated in a different way?
+
+The following examples are not exhaustive. They illustrate the mindset of checking weak points by calculating the same result through a different path.
 
 ### Row counts
 
+Row count tests check whether records have appeared, disappeared, or duplicated unexpectedly.
+
 The simplest test is to compare row counts before and after transformation. The expected query counts rows from the raw data with appropriate filters. The actual query counts rows from the transformed output.
 
-Even small variations can make this test more effective. One approach is to group by a reference value and vary how the reference is looked up. For example, the expected query might use an inner join, while the actual uses a left join. If both queries normally return the same result, any discrepancy indicates an error.
+**Example row count test**
 
-Row count tests are especially important for incremental loads. The expected and actual queries should count recent rows, but the selection must use a datetime column different from the one used for extraction. For example, if the extract relies on an architectural column like [Row update datetime], the test should use a business-centric column such as [Staff update datetime]. This separation avoids entanglement and self-confirmation. These row counts act as checksums for create and delete operations. Grouping by reference values helps catch update errors on those columns.
+| Test | Expected result | Actual result |
+|---|---:|---:|
+| Count sales records for April 2025 | 10,240 | 10,240 |
 
-Selecting a sample of recent records is a valid alternative that would check CRUD on every value.
+Even small variations can make row count tests more effective.
 
-### Checksum on key results
+For example, instead of only counting all rows, the data engineer may group by a reference value.
 
-Consider the case where each entity is either “bad” or not. For example, a manufacture batch is considered bad if it fails one or more quality control criteria. The data engineer should summarise these results back to the batch level for use in a storytelling dimension.
+**Example grouped row count test**
 
-Suppose the original tables are:
+| Sales region | Expected sales rows | Actual sales rows |
+|---|---:|---:|
+| North | 2,450 | 2,450 |
+| South | 3,100 | 3,100 |
+| West | 1,920 | 1,918 |
+| New store not annotated | 12 | 14 |
 
-- Cake.Manufacture — details of manufacture batches, at [Manufacture batch number] grain
+The total row count may still match because one group is undercounted while another is overcounted. Grouped counts reveal the problem. Grouping by reference values helps catch update errors, join errors, and mapping issues.
 
-- Cake.QualityControlResult — quality control results per batch, with [Is fail] indicating failure
+The expected and actual calculations should use different logical paths where possible. For example, the expected query may group raw records using source fields, while the actual query groups transformed records using curated dimensions.
 
-These are summarised to:
+Row count tests are especially important for incremental loads.
 
-- Cake.ManufactureQuality — aggregates results to [Manufacture batch number], where any failure marks the batch as failed
+If the extract relies on an architectural column such as `[Row update datetime]`, the test should preferably use a different datetime column, such as `[Staff update datetime]`, `[Submission datetime]`, or another business-centric column. This separation avoids self-confirmation.
 
-- Cake.RefManufactureQuality — reference table with [Has any failure in batch] as the summary flag
+Selecting a sample of recent records is also useful. A recent-record sample can check creation, update, and deletion behaviour across many columns, not only row counts.
 
-To test the aggregation logic, the test can use a checksum. Note that a batch is either bad or not. So, the total number of batches minus the number of batches with at least one failure should equal the number of batches with no failures.
+### Checksums on key results
 
-In SQL terms:
+Checksum tests check whether an important summary result still balances.
 
-Expected:
+They are useful when a transformation rolls detailed records up into a business concept.
 
-Actual:
+Consider the example of manufacturing batch quality.
 
-This test checks the core logic without repeating the original transformation. It confirms that all batches are accounted for and that the aggregation behaves as expected. If a future developer modifies Cake.ManufactureQuality, for example to optimise performance, any accidental errors would be caught immediately.
+A business process may record individual quality-control criteria. The data engineer then rolls these up to define the overall quality outcome for each batch.
 
-In more complex scenarios, this test also helps surface other weaknesses. For a more comprehensive check, the query should group by values such as [Product type].
+**Example structure of `'Batch quality criterion'`**
+
+| Batch ID | Quality criterion | Quality result | Is critical criterion |
+|---|---|---|---|
+| B1001 | Temperature control | Pass | true |
+| B1001 | Packaging integrity | Pass | false |
+| B1001 | Labelling accuracy | Fail | false |
+| B1002 | Temperature control | Fail | true |
+| B1002 | Packaging integrity | Pass | false |
+
+The transformed output may look like this.
+
+**Example structure of `'Batch quality outcome'`**
+
+| Batch ID | Critical criteria failed | Non-critical criteria failed | Batch quality outcome |
+|---|---:|---:|---|
+| B1001 | 0 | 1 | Pass |
+| B1002 | 1 | 0 | Fail |
+
+A checksum can test the core logic without copying the transformation.
+
+For example, every batch should fall into one and only one of two groups: pass or fail.
+
+**Example checksum test**
+
+| Test | Expected result | Actual result |
+|---|---:|---:|
+| Count distinct batches from criterion table | 2 | 2 |
+| Count batches marked pass or fail in outcome table | 2 | 2 |
+| Count batches with any critical failure from criterion table | 1 | 1 |
+| Count batches marked fail in outcome table | 1 | 1 |
+
+This test is not a copy of the transformation. It checks whether the transformed result still balances against the source logic.
+
+A more comprehensive version can group by values such as `[Product type]`, `[Manufacture site]`, or `[Inspection month]`. This increases the chance of catching errors that affect only a segment of the data.
 
 ### Bypassing mapping tables
 
-Mapping tables are often introduced to implement business logic where the original system did not record relationships. A good test for the mapping table is to compare checksums with and without it.
+Mapping tables are often introduced where the source system did not record an analytical relationship.
 
-Recall the example from Dealing with data quality. A club restaurant with data captured as follows:
+A good test for a mapping table is to compare results with and without the mapping table.
 
-- Club.TableSitting — records of customers seated at the restaurant, one per sitting, keyed by [Table sitting ID]
+Consider the restaurant example from the previous chapter. The source system records table sittings, table customers, and food orders. It does not record which customer ordered which food item.
 
-- Club.TableCustomer — club members identified by [Member ID], linked to
+The data engineer introduces `Club.CustomerFoodOrderMap` to allocate food orders across members seated at the table.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Table sitting ID]`.
+**Example structure of `Club.TableCustomer`**
 
-- Club.TableFoodOrder — menu items ordered per [Table sitting ID], with food items identified by [Food item ID]. Items may be ordered multiple times
+| Table sitting ID | Member ID |
+|---|---|
+| T001 | M001 |
+| T001 | M002 |
 
-The system does not record which member ordered which item. For analytics, a mapping table such as Cake.CustomerFoodOrderMap may be introduced to associate [Member ID] with [Food item ID] per [Table sitting ID].
+**Example structure of `Club.TableFoodOrder`**
 
-Regardless of how complex the mapping logic is, the total number of member attendances, food items ordered, and the sum of food item cost must remain unchanged. An effective test compares these totals before and after applying the mapping. For example, the expected query sums these values directly from the source tables. The actual query performs the same aggregations using the mapping table.
+| Table sitting ID | Food order ID | Food item ID | Food item cost |
+|---|---|---|---:|
+| T001 | FO001 | F100 | 12.00 |
+| T001 | FO002 | F200 | 18.00 |
 
-Grouping by reference columns such as [Food item type] can enhance the test further.
+**Example structure of `Club.CustomerFoodOrderMap`**
 
-This is a powerful way to validate mapping logic. Any accidental errors—especially in complex mappings—are immediately caught by such a checksum. A more detailed test can be tailored to check the specific logic itself. For example, if the business rule assumes the food cost is evenly distributed amongst the members, then the test can check distribution weight is the same for each member.
+| Table sitting ID | Member ID | Food order ID | Allocation weight |
+|---|---|---|---:|
+| T001 | M001 | FO001 | 0.5 |
+| T001 | M002 | FO001 | 0.5 |
+| T001 | M001 | FO002 | 0.5 |
+| T001 | M002 | FO002 | 0.5 |
+
+Regardless of how complex the mapping logic becomes, some totals should remain stable. The total cost of food ordered at the table should not change after allocation.
+
+**Example mapping checksum**
+
+| Table sitting ID | Expected food cost from `Club.TableFoodOrder` | Actual allocated food cost from `Club.CustomerFoodOrderMap` |
+|---|---:|---:|
+| T001 | 30.00 | 30.00 |
+
+This is a powerful way to validate mapping logic. The test does not need to repeat every detail of the mapping. It checks whether the mapping preserves an invariant.
+
+More specific tests can then check the business rule itself.
+
+For example, if the business rule assumes food cost is evenly distributed among seated members, the test can check that allocation weights sum to `1` per food order.
+
+**Example allocation-weight test**
+
+| Food order ID | Expected allocation weight total | Actual allocation weight total |
+|---|---:|---:|
+| FO001 | 1.0 | 1.0 |
+| FO002 | 1.0 | 1.0 |
+
+Grouping by reference columns such as `[Food item ID]`, `[Food item type]`, or `[Table sitting ID]` can make the test more sensitive.
 
 ### Checking boundary cases
 
-Boundary cases are common sources of error. A typical example is a rolling window measure. Any implementation of rolling windows should be tested at boundary points.
+Boundary cases are common sources of error.
 
-Suppose there is a Power BI measure [Total sales volume], and a derived rolling 12-month version [Total sales volume past 12 months]. Errors in the latter are easy to miss.
+A typical example is a rolling-window measure. Any implementation of a rolling window should be tested at boundary points.
 
-One observation is that both measures should coincide at specific boundaries, such as the end of each financial year and calendar year. An expected query can group [Total sales volume] by calendar year, while the actual query groups [Total sales volume past 12 months] by the same. The results should match, even at the beginning of the history where fewer than 12 months of data exist.
+Suppose there is a Power BI measure `[Total sales volume]`, and a derived rolling 12-month version `[Total sales volume past 12 months]`.
 
-However, this test would still pass if [Total sales volume past 12 months] were mistakenly implemented as a copy of [Total sales volume]. To guard against this, additional checks should be performed at turning points—such as the first and last day of a month. For example, selecting 28 February and 1 March helps test the offset around calendar boundaries.
+The rolling measure is easy to get subtly wrong. It may include the wrong start date, exclude the current date, mishandle leap years, or behave incorrectly at the beginning of the available history.
 
-A rolling window measure that passes at the end of each calendar year, the end of each financial year, and the first and last day of an interim month provides strong assurance.
+One useful test is to compare the rolling result against known calendar boundaries.
 
-These checks can be calculated independently of how [Total sales volume past 12 months] is implemented.
+For example, if `[Total sales volume past 12 months]` is evaluated at 31 December 2025, it should match total sales volume for the 2025 calendar year.
 
-### Independence of subject matter knowledge
+**Example boundary test**
 
-Where subject matter knowledge is available, it can introduce independence into a test. Normally, the data engineer should avoid assumptions when building the pipeline.
+| Evaluation date | Expected result | Actual rolling 12-month result |
+|---|---|---|
+| 2025-12-31 | Total sales from 2025-01-01 to 2025-12-31 | Total sales volume past 12 months at 2025-12-31 |
+| 2026-06-30 | Total sales from 2025-07-01 to 2026-06-30 | Total sales volume past 12 months at 2026-06-30 |
 
-This prevents blind spots and reduces the risk of silent errors. However, unit tests are one place where business knowledge can be safely used to strengthen robustness.
+This checks that the measure behaves properly at calendar-year and financial-year boundaries.
 
-For example, a business expert may know that every header must have at least one detail. In this case, a left join and an inner join between the header and detail tables would return the same result. The data engineer should not assume this in the pipeline, since rare load errors may cause headers or details to be missing. But the knowledge can be used in a test to validate the relationship.
+However, this test would still pass if `[Total sales volume past 12 months]` were mistakenly implemented as a copy of `[Total sales volume]` in a model that is already filtered to one year.
 
-Business knowledge can also be more complex. Consider a help desk system where cases escalate from Tier 1 to Tier 4. Each escalation is recorded in Helpdesk.Escalation, keyed by [Case ID], with [Tier] indicating the escalation level. The table Helpdesk.CaseEscalation rolls up this information to [Case ID] grain. A reference table Helpdesk.RefCaseEscalation includes [Highest escalation] to summarise each case.
+To guard against this, the data engineer should also test turning points, such as the first and last day of a month.
 
-Tests can use business knowledge to validate the roll-up logic. For example:
+**Example turning-point test**
+
+| Evaluation date | Boundary being tested |
+|---|---|
+| 2025-02-28 | End of February |
+| 2025-03-01 | Start of March |
+| 2025-06-30 | End of financial year |
+| 2025-07-01 | Start of financial year |
+
+A rolling-window measure that passes at calendar-year boundaries, financial-year boundaries, and interim month turning points provides much stronger assurance than one tested only at convenient dates.
+
+### Using subject matter knowledge
+
+Subject matter knowledge can introduce independence into a test.
+
+Normally, the data engineer should avoid building unverified assumptions into the pipeline. This prevents blind spots and reduces the risk of silent errors.
+
+However, tests are one place where business knowledge can be safely used to strengthen robustness. If the business knowledge is wrong, the test will reveal that. If the business knowledge was once right but stops being right, the test will reveal a change in the process.
+
+For example, a business expert may know that every table sitting must have at least one customer. The data engineer should not blindly assume this in the pipeline, because load errors may still occur. But the knowledge can be used in a test.
+
+**Example subject-matter test**
+
+| Business knowledge | Expected calculation | Actual calculation |
+|---|---|---|
+| Every table sitting has at least one customer | Count table sittings using an inner join to `Club.TableCustomer` | Count all rows in `Club.TableSitting` |
+
+If the results differ, either the data has an error, the pipeline has an error, or the business knowledge was incomplete.
+
+Business knowledge can also validate roll-up logic.
+
+Consider a help desk system where cases escalate from Tier 1 to Tier 4. Escalations are recorded in `Helpdesk.Escalation`, keyed by `[Case ID]`, with `[Tier]` indicating escalation level. The table `Helpdesk.CaseEscalation` rolls this information up to case grain. A reference table `Helpdesk.RefCaseEscalation` includes `[Highest escalation]` to summarise each case.
+
+Tests can use business knowledge to validate the roll-up.
 
 | Business knowledge | Expected | Actual |
-| --- | --- | --- |
-| The maximum tier is “Tier 4” | Distinct count of Helpdesk.Escalation[Case ID] where [Tier] = “Tier 4” | Count rows of Helpdesk.CaseEscalation where Helpdesk.RefCaseEscalation[Highest escalation] = “Tier 4” |
-| Every case starts at “Tier 1” | Distinct count of Helpdesk.Escalation[Case ID] where [Tier] = “Tier 1” | Count rows of Helpdesk.CaseEscalation |
-| Cases do not downgrade from any tier | Count rows of Helpdesk.Escalation where 1) [Tier] = “Tier 1” and 2) [Tier] = “Tier 4” respectively | Count rows of Helpdesk.CaseEscalation where 1) there are no filters and 2) [Highest escalation] = “Tier 4” respectively |
+|---|---|---|
+| Every case starts at Tier 1 | Count distinct `[Case ID]` in `Helpdesk.Escalation` where `[Tier] = "Tier 1"` | Count rows in `Helpdesk.CaseEscalation` |
+| Tier 4 is the maximum escalation | Count distinct `[Case ID]` in `Helpdesk.Escalation` where `[Tier] = "Tier 4"` | Count rows in `Helpdesk.CaseEscalation` where `[Highest escalation] = "Tier 4"` |
+| Cases do not skip the existence of earlier tiers | Count Tier 4 cases with no Tier 1 record | Should be zero |
 
-In general, existence and uniqueness conditions known to the business expert can be used to bypass or vary the original pipeline logic. These checks help catch implementation errors or faults in load mechanics. However, the business expert may also be wrong—especially when edge cases are forgotten. By introducing business knowledge into a test, the data engineer can validate the claim against the data. If the knowledge was correct at the time of implementation but later becomes invalid, the test will help detect the change in business process. Consequently, whenever business knowledge is available, they should be injected into tests.
+In general, existence and uniqueness conditions known to business experts can be used to bypass or vary the original pipeline logic.
 
-## Monitored assumptions
+This is one of the strongest ways to write tests because it introduces a source of independence outside the code itself.
 
-Data engineers must make assumptions. However, these assumptions may fail over time. Sometimes the failure is not anticipated. At other times, the failure is anticipated but must still be detected. In general, users require automated alerts for events that need attention. These are managed through monitoring assumptions.
+## Monitored assumptions: surfacing records that require attention
 
-An assumption has one part. It is a query that returns a non-empty result set if and only if human attention is required. Each row that returns from the query is a violation of the assumption of a business logic that requires action.
+Data engineers must make assumptions.
 
-The key to monitoring assumptions is recognising that an assumption exists. The following are common cases to help data engineers get started.
+However, assumptions may fail over time. Sometimes the failure is unanticipated. At other times, the failure is anticipated but still needs to be detected.
+
+A monitored assumption is a query that returns records if and only if human attention is required.
+
+If no rows are returned, the assumption remains valid. If rows are returned, each row is a violation that needs attention.
+
+This is different from a test.
+
+A test asks whether two independent paths agree to provide confidence that they are correct. A monitored assumption asks whether the world still fits the condition the data product relies on.
+
+| Mechanism | Typical result | Example |
+|---|---|---|
+| Test | Pass/fail | Row counts before and after transformation match. |
+| Monitored assumption | Records requiring attention | New country codes require mapping. |
+
+The key to monitoring assumptions is recognising that an assumption exists.
+
+The following are common cases.
+
+| Assumption | Returns rows when... |
+|---|---|
+| Source data is up to date | The latest expected batch has not arrived. |
+| Reference data is complete | New values need mapping. |
+| Known values remain stable | A new hard-coded or unhandled value appears. |
+| Data quality rules still hold | Invalid dates, duplicate keys, or out-of-range values appear. |
+| Fuzzy logic has not drifted | Match rates or validation results move outside tolerance. |
 
 ### Is source data up to date?
 
-Source data cannot always be assumed to load on time each batch. Any number of failures may occur to delay the arrival of new data. An assumption can check that the latest data has arrived and alert the engineer or the user that the latest data has not arrived as expected.
+Source data cannot always be assumed to arrive on time.
 
-### Are reference data complete?
+Any number of failures may delay the arrival of new data: an upstream system may be unavailable, an extract may fail, a file may not arrive, or a source team may change a schedule without warning.
 
-Reference data is vital to a quality warehouse. It enables diverse systems to map to a conformed set of golden records which enables integration across diverse business.
+A monitored assumption can check whether the latest expected data has arrived.
 
-These mappings require constant maintenance as new data comes in that requires mapping. An assumption checks daily for new records that require mapping.
+**Example source freshness assumption**
 
-### Are there unanticipated data?
+| Source table | Expected latest date | Actual latest date | Requires attention |
+|---|---|---|---|
+| `Sales.Order` | 2025-05-01 | 2025-05-01 | false |
+| `Sales.Payment` | 2025-05-01 | 2025-04-28 | true |
 
-Hard-coded values are sometimes unavoidable. This is acceptable if the source column contains, for example, six values that have not changed in a decade. A transformation may map these values to categories. If a new value appears, it likely signals a significant change in transactional logic. An assumption should check for new values.
+If the query returns `Sales.Payment`, the issue needs attention. The data product may be incomplete even though the pipeline has technically run.
+
+This assumption is especially important when multiple source systems are combined. A report may look normal while one process has updated and another has not.
+
+### Is reference data complete?
+
+Reference data is vital to a quality warehouse.
+
+It enables different systems to map local values to conformed values. But reference mappings require maintenance as new source values arrive.
+
+For example, one system may start sending a new country code that is not yet mapped.
+
+**Example structure of `'Country code map'`**
+
+| Source system | Source country code | Country SK |
+|---|---|---:|
+| Sales | AU | 1 |
+| Sales | NZ | 2 |
+| Sales | US | 3 |
+| Shipping | AUS | 1 |
+| Shipping | NZL | 2 |
+| Shipping | USA | 3 |
+
+A monitored assumption can check whether any source country codes have arrived without a mapping.
+
+**Example assumption output**
+
+| Source system | Source country code | Records affected |
+|---|---|---:|
+| Shipping | SGP | 14 |
+
+The query should return only the values that require human attention. In this case, someone needs to decide whether `SGP` maps to an existing country record or whether the country reference data need to be extended.
+
+### Are there unanticipated values?
+
+Hard-coded values are sometimes unavoidable.
+
+This is acceptable when a source column contains a small number of stable values. For example, a status column may have contained `Open`, `Closed`, and `Cancelled` for many years.
+
+However, if a new value appears, the transformation logic may no longer be safe.
+
+**Example status assumption**
+
+| Source status | Records affected |
+|---|---:|
+| Pending review | 37 |
+
+This assumption does not necessarily mean the pipeline is broken. It means the business process has produced a value not anticipated by the transformation. The data engineer or business owner must decide how it should be handled.
+
+This is especially important when a transformation uses `case` logic, hard-coded mappings, or manually curated categories.
 
 ### Are there data quality issues?
 
-Source data may contain issues from unvalidated collection. These can include duplicate keys or values outside normal ranges. For example, most years may be entered correctly, but on occasions, 2025 may be recorded as 2205 by accident.
+Source data may contain issues from unvalidated collection.
 
-During transformation, discarding or altering these records may be acceptable. An assumption should check for such anomalies so they can be raised with the business owner for correction at the source.
+These can include duplicate keys, dates outside expected ranges, negative values where only positive values make sense, or records that violate business rules.
+
+In some cases, the pipeline may treat the issue to preserve analytical usefulness. For example, a future date outside the allowed range may be converted to blank and flagged.
+
+**Example assumption output for invalid dates**
+
+| Record ID | Source date | Issue |
+|---:|---|---|
+| 2 | 2300-06-15 | Date exceeds allowed future range |
+
+Similarly, duplicate records may be removed from the main analytical table and written to a rejected-records table.
+
+**Example assumption output for duplicate submissions**
+
+| Submission ID | Customer ID | Submission date | Rejection reason |
+|---|---|---|---|
+| S1003 | C001 | 2025-04-01 | Duplicate customer submission for date |
+
+These are monitored assumptions because the business needs to know that the issue occurred. The pipeline may be able to continue, but the underlying source issue still requires attention.
 
 ### Is there data drift?
 
-Mathematical analysis relies on assumptions about the statistical nature of input data.
+Statistical and fuzzy logic often rely on assumptions about the distribution or pattern of input data.
 
-These assumptions can change over time—a phenomenon known as data drift in machine learning. Data engineers may encounter this when applying fuzzy pattern to extract information from free-text fields. Such logic often assumes a word pattern to be used. Instead of a “set-and-forget” approach, data engineers must monitor for drift in pattern and intervene when necessary.
+These assumptions can change over time. This is commonly known as data drift.
+
+Data engineers may encounter this when applying fuzzy patterns to extract information from free-text fields. A pattern may work well when users write notes in one style, then fail when a source form changes or users begin entering data differently.
+
+For example, suppose a pattern extracts phone numbers from customer notes. The data engineer may monitor the proportion of extracted numbers that match known customer phone records.
+
+**Example drift monitoring**
+
+| Month | Notes processed | Notes with extracted phone number | Extracted numbers matching customer records |
+|---|---:|---:|---:|
+| 2025-01 | 12,400 | 4,820 | 86% |
+| 2025-02 | 13,100 | 5,040 | 85% |
+| 2025-03 | 12,850 | 4,910 | 84% |
+| 2025-04 | 13,300 | 5,110 | 85% |
+| 2025-05 | 13,050 | 7,900 | 61% |
+
+The May result may indicate drift. Users may have started entering phone numbers in a new format. Another number may have started appearing near phone-like words. The customer reference table may also have changed.
+
+A monitored assumption should return rows, periods, or segments where the statistic moves outside tolerance.
+
+The important point is that fuzzy logic should not be treated as set-and-forget. Its assumptions must be monitored.
+
+## Tests and assumptions together
+
+Tests and monitored assumptions are closely related, but they protect different things.
+
+Tests detect whether implemented logic has failed. Monitored assumptions detect whether the world has changed in a way that makes the logic unsafe.
+
+A condition can often be expressed either as a test or as a monitored assumption by rephrasing.
+
+For example, row counts before and after transformation should usually be expressed as tests. A discrepancy may indicate a serious error in the pipeline.
+
+New country codes requiring annotation are better expressed as monitored assumptions. Their appearance does not necessarily mean the pipeline has failed. It means the world has produced something that requires human attention.
+
+A useful rule of thumb is:
+
+| Condition | Prefer | Reason |
+|---|---|---|
+| Critical correctness condition | Test | Failure suggests the product may be wrong. |
+| Slow-moving business condition | Monitored assumption | Failure suggests human attention is needed. |
+| New values or mappings | Monitored assumption | The product needs curation, not necessarily shutdown. |
+| Core reconciliation or row preservation | Test | Failure suggests the transformation may have broken. |
+| Statistical or fuzzy pattern stability | Monitored assumption | Failure suggests logic may need review. |
 
 ## Conclusion
 
-A test performs the same calculation in two different ways and checks whether they return the same result. If the data engineer avoids the entanglement effect, this vastly reduces the likelihood of undetected errors—whether they stem from changes in the world or mistakes in the engineer’s logic.
+Modern development promotes continuous delivery to produce quality, fit-for-purpose products for stakeholders. The rhythm is fast-paced, with developers under pressure to deliver weekly or even daily.
 
-An assumption is a calculation that returns a list of violations to business logic that were presumed to hold. If no rows are returned, the assumption remains valid.
+In this context, writing tests and assumptions may seem to slow down delivery.
 
-Any condition can be expressed either as a test or an assumption by rephrasing. The rule of thumb is to express critical conditions as tests, and slow-moving or less critical conditions as assumptions. For example, row counts before and after a transformation should be expressed as tests — a discrepancy may indicate a serious error. New country codes requiring annotation can be expressed as assumptions — a failure may affect only a small number of newly arrived records.
+The point is not to create bureaucracy around delivery. The point is to stop failures from remaining invisible.
 
-Modern development promotes continuous delivery to produce quality, fit-for-purpose products for stakeholders. The rhythm is fast-paced, with developers under pressure to deliver weekly or even daily. In this context, writing tests and assumptions may seem to slow down delivery. In reality, the opposite is true. Rapid changes to complex code increase the likelihood of significant errors. When errors occur, they are costly to fix and can damage the team’s reputation as a provider of trusted information.
+Rapid changes to complex code increase the likelihood of significant errors. When errors occur, they are costly to fix and can damage the team’s reputation as a provider of trusted information.
 
-Consequently, while writing tests and assumptions takes development time, it ultimately accelerates delivery by mitigating the risk of costly mistakes and enabling the team to deploy changes with confidence. While thoughtful tests are best, even simple tests are valuable. In practice, most errors are careless mistakes made during rapid development that simple tests can catch before deployment.
+Writing tests and monitored assumptions takes development time, but it ultimately accelerates delivery by reducing the risk of costly mistakes and enabling the team to deploy changes with confidence.
 
-New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes mechanical and rapid. As a result, mature engineers spend proportionately less time responding to current needs and more time anticipating errors. A rough guide is to allocate about 25% of each development cycle to defining tests and assumptions.
+Thoughtful tests are best, but even simple tests are valuable. In practice, many errors are careless mistakes made during rapid development. Simple tests can catch these before deployment.
+
+New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. As a result, mature engineers spend proportionately less time responding to current needs and more time anticipating errors.
+
+As a rough heuristic, mature teams should expect to spend a meaningful part of each development cycle—perhaps about a quarter—defining tests, assumptions, and monitoring.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
+>
+> The third principle of data engineering is to anticipate errors.
+>
+> Tests check the same result in two independent ways.
+>
+> Tests are strongest when expected and actual calculations are not entangled.
+>
+> Monitored assumptions return records that require human attention.
+>
+> Tests detect failures in implemented logic.
+>
+> Monitored assumptions detect changes that make the logic unsafe.
