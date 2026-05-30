@@ -1,303 +1,419 @@
 ---
-title: Dealing with data quality
-url: /docs/quality-reliability/dealing-with-data-quality/
-description: Surveys practical ways to handle data quality gaps through curation, precise business rules, and fuzzy logic.
-lede: Data quality is the work of closing the gap between recorded data and business intent.
+title: Three approaches to data quality
+url: /docs/quality-reliability/three-approaches-to-data-quality/
+description: "Explains how to close data quality gaps by choosing the right intervention: human curation, precise rules, or fuzzy logic."
+lede: When recorded data does not meet business intent, choose the right kind of intervention.
 weight: 3
-draft: true
+# draft: true
 ---
 
-Data quality issues arise from the gap between the data world and the business world.
+## Quality means fitness for intent
 
-One way to see this gap is as the imperfection left by projecting business processes onto database records. For example, certain events should be recorded only once but are duplicated, or records are missing, or the information recorded does not reflect reality.
+Most people see data quality issues as failures of data capture to reflect reality.
 
-In general, errors in the database are biased toward the advantage of the person providing the information. For example, both government social services and the tax office are concerned with underestimation of income. However, the tax office is more likely to record lower estimates because taxpayers are unlikely to complain if they accidentally report less income — they receive a higher tax return. But if they underestimate income for social services, they are more likely to notice the error because they receive less benefit than expected.
+That view is useful, but incomplete.
 
-Most people see data quality issues as such failures of data capture to reflect reality.
+In practice, errors in the database are rarely neutral. They reflect the incentives and pressures of the process that produced the data. In general, errors tend to be biased toward the advantage of the person providing the information, or toward the path of least resistance in the business process.
 
-However, this is a simplistic view.
+Consider personal income.
 
-A more sophisticated view is to see the gap not between the business process and the data world, but between the data world and the business intent the data engineer is trying to meet.
+Both government social services and the tax office may be concerned with underestimation of income, but the direction and consequence of error differ. For tax, a taxpayer is unlikely to complain if they accidentally report less income, because they may receive a higher tax return or pay less tax. For social services, the same person is more likely to notice an underestimate, because they may receive less support than expected.
 
-The premise is that one business’s view of “good enough” is another’s view of “not good enough.” Consider the example of recording personal income. A government social service is more concerned about underestimates, while a bank credit rater is more concerned about overestimates. Both prefer perfect accuracy — but at what cost? At a finite cost, social services actively manage underestimates to meet legislative requirements, while credit raters manage overestimates to reduce risk.
+A bank credit rater faces a different concern again. It may care more about overestimates of income, because overestimated income may lead to excessive lending risk.
 
-There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business objective. Consequently, all quality issues are failures of applying business intent.
+The same data element—personal income—therefore has different quality implications depending on the business intent. Social services may actively manage underestimates to meet legislative requirements. Credit raters may actively manage overestimates to reduce risk. The tax office may design its controls around yet another risk profile.
 
-The first view can be described as “data vs reality” and the latter “data vs business intent”.
+All three may prefer perfect accuracy. But none takes the same approach when under constraint.
 
-A dogmatic insistence on “reflecting the real world to the dollar” is costly and impractical. It is driven by an ideology of a technological society and may infringe on other ideologies such as privacy protection. It is not the data engineer’s job to promote technological ideology. In most cases, it is an exercise in frustration, in the worst case, a dogmatic insistence on this view can paralyse a project because of perceived imperfections. Instead, the data engineer’s job is break through the paralysis in serving business intent.
+There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business objective.
 
-With that in mind, common data quality issues typically arise because digital systems and business processes were not built to honour the full intent of the business. This could be due to poor design (e.g. missing data type constraints), biases in the business process (e.g. social services vs tax office), or a mismatch of purpose (e.g. import declarations captured for tax but analysed for biosecurity). The data engineer should be equipped with a set of tools to deal with these scenarios. The following examines these techniques through three high-level categorisation – human curation, precise business rules, and fuzzy logic.
+Consequently, data quality is not merely data versus reality. It is data versus business intent.
 
-One theme across these techniques is the need to monitor the validity of an assumption and trigger an automated alert when it is violated. This approach is described in detail in the chapter Tests and assumptions.
+A dogmatic insistence on reflecting the real world perfectly is costly and often impractical. It may also conflict with privacy, timeliness, proportionality, or operational burden. The data engineer’s job is not to pursue perfect data in the abstract, but to help the business decide what quality means for the decision at hand.
 
-## Human curation
+With that in mind, common data quality issues arise because digital systems and business processes were not built to honour the full intent of the business. This may be due to poor design, such as missing data type constraints. It may be due to bias in the business process, such as different incentives for reporting income. It may also be due to a mismatch of purpose, such as import declarations captured for tax but analysed for biosecurity.
 
-If data quality issues arise from a gap between the data world and business intent, one of the simplest remedies is to allow business experts to intervene directly.
+The data engineer therefore needs a practical set of interventions.
+
+| Situation | Approach |
+|---|---|
+| Business judgement is needed | Human curation |
+| Business intent can be formalised | Precise rules |
+| Business intent can only be approximated | Fuzzy logic |
+
+One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
+
+This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+
+## Human curation: when judgement is needed
+
+If data quality issues arise from a gap between recorded data and business intent, one simple remedy is to allow business experts to intervene directly.
+
+Human curation is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
 
 ### Data annotation
 
-The most common form of human curation is data annotation. For example, a digital system may record sale locations as-is by store address. A business expert may later annotate these locations into sale regions or company sites. This annotation occurs in the data pipeline, not the source system, and is commonly known as reference data management.
+The most common form of human curation is data annotation.
 
-Another example is harmonising employee identities across systems. In large organisations, the same employee may appear under different accounts for different business processes. A business expert that takes the enterprise view of the operations may annotate these accounts to map them to a canonical representation. This is known as master data management.
+For example, a digital system may record sale locations as entered by store address. A business expert may later annotate these locations into sales regions or company sites. This annotation occurs in the data pipeline, not the source system, and is commonly known as reference data management.
 
-Human annotation extends beyond reference and master data. It applies wherever a human can interface with records outside the operational context. There are two legitimate views of data: one fast-paced and operational, suited to digital systems; the other reflective and slow-paced, suited to analytical work. Both may require human input. It is not reasonable to expect digital systems, with their modern challenges, to carry the full load of the data work. Instead, human input for an analytical view can take place after the fact, and whenever that is the case, human annotation applies.
+Another example is harmonising employee identities across systems. In large organisations, the same employee may appear under different accounts for different business processes. A business expert who understands the enterprise view may annotate these accounts to map them to a canonical representation. This is known as master data management.
 
-Traditionally, data warehousing treats human curation as an exception. But if human editing can be implemented transparently, with control and auditability, it should be treated as a standard business tool. The rise of AI and the need for human-in-the-loop is shifting this view. Rather than bespoke solutions, new tools may emerge to make human curation a first-class citizen in data-driven organisations.
+Human annotation extends beyond reference and master data. It applies wherever a human can interpret records outside the operational context.
 
-Whether it’s reference data, master data, or other forms of annotation, the data engineer must monitor for incoming records that require curation. For example, uncategorised store locations or unmapped employee accounts. This can be done through automation, as described in Tests and assumptions, or through a data quality report, covered later.
+There are two legitimate views of data: one fast-paced and operational, suited to digital systems; the other reflective and analytical, suited to business interpretation. Both may require human input. It is not reasonable to expect operational systems to carry the full load of analytical meaning.
+
+Traditionally, data warehousing has treated human curation as an exception. But if human editing can be implemented transparently, with control and auditability, it should be treated as a standard business tool.
+
+Whether the curation concerns reference data, master data, or other forms of annotation, the data engineer must monitor for incoming records that require curation. Examples include uncategorised store locations, unmapped employee accounts, or new values that do not yet belong to a known category.
 
 ### Applying assumptions
 
-Another direct way for business experts to intervene in data quality issues is to apply business assumptions and act when those assumptions are violated.
+Another way for business experts to intervene in data quality issues is to apply assumptions and act when those assumptions are violated.
 
 Consider the recording of dates. If users manually enter dates, they may accidentally type 2300 instead of 2030. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
 
-One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to null. This assumption should be monitored, and if violated, an alert should prompt a business expert to correct the source data.
+One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to null. This assumption should be monitored. If it is violated, an alert should prompt a business expert to correct the source data.
 
-Another example is assuming uniqueness. If data entries are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness, ignore duplicates, and monitor for violations. If duplicates appear, the business expert can intervene at the source.
+Another example is assuming uniqueness. If data entries are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness, ignore duplicates, and monitor for violations. If duplicates appear, a business expert can intervene at the source.
 
-This approach works best when the business expert can correct the issue for the next batch load. It is suitable for rare, irregular violations that do not require bulk remediation. If data quality issues are more frequent or systemic, a data quality report may be more appropriate.
+This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation.
+
+If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
 ### Data quality report
 
 Data quality reports are suitable when issues are frequent, numerous, or easier to treat in bulk on a periodic basis.
 
-An effective implementation is through a combination or choice dimension. A combination dimension may include one column per issue and describe each transaction. For example, a dimension called ‘Sales data quality’ might include [Is missing sales amount], [Is invalid sales date], [Is unknown customer], and so on.
+An effective implementation is to create a combination or choice dimension. A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
 
-Coupled with the ID dimension, this dimension makes it easy to build a Power BI report that surfaces transactions requiring remediation by a business expert.
+Coupled with the ID dimension, this makes it easy to build a Power BI report that surfaces transactions requiring remediation by a business expert.
 
 A data quality dimension also supports systematic analysis by enabling statistics on the number and type of issues.
 
-Reports are only effective if they embed in the user’s workflow. A de-contextualised report becomes forgotten and unused. The same applies to data quality reports. One way to achieve this is to ensure the business has a workflow trigger that prompts engagement with the report. More on designing data products that embed in workflows is covered in the chapter Gathering requirements.
+Reports are only effective if they embed in the user’s workflow. A decontextualised report becomes forgotten and unused. The same applies to data quality reports. The business should have a workflow trigger that prompts engagement with the report.
 
-## Precise rules
+Human curation closes the quality gap by allowing business judgement to enter the data product. Its main monitoring need is to detect new records that require curation.
 
-Translating business knowledge into precise rules allow for their automation and reduces the reliance on human intervention. One way to look at these rules is to see them as “fixing issues” in the data, but a more productive way is to see them as rules that help bridge the data with business intent. The following are 4 examples:
+## Precise rules: when intent can be formalised
+
+Translating business knowledge into precise rules allows it to be automated and reduces reliance on human intervention.
+
+One way to look at these rules is to see them as “fixing issues” in the data. A more useful way is to see them as rules that bridge recorded data to business intent.
+
+Precise rules are appropriate when the business can say what should happen clearly enough for the data engineer to implement it.
+
+This chapter covers four recurring types of precise rule:
 
 1. Defining analytical concepts
-
-2. Defining primary key
-
+2. Defining primary keys
 3. Defining the primary record
-
 4. Defining relationships
 
 ### Defining analytical concepts
 
-Since business insight is information analysed in light of business interest, a direct way of improving data quality is to formulate this analysis as a defined concept. This concept becomes a lens through which the data is interpreted. It allows the business users to see the data in a way that is more expressive of business intent.
+Since business insight is information analysed in light of business intent, a direct way of improving data quality is to define the analytical concept that the business needs.
+
+This concept becomes a lens through which the data is interpreted. It allows users to see the data in a way that is more expressive of business intent.
 
 #### Good and bad entities
 
-The prime example is that of “good” and “bad” entities. A business process may collect detailed information such as audit results, inspection results, incidents, sentiment, or sales volume. However, these are yet to be formulised into “good” and “bad” in a systematic way. It could be that numeric values such as star ratings need to be translated into good and bad using thresholds. More commonly, it is because a business process records information at a lower level that needs to be rolled up back to the entity of interest. For example, a manufacture batch may have multiple quality control criteria, where failing one critical criterion, or multiple non-critical criteria, will define a failure at the batch level.
+A common example is defining “good” and “bad” entities.
 
-It is not reasonable to expect the digital systems to always define these concepts at operational level. Their primary job is to execute workflows while preserving data accurately. The data engineer play the part by adding this analytical lens.
+A business process may collect detailed information such as audit results, inspection results, incidents, sentiment, or sales volume. However, these details may not yet be formalised into a systematic judgement.
+
+Sometimes numeric values such as star ratings need to be translated into good and bad using thresholds. More commonly, a business process records information at a lower grain that needs to be rolled up to the entity of interest.
+
+For example, a manufacturing batch may have multiple quality-control criteria. The business may decide that failing one critical criterion, or multiple non-critical criteria, defines failure at the batch level.
+
+This closes the quality gap between detailed operational outcomes and the business’s need for a usable judgement.
+
+It is not reasonable to expect operational systems to always define these concepts. Their primary job is to execute workflows while preserving records. The data engineer plays a role by adding the analytical lens.
 
 #### Milestones
 
-Milestones are another important analytical definition. A business process typically has many detailed steps, some of which may loop back. This plethora of steps can confuse and bury insight in a mass of details. A useful analytical view is to define major milestones that can be used to measure performance. To be useful, there should be no more than seven milestones, and more importantly, each milestone should be associated with a specific control or a responsible owner who can act on the timeliness of reaching that milestone. To deal with loops, the data engineer can define the earliest and the latest time such events occur.
+Milestones are another important analytical definition.
+
+A business process may have many detailed steps, some of which loop back. This mass of steps can bury insight in operational detail. A useful analytical view is to define major milestones that can be used to measure performance.
+
+To be useful, milestones should be limited in number. More importantly, each milestone should be associated with a specific control point or responsible owner who can act on the timeliness of reaching that milestone.
+
+To deal with loops, the data engineer can define the earliest and latest time each event occurs.
+
+Milestones close the quality gap between messy workflow events and meaningful process control.
 
 #### Conformed dimensions
 
-Another form of analytical concept is the creation of conformed dimensions. A large organisation may have many processes, and many share nearly similar concepts under different names. A little effort can create a higher view that reconciles these specific instances. When done appropriately, a conformed view can empower decision makers at the most senior level in the department.
+Another analytical concept is the conformed dimension.
 
-Defining analytical concepts takes leadership and negotiation skills. The data engineer is well placed in brokering between stakeholder parties by showing the way forward through experimenting with the data and visually communicating experimental outcomes.
+A large organisation may have many processes, and many of them share similar concepts under different names. A conformed dimension reconciles these local concepts into a shared view.
+
+When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
+
+Conformed dimensions close the quality gap between local system categories and enterprise intent.
+
+Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
 ### Defining primary keys
 
-Primary keys serve as the link between the data records and their counterpart in the real world. Unfortunately, some business processes do not rigorously define primary keys.
+Primary keys serve as the link between data records and their counterparts in the real world. Unfortunately, some business processes do not rigorously define primary keys.
 
 This can lead to slippery definitions in the database. In other cases, the primary key is defined at the application layer but remains invisible at the data layer, leaving the business user without a clear way to interpret the data.
 
-The data engineer must always establish the primary key where it is not meaningfully defined. The primary key articulates the engineer’s view of how the data row is to be interpreted as a business entity.
+The data engineer should establish the primary key where it is not meaningfully defined.
 
-Most primary keys can be traced by examining how a business process creates, retrieves, and updates a data record. There are three common patterns worth noting: sequence numbers, version numbers, and temporality.
+The primary key articulates the data engineer’s view of how the data row should be interpreted as a business entity.
+
+Most primary keys can be traced by examining how a business process creates, retrieves, and updates a data record. Three common patterns are sequence numbers, version numbers, and temporality.
 
 #### Sequence numbers
 
-Sequence numbers are common when a header has multiple detail rows, and the details table lacks a meaningful primary key. For example, a sales order may have multiple items. The order is stored in a table called Sales, with [Order number] as the primary key. The items are stored in SaleItems, which may be a miscellaneous list without a key.
+Sequence numbers are useful when a header has multiple detail rows and the detail table lacks a meaningful primary key.
 
-If each product can only appear once, then [Order number], [Product ID] may suffice as a primary key. But if a product can appear more than once, this fails. A simple solution is to treat the list of items as a sequence and create an artificial column [Sales item sequence number], forming the key [Order number], [Sales item sequence number].
+For example, a sales order may have multiple items. The order is stored in `Sales`, with `[Order number]` as the primary key. The items are stored in `SalesItems`, which may be a miscellaneous list without a meaningful key.
 
-Sometimes a system will implement a meaningless key like [Sale items ID], a simple integer used for UI or database constraints. Even in these cases, the data engineer should define a sequence number and use [Order number], [Sales item sequence number] as the primary key. This is more expressive of business intent, while [Sale items ID] can be retained for joins.
+If each product can appear only once, then `[Order number]` and `[Product ID]` may suffice as a primary key. But if a product can appear more than once, this fails.
+
+A simple solution is to treat the list of items as a sequence and create an artificial column `[Sales item sequence number]`, forming the key `[Order number]`, `[Sales item sequence number]`.
+
+Sometimes a system will implement a meaningless key such as `[Sales item ID]`, a simple integer used for UI or database constraints. Even in these cases, the data engineer may still define a sequence number and use `[Order number]`, `[Sales item sequence number]` as the business-facing primary key. `[Sales item ID]` can be retained for joins.
 
 In general, sequence numbers are effective wherever there is a miscellaneous list of line items within a header. Care must be taken to ensure the sequence is deterministic by breaking ties—using a surrogate key like [Sale items ID] as a sort order is a reliable approach.
 
 #### Version numbers
 
-Immutable entities are those that do not change, or if they do, the change is considered sufficient to treat them as a new entity. For example, an import declaration is immutable. If the importer changes the content ahead of arrival, it is treated as a new declaration.
+Version numbers are useful for immutable entities whose changes should be treated as new versions.
 
-Version numbers are an effective way to manage changes in immutable entities. For example, Import.Declaration may use [Declaration ID] as the primary key. If changes occur, they can be stored in Import.DeclarationVersion with the key [Declaration ID], [Declaration version number].
+For example, an import declaration may be immutable. If the importer changes the content ahead of arrival, the change is treated as a new declaration version.
 
-Digital systems are not always consistent in how they manage versions. A common but problematic approach is to allow the entity ID to change indefinitely and record overrides using [Override declaration ID]. This may work for rendering a web UI but causes confusion in analysis. In every case where versioning is lost or muddled, the data engineer must restore clarity using the consistent pattern [Entity ID], [Version number].
+The data engineer may model this using `[Declaration ID]`, `[Declaration version number]`.
+
+Digital systems are not always consistent in how they manage versions. A common but problematic approach is to allow the entity ID to change indefinitely and record overrides using `[Override declaration ID]`. This may work for rendering a web UI but can cause confusion in analysis.
+
+Where versioning is lost or muddled, the data engineer can restore clarity using a consistent pattern such as `[Entity ID]`, `[Version number]`.
+
+Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
 
 #### Temporality
 
-Temporality refers to tracking changes over time. In data warehousing, this is known as a type II table. Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the entity is mutable.
+Temporality refers to tracking changes over time. In data warehousing, this is commonly handled through type II tracking.
 
-Mutable entities should be expressed through a primary key that includes a time component. The data engineer should define the key as [Entity ID], [Start datetime], and include [End datetime] to mark the end of the validity period. This is especially important if an entity can be deleted and recreated and thus the start of one row is not necessarily the end of the previous.
+Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the entity is mutable.
 
-Recovering temporality depends on how history is stored. Sometimes it is available in audit tables. Sometimes it must be reconstructed with help from business experts who can supply missing information.
+Mutable entities should usually be expressed through a primary key that includes a time component. The data engineer may define the key as `[Entity ID]`, `[Start datetime]`, with `[End datetime]` marking the end of the validity period.
+
+This is especially important if an entity can be deleted and recreated, because the start of one row is not necessarily the end of the previous row.
+
+Recovering temporality depends on how history is stored. Sometimes it is available in audit tables. Sometimes it must be reconstructed with help from business experts.
+
+Temporality closes the quality gap where the business needs historical interpretation but the source system only presents the current state.
 
 ### Defining the primary record
 
-A related but distinct phenomenon is that of defining the primary record. This occurs when the database does have a primary key, but different primary keys relate to the same underlying entity. It is common in business processes that gather information from decentralised observations.
+Defining the primary record is related to defining primary keys, but it solves a different problem.
 
-Consider the example of whale sightings. A database may collect observations from citizen scientists, stored in a table called Whale.Observation with primary key [User ID], [Observation number] to identify each user’s submissions. A surrogate key such as [Observation ID] may also exist in the digital system for record retrievals.
+This occurs when the database has primary keys, but different primary keys relate to the same underlying entity. It is common in business processes that gather decentralised observations.
 
-In this scenario, multiple citizens may report sightings of the same whale. As a result, multiple [Observation ID] values relate to the same real-world entity. Suppose the business has a rule such as “a whale species at one GPS proximity would only appear once within a day.” This rule can be used to group observations and identify a representative record.
+Consider the example of whale sightings. A database may collect observations from citizen scientists, stored in `Whale.Observation`, with `[User ID]`, `[Observation number]` identifying each user’s submissions. A surrogate key such as `[Observation ID]` may also exist for system retrieval.
 
-The data engineer can express this by identifying the primary observation. For example, selecting the first observation of the day at a location and storing it as [Primary observation ID] in a table called Whale.PrimaryObservationId. This table would contain two columns: [Observation ID] and [Primary observation ID], where [Observation ID] is the key for the original record, and [Primary observation ID] identifies the chosen representative. Subsequent transformation in the data pipeline can focus working on the [Primary observation ID] grain. It can also be used in Power BI to return the true count of whale sightings.
+Multiple citizens may report sightings of the same whale. As a result, multiple `[Observation ID]` values relate to the same real-world entity.
 
-Identifying the primary record in cases of multiple observations is a powerful tool for helping the business interpret and relate to the data.
+Suppose the business has a rule such as: "A whale species at one GPS proximity should only appear once within a day."
 
-Care must be taken to resolve race conditions. If two users submit observations simultaneously, only one record should be selected as primary. This can be resolved deterministically using a surrogate key such as [Observation ID].
+This rule can be used to group observations and identify a representative record.
+
+The data engineer can express this by identifying the primary observation. For example, the pipeline may select the first observation of the day at a location and store it as `[Primary observation ID]` in a table called `Whale.PrimaryObservation`.
+
+This table might contain `[Observation ID]` and `[Primary observation ID]`, where `[Observation ID]` is the key for the original record and `[Primary observation ID]` identifies the chosen representative.
+
+Subsequent transformation can focus on the `[Primary observation ID]` grain. The same key can also be used in Power BI to return the true count of whale sightings.
+
+Care must be taken to resolve race conditions. If two users submit observations at the same time, only one record should be selected as primary. This can be resolved deterministically using a surrogate key such as `[Observation ID]`.
+
+Defining the primary record closes the quality gap between multiple observations and one underlying entity.
 
 ### Defining relationships
 
-Digital systems are usually good at recording relationships between data records as they are captured by business processes. However, business processes often record only the relationships needed to execute a workflow, and not the relationships that are useful for analysis. This is especially common when the system is designed for operational efficiency rather than analysis. The following looks at two useful techniques – nearest temporal joins and mapping tables.
+Digital systems are usually good at recording relationships needed by operational workflows. They are less reliable at recording relationships that are useful for analysis.
+
+This is especially common when the system is designed for operational efficiency rather than analytical understanding.
+
+The data engineer can sometimes close this quality gap by defining relationships that the source system did not record.
+
+Two useful techniques are:
+
+- nearest temporal joins;
+- mapping tables.
 
 #### Nearest temporal join
 
-Sometimes two sets of events are related, but the relationship is not recorded as database keys. This is common when the business process captures only what is needed for operational execution, not what is useful for analysis.
+Sometimes two sets of events are related, but the relationship is not recorded as a database key.
 
-If business knowledge suggests that one set of events is expected to precede another, the relationship can be recovered by identifying the nearest preceding event. This technique is known as a nearest temporal join.
+If business knowledge suggests that one set of events is expected to precede another, the relationship can sometimes be recovered by identifying the nearest preceding event. This technique is known as a nearest temporal join.
 
-Consider the case where a lounge allows members to check in, and the members make different purchases at the bar in the lounge, or none. The check-in is recorded by the door scanner with the check-in datetime. When the member checks in, the membership level – bronze, silver, gold, and diamond - is recorded at the door. This is stored in Club.Checkin with columns [Member ID], [Check-in datetime] and [Membership level]. There is a surrogate key [Check-in event SK].
+Consider a lounge where members check in and may then make purchases at the bar.
 
-Purchases at the bar are recorded separately at the register. These are stored in Club.Purchase with columns [Member ID], [Purchase datetime], and [Purchase item].
+The check-in is recorded by the door scanner with `[Member ID]`, `[Check-in datetime]`, and `[Membership level]`. This is stored in `Club.Checkin`. There is a surrogate key `[Check-in event SK]`.
 
-There is a surrogate key [Purchase event SK]
+Purchases are recorded separately at the register. These are stored in `Club.Purchase`, with `[Member ID]`, `[Purchase datetime]`, and `[Purchase item]`. There is a surrogate key `[Purchase event SK]`.
 
-Although both tables contain [Member ID], there is no direct relationship between a specific check-in and the purchases made during that visit. The system does not record which check-in a purchase belongs to. This makes it difficult to identify the membership level associated with the purchase.
+Although both tables contain `[Member ID]`, there is no direct relationship between a specific check-in and the purchases made during that visit. The system does not record which check-in a purchase belongs to. This makes it difficult to identify the membership level associated with the purchase.
 
-To support analysis, the data engineer can create a link using the nearest temporal join. For example, a rule might be: “a purchase belongs to the most recent check-in by the same member that occurred before the purchase.” The result would be stored in Club.PurchaseCheckin as a two column table of [Purchase event SK] and [Check-in event SK].
+To support analysis, the data engineer can create a link using a nearest temporal join.
 
-One implementation would be to identify the latest check-in for each purchase using a MAX() aggregation, then joins back to retrieve the membership level.
+For example, the rule might be: "A purchase belongs to the most recent check-in by the same member that occurred before the purchase."
+
+The result can be stored in `Club.PurchaseCheckin` as a two-column table of `[Purchase event SK]` and `[Check-in event SK]`.
+
+One implementation is to identify the latest check-in for each purchase using a `max()` aggregation, then join back to retrieve the check-in event.
+
+Another approach is to consider each check-in as a window from one check-in to the next, and for each purchase, find the corresponding check-in window.
 
 This table re-establishes the relationship between the purchase event and the check-in event.
 
-Another approach is to consider each check-in as a window from one to the next, and for each purchase, find the corresponding check-in window.
+Nearest temporal joins are especially valuable at the macro level, where business processes operate in bulk and lack unit-level linkage.
 
-Nearest temporal joins are especially valuable at the macro level, where business processes operate in bulk and lack unit-level linkage. For example, seed suppliers may distribute large batches to farms, and harvest yields are later reported in aggregate.
+For example, seed suppliers may distribute large batches to farms, and harvest yields may later be reported in aggregate. Individual bags of seed are not tracked, but the business may still need to understand how seed characteristics such as supplier or variety affect outcomes. In such cases, the data engineer can define keys for seed batches and yield events, then use nearest temporal joins to associate each yield with the most recent relevant seed delivery.
 
-While individual bags of seed are not tracked, it's still important to understand how seed characteristics such as supplier or variety affect outcomes. In such cases, the data engineer can define keys for seed batches and yield events, then use nearest temporal joins to associate each yield with the most recent relevant seed delivery.
+Similar patterns arise in regulatory compliance. Businesses may submit periodic declarations or claims, while auditors conduct inspections or reviews later. These audits are not tied to specific submissions but are temporally related. Nearest temporal joins allow the business to associate each audit with the most recent relevant declaration, enabling analysis of compliance patterns over time.
 
-Similar patterns arise in other domains. In regulatory compliance, businesses may submit periodic declarations or claims, while auditors conduct inspections or reviews at later dates. These audits are not tied to specific submissions but are temporally related. Nearest temporal joins allow business to associate each audit with the most recent relevant declaration, enabling analysis of compliance patterns over time.
+Nearest temporal joins close the quality gap between related events whose relationship was not explicitly recorded.
 
 #### Mapping tables
 
-Mapping tables are introduced when the original system does not record relationships needed for analysis. A common scenario is a header table with two separate detail tables at different grains. Both detail tables relate to the header, but not to each other.
+Mapping tables are introduced when the original system does not record relationships needed for analysis.
+
+A common scenario is a header table with two separate detail tables at different grains. Both detail tables relate to the header, but not to each other.
 
 The data engineer may introduce a mapping table between them based on a business rule.
 
-Consider a club restaurant with data captured as follows:
+Consider a club restaurant with data captured in three tables:
 
-- Club.TableSitting — records of customers seated at the restaurant, one per sitting, keyed by [Table sitting ID]
-
-- Club.TableCustomer — club members identified by [Member ID], linked to
-
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Table sitting ID]`.
-
-- Club.TableFoodOrder — menu items ordered per [Table sitting ID], with food items identified by [Food item ID]. Items may be ordered multiple times
+- `Club.TableSitting`—records of customers seated at the restaurant, one per sitting, keyed by `[Table sitting ID]`
+- `Club.TableCustomer`—club members identified by `[Member ID]`, linked to `[Table sitting ID]`
+- `Club.TableFoodOrder`—menu items ordered per `[Table sitting ID]`, with food items identified by `[Food item ID]`
 
 The system does not record which member ordered which item. For analysis, the business may wish to associate members with food items. However, this relationship is not captured in the source system.
 
-To support analysis, the data engineer may introduce a mapping table Club.CustomerFoodOrderMap, with three columns [Table sitting ID], [Member ID] and [Food item ID]. The logic may be based on a business rule such as “every member at the table shares the cost of all items ordered.”
+To support analysis, the data engineer may introduce a mapping table called `Club.CustomerFoodOrderMap`, with `[Table sitting ID]`, `[Member ID]`, and `[Food item ID]`.
 
-For implementation, it suffices to join Club.TableCustomer and Club.TableFoodOrder on [Table sitting ID]. However, because a food item can be ordered multiple times, the composite columns [Table sitting ID], [Member ID], and [Food item ID] do not yet form a primary key. Instead, additional group by on those columns, and additional window calculation is necessary for [Food item occurrences], which is the number of times the food item was ordered at the table, and for [Number of members], which is the number of members seated at the table. The ratio of these two values can be used as distribution weights in subsequent calculations.
+The logic may be based on a business rule such as: "Every member at the table shares the cost of all items ordered."
 
-An example implementation in SQL is as follows:
+For implementation, the data engineer can join `Club.TableCustomer` and `Club.TableFoodOrder` on `[Table sitting ID]`.
 
-As an example of usage, the total cost spent by all members on each food item over time can be returned through:
+Because a food item can be ordered multiple times, `[Table sitting ID]`, `[Member ID]`, and `[Food item ID]` do not yet form a primary key. Additional grouping is needed. The pipeline may calculate `[Food item occurrences]`, the number of times the food item was ordered at the table, and `[Number of members]`, the number of members seated at the table.
 
-Because the relationship is inferred rather than recorded, it should be tested.
+The ratio of these values can be used as distribution weights in subsequent calculations.
 
-Techniques for validating mapping logic are described in the chapter Tests and assumptions.
+Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
 
-The suffix Map can be casually used so that it becomes meaningless. It is more effective if it is reserved for genuine many-to-many relationships. If the relationship is one-to-one or expresses a property, the table should be named accordingly. For example, in the case of nearest temporal join, the table is Club.PurchaseCheckin because each purchase has only one check-in, and thus the word Map is not necessary.
+Mapping tables close the quality gap between entities that must be related analytically but are not related operationally.
 
-## Fuzzy logic
+Precise rules close data quality gaps by turning business intent into repeatable logic. Their main monitoring need is to detect rule violations, edge cases, and changes in the business process that make the rule unsafe.
 
-There are cases where precise rules do not apply. A common example is natural language processing. When working with free text, it is often impossible to define exact rules that meet business intent.
+## Fuzzy logic: when intent can only be approximated
 
-Fuzzy logic is increasingly common and accepted. The rise of large language models is accelerating this trend. In many scenarios, “something is better than nothing” as far as business objectives are concerned, and a perfect match with reality does not justify the cost. This aligns with the view that data quality issues are not about data versus reality, but data versus business intent.
+There are cases where precise rules do not apply.
 
-Examples of fuzzy logic include optical character recognition to extract information from images, large language models to infer sentiment from user text, and entity resolution techniques to identify the underlying entity behind multiple records, such as in guest check-out scenarios.
+A common example is natural language processing. When working with free text, it is often impossible to define exact rules that meet business intent.
 
-Fuzzy logic pushes into the domain of data science, where statistical and mathematical disciplines bring rigour to its application. However, there are cases where a data engineer can apply a simple approach. The following is a three-step process — a kind of “poor man’s data science”:
+Fuzzy logic is appropriate when the business intent is real but cannot be captured precisely. In many scenarios, something is better than nothing, and a perfect match with reality does not justify the cost.
 
-- Find the pattern through loose–tight iteration
+This aligns with the view that data quality is not data versus reality, but data versus business intent.
 
-- Check the pattern with random validation
+Examples of fuzzy logic include:
 
-- Monitor the pattern by watching for drift
+- optical character recognition to extract information from images;
+- large language models to infer sentiment from user text;
+- entity resolution techniques to identify the underlying entity behind multiple records;
+- pattern extraction from free text, such as phone numbers, invoice numbers, or addresses.
 
-The approach can be highly effective in many common scenarios that requires extracting information from free text. A data engineer should be comfortable to consider this three-step approach and be ready to stay within it or pivot to a more sophisticated data science method when necessary.
+Fuzzy logic often pushes into the domain of data science, where statistical and mathematical disciplines bring rigour to its application. However, there are cases where a data engineer can apply a simple and practical approach.
 
-### Loose-tight iteration
+The following is a three-step process, a kind of “poor man’s data science”:
 
-A useful way to think about fuzzy logic is through the idea of loose–tight iteration. Every pattern has matches and rejects. The matches are records that meet the criteria. The rejects are those that do not. The data engineer tunes the pattern by adjusting the criteria—tightening to reduce over-matching, loosening to recover missed records. The goal is not to maximise matches, but to eliminate mistakes on both sides. This is an approach that avoids blind spots.
+1. Find the pattern through loose–tight iteration.
+2. Check the pattern with random validation.
+3. Monitor the pattern by watching for drift.
 
-Consider the example of extracting phone numbers from a free-text field. The phone numbers may come in a format of area codes and standard spacing, such as (02) 1234 5678, but also other variations such as 0412345678, 12345678, or 02-1234-5678.
+This approach can be highly effective in common scenarios that require extracting information from free text. A data engineer should be comfortable considering this approach and ready to pivot to a more sophisticated data science method when necessary.
 
-The goal is to extract the phone numbers from the free-text field. The challenge is that the field may have other numbers such as invoice numbers or date numbers.
+### Step 1—Loose–tight iteration
 
-Finding the best pattern is a matter of iteration of starting with a rough pattern, and refining. The following is a procedure template for arriving at a pattern.
+A useful way to think about fuzzy logic is through loose–tight iteration.
 
-1. Define a rough pattern
+Every pattern has matches and rejects. The matches are records that meet the criteria. The rejects are records that do not.
 
-Start with a simple pattern that captures the most obvious cases.
+The data engineer tunes the pattern by adjusting the criteria:
 
-Example: Match phone numbers in the format (XX) XXXX XXXX.
+- tightening to reduce over-matching;
+- loosening to recover missed records.
 
-This pattern will produce:
+The goal is not to maximise matches. The goal is to reduce mistakes on both sides.
 
-- A match set — records that meet the pattern
+Consider the example of extracting phone numbers from a free-text field. Phone numbers may appear in formats such as `(02) 1234 5678`, `0412345678`, `12345678`, or `02-1234-5678`.
 
-- A reject set — records that do not
+The challenge is that the field may also contain other numbers, such as invoice numbers or dates.
 
-2. Inspect the match set for false matches
+Finding the best pattern is an iterative process:
 
-Review the matched records. Are there entries that should not be matched?
+1. Define a rough pattern.
+2. Inspect the match set for false matches.
+3. Inspect the reject set for false rejects.
+4. Adjust and repeat.
 
-Example: The pattern may pick up numeric strings like 12345678 that are not phone numbers.
+Start with a simple pattern that captures the most obvious cases. This produces a match set and a reject set.
 
-If so, tighten the pattern to exclude these.
+The match set should be inspected for false matches. For example, the pattern may pick up numeric strings that are not phone numbers. If so, tighten the pattern.
 
-3. Inspect the reject set for false rejects
+The reject set should be inspected for false rejects. For example, valid mobile numbers or hyphenated formats may have been excluded. If so, loosen the pattern.
 
-Review the rejected records. Are there valid entries that were missed?
+Each adjustment changes the match set and reject set. It is usually better to tighten or loosen one thing at a time, then inspect the result.
 
-Example: Mobile numbers like 0412345678 or formats like 02-1234-5678 may be valid but were excluded.
+The key idea is that focusing only on matches creates a blind spot. The rejected records are equally significant. A useful pattern is found by examining both incorrect matches and incorrect rejects.
 
-If so, loosen the pattern to include these.
 
-4. Adjust and repeat
+### Step 2—Random validation
 
-Each adjustment changes the match and reject set, being careful to tighten or loosen at one time, but not both. Repeat the inspection after each change.
+Once the pattern has been tuned, it should be validated by a business expert.
 
-Continue until the pattern behaves acceptably — where the matches are genuinely useful and the rejects are genuinely not.
+This is done by randomly sampling records from both the match set and the reject set.
 
-The key idea is that focusing solely on matches would lead to bias or blind spot.
+The sample must be unbiased. It should not focus only on records where the engineer has low confidence, nor only on records that seem easy to validate. The point is to test the pattern across its full range of behaviour.
 
-Instead, the best pattern achieves an optimised balance by looking at the incorrect matches and incorrect rejects. This approach is related to the data science discipline of optimising the F1 score.
+This process should be repeated periodically. Even if the pattern was correct at the time of implementation, changes in business processes or user behaviour may cause it to degrade.
 
-### Random validation
+Regular validation helps ensure the pattern continues to serve its intended purpose.
 
-Once the pattern has been tuned, it should be validated by a business expert. This is done by randomly sampling records from both the match set and the reject set. The sample must be unbiased. It should not focus only on records where the engineer has low confidence, nor only on records that seem easy to validate. The point is to test the pattern across its full range of behaviour.
+### Step 3—Monitoring for drift
 
-This process should be repeated periodically. Even if the pattern was correct at the time of implementation, changes in business processes or user behaviour may cause it to degrade. Regular validation helps ensure the pattern continues to serve its intended purpose.
+In practice, random validation cannot be performed continuously. Drift monitoring provides a lightweight alternative.
 
-### Monitoring for drift
+The idea is to identify a statistic that should remain relatively stable over time. If the statistic changes significantly, the pattern may no longer be behaving as expected.
 
-In practice, random validation cannot be performed continuously. Drift monitoring provides a lightweight alternative. The idea is to identify a statistic that should remain relatively stable over time. If the statistic changes significantly, it may indicate that the pattern is no longer behaving as expected.
+For example, suppose a free-text field is used to extract phone numbers. Not all extracted numbers will match the customer database, but a certain percentage—say 85%—typically do. This percentage reflects the stability of the pattern.
 
-For example, suppose a free-text field is used to extract phone numbers. Not all extracted numbers will match the customer database, but a certain percentage—say 85%—typically do. This percentage reflects the stability of the pattern. If it drops to 60%, it may indicate that users have started entering phone numbers in a new format, or that the pattern is picking up irrelevant content.
+If it drops to 60%, users may have started entering phone numbers in a new format, or the pattern may be picking up irrelevant content.
 
-This is a form of assumption monitoring. The assumption is that the extracted values will continue to resemble the known population. If the assumption fails, the pattern may need to be revisited. Multiple statistics can be used to provide greater assurance.
+This is a form of assumption monitoring. The assumption is that the extracted values will continue to resemble the known population. If the assumption fails, the pattern may need to be revisited.
 
-Drift monitoring is especially useful when the business has a relatively static reference point such as a customer table, a list of known codes, or a set of standard formats.
+Drift monitoring is especially useful when the business has a relatively static reference point, such as a customer table, a list of known codes, or a set of standard formats. However, any stable statistic can be used.
 
-These provide a benchmark for assessing whether the pattern is still aligned with business intent. However, any stable statistic can be used.
+Fuzzy logic closes data quality gaps by approximating business intent where exact rules are not available. Its main monitoring need is to detect drift in match rates, validation results, or alignment with a known reference.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Data quality is fitness for business intent, not perfect correspondence with reality.
+>
+> Different intents create different quality requirements.
+>
+> Human curation is appropriate when business judgement is needed.
+>
+> Precise rules are appropriate when business intent can be formalised.
+>
+> Fuzzy logic is appropriate when business intent can only be approximated.
+>
+> All three approaches depend on monitoring assumptions.
