@@ -4,6 +4,9 @@ from __future__ import annotations
 import argparse
 import html
 import re
+import shutil
+import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,6 +18,7 @@ DEFAULT_OUTPUTS = {
     "pdf": ROOT / "book.md",
     "epub": ROOT / "book-epub.md",
 }
+EPUB_ASSETS_DIR = ROOT / "epub-assets"
 PDF_SAFE_REPLACEMENTS = {
     "\u00a9": "(c)",
     "\u2013": "--",
@@ -56,6 +60,52 @@ HUGO_RELREF_RE = re.compile(
 )
 HUGO_SHORTCODE_INLINE_RE = re.compile(r"{{\s*[<%]\s*/?[\w-]+.*?[>%]\s*}}")
 MARKDOWN_SITE_LINK_RE = re.compile(r"(\[[^\]]+\]\()(/docs/[^)#\s]+)(#[^)]+)?(\))")
+
+
+class DiagramRenderer:
+    def __init__(self, enabled: bool) -> None:
+        self.enabled = enabled and shutil.which("qlmanage") is not None
+        self.index = 0
+        if self.enabled:
+            EPUB_ASSETS_DIR.mkdir(exist_ok=True)
+            for asset in EPUB_ASSETS_DIR.glob("diagram-*"):
+                if asset.is_file():
+                    asset.unlink()
+
+    def render(self, svg: str) -> str:
+        if not self.enabled:
+            return raw_html_block(svg)
+
+        self.index += 1
+        stem = f"diagram-{self.index:03d}"
+        svg_path = EPUB_ASSETS_DIR / f"{stem}.svg"
+        png_path = EPUB_ASSETS_DIR / f"{stem}.png"
+        svg_path.write_text(svg)
+
+        try:
+            if png_path.exists():
+                png_path.unlink()
+            subprocess.run(
+                ["qlmanage", "-t", "-s", "1600", "-o", str(EPUB_ASSETS_DIR), str(svg_path)],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            candidates: list[Path] = []
+            for _ in range(20):
+                candidates = sorted(EPUB_ASSETS_DIR.glob(f"{svg_path.name}*.png"))
+                if candidates:
+                    break
+                time.sleep(0.1)
+            if not candidates:
+                svg_path.unlink(missing_ok=True)
+                return raw_html_block(svg)
+            candidates[0].replace(png_path)
+            svg_path.unlink(missing_ok=True)
+            return f"\n\n![Diagram](book/epub-assets/{png_path.name})\n\n"
+        except (OSError, subprocess.CalledProcessError):
+            svg_path.unlink(missing_ok=True)
+            return raw_html_block(svg)
 
 
 def parse_front_matter(text: str) -> tuple[dict[str, str], str]:
@@ -249,10 +299,14 @@ def strip_hugo_markup(text: str) -> str:
     return HUGO_SHORTCODE_INLINE_RE.sub("", text)
 
 
-def wrap_svg_blocks_for_epub(text: str) -> str:
+def raw_html_block(svg: str) -> str:
+    return f"\n\n```{{=html}}\n{svg.strip()}\n```\n\n"
+
+
+def wrap_svg_blocks_for_epub(text: str, diagrams: DiagramRenderer) -> str:
     def replace_svg(match: re.Match[str]) -> str:
         svg = match.group(0).strip()
-        return f"\n\n```{{=html}}\n{svg}\n```\n\n"
+        return diagrams.render(svg)
 
     return SVG_BLOCK_RE.sub(replace_svg, text)
 
@@ -268,11 +322,16 @@ def rewrite_internal_links(text: str, link_map: dict[str, str]) -> str:
     return MARKDOWN_SITE_LINK_RE.sub(replace_link, text)
 
 
-def clean_body(page: Page, target: str, link_map: dict[str, str]) -> str:
+def clean_body(
+    page: Page,
+    target: str,
+    link_map: dict[str, str],
+    diagrams: DiagramRenderer,
+) -> str:
     text = page.body.replace("\r\n", "\n")
     text = strip_hugo_markup(text)
     if target == "epub":
-        text = wrap_svg_blocks_for_epub(text)
+        text = wrap_svg_blocks_for_epub(text, diagrams)
         text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
@@ -299,8 +358,13 @@ def render_heading(page: Page, target: str) -> str:
     return f"# {title}"
 
 
-def render_chapter(page: Page, target: str, link_map: dict[str, str]) -> str:
-    body = clean_body(page, target, link_map)
+def render_chapter(
+    page: Page,
+    target: str,
+    link_map: dict[str, str],
+    diagrams: DiagramRenderer,
+) -> str:
+    body = clean_body(page, target, link_map, diagrams)
     heading = render_heading(page, target)
     if body:
         return f"{heading}\n\n{body}"
@@ -397,6 +461,7 @@ def render_front_matter(target: str) -> str:
 def build_book(target: str) -> str:
     sections = section_pages()
     link_map = build_link_map(sections)
+    diagrams = DiagramRenderer(enabled=target == "epub")
     chunks: list[str] = [render_front_matter(target)]
 
     for section, children in sections:
@@ -406,7 +471,7 @@ def build_book(target: str) -> str:
                 chunks.append(r"\newpage")
 
         for child in children:
-            chunks.append(render_chapter(child, target, link_map))
+            chunks.append(render_chapter(child, target, link_map, diagrams))
             if target == "pdf":
                 chunks.append(r"\newpage")
 
