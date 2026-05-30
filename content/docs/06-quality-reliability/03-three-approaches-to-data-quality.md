@@ -41,6 +41,36 @@ The data engineer therefore needs a practical set of interventions.
 | Business intent can be formalised | Precise rules |
 | Business intent can only be approximated | Fuzzy logic |
 
+Each approach contains recurring methods.
+
+**Human curation**
+
+| Method | Use when... |
+|---|---|
+| Data annotation | Records need to be classified, mapped, enriched, or corrected by a business expert. |
+| Applying assumptions | A practical assumption can handle most cases, but violations need expert review. |
+| Data quality reports | Issues are frequent, numerous, or easier to remediate in bulk. |
+
+
+**Precise rules**
+
+| Method | Use when... |
+|---|---|
+| Defining analytical concepts | Operational details need to be turned into usable business concepts, such as good/bad, milestones, or conformed categories. |
+| Defining primary keys | Rows need a clear identity that connects them to real-world entities. |
+| Defining the primary record | Multiple records appear to refer to one underlying entity. |
+| Defining relationships | Analytically important relationships were not recorded by the source system. |
+
+**Fuzzy logic**
+
+Fuzzy logic is handled through iterative approximation.
+
+| Step | Question |
+|---|---|
+| Loose–tight iteration | Can the pattern be tuned to reduce both false matches and false rejects? |
+| Random validation | Does the pattern hold up when checked against unbiased samples? |
+| Monitoring for drift | Does the pattern continue to behave over time? |
+
 One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
 
 This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
@@ -140,7 +170,7 @@ To be useful, milestones should be limited in number. More importantly, each mil
 
 To deal with loops, the data engineer can define the earliest and latest time each event occurs.
 
-Milestones close the quality gap between messy workflow events and meaningful process control.
+Milestones close the quality gap between messy workflow events and meaningful process control. This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
 
 #### Conformed dimensions
 
@@ -182,13 +212,13 @@ In general, sequence numbers are effective wherever there is a miscellaneous lis
 
 #### Version numbers
 
-Version numbers are useful for immutable entities whose changes should be treated as new versions.
+Version numbers are useful for entities whose changes should be preserved as new versions.
 
-For example, an import declaration may be immutable. If the importer changes the content ahead of arrival, the change is treated as a new declaration version.
+For example, a customer order may be submitted, revised, and resubmitted before it is fulfilled. The business may still regard this as the same order, but each revision changes the content that was true at a particular point in time.
 
-The data engineer may model this using `[Declaration ID]`, `[Declaration version number]`.
+The data engineer may model this using `[Order ID]`, `[Order version number]`.
 
-Digital systems are not always consistent in how they manage versions. A common but problematic approach is to allow the entity ID to change indefinitely and record overrides using `[Override declaration ID]`. This may work for rendering a web UI but can cause confusion in analysis.
+Digital systems are not always consistent in how they manage versions. A common but problematic approach is to allow the entity ID to change each time the record is revised and record the relationship using `[Previous order ID]` or `[Superseded order ID]`. This may work for rendering a web UI but can cause confusion in analysis.
 
 Where versioning is lost or muddled, the data engineer can restore clarity using a consistent pattern such as `[Entity ID]`, `[Version number]`.
 
