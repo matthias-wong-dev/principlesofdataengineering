@@ -19,7 +19,7 @@ The principle follows from two facts.
 
 First, the world changes. What is true today may not be true tomorrow. New data may arrive outside previously conceived parameters. Business processes may evolve. Source systems may change. Another developer may alter existing code.
 
-Second, engineers make mistakes. A data engineer may misinterpret business logic, overlook edge cases, or introduce technical errors when writing complex code.
+Second, engineers make mistakes. Complex transformations create many opportunities for small errors to become consequential.
 
 The danger is not only that errors occur—errors are inevitable.
 
@@ -39,6 +39,8 @@ This chapter covers two such mechanisms:
 A test performs the same calculation in two different ways and checks whether the results agree.
 
 A monitored assumption checks whether a condition presumed to hold has been violated, and returns the records requiring attention.
+
+Tests protect the correctness of implemented logic. Monitored assumptions protect the safety of the conditions around that logic.
 
 Both should run regularly, such as once per pipeline batch. Their purpose is not to eliminate failure entirely. Their purpose is to prevent avoidable failure from remaining hidden.
 
@@ -453,21 +455,15 @@ A useful rule of thumb is:
 
 ## Conclusion
 
-Modern development promotes continuous delivery to produce quality, fit-for-purpose products for stakeholders. The rhythm is fast-paced, with developers under pressure to deliver weekly or even daily.
+Tests and assumptions accelerate delivery rather than slow it down. They reduce the cost of change. They allow data engineers to modify complex transformations with confidence. They make it safer to refactor code, adjust business logic, optimise performance, and release improvements without relying on hope.
 
-In this context, writing tests and assumptions may seem to slow down delivery.
+If something is easy to test, it should be tested because the cost is low. If something is hard to test, it definitely should be tested because the logic is complex. Either way, it should be tested.
 
-The point is not to create bureaucracy around delivery. The point is to stop failures from remaining invisible.
+Thoughtful tests are best, but even simple tests are valuable. Many errors in data products are not profound misunderstandings. They are careless mistakes made during rapid development. Simple tests and assumptions can catch these before they reach the user.
 
-Rapid changes to complex code increase the likelihood of significant errors. When errors occur, they are costly to fix and can damage the team’s reputation as a provider of trusted information.
+New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. Mature engineers dealing with greater complexity spend proportionately more time anticipating failure: defining tests, monitoring assumptions, and making sure that the data product will reveal when it is no longer safe.
 
-Writing tests and monitored assumptions takes development time, but it ultimately accelerates delivery by reducing the risk of costly mistakes and enabling the team to deploy changes with confidence.
-
-Thoughtful tests are best, but even simple tests are valuable. In practice, many errors are careless mistakes made during rapid development. Simple tests can catch these before deployment.
-
-New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. As a result, mature engineers spend proportionately less time responding to current needs and more time anticipating errors.
-
-As a rough heuristic, mature teams should expect to spend a meaningful part of each development cycle—perhaps about a quarter—defining tests, assumptions, and monitoring.
+As a rough heuristic, teams should expect to spend a meaningful part of each development cycle on this work. The exact proportion will vary, but the principle is the same: if the data product matters, the means of detecting failure matters too.
 
 ## Key ideas
 
