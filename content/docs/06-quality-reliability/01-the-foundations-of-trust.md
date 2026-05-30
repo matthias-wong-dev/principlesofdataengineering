@@ -54,6 +54,16 @@ Quality keeps users from guessing what the data means. Reliability keeps users f
 
 Together, they are the foundations of trust.
 
+
+## The third principle: anticipate errors
+
+This section introduces the third principle of data engineering: anticipate errors.
+
+This principle follows from the nature of quality and reliability. Data is an imperfect projection of complex reality, and pipelines are mechanical systems that operate in a changing world. 
+
+A trustworthy data product therefore cannot depend on everything continuing as expected. The data engineer must anticipate errors.
+
+
 ## Key ideas
 
 > [!NOTE]
@@ -68,3 +78,5 @@ Together, they are the foundations of trust.
 > Quality keeps users from guessing what the data means.
 >
 > Reliability keeps users from guessing whether the data worked.
+>
+> The third principle of data engineering is to anticipate errors.
