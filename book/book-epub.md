@@ -6,6 +6,7 @@ toc: true
 toc-depth: 3
 numbersections: false
 links-as-notes: false
+css: book/epub.css
 ---
 
 # The book {#docs-about-the-book}
@@ -163,6 +164,7 @@ Data is captured by business processes. Once collected, it can be used to return
 
 In this perspective, data engineering is the task of taking data projected by business processes and reshaping it into a form required by business intent. This can be summarised in Figure 1.
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg"
      width="760" height="520"
      viewBox="0 0 760 520"
@@ -252,6 +254,7 @@ In this perspective, data engineering is the task of taking data projected by bu
   </text>
 
 </svg>
+```
 
 *Figure 1. Business reality is projected into the data world, then shaped back into business understanding.*
 
@@ -279,6 +282,7 @@ To understand this, it is useful to visualise an organisation as a feedback loop
 
 The central premise "Data is a fragment of reality captured by process" can be interpreted as a feedback loop around three components: business processes, digital systems, and captured data. This relationship is illustrated in Figure 1.
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"
      style="background:#ffffff" role="img"
      aria-label="Policy, Business, Digital, Data cycle with Defines, Collect, Informs transitions">
@@ -351,6 +355,7 @@ The central premise "Data is a fragment of reality captured by process" can be i
         font-size="15" font-weight="600" fill="#111111">Feedback</text>
 
 </svg>
+```
 
 *Figure 1. Business intent defines business process, business process defines digital systems, digital systems capture data, and data feeds back into business understanding.*
 
@@ -779,6 +784,7 @@ These blocks are ready for downstream use, including self-service dimensional mo
 
 An overview of the three passes and examples is summarised in Figure 1.
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
      style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
      aria-label="Three passes of entity processing with purpose and example artefacts">
@@ -889,6 +895,7 @@ An overview of the three passes and examples is summarised in Figure 1.
         marker-end="url(#arrowhead-entity-processing)"/>
 
 </svg>
+```
 
 *Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.*
 
@@ -1109,6 +1116,7 @@ These blocks are ready for downstream use where users can access information wit
 
 An overview of the three passes and examples is summarised in Figure 1.
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
      style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
      aria-label="Three passes of entity tracking with purpose and example artefacts">
@@ -1213,6 +1221,7 @@ An overview of the three passes and examples is summarised in Figure 1.
         marker-end="url(#arrowhead-entity-tracking)"/>
 
 </svg>
+```
 
 *Figure 1. The three passes of entity tracking, showing both the purpose of each pass and example artefacts produced in a bank account pipeline.*
 
@@ -1654,6 +1663,7 @@ In practice, simplifications may be appropriate. The decision to simplify should
 
 The overall workflow would look like:
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620"
      style="background:#ffffff" role="img"
      aria-label="Vertical integration flow from local systems to conformed references and conformed transactions">
@@ -1721,6 +1731,7 @@ The overall workflow would look like:
         marker-end="url(#arrowhead-vertical-integration)"/>
 
 </svg>
+```
 
 *Figure 1. Vertical integration. Local systems are modelled separately, mapped to conformed references, and then integrated into a unified transaction table.*
 
@@ -2731,6 +2742,7 @@ Continuing with the example above:
 - Production—Sourcing, Manufacturing, Quality control
 - Sales—Orders, Shipping, Customer feedback
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
      style="background:#ffffff" role="img"
      aria-label="Linear process diagram showing design, production, and sales stages from research and development to customer feedback">
@@ -2836,6 +2848,7 @@ Continuing with the example above:
         marker-end="url(#arrowhead-linear-process)"/>
 
 </svg>
+```
 
 *Figure 1. Linear process diagram. Business processes are arranged in chronological order and grouped into Design, Production, and Sales.*
 
@@ -3765,6 +3778,7 @@ One common theme in this chapter is the movement from information at a finer gra
 
 Combination dimensions, choice dimensions, Sankey dimensions, and storytelling dimensions all follow this pattern.
 
+```{=html}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
      style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
      aria-label="Three stage movement from lower-grain detail to entity-level signal to dimension value">
@@ -3869,6 +3883,7 @@ Combination dimensions, choice dimensions, Sankey dimensions, and storytelling d
         marker-end="url(#arrowhead-pushing-detail-entity)"/>
 
 </svg>
+```
 
 *Figure 1. Lower-grain detail is pushed back to the entity grain, then exposed as a dimension value that users can interact with safely.*
 

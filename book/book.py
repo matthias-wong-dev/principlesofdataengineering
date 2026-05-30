@@ -50,6 +50,7 @@ NOTE_LINE_RE = re.compile(r"^>\s?(.*)$")
 HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 HTML_DIV_RE = re.compile(r"\n?<div\b[^>]*>\s*(.*?)\s*</div>\n?", re.DOTALL | re.IGNORECASE)
 HTML_TAG_RE = re.compile(r"<[^>]+>")
+SVG_BLOCK_RE = re.compile(r"<svg\b.*?</svg>", re.DOTALL | re.IGNORECASE)
 HUGO_RELREF_RE = re.compile(
     r"{{\s*[<%]\s*(?:relref|ref)\s+['\"]?([^'\"\s>]+)['\"]?\s*[>%]\s*}}"
 )
@@ -248,6 +249,14 @@ def strip_hugo_markup(text: str) -> str:
     return HUGO_SHORTCODE_INLINE_RE.sub("", text)
 
 
+def wrap_svg_blocks_for_epub(text: str) -> str:
+    def replace_svg(match: re.Match[str]) -> str:
+        svg = match.group(0).strip()
+        return f"\n\n```{{=html}}\n{svg}\n```\n\n"
+
+    return SVG_BLOCK_RE.sub(replace_svg, text)
+
+
 def rewrite_internal_links(text: str, link_map: dict[str, str]) -> str:
     def replace_link(match: re.Match[str]) -> str:
         prefix, url, fragment, suffix = match.groups()
@@ -263,6 +272,7 @@ def clean_body(page: Page, target: str, link_map: dict[str, str]) -> str:
     text = page.body.replace("\r\n", "\n")
     text = strip_hugo_markup(text)
     if target == "epub":
+        text = wrap_svg_blocks_for_epub(text)
         text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
@@ -372,6 +382,7 @@ def render_epub_front_matter() -> str:
             "toc-depth: 3",
             "numbersections: false",
             "links-as-notes: false",
+            "css: book/epub.css",
             "---",
         ]
     )
