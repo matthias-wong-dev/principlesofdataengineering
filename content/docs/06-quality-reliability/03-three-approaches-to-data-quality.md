@@ -78,7 +78,9 @@ This is covered in more detail in [Tests and assumptions](/docs/quality-reliabil
 
 If data quality issues arise from a gap between recorded data and business intent, one simple remedy is to allow business experts to intervene directly.
 
-Human curation is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
+Human curation closes the quality gap by allowing business judgement to enter the data product. Its main monitoring need is to detect new records that require human attention.
+
+It is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
 
 ### Data annotation
 
@@ -143,13 +145,15 @@ A data quality dimension also supports systematic analysis by enabling statistic
 
 Reports are only effective if they embed in the user’s workflow. A decontextualised report becomes forgotten and unused. The same applies to data quality reports. The business should have a workflow trigger that prompts engagement with the report.
 
-Human curation closes the quality gap by allowing business judgement to enter the data product. Its main monitoring need is to detect new records that require curation.
-
 ## Precise rules: when intent can be formalised
 
 Translating business knowledge into precise rules allows it to be automated and reduces reliance on human intervention.
 
 One way to look at these rules is to see them as “fixing issues” in the data. A more useful way is to see them as rules that bridge recorded data to business intent.
+
+Precise rules close data quality gaps by formalising business intent into repeatable logic. Their main monitoring need is to detect rule violations, edge cases, and changes in the business process that make the rule unsafe.
+
+
 
 Precise rules are appropriate when the business can say what should happen clearly enough for the data engineer to implement it.
 
@@ -563,7 +567,9 @@ Because the relationship is inferred rather than recorded, it should be tested. 
 
 ## Fuzzy logic: when intent can only be approximated
 
-There are cases where precise rules do not apply.
+There are cases where precise rules do not apply. 
+
+Fuzzy logic closes data quality gaps by approximating business intent where exact rules are not available. Its main monitoring need is to detect drift in match rates, validation results, or alignment with a known reference.
 
 A common example is natural language processing. When working with free text, it is often impossible to define exact rules that meet business intent.
 
@@ -590,7 +596,7 @@ This approach can be highly effective in common scenarios that require extractin
 
 ### Step 1—Loose–tight iteration
 
-A useful way to think about fuzzy logic is through loose–tight iteration.
+Loose–tight iteration closes the quality gap where a pattern is real enough to use, but too messy to define perfectly at the start.
 
 Every pattern has matches and rejects. The matches are records that meet the criteria. The rejects are records that do not.
 
@@ -603,7 +609,63 @@ The goal is not to maximise matches. The goal is to reduce mistakes on both side
 
 Consider the example of extracting phone numbers from a free-text field. Phone numbers may appear in formats such as `(02) 1234 5678`, `0412345678`, `12345678`, or `02-1234-5678`.
 
-The challenge is that the field may also contain other numbers, such as invoice numbers or dates.
+The challenge is that the field may also contain other numbers, such as invoice numbers, dates, quantities, account numbers, or address numbers.
+
+**Example structure of `'Customer note'`**
+
+| Customer note ID | Customer note |
+|---:|---|
+| 1 | Please call me on (02) 1234 5678 after 3pm. |
+| 2 | Mobile is 0412345678. Invoice 889912 is unrelated. |
+| 3 | Address is 12 Hill Street. No phone provided. |
+| 4 | Try 02-9876-5432 or office 98765432. |
+| 5 | Order 12345678 was delayed. |
+| 6 | Phone number changed to 0412 345 678 on 2025-04-01. |
+
+A rough first pattern might look for any eight-digit number.
+
+This will produce matches, but it will also over-match.
+
+**Example match set after rough pattern**
+
+| Customer note ID | Extracted value | Correct extraction? | Comment |
+|---:|---|---|---|
+| 2 | 0412345678 | true | Mobile number |
+| 4 | 98765432 | true | Local phone number |
+| 5 | 12345678 | false | Order number, not phone number |
+
+The pattern found real phone numbers, but also picked up an order number. This is a false match. The pattern is too loose.
+
+The data engineer may tighten the pattern by looking for phone-like context, such as nearby words like `phone`, `mobile`, `call`, or `office`, or by excluding known phrases such as `order` and `invoice`.
+
+After tightening, the match set may improve, but some genuine phone numbers may now be missed.
+
+**Example reject set after tightened pattern**
+
+| Customer note ID | Customer note | Should have matched? | Comment |
+|---:|---|---|---|
+| 1 | Please call me on (02) 1234 5678 after 3pm. | true | Landline with area code |
+| 3 | Address is 12 Hill Street. No phone provided. | false | No phone number |
+| 6 | Phone number changed to 0412 345 678 on 2025-04-01. | true | Mobile with spaces |
+
+The rejected records reveal false rejects. The pattern is now too tight, or it does not recognise enough valid phone-number formats.
+
+The data engineer then loosens the pattern to recognise area codes, mobile numbers with spaces, and hyphenated numbers while still avoiding obvious order numbers, invoice numbers, dates, and addresses.
+
+A later iteration may produce a more useful extraction.
+
+**Example extraction after loose–tight iteration**
+
+| Customer note ID | Extracted phone number | Extraction status |
+|---:|---|---|
+| 1 | 0212345678 | Matched |
+| 2 | 0412345678 | Matched |
+| 3 |  | No phone detected |
+| 4 | 0298765432; 98765432 | Matched |
+| 5 |  | Rejected as likely order number |
+| 6 | 0412345678 | Matched |
+
+The important point is not the exact pattern. The important point is the discipline of iteration.
 
 Finding the best pattern is an iterative process:
 
@@ -612,17 +674,13 @@ Finding the best pattern is an iterative process:
 3. Inspect the reject set for false rejects.
 4. Adjust and repeat.
 
-Start with a simple pattern that captures the most obvious cases. This produces a match set and a reject set.
-
-The match set should be inspected for false matches. For example, the pattern may pick up numeric strings that are not phone numbers. If so, tighten the pattern.
-
-The reject set should be inspected for false rejects. For example, valid mobile numbers or hyphenated formats may have been excluded. If so, loosen the pattern.
-
 Each adjustment changes the match set and reject set. It is usually better to tighten or loosen one thing at a time, then inspect the result.
 
 The key idea is that focusing only on matches creates a blind spot. The rejected records are equally significant. A useful pattern is found by examining both incorrect matches and incorrect rejects.
 
 ### Step 2—Random validation
+
+Random validation closes the quality gap where approximate logic looks plausible, but has not been checked against independent judgement.
 
 Once the pattern has been tuned, it should be validated by a business expert.
 
@@ -630,11 +688,41 @@ This is done by randomly sampling records from both the match set and the reject
 
 The sample must be unbiased. It should not focus only on records where the engineer has low confidence, nor only on records that seem easy to validate. The point is to test the pattern across its full range of behaviour.
 
-This process should be repeated periodically. Even if the pattern was correct at the time of implementation, changes in business processes or user behaviour may cause it to degrade.
+For example, the data engineer may extract phone numbers from 50,000 customer notes. The pattern may return 18,000 notes with phone numbers and 32,000 notes without phone numbers. The validation sample should include records from both groups.
+
+**Example validation sample**
+
+| Sample ID | Source set | Customer note | Pattern result | Expert judgement | Validation outcome |
+|---:|---|---|---|---|---|
+| 1 | Match set | Mobile is 0412345678. | Phone found | Phone present | Correct match |
+| 2 | Match set | Order 12345678. Please follow up. | Phone found | No phone present | False match |
+| 3 | Reject set | Call through reception on 98765432. | No phone found | Phone present | False reject |
+| 4 | Reject set | Address is 12 Hill Street. | No phone found | No phone present | Correct reject |
+
+The validation result can then be summarised.
+
+**Example validation summary**
+
+| Validation outcome | Count |
+|---|---:|
+| Correct match | 86 |
+| False match | 6 |
+| Correct reject | 92 |
+| False reject | 16 |
+
+This tells the data engineer how the approximation behaves. It may be good enough for some purposes and not good enough for others.
+
+If the business only needs a rough indication of whether contact details are likely to be present, this may be acceptable. If the extracted phone number will be used for direct customer contact, the tolerance for false matches and false rejects will be much lower.
+
+This is why fuzzy logic still depends on business intent. The question is not whether the pattern is perfect. The question is whether the pattern is good enough for the decision or action it supports.
+
+This validation process should be repeated periodically. Even if the pattern was correct at the time of implementation, changes in business processes or user behaviour may cause it to degrade.
 
 Regular validation helps ensure the pattern continues to serve its intended purpose.
 
 ### Step 3—Monitoring for drift
+
+Monitoring for drift closes the quality gap where an approximation was once good enough, but may stop behaving as intended over time.
 
 In practice, random validation cannot be performed continuously. Drift monitoring provides a lightweight alternative.
 
@@ -642,13 +730,34 @@ The idea is to identify a statistic that should remain relatively stable over ti
 
 For example, suppose a free-text field is used to extract phone numbers. Not all extracted numbers will match the customer database, but a certain percentage—say 85%—typically do. This percentage reflects the stability of the pattern.
 
-If it drops to 60%, users may have started entering phone numbers in a new format, or the pattern may be picking up irrelevant content.
+The data engineer can monitor this statistic over time.
+
+**Example drift monitoring**
+
+| Month | Notes processed | Notes with extracted phone number | Extracted phone match rate |
+|---|---:|---:|---:|
+| 2025-01 | 12,400 | 4,820 | 86% |
+| 2025-02 | 13,100 | 5,040 | 85% |
+| 2025-03 | 12,850 | 4,910 | 84% |
+| 2025-04 | 13,300 | 5,110 | 85% |
+| 2025-05 | 13,050 | 7,900 | 61% |
+
+A sudden drop from the usual range may indicate that the pattern is no longer behaving as expected.
+
+Users may have started entering phone numbers in a new format. The source system may have changed its note template. Another number, such as a case number or ticket number, may have started appearing near phone-like words. The customer database may also have changed, reducing the apparent match rate.
 
 This is a form of assumption monitoring. The assumption is that the extracted values will continue to resemble the known population. If the assumption fails, the pattern may need to be revisited.
 
 Drift monitoring is especially useful when the business has a relatively static reference point, such as a customer table, a list of known codes, or a set of standard formats. However, any stable statistic can be used.
 
-Fuzzy logic closes data quality gaps by approximating business intent where exact rules are not available. Its main monitoring need is to detect drift in match rates, validation results, or alignment with a known reference.
+Useful drift statistics may include:
+
+- percentage of records matched;
+- percentage of extracted values that match a known reference table;
+- number of distinct extracted values;
+- proportion of records with multiple extracted values;
+- proportion of records requiring manual review;
+- proportion of null or rejected records.
 
 ## Key ideas
 
