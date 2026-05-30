@@ -279,7 +279,7 @@ Conformed dimensions are studied in the chapter [reference data](/docs/creating-
 
 Defining primary keys closes the quality gap between database rows and real-world entities.
 
-Primary keys serve as the link between data records and their counterparts in the real world. Unfortunately, some business processes do not rigorously define primary keys.
+Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/). Unfortunately, some business processes do not rigorously define primary keys.
 
 This can lead to slippery definitions in the database. In other cases, the primary key is defined at the application layer but remains invisible at the data layer, leaving the business user without a clear way to interpret the data.
 
