@@ -81,12 +81,24 @@ If data quality issues arise from a gap between recorded data and business inten
 Human curation closes the quality gap by allowing business judgement to enter the data product. Its main monitoring need is to detect new records that require human attention.
 
 It is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
-
 ### Data annotation
 
 Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
 
-For example, a digital system may record sale locations as entered by store address. A business expert may later annotate these locations into sales regions or company sites. This annotation occurs in the data pipeline, not the source system, and is commonly known as reference data management.
+For example, a digital system may record store locations as addresses. These addresses may be sufficient for operational use, but not enough for regional reporting. A business expert may later annotate each store with its sales region.
+
+This annotation occurs in the data pipeline, not the source system, and is commonly known as reference data management.
+
+**Example structure of `'Store'`**
+
+| Store ID | Store address | Sales region (annotated) |
+|---|---|---|
+| S001 | 12 Smith St, Northvale | North |
+| S002 | 88 Market Rd, Southport | South |
+| S003 | 45 Central Ave, Westhaven | West |
+| S004 | 9 Harbour Rd, Eastbank | New store not annotated |
+
+The value `New store not annotated` flags the need for human attention.
 
 Another example is harmonising employee identities across systems. In large organisations, the same employee may appear under different accounts for different business processes. A business expert who understands the enterprise view may annotate these accounts to map them to a canonical representation. This is known as master data management.
 
@@ -104,10 +116,64 @@ Applying assumptions is useful when a practical assumption can handle most cases
 
 Consider the recording of dates. If users manually enter dates, they may accidentally type 2300 instead of 2030. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
 
-One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to null. This assumption should be monitored. If it is violated, an alert should prompt a business expert to correct the source data.
-Another example is assuming uniqueness. If data entries are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness, ignore duplicates, and monitor for violations. If duplicates appear, a business expert can intervene at the source.
+One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to blank. The original issue should not simply disappear. The record should also be flagged so that a business expert can review and correct the source data.
 
-This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation.
+Before applying the assumption, the data may look like this.
+
+**Example structure before flagging**
+
+| Record ID | Event date |
+|---:|---|
+| 1 | 2030-06-15 |
+| 2 | 2300-06-15 |
+| 3 | 2025-04-02 |
+
+After applying the assumption, the invalid date is blanked out and the row is flagged.
+
+**Example structure after flagging**
+
+| Record ID | Event date | Is flagged for invalid date |
+|---:|---|---|
+| 1 | 2030-06-15 | false |
+| 2 |  | true |
+| 3 | 2025-04-02 | false |
+
+This preserves analytical usefulness while making the intervention visible. The invalid date no longer distorts time-based analysis, but the issue remains available for remediation.
+
+Another example is assuming uniqueness.
+
+If records are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness for the main analytical table and separate the duplicates into a rejected-records table for review.
+
+Before applying the assumption, the data may look like this.
+
+**Example structure before deduplication**
+
+| Submission ID | Customer ID | Submission date | Submission amount |
+|---|---|---|---:|
+| S1001 | C001 | 2025-04-01 | 120.00 |
+| S1002 | C002 | 2025-04-01 | 95.00 |
+| S1003 | C001 | 2025-04-01 | 120.00 |
+| S1004 | C003 | 2025-04-02 | 80.00 |
+
+In this example, the business expects one submission per customer per date. The duplicate record is removed from the main analytical table and written to a rejected-records table.
+
+**Example structure of accepted records**
+
+| Submission ID | Customer ID | Submission date | Submission amount |
+|---|---|---|---:|
+| S1001 | C001 | 2025-04-01 | 120.00 |
+| S1002 | C002 | 2025-04-01 | 95.00 |
+| S1004 | C003 | 2025-04-02 | 80.00 |
+
+**Example structure of rejected records**
+
+| Submission ID | Customer ID | Submission date | Submission amount | Rejection reason |
+|---|---|---|---:|---|
+| S1003 | C001 | 2025-04-01 | 120.00 | Duplicate customer submission for date |
+
+This lets the main analytical table remain usable while preserving the rejected record for business attention. The duplicate is not silently lost. It is excluded from the analysis path and surfaced for remediation.
+
+This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation. This can be done in bulk for the entire pipeline, and studied in [Fault tolerance]( /docs/quality-reliability/fault-tolerance/).
 
 If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
@@ -269,10 +335,56 @@ This pattern is studied in [Meaningful fragments](/docs/creating-information/mea
 
 Conformed dimensions close the quality gap between local system categories and enterprise intent.
 
-A large organisation may have many processes, and many of them share similar concepts under different names. A conformed dimension reconciles these local concepts into a shared view.
+A large organisation may have many processes, and many of them share similar concepts under different names or codes. A conformed dimension reconciles these local concepts into a shared view.
+
+For example, one system may store country using two-letter country codes, while another system may store country using its own operational codes.
+
+**Example structure of `Sales.Customer`**
+
+| Customer ID | Customer country code |
+|---|---|
+| C001 | AU |
+| C002 | NZ |
+| C003 | US |
+
+**Example structure of `Shipping.Delivery`**
+
+| Delivery ID | Delivery country code |
+|---|---|
+| D001 | AUS |
+| D002 | NZL |
+| D003 | USA |
+
+Both systems refer to the same business concept: country. However, the codes are not the same. If the data engineer leaves them as separate local values, enterprise reporting becomes harder than it needs to be.
+
+The data engineer can create a standard country reference table.
+
+**Example structure of `'Country'`**
+
+| Country SK | Country name | ISO alpha-2 code | ISO alpha-3 code |
+|---:|---|---|---|
+| 1 | Australia | AU | AUS |
+| 2 | New Zealand | NZ | NZL |
+| 3 | United States | US | USA |
+
+The local system codes can then be mapped to the conformed dimension.
+
+**Example structure of `'Country code map'`**
+
+| Source system | Source country code | Country SK |
+|---|---|---:|
+| Sales | AU | 1 |
+| Sales | NZ | 2 |
+| Sales | US | 3 |
+| Shipping | AUS | 1 |
+| Shipping | NZL | 2 |
+| Shipping | USA | 3 |
+
+This allows sales and shipping data to be analysed through the same country dimension, even though the source systems use different local codes.
 
 When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
-Conformed dimensions are studied in the chapter [reference data](/docs/creating-information/reference-data/).
+
+Conformed dimensions are studied in [Reference data](/docs/creating-information/reference-data/).
 
 
 ### Defining primary keys
