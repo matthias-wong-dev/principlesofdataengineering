@@ -31,7 +31,7 @@ Consequently, data quality is not merely data versus reality. It is data versus 
 
 A dogmatic insistence on reflecting the real world perfectly is costly and often impractical. It may also conflict with privacy, timeliness, proportionality, or operational burden. The data engineer’s job is not to pursue perfect data in the abstract, but to help the business decide what quality means for the decision at hand.
 
-With that in mind, common data quality issues arise because digital systems and business processes were not built to honour the full intent of the business. This may be due to poor design, such as missing data type constraints. It may be due to bias in the business process, such as different incentives for reporting income. It may also be due to a mismatch of purpose, such as import declarations captured for tax but analysed for biosecurity.
+With that in mind, common data quality issues arise because digital systems and business processes were not built to honour the full intent of the business. This may be due to poor design, such as missing data type constraints. It may be due to bias in the business process, such as different incentives for reporting income. It may also be due to a mismatch of purpose, such as operational forms captured for one regulatory purpose but later analysed for another.
 
 The data engineer therefore needs a practical set of interventions.
 
@@ -81,6 +81,7 @@ If data quality issues arise from a gap between recorded data and business inten
 Human curation closes the quality gap by allowing business judgement to enter the data product. Its main monitoring need is to detect new records that require human attention.
 
 It is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
+
 ### Data annotation
 
 Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
@@ -173,7 +174,7 @@ In this example, the business expects one submission per customer per date. The 
 
 This lets the main analytical table remain usable while preserving the rejected record for business attention. The duplicate is not silently lost. It is excluded from the analysis path and surfaced for remediation.
 
-This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation. This can be done in bulk for the entire pipeline, and studied in [Fault tolerance]( /docs/quality-reliability/fault-tolerance/).
+This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation. This can be done in bulk for the entire pipeline, and studied in [Fault tolerance](/docs/quality-reliability/fault-tolerance/).
 
 If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
@@ -218,8 +219,6 @@ Translating business knowledge into precise rules allows it to be automated and 
 One way to look at these rules is to see them as “fixing issues” in the data. A more useful way is to see them as rules that bridge recorded data to business intent.
 
 Precise rules close data quality gaps by formalising business intent into repeatable logic. Their main monitoring need is to detect rule violations, edge cases, and changes in the business process that make the rule unsafe.
-
-
 
 Precise rules are appropriate when the business can say what should happen clearly enough for the data engineer to implement it.
 
@@ -267,11 +266,11 @@ The analytical concept can then be expressed at the batch level.
 | B1001 | 0 | 1 | Pass |
 | B1002 | 1 | 0 | Fail |
 
-This gives the user immediate view of the business at the level of intent.
+This gives the user an immediate view of the process at the level of business judgement.
 
 It is not reasonable to expect operational systems to always define these concepts. Their primary job is to execute workflows while preserving records. The data engineer plays a role by adding the analytical lens.
 
-This implementation is studied in greater depth in [entity processing](/docs/creating-information/entity-processing/).
+This implementation is studied in greater depth in [Entity processing](/docs/creating-information/entity-processing/).
 
 #### Milestones
 
@@ -325,7 +324,7 @@ The data engineer can turn the event history into a milestone fragment.
 
 The milestone fragment does not replace the event history. It gives the business a stable analytical view of the process.
 
-In this example, the three milestones correspond to different control points. Advertisement publication depends on the area preparing and clearing the advertisement. Shortlist completion depends on the assessment process after applications close. Offer acceptance depends on post-interview approval and candidate response. If these were collapsed into one broad measure such as `[Days to recruit]`, the business would know the process was slow but not where the delay occurred.
+In this example, the three milestones correspond to different control points. Advertisement publication depends on the area preparing and clearing the advertisement. Interview completion depends on the assessment process. Offer acceptance depends on post-interview approval and candidate response. If these were collapsed into one broad measure such as `[Days to recruit]`, the business would know the process was slow but not where the delay occurred.
 
 To deal with loops and repeated events, the data engineer can define the earliest or latest relevant occurrence. For example, `[Advertisement published datetime]` may use the first publication event, while `[Offer accepted datetime]` may use the final accepted offer event.
 
@@ -385,7 +384,6 @@ This allows sales and shipping data to be analysed through the same country dime
 When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
 
 Conformed dimensions are studied in [Reference data](/docs/creating-information/reference-data/).
-
 
 ### Defining primary keys
 
@@ -466,7 +464,6 @@ The order can be represented with a stable `[Order ID]` and a changing `[Order v
 | O1002 | 1 | 2025-04-03 14:10 | P300 | 5 | 175.00 |
 
 The primary key for `Sales.OrderVersion` is `[Order ID]`, `[Order version number]`.
-
 
 #### Temporality
 
@@ -673,13 +670,13 @@ The logic may be based on a business rule such as:
 | T001 | M001 | FO002 | 0.5 |
 | T001 | M002 | FO002 | 0.5 |
 
-Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
-
 Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+
+Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
 
 ## Fuzzy logic: when intent can only be approximated
 
-There are cases where precise rules do not apply. 
+There are cases where precise rules do not apply.
 
 Fuzzy logic closes data quality gaps by approximating business intent where exact rules are not available. Its main monitoring need is to detect drift in match rates, validation results, or alignment with a known reference.
 
@@ -846,7 +843,7 @@ The data engineer can monitor this statistic over time.
 
 **Example drift monitoring**
 
-| Month | Notes processed | Notes with extracted phone number | Extracted phone match rate |
+| Month | Notes processed | Notes with extracted phone number | Extracted numbers matching customer records |
 |---|---:|---:|---:|
 | 2025-01 | 12,400 | 4,820 | 86% |
 | 2025-02 | 13,100 | 5,040 | 85% |
@@ -886,4 +883,4 @@ Useful drift statistics may include:
 >
 > Fuzzy logic is appropriate when business intent can only be approximated.
 >
-> All three approaches depend on monitoring assumptions.
+> All three approaches depend on monitoring the assumptions that make the intervention safe.
