@@ -37,25 +37,25 @@ Without good names, artefacts become unrecognisable. Without descriptions, artef
 
 ## Names answer: what is this thing?
 
-Each site will have its own naming conventions. This chapter is not about defining one specific convention. It is about universal principles that should be observed in all naming conventions.
+Names make artefacts recognisable.
 
-Names apply to schemas, tables, columns, Power BI models, measures, calculation groups, and display folders.
+A table, column, measure, calculation group, or display folder may be technically visible but still unrecognisable in business terms. If a user cannot recognise what business thing an artefact represents, the artefact cannot be used. 
 
-In every instance, names should be business-centric and written in plain language. They should not use idiosyncratic acronyms or abbreviations for the developer’s convenience. There is no reason to use `[Employee cnt]` when the meaning is `[Employee count]`. If the infrastructure supports spaces in column names, they should be used.
+This is why names should be business-centric and written in plain language. They should not use idiosyncratic acronyms or abbreviations for the developer’s convenience. There is no reason to use `[Employee cnt]` when the meaning is `[Employee count]`. If the infrastructure supports spaces in column names, they should be used.
 
-Names can also contain useful signals. `Is` and `Has` can indicate binary columns, such as `[Is non-compliant]` or `[Has active case]`. Columns ending with `date` and `datetime` can signal precision. Terms such as `current`, `historical`, `earliest`, `latest`, `start`, and `end` should be used consistently.
+A recognisable name can also contain useful signals. `Is` and `Has` can indicate binary columns, such as `[Is non-compliant]` or `[Has active case]`. Columns ending with `date` and `datetime` can signal precision. Terms such as `current`, `historical`, `earliest`, `latest`, `start`, and `end` should be used consistently.
 
 These signals are helpful only when they clarify business meaning. They should not advertise technical structure at the expense of user understanding.
 
 This is why a Power BI dimensional model should not prefix tables with `dim` or `fact`. Such prefixes describe the modelling technique, not the user-facing meaning.
 
-Naming conventions should be consistent across schemas, databases, warehouses, and semantic models where possible. Consistency in prefixes, suffixes, casing, and syntax creates a design language for the warehouse.
+Recognisability also depends on consistency. If the same business concept appears under different names across the warehouse, the user cannot tell whether the concepts are genuinely different or merely named differently.
 
-The data engineer should pay particular attention to conformed concepts. Before naming something new, check whether the same concept already appears elsewhere under a different name.
+The data engineer should therefore pay particular attention to conformed concepts. Before naming something new, check whether the same concept already appears elsewhere under a different name.
 
 For example, when adding `Cake.RefQualityControl`, it is important to check whether `RefTesting`, `RefAudit`, or `RefInspection` are already being used to mean the same thing. If so, it may be better to reuse an existing name.
 
-Names should also be explicit and unambiguous.
+Names should also be explicit and unambiguous because ambiguity creates false recognition. The user thinks they know what the artefact means, but may be wrong.
 
 An explicit column name means using `[Inspection first of month]` rather than `[First of month]`.
 
@@ -65,7 +65,7 @@ Names should also be able to stand alone. Data tables and columns can often be t
 
 For example, `[Is non-compliant]` may be better as `[Is financially non-compliant]`. This may involve repeating some of the table meaning in the column name.
 
-Another extension of explicit and unambiguous naming is avoiding generic filler words.
+Another compromise to recognisability is filler language.
 
 Words such as `type`, `group`, `summary`, and `details` are often used by developers without adding meaning. They can function like “um” and “ah” in a sentence: they fill space but obscure meaning.
 
@@ -77,11 +77,13 @@ These principles apply just as much to code. Temporary tables and CTEs should be
 
 ## Descriptions answer: what does this mean?
 
-Business descriptions are frequently overlooked by data engineers as an add-on rather than a core task.
+Descriptions make artefacts comprehensible.
+
+A name may tell the user what an artefact is, but the name cannot carry the whole interpretation. The user may still need to know what business reality is represented, how the value was derived, what assumptions were made, when the artefact is unsafe, and how it differs from related concepts.
+
+This is why business descriptions are not an add-on. They are meaning explanations. They enhance data quality by aligning artefacts to business reality through interpretative context.
 
 Too often, descriptions merely restate the artefact name. For example, `Cake.Sales` may be described as “A list of cakes sold”, or `[Is non-compliant]` as “True if found non-compliant.” These descriptions do nothing more than take up storage space. At worst, they harm trust by conveying shallowness.
-
-Business descriptions are meaning explanations. They enhance data quality by aligning artefacts to business reality through interpretative context.
 
 Like names, descriptions should be business-centric and written in plain language. But unlike names, they should be substantial.
 
@@ -92,6 +94,8 @@ A good description should explain:
 - what assumptions were made;
 - when the artefact is unsafe or limited;
 - how it relates to similar concepts.
+
+A useful description carries the interpretation that would otherwise have to be supplied by tribal knowledge or guesswork.
 
 A column such as `[Is non-compliant]` should describe what non-compliance means in business terms, not merely say “if the result code is `F`.”
 
@@ -119,25 +123,35 @@ A better statement is:
 
 Clear statements of limitation are essential for transparency and reliable application of business insight. They tell the user not only what the artefact means, but when it becomes dangerous to rely on it.
 
+This is where descriptions protect users from misuse. They do not merely explain what an artefact means in normal cases; they mark the boundary beyond which that meaning breaks down.
+
 ## Keys answer: how does this relate?
 
 Database keys include primary keys, foreign keys, and unique keys. They are also metadata.
 
-Names and business descriptions explain artefacts in themselves. Keys explain how artefacts relate to each other.
+Keys stop records from becoming lost.
+
+A business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them.
+
+In this sense, keys are a map for the warehouse. They show which row represents which business entity, which records belong together, and how one fragment of reality relates to another.
+
+Names and business descriptions explain artefacts in themselves. Keys explain where those artefacts sit in the wider business landscape.
 
 Relationships are part of meaning. The relationship between one table and another tells the user something about both tables that neither table can say in isolation.
 
 For example, a foreign key between `Cake.Sales` and `Cake.RefProfitability` immediately signals that some sales may be profitable and some may not.
 
-Database keys also help users navigate the database and perform joins. In this sense, database keys serve as a map for the warehouse. Without them, users are left to guess. This is not acceptable.
+Database keys also help users navigate the database and perform joins. Without them, users are left to guess which path through the warehouse is safe. This is not acceptable.
 
-Primary keys play a special role. As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity. Therefore, primary keys help convey the meaning of a row to the business user.
+Primary keys play a special role. As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity.
+
+This is why primary keys matter so much. They are not only technical identifiers. They are the anchor between a row and the entity it claims to represent.
 
 Each organisation implements keys differently. Some store them only in conceptual diagrams or third-party tools. The disadvantage is that they cannot be easily read or queried.
 
 The best approach is to house them as standalone tables in the warehouse. This makes them visible and open to querying like every other table in the warehouse.
 
-Ultimately, keys are not just technical constraints. They are statements of relationship.
+Ultimately, keys are not just technical constraints. They are statements of identity and relationship.
 
 This makes them a non-negotiable part of metadata.
 
@@ -168,10 +182,10 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 >
 > Metadata gives data its interpretative context.
 >
-> Names prevent users from guessing what an artefact is.
+> Without good names, artefacts become unrecognisable.
 >
-> Business descriptions prevent users from guessing what an artefact means and when it is unsafe to use.
+> Without descriptions, artefacts become incomprehensible.
 >
-> Keys prevent users from guessing how artefacts relate to each other.
+> Without keys, artefacts become lost.
 >
 > Metadata should be stored and treated as data.
