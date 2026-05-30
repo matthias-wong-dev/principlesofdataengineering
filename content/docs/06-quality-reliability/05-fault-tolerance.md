@@ -1,120 +1,265 @@
 ---
 title: Fault tolerance
 url: /docs/quality-reliability/fault-tolerance/
-description: Shows how to design pipelines that continue to function in the presence of partial errors and surface failures meaningfully.
-lede: A robust pipeline does not collapse just because one part of it goes wrong.
+description: Explains how fault-tolerant pipelines contain record, table, and load failures before they spread through the data product.
+lede: Good engineering contains errors before they spread through the pipeline.
 weight: 5
-draft: true
+# draft: true
 ---
 
-Tests and assumptions can be understood as an aspect of fault tolerance, which itself is an aspect of error handling.
+## Containing failure
 
-Fault tolerance is the idea that an error in one part of the pipeline should not cause the whole to fall over. This means that errors in a few rows should not prevent a table from loading. It also means that failure in a few tables should not halt the entire pipeline. In a large-scale pipeline with hundreds or thousands of tables, the probability of errors occurring in each batch is high. Consequently, fault tolerance becomes a necessity, not an optional extra.
+Good engineering contains failure before it spreads.
 
-The goal of fault tolerance is not to eliminate all errors. The goal is to ensure that the pipeline continues to function in the presence of errors, and that errors are surfaced in a way that is meaningful and actionable.
+A brittle pipeline treats every error as catastrophic. A fault-tolerant pipeline distinguishes between errors that should stop everything, errors that should stop one table, and errors that should be isolated to a small set of records.
+
+The goal is not to ignore errors. The goal is to keep the rest of the data product usable while surfacing the failure clearly.
+
+This is fault tolerance.
+
+In a large-scale pipeline with hundreds or thousands of tables, the probability of errors occurring in each batch is high. Some source records will be malformed. Some expected values will be missing. Some tables will arrive late. Some incremental loads will behave unexpectedly. Some upstream systems will change.
+
+A robust pipeline should not collapse just because one part of it goes wrong.
+
+Fault tolerance is therefore an extension of the third principle of data engineering: anticipate errors.
 
 This chapter introduces three common fault patterns:
 
-- Uniqueness
+| Fault pattern | Core question | Example failure |
+|---|---|---|
+| Uniqueness | Does one real-world entity correspond to the right number of records? | Duplicate submissions, duplicated incremental loads, or two people sharing one identifier. |
+| Existence | Are required records and values present where they should be? | A detail row without a header, a missing sales amount, or a deleted source record not removed downstream. |
+| Stability | Are small real-world changes producing proportionate data-world changes? | One source update timestamp causes every historical row to reload. |
 
-- Existence
-
-- Stability
-
-Each pattern is accompanied by practical techniques for detection and mitigation.
-
-While broad, these patterns are not exhaustive. Rather, they illustrate a mindset of building a fault tolerant pipeline.
+These patterns illustrate the mindset of building a fault-tolerant pipeline.
 
 ## Uniqueness
 
-If the basic task of data engineering is to relate real-world objects and processes into the data world, then the most common quality problem is that of uniqueness and existence. Uniqueness dictates that one record in the real world corresponds to at most one database record, and vice versa.
+Uniqueness faults occur when the relationship between real-world entities and database records breaks down.
 
-Uniqueness is violated when one real-world entity appears as two records in the database. This can happen when a staff member accidentally enters the same transaction twice.
+If the basic task of data engineering is to represent real-world objects and processes in the data world, then uniqueness is one of the most fundamental expectations.
 
-The reverse is also true. Uniqueness is violated when two distinct real-world entities are forced to occupy the same database record. This may happen if a staff are identified by first and last name. If a staff member joins who uses an existing name, the two staff will have the same identifier value in the database.
+In the simplest case, one real-world entity should correspond to one database record.
 
-Uniqueness violations can come from failures in business processes, as in the examples above. It can also come from mechanical failures, such as an incremental load logic incorrectly loading the same records twice The data engineer must express all uniqueness expectations in the warehouse. These expectations are not just technical constraints. They are best seen as statements of business intent.
+Uniqueness is violated when one real-world entity appears as multiple database records. For example, a staff member may accidentally enter the same transaction twice.
 
-The simplest way to express uniqueness is through a unique constraint in the database.
+The reverse can also occur. Two distinct real-world entities may be forced to occupy the same database record. For example, if staff are identified only by first and last name, two staff members with the same name may collapse into one identifier value.
 
-If the constraint is violated, the pipeline has two options:
+Uniqueness violations can arise from business process failures, such as duplicate entry. They can also arise from mechanical failures, such as incremental load logic incorrectly loading the same record twice.
 
-- Abort the load and leave the data as it was; or
+The data engineer must express uniqueness expectations in the warehouse. While they may be implemented as technical constaints, they are better understood as statements of business intent.
 
-- Apply automatic de-duplication, send the duplicates to a reject table, and allow the rest to proceed.
+If the constraint is violated, the pipeline has several possible responses:
 
-The second approach is explained in the chapter Load mechanics.
+| Response | Use when... |
+|---|---|
+| Abort the load | The violation suggests the table is unsafe to publish. |
+| Reject the violating records | The invalid records can be isolated while the rest of the table remains usable. |
+| Deduplicate automatically | The business rule for choosing the accepted record is clear and safe. |
+| Surface the violation for review | Human attention is required before the issue can be resolved. |
 
-In either case, the violation must be surfaced. A monitoring report should alert the user.
+For example, a source table may contain duplicate submissions.
 
-If the violation is frequent, a different treatment is necessary. Repeated alerts can lead to the “cry-wolf” effect of dulling attention. In such cases, the data engineer should implement targeted handling for the table. For example, instead of relying on a uniqueness constraint, the pipeline can perform de-duplication during transformation and store duplicates in a separate table for review. Such techniques are illustrated in Dealing with data quality.
+**Example structure before deduplication**
 
-Expressing uniqueness expectations consistently is one of the most effective ways to improve the correspondence between the data world and the real world. It is also one of the most direct ways to build trust.
+| Submission ID | Customer ID | Submission date | Submission amount |
+|---|---|---|---:|
+| S1001 | C001 | 2025-04-01 | 120.00 |
+| S1002 | C002 | 2025-04-01 | 95.00 |
+| S1003 | C001 | 2025-04-01 | 120.00 |
+| S1004 | C003 | 2025-04-02 | 80.00 |
+
+If the business expects one submission per customer per date, the duplicate can be separated from the main analytical output.
+
+**Example structure of accepted records**
+
+| Submission ID | Customer ID | Submission date | Submission amount |
+|---|---|---|---:|
+| S1001 | C001 | 2025-04-01 | 120.00 |
+| S1002 | C002 | 2025-04-01 | 95.00 |
+| S1004 | C003 | 2025-04-02 | 80.00 |
+
+**Example structure of rejected records**
+
+| Submission ID | Customer ID | Submission date | Submission amount | Rejection reason |
+|---|---|---|---:|---|
+| S1003 | C001 | 2025-04-01 | 120.00 | Duplicate customer submission for date |
+
+The accepted records remain available for users. The duplicate record is not silently lost but surfaced for attention. This approach localises the fault.
+
+If uniqueness violations are rare, a reject-record pattern may be sufficient. If violations are frequent, the table needs targeted handling. Repeated alerts can create a cry-wolf effect, dulling attention and undermining the purpose of monitoring.
+
+In such cases, the data engineer should implement a specific treatment for the table. This may include deterministic deduplication, a remediation workflow, or a data quality report.
 
 ## Existence
 
-The criteria for existence can be handled similarly as uniqueness. Existence dictates that the record must exist in the database if the object exists in the real world, and vice versa. Sometimes this “object” can be a property or an attribute. For example, a completed sales record must have a sales amount.
+Existence faults occur when required records or values are missing, or when records remain in the data world after their real-world counterpart has disappeared.
 
-Existence is violated when the real-world entity exists, but it does not occur in the database, as in the case if the staff has forgotten to record the sales amount. It is also violated when a database record exists, but the real-world entity does not, as in the case when a record fails to be deleted during an incremental load.
+Existence is violated when a real-world entity exists but does not appear in the database. For example, a completed sale may be missing its sales amount.
 
-While uniqueness violation tends to come from failure in the business process, existence violation often comes from the mechanics of data warehousing. For example, during batch loads, the Cake.SaleItems table may be extracted at a different time to the Cake.Sales table, leading to inconsistency where one exists without the other. In traditional warehousing this is called late arriving transactions.
+Existence is also violated when a database record exists but the real-world entity no longer does. For example, a record may fail to be deleted during an incremental load.
 
-Existence can be expressed in the database through the "not null" constraint on a column. In the case of sales requiring sales amount, it is a matter of applying the not null constraint on the Cake.Sales[Sales amount] column. This is not just a technical safeguard. It is a statement of business intent.
+Some existence expectations are simple. A completed sales record must have a sales amount. This can be expressed through a not-null constraint.
 
-In more complex cases such as the Cake.SaleItems detail table requiring the existence of rows in the Cake.Sales header table, then the detail can left-join to the header, and apply a not null constraint on the header ID. This would alert the engineer if the detail ever missed a header.
+**Example structure of `'Sales'` with missing value**
 
-When encountering a violation, the data pipeline can apply similar automation as that of uniqueness by sending violating rows into a reject table and allowing the rest to proceed.
+| Sales ID | Sales date | Customer ID | Sales amount |
+|---|---|---|---:|
+| S1001 | 2025-04-01 | C001 | 120.00 |
+| S1002 | 2025-04-02 | C002 |  |
+| S1003 | 2025-04-03 | C003 | 95.00 |
 
-As with the case of violation, repeated occurrences of the existence violation will need more targeted handling. For example, instead of left joining Cake.Sales and Cake.SaleItems, an inner join would ensure that no sale items are presented if they are missing a header sale record. However, this treatment should not lead to a silencing of error. If the records do not catch up, suitable tests should alert of prolonged discrepancies. In the case of incremental load, extra attention is needed to ensure records catch up.
+If `[Sales amount]` is required for completed sales, then the missing value should be treated as a fault. Depending on the use case, the row may be rejected, flagged, or excluded from measures that require a sales amount.
 
-For the case of existence, the best mindset for an engineer is to build the pipeline as if it were streaming. In this case:
+More complex existence faults occur between related tables.
 
-- Tables may load continuously, or at least a few times a day
+For example, a sales item should not exist without a corresponding sales header.
 
-- Some may not load from time to time
+**Example structure of `Sales.Sales`**
 
-- Tables may load in random, out of order
+| Sales ID | Sales date | Customer ID |
+|---|---|---|
+| S1001 | 2025-04-01 | C001 |
+| S1002 | 2025-04-02 | C002 |
 
-In these cases, existence of records may be violated in unpredictable ways, but the pipeline should handle these cases by catching up in the next batch. This is the mindset that would lead to the most fault tolerant pipeline.
+**Example structure of `Sales.SalesItems`**
+
+| Sales item ID | Sales ID | Product ID | Quantity |
+|---|---|---|---:|
+| SI001 | S1001 | P100 | 1 |
+| SI002 | S1001 | P200 | 2 |
+| SI003 | S999 | P300 | 1 |
+
+In this example, `SI003` refers to `S999`, but the sales header does not exist.
+
+This may occur because the header failed to load, the item arrived earlier than the header, or the source system produced an invalid relationship.
+
+The data engineer can detect this by left-joining the detail table to the header table, then checking whether the header key is missing.
+
+Conceptually, the check looks like this.
+
+**Example structure after checking for header existence**
+
+| Sales item ID | Sales ID | Product ID | Quantity | Header sales ID |
+|---|---|---|---:|---|
+| SI001 | S1001 | P100 | 1 | S1001 |
+| SI002 | S1001 | P200 | 2 | S1001 |
+| SI003 | S999 | P300 | 1 |  |
+
+The existence expectation can then be expressed as a not-null requirement on `[Header sales ID]`. If `[Header sales ID]` is blank, the detail row has no corresponding header.
+
+When the not-null check fails, the pipeline can send the violating rows into a reject table and allow the rest of the detail table to proceed.
+
+**Example structure of accepted sales items**
+
+| Sales item ID | Sales ID | Product ID | Quantity |
+|---|---|---|---:|
+| SI001 | S1001 | P100 | 1 |
+| SI002 | S1001 | P200 | 2 |
+
+**Example structure of rejected sales items**
+
+| Sales item ID | Sales ID | Product ID | Quantity | Rejection reason |
+|---|---|---|---:|---|
+| SI003 | S999 | P300 | 1 | Missing sales header |
+
+The rest of the table can continue to load, while the missing relationship is surfaced.
+
+This is the same pattern as uniqueness handling: detect the violation, isolate the unsafe rows, preserve them for attention, and allow the safe records to continue.
+
+Existence faults are especially important in batch and incremental pipelines. Tables may be extracted at different times. A header may arrive in one batch and detail records in another. In traditional warehousing this is often discussed as late-arriving data.
+
+The data engineer should not assume that every related record will always arrive in the expected order.
+
+For existence, the best mindset is to design the pipeline as if it were streaming:
+
+- tables may load continuously, or at least several times a day;
+- some tables may fail to load from time to time;
+- related records may arrive out of order;
+- records may catch up in a later batch.
+
+In this mindset, temporary existence violations are expected. The pipeline should handle them safely.
+
+However, safe handling must not become silent handling.
+
+If a missing header catches up in the next batch, the issue may resolve. If it does not catch up, tests or monitored assumptions should surface the prolonged discrepancy.
 
 ## Stability
 
-Stability is a concept from mathematics and from physics. In computational mathematics, it refers to the idea that small changes in inputs should lead to small changes in outputs. In physics, it's the difference between a ball on top of a hill versus a ball at the bottom of the valley. A ball on the top of the hill is instable while the one at the bottom is stable. This is because small perturbation in the former will lead to the ball rolling off, while perturbation in the latter will lead to the ball returning to its original position.
+Stability faults occur when small real-world changes produce disproportionate changes in the data world.
 
-In similar fashion, a data pipeline needs to be stable. This means that small changes in the real world should lead to small changes in the database world. Particularly, small changes in information should lead to corresponding level of create, update, delete (CRUD) operations.
+A stable pipeline changes in proportion to the world it represents.
 
-However, while the real world rarely has massive number of changes — that is, users rarely go back and rewrite all the historical records — the database world often suffers from massive changes that are accidental rather than real. This can happen during server updates that cause the [Row update datetime] values to all change.
+If ten sales changed in the source system, the pipeline should not rewrite ten million historical sales records. If one reference value changed, the warehouse should not update half its records to match. 
 
-If uncontrolled, accidental changes that lead to large changes can significantly harm stakeholder confidence. For example, failing to load the country reference table, which is a small table of 100 or 200 records, leading to complete disappearance of country data in the warehouse.
+Stability means that ordinary changes should produce ordinary effects.
 
-In addition, such uncontrolled operations can also bring down a server when there are too many CRUD operations than normal.
+This is important because the real world rarely rewrites all historical records at once—users do not usually go back and alter every transaction ever recorded. But the data world can suffer from massive accidental changes that do not correspond to real-world change.
 
-Consequently, a developer has the responsibility of ensuring that the pipeline is built so that its changes are commensurate with real world changes. Sudden increase in changes may indicate an error.
+For example, a source system update may refresh `[Row update datetime]` for every historical row. If the pipeline relies on `[Row update datetime]` for incremental extraction, it may attempt to reload the entire history.
 
-To build such a pipeline, the data engineer needs to avoid instable elements. For example, a column called [Today’s date], which is sometimes used for reporting, on a table will cause every row to change every day. Columns that are non-deterministic should also be avoided. Non-determinism often creeps in unintentionally when a column’s value is determined by a ranking, and the ranking columns are not sufficiently specified to return the same value every run. This leads to rows changing despite no change in the real world. Moreover, single row tables such as Cake.LatestLoadDate that contain the latest load of the data should be avoided. The same effect can be achieved with appending data rather than overwriting.
+Another example is a non-deterministic ranking. If a row number is assigned using an incomplete sort order, the selected “first” row may change between runs even when the underlying data has not changed.
 
-Violations of stability can be caught by stability thresholds. For example, the data pipeline should abort the table’s load if more than 5% of the records are to be deleted.
+A third example is a reporting column such as `[Today’s date]`. If this is stored on every row, every row changes every day even though the underlying business entity has not changed.
 
-The implementation of this is explained in Load mechanics.
+The data engineer should therefore design pipelines so that changes are commensurate with real-world change.
 
-Apart from the automation with stability thresholds, data engineer habits are also important. One habit is to avoid having wide tables with miscellaneous attributes. In such a table, change in any cell value causes the whole row to update. This effectively amplifies the impact of real-world changes to database changes. Instead, data engineers should build table fragments so that each table has clear meaning, and so changes to that table’s rows correspond to those meanings.
+One way to do this is to avoid unstable elements:
 
-Another habit is to avoid placing reference tables at the beginning of the data pipeline.
+| Unstable element | Why it is risky |
+|---|---|
+| `[Today’s date]` stored on every row | Causes every row to change every day. |
+| Non-deterministic ranking | Causes rows to change between runs without real-world change. |
+| Incomplete tie-breaking logic | Makes selected records unstable. |
+| Overwritten single-row control tables | Causes downstream volatility when append-only history would be safer. |
+| Wide miscellaneous tables | Amplifies small changes because unrelated attributes share one row. |
 
-Accidental small changes to reference tables would have massive impacts downstream, as is the case of the country codes.
+Another way is to use stability thresholds.
 
-More of these concepts in the Efficient & stable pipeline, particularly in Load mechanics and Dependencies.
+For example, the pipeline may abort or quarantine a table load if more than 5% of records are about to be deleted.
+
+**Example stability threshold**
+
+| Table | Existing rows | Rows proposed for deletion | Deletion percentage | Action |
+|---|---:|---:|---:|---|
+| `Sales.Sales` | 1,000,000 | 2,500 | 0.25% | Proceed |
+| `Sales.Customer` | 250,000 | 180,000 | 72.00% | Abort and alert |
+
+The threshold does not imply that the change is wrong. It says the proposed change is large enough to require attention before it is allowed to spread.
+
+One important habit is to avoid wide tables with miscellaneous attributes. In a wide table, a change in any cell can cause the whole row to update. This amplifies small real-world changes into broad database changes.
+
+Narrow meaningful fragments are more stable. When each table has a clear informational purpose, changes to that table correspond more closely to changes in the thing it represents.
+
+Another habit is to manage dependencies carefully. Small reference tables can have large downstream effects. If a country reference table fails to load, and downstream transformations depend on it early in the pipeline, country data may disappear across many products.
+
+These are studied in later chapters [Load meachnics](/docs/efficient-stable-pipeline/load-mechanics/) and [Load dependencies](/docs/efficient-stable-pipeline/load-dependencies/).
 
 ## Conclusion
 
-Uniqueness, existence, and stability violations are three common patterns of faults.
+Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late. Reference data may be incomplete. Users may enter unexpected values.
 
-They can be handled in a generic way using standard automation, but also through specific pipeline design in the case of frequent violations. Good habits also improve fault tolerance. With fragmentation, tests, assumptions, narrow tables, and thoughtful dependency management, the data engineer has an arsenal of tools to handle common problems.
+It is not useful to enumerate every possible fault.
 
-However, the possibilities of errors are limitless. For example, in parallel loads or a busy server, we may never be able to fully eliminate deadlocks. And thus we will need to implement deadlock retries.
+The important thing is the mindset: anticipating errors.
 
-It will not be fruitful to enumerate all the errors. Instead, the focus is on the mindset, rather than on the set of techniques. The experienced data engineer does not focus solely on what is working right now, but also thinks about what can go wrong. This is the third of the four data engineer principles — anticipate errors.
+The experienced data engineer does not focus only on what is working right now, but also asks what can go wrong.
 
-The final comment on fault tolerance is that the engineer must have a mindset of expecting errors, learning from errors, and writing code that can capture them.
+A fault-tolerant pipeline expects errors, handles them, recovers from them, and above all, reports on them.
 
-Developing this mindset will take time. The best guide for the engineer is well stated by the Zen of Python: “Errors should never pass silently. Unless explicitly silenced.”
+The Zen of Python states the principle well:
+
+> Errors should never pass silently. Unless explicitly silenced.
+
+That is also the discipline of fault tolerance: not every error is fatal, but none should pass silently.
+
+## Key ideas
+
+> [!NOTE]
+> **Key ideas**
+>
+> Fault tolerance is the discipline of containing failure.
+>
+> A fault-tolerant pipeline distinguishes between errors that should stop everything, errors that should stop one table, and errors that should be isolated to a small set of records.
+>
+> Uniqueness, existence, and stability faults are common faults that can be mitigated with standard techniques.
