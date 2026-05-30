@@ -2,17 +2,20 @@
 from __future__ import annotations
 
 import argparse
+import html
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 
 ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ROOT.parent
 DOCS_DIR = PROJECT_ROOT / "content" / "docs"
-DEFAULT_OUTPUT = ROOT / "book.md"
-LATEX_SAFE_REPLACEMENTS = {
+DEFAULT_OUTPUTS = {
+    "pdf": ROOT / "book.md",
+    "epub": ROOT / "book-epub.md",
+}
+PDF_SAFE_REPLACEMENTS = {
     "\u00a9": "(c)",
     "\u2013": "--",
     "\u2014": "---",
@@ -33,6 +36,7 @@ class Page:
     weight: int
     body: str
     is_section: bool
+    url: str | None
 
 
 TITLE = "Principles of Data Engineering"
@@ -43,6 +47,14 @@ FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
 KEY_VALUE_RE = re.compile(r'^([A-Za-z0-9_]+):\s*(.*)$')
 NOTE_START_RE = re.compile(r"^> \[!NOTE\]\s*$")
 NOTE_LINE_RE = re.compile(r"^>\s?(.*)$")
+HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
+HTML_DIV_RE = re.compile(r"\n?<div\b[^>]*>\s*(.*?)\s*</div>\n?", re.DOTALL | re.IGNORECASE)
+HTML_TAG_RE = re.compile(r"<[^>]+>")
+HUGO_RELREF_RE = re.compile(
+    r"{{\s*[<%]\s*(?:relref|ref)\s+['\"]?([^'\"\s>]+)['\"]?\s*[>%]\s*}}"
+)
+HUGO_SHORTCODE_INLINE_RE = re.compile(r"{{\s*[<%]\s*/?[\w-]+.*?[>%]\s*}}")
+MARKDOWN_SITE_LINK_RE = re.compile(r"(\[[^\]]+\]\()(/docs/[^)#\s]+)(#[^)]+)?(\))")
 
 
 def parse_front_matter(text: str) -> tuple[dict[str, str], str]:
@@ -70,7 +82,14 @@ def load_page(path: Path) -> Page:
     title = front_matter.get("title", path.stem.replace("-", " ").title())
     weight = int(front_matter.get("weight", "9999"))
     is_section = path.name == "_index.md"
-    return Page(path=path, title=title, weight=weight, body=body, is_section=is_section)
+    return Page(
+        path=path,
+        title=title,
+        weight=weight,
+        body=body,
+        is_section=is_section,
+        url=front_matter.get("url"),
+    )
 
 
 def section_pages() -> list[tuple[Page, list[Page]]]:
@@ -114,6 +133,46 @@ def normalize_whitespace(text: str) -> str:
         out.pop()
 
     return "\n".join(out)
+
+
+def normalize_site_url(url: str | None) -> str:
+    if not url:
+        return ""
+
+    normalized = url.strip().split("#", 1)[0].split("?", 1)[0]
+    if not normalized:
+        return ""
+    if not normalized.startswith("/"):
+        normalized = "/" + normalized
+    if not normalized.endswith("/"):
+        normalized += "/"
+    return normalized
+
+
+def slugify_anchor(text: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug or "section"
+
+
+def page_anchor(page: Page) -> str:
+    if page.url:
+        return slugify_anchor(normalize_site_url(page.url).strip("/"))
+
+    relative = page.path.relative_to(DOCS_DIR)
+    if relative.name == "_index.md":
+        return slugify_anchor("docs/" + str(relative.parent))
+    return slugify_anchor("docs/" + str(relative.with_suffix("")))
+
+
+def build_link_map(sections: list[tuple[Page, list[Page]]]) -> dict[str, str]:
+    links: dict[str, str] = {}
+    for section, children in sections:
+        pages = [section, *children]
+        for page in pages:
+            url = normalize_site_url(page.url)
+            if url:
+                links[url] = page_anchor(page)
+    return links
 
 
 def strip_leading_title_heading(text: str, title: str) -> str:
@@ -174,34 +233,71 @@ def convert_note_blocks(text: str) -> str:
     return "\n".join(out)
 
 
-def clean_body(page: Page) -> str:
+def rewrite_caption_div(match: re.Match[str]) -> str:
+    caption = HTML_TAG_RE.sub("", match.group(1))
+    caption = html.unescape(" ".join(caption.split()))
+    if not caption:
+        return "\n\n"
+    return f"\n\n*{caption}*\n\n"
+
+
+def strip_hugo_markup(text: str) -> str:
+    text = HUGO_RELREF_RE.sub(lambda match: match.group(1), text)
+    text = HTML_COMMENT_RE.sub("", text)
+    text = HTML_DIV_RE.sub(rewrite_caption_div, text)
+    return HUGO_SHORTCODE_INLINE_RE.sub("", text)
+
+
+def rewrite_internal_links(text: str, link_map: dict[str, str]) -> str:
+    def replace_link(match: re.Match[str]) -> str:
+        prefix, url, fragment, suffix = match.groups()
+        anchor = link_map.get(normalize_site_url(url))
+        if not anchor:
+            return match.group(0)
+        return f"{prefix}#{anchor}{fragment or ''}{suffix}"
+
+    return MARKDOWN_SITE_LINK_RE.sub(replace_link, text)
+
+
+def clean_body(page: Page, target: str, link_map: dict[str, str]) -> str:
     text = page.body.replace("\r\n", "\n")
+    text = strip_hugo_markup(text)
+    if target == "epub":
+        text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
     text = normalize_whitespace(text)
-    for src, dst in LATEX_SAFE_REPLACEMENTS.items():
-        text = text.replace(src, dst)
+    if target == "pdf":
+        for src, dst in PDF_SAFE_REPLACEMENTS.items():
+            text = text.replace(src, dst)
     return text
 
 
-def render_section_title(section: Page) -> str:
-    title = section.title
-    for src, dst in LATEX_SAFE_REPLACEMENTS.items():
+def clean_title(title: str, target: str) -> str:
+    if target != "pdf":
+        return title
+
+    for src, dst in PDF_SAFE_REPLACEMENTS.items():
         title = title.replace(src, dst)
+    return title
+
+
+def render_heading(page: Page, target: str) -> str:
+    title = clean_title(page.title, target)
+    if target == "epub":
+        return f"# {title} {{#{page_anchor(page)}}}"
     return f"# {title}"
 
 
-def render_chapter(page: Page) -> str:
-    body = clean_body(page)
-    title = page.title
-    for src, dst in LATEX_SAFE_REPLACEMENTS.items():
-        title = title.replace(src, dst)
+def render_chapter(page: Page, target: str, link_map: dict[str, str]) -> str:
+    body = clean_body(page, target, link_map)
+    heading = render_heading(page, target)
     if body:
-        return f"# {title}\n\n{body}"
-    return f"# {title}"
+        return f"{heading}\n\n{body}"
+    return heading
 
 
-def render_front_matter() -> str:
+def render_pdf_front_matter() -> str:
     return "\n".join(
         [
             "---",
@@ -265,17 +361,43 @@ def render_front_matter() -> str:
     )
 
 
-def build_book() -> str:
-    chunks: list[str] = [render_front_matter()]
+def render_epub_front_matter() -> str:
+    return "\n".join(
+        [
+            "---",
+            f'title: "{TITLE}"',
+            f'author: "{AUTHOR}"',
+            "language: en-AU",
+            "toc: true",
+            "toc-depth: 3",
+            "numbersections: false",
+            "links-as-notes: false",
+            "---",
+        ]
+    )
 
-    for section, children in section_pages():
+
+def render_front_matter(target: str) -> str:
+    if target == "epub":
+        return render_epub_front_matter()
+    return render_pdf_front_matter()
+
+
+def build_book(target: str) -> str:
+    sections = section_pages()
+    link_map = build_link_map(sections)
+    chunks: list[str] = [render_front_matter(target)]
+
+    for section, children in sections:
         if section.title.lower() != "about":
-            chunks.append(render_section_title(section))
-            chunks.append(r"\newpage")
+            chunks.append(render_heading(section, target))
+            if target == "pdf":
+                chunks.append(r"\newpage")
 
         for child in children:
-            chunks.append(render_chapter(child))
-            chunks.append(r"\newpage")
+            chunks.append(render_chapter(child, target, link_map))
+            if target == "pdf":
+                chunks.append(r"\newpage")
 
     while chunks and chunks[-1] == r"\newpage":
         chunks.pop()
@@ -288,17 +410,24 @@ def main() -> None:
         description="Concatenate Hugo book chapters into a Pandoc-friendly Markdown manuscript."
     )
     parser.add_argument(
+        "--target",
+        choices=sorted(DEFAULT_OUTPUTS),
+        default="pdf",
+        help="Output target. Use epub for a Hugo-free EPUB manuscript. Default: pdf",
+    )
+    parser.add_argument(
         "-o",
         "--output",
         type=Path,
-        default=DEFAULT_OUTPUT,
-        help=f"Output Markdown file. Default: {DEFAULT_OUTPUT}",
+        default=None,
+        help="Output Markdown file. Defaults to book/book.md for pdf or book/book-epub.md for epub.",
     )
     args = parser.parse_args()
 
-    book = build_book()
-    args.output.write_text(book)
-    print(f"Wrote {args.output}")
+    output = args.output or DEFAULT_OUTPUTS[args.target]
+    book = build_book(args.target)
+    output.write_text(book)
+    print(f"Wrote {output}")
 
 
 if __name__ == "__main__":
