@@ -439,50 +439,76 @@ Sometimes two sets of events are related, but the relationship is not recorded a
 
 If business knowledge suggests that one set of events is expected to precede another, the relationship can sometimes be recovered by identifying the nearest preceding event. This technique is known as a nearest temporal join.
 
-Consider a lounge where members check in and may then make purchases at the bar.
+Consider a building fire-safety process.
 
-The check-in is recorded by the door scanner with `[Member ID]`, `[Check-in datetime]`, and `[Membership level]`. This is stored in `Club.Checkin`. There is a surrogate key `[Check-in event SK]`.
+Building owners submit fire-safety certificates periodically, or when the building’s fire-safety arrangements change. Fire-safety officers conduct inspections separately. Some inspections may be scheduled. Others may be triggered by complaints, incidents, risk reviews, or follow-up action.
 
-Purchases are recorded separately at the register. These are stored in `Club.Purchase`, with `[Member ID]`, `[Purchase datetime]`, and `[Purchase item]`. There is a surrogate key `[Purchase event SK]`.
+The two processes are related, but they are not one-to-one. One certificate may be followed by several inspections. Several certificates may be submitted before the next inspection. Some inspections may have no recent certificate at all.
 
-**Example structure of `Club.Checkin`**
+The inspection system records the building and inspection date, but it does not record which certificate was in force at the time of inspection. This makes the relationship analytically important but structurally missing.
 
-| Check-in event SK | Member ID | Check-in datetime | Membership level |
-|---:|---|---|---|
-| 1 | M001 | 2025-04-01 18:00 | Gold |
-| 2 | M001 | 2025-04-08 17:30 | Diamond |
+The fire-safety certificates are stored in `FireSafety.Certificate`.
 
-**Example structure of `Club.Purchase`**
+**Example structure of `FireSafety.Certificate`**
 
-| Purchase event SK | Member ID | Purchase datetime | Purchase item |
-|---:|---|---|---|
-| 101 | M001 | 2025-04-01 18:45 | Coffee |
-| 102 | M001 | 2025-04-08 18:10 | Cake |
+| Fire safety certificate SK | Building ID | Certificate submitted datetime | Certificate type | Declared risk level |
+|---:|---|---|---|---|
+| 1 | B001 | 2025-04-01 09:00 | Annual certificate | Low |
+| 2 | B001 | 2025-05-01 09:00 | Revised certificate | Medium |
+| 3 | B002 | 2025-04-10 14:30 | High-risk occupancy | High |
+| 4 | B002 | 2025-04-18 16:00 | Remediation certificate | Medium |
 
-Although both tables contain `[Member ID]`, there is no direct relationship between a specific check-in and the purchases made during that visit. The system does not record which check-in a purchase belongs to. This makes it difficult to identify the membership level associated with the purchase.
+The inspections are stored separately in `FireSafety.Inspection`.
 
-To support analysis, the data engineer can create a link using a nearest temporal join.
+**Example structure of `FireSafety.Inspection`**
+
+| Inspection SK | Building ID | Inspection datetime | Inspection trigger | Inspection outcome |
+|---:|---|---|---|---|
+| 101 | B001 | 2025-04-18 10:00 | Scheduled | Pass |
+| 102 | B001 | 2025-05-20 11:30 | Complaint | Fail |
+| 103 | B002 | 2025-04-15 09:00 | Risk review | Fail |
+| 104 | B002 | 2025-04-30 13:15 | Follow-up | Pass |
+
+Although both tables contain `[Building ID]`, there is no direct relationship between a specific inspection and a specific fire-safety certificate. The source system does not say which certificate the inspection should be read against.
+
+To support analysis, the data engineer can create a nearest temporal join.
 
 For example, the rule might be:
 
-> A purchase belongs to the most recent check-in by the same member that occurred before the purchase.
+> An inspection relates to the most recent fire-safety certificate submitted for the same building before the inspection.
 
-The result can be stored in `Club.PurchaseCheckin` as a two-column table of `[Purchase event SK]` and `[Check-in event SK]`.
+The result can be stored in `FireSafety.InspectionCertificate`.
 
-**Example structure of `Club.PurchaseCheckin`**
+**Example structure of `FireSafety.InspectionCertificate`**
 
-| Purchase event SK | Check-in event SK |
-|---:|---:|
-| 101 | 1 |
-| 102 | 2 |
+| Inspection SK | Fire safety certificate SK | Days from certificate to inspection |
+|---:|---:|---:|
+| 101 | 1 | 17 |
+| 102 | 2 | 19 |
+| 103 | 3 | 5 |
+| 104 | 4 | 12 |
 
-This table re-establishes the relationship between the purchase event and the check-in event.
+This table re-establishes an analytical relationship between the inspection and the fire-safety certificate that preceded it.
 
-Nearest temporal joins are especially valuable at the macro level, where business processes operate in bulk and lack unit-level linkage.
+The relationship is not “true” in the same way as a source-system foreign key. It is an inferred relationship created from business logic. For that reason, it should be documented and tested.
 
-For example, seed suppliers may distribute large batches to farms, and harvest yields may later be reported in aggregate. Individual bags of seed are not tracked, but the business may still need to understand how seed characteristics such as supplier or variety affect outcomes. In such cases, the data engineer can define keys for seed batches and yield events, then use nearest temporal joins to associate each yield with the most recent relevant seed delivery.
+The data engineer should monitor cases where the assumption may be unsafe, such as:
 
-Similar patterns arise in regulatory compliance. Businesses may submit periodic declarations or claims, while auditors conduct inspections or reviews later. These audits are not tied to specific submissions but are temporally related. Nearest temporal joins allow the business to associate each audit with the most recent relevant declaration, enabling analysis of compliance patterns over time.
+- inspections with no preceding fire-safety certificate;
+- inspections where the most recent certificate is too old;
+- buildings with multiple certificates close together;
+- certificate types that should not be associated with inspections;
+- changes in the inspection process that alter the expected timing.
+
+For example, the business may decide that an inspection should only be linked to a fire-safety certificate if it occurred within 60 days. If the most recent certificate is older than that, the inspection should be flagged for review rather than automatically linked.
+
+Nearest temporal joins are especially valuable at the macro level.
+
+At unit level, the problem is often that two records should be related but no foreign key was recorded. At macro level, the problem is broader: two business processes are related, but they operate in bulk, at different grains, and without unit-level traceability.
+
+In the fire-safety example, certificate submission and inspection are not the same business process. They are separate processes that become analytically meaningful only when the data engineer defines a relationship between them.
+
+This is the discipline of the pattern: use time to restore a relationship only where business knowledge says the relationship is meaningful, then monitor the assumptions that make it safe.
 
 #### Mapping tables
 
