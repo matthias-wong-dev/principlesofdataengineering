@@ -9159,8 +9159,6 @@ The goal is not to avoid problems. It is to address them at the level where they
 
 Sound judgement is not a talent. It is a discipline — and it is the thread that runs through all effective data engineering work.
 
-# Automation {#docs-beyond-techniques-automation}
-
 # Getting started as a data engineer {#docs-beyond-techniques-getting-started-as-a-data-engineer}
 
 The full set of concepts and patterns can feel overwhelming for a new data engineer. It is not necessary to master everything upfront. In fact, a good data engineer is defined by much more than technical proficiency.
@@ -9392,5 +9390,3 @@ These hallmarks of quality are not revolutionary. They have been around since co
 There is the idea that doing work properly cost time and delay delivery. The retort is that doing work improperly cost more time. Writing good tests help capture errors earlier and reduces the time it takes to fix things up. Crafted entities vastly reduce the time to deliver complex features because the model becomes more powerful. Writing a clear explanation helps all get on-board, establishes trust and builds momentum. On the other hand, technical debt quickly comes back with a vengeance. At the level of a single development cycle, doing the work properly may increase development time by 20 to 40%. Over the course of several months, the dividends of quality work pay off and enable faster delivery than hasty development could ever achieve.
 
 The developer is constantly under the pressures of deadlines. However, if one does not have time to do the work well, the solution is not to do the work poorly. The best way to achieve the hallmarks is simply consider these as part of, and not something in addition to, the work itself. Once we make the mental leap, it becomes more natural to build these into the daily work and to the pace of projects.
-
-# Example patterns {#docs-beyond-techniques-example-patterns}

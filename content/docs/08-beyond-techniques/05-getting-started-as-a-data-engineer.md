@@ -3,7 +3,7 @@ title: Getting started as a data engineer
 url: /docs/beyond-techniques/getting-started-as-a-data-engineer/
 description: Practical guidance on developing habits, judgment, and professional discipline as a new data engineer, beyond tools and syntax.
 lede: A strong start in data engineering depends more on habits and judgment than on flashy technique.
-weight: 6
+weight: 5
 draft: true
 ---
 
