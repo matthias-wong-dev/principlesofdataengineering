@@ -63,6 +63,98 @@ HUGO_RELREF_RE = re.compile(
 )
 HUGO_SHORTCODE_INLINE_RE = re.compile(r"{{\s*[<%]\s*/?[\w-]+.*?[>%]\s*}}")
 MARKDOWN_SITE_LINK_RE = re.compile(r"(\[[^\]]+\]\()(/docs/[^)#\s]+)(#[^)]+)?(\))")
+FENCED_CODE_RE = re.compile(
+    r"(^```[ \t]*([A-Za-z0-9_-]+)?[^\n]*\n)(.*?)(^```[ \t]*$)",
+    re.DOTALL | re.MULTILINE,
+)
+SQL_KEYWORDS = {
+    "all",
+    "and",
+    "apply",
+    "as",
+    "between",
+    "by",
+    "case",
+    "cast",
+    "coalesce",
+    "convert",
+    "cross",
+    "distinct",
+    "else",
+    "end",
+    "exists",
+    "from",
+    "full",
+    "group",
+    "having",
+    "in",
+    "inner",
+    "is",
+    "join",
+    "left",
+    "not",
+    "null",
+    "on",
+    "or",
+    "order",
+    "outer",
+    "over",
+    "partition",
+    "right",
+    "select",
+    "then",
+    "union",
+    "when",
+    "where",
+    "with",
+}
+DAX_KEYWORDS = {
+    "all",
+    "allexcept",
+    "allselected",
+    "and",
+    "average",
+    "averagex",
+    "blank",
+    "calculate",
+    "calculatetable",
+    "countrows",
+    "crossfilter",
+    "distinctcount",
+    "divide",
+    "false",
+    "filter",
+    "hasonevalue",
+    "if",
+    "isfiltered",
+    "isinscope",
+    "keepfilters",
+    "max",
+    "min",
+    "not",
+    "or",
+    "related",
+    "relatedtable",
+    "removefilters",
+    "return",
+    "selectcolumns",
+    "selectedvalue",
+    "sum",
+    "summarize",
+    "summarizecolumns",
+    "sumx",
+    "switch",
+    "treatas",
+    "true",
+    "userelationship",
+    "userprincipalname",
+    "values",
+    "var",
+}
+CODE_KEYWORDS = {
+    "sql": SQL_KEYWORDS,
+    "dax": DAX_KEYWORDS,
+}
 
 
 class DiagramRenderer:
@@ -436,6 +528,95 @@ def raw_html_block(svg: str) -> str:
     return f"\n\n```{{=html}}\n{svg.strip()}\n```\n\n"
 
 
+def highlight_code_segment(text: str, keywords: set[str], target: str) -> str:
+    out: list[str] = []
+    pos = 0
+    for match in re.finditer(r"\b[A-Za-z_][A-Za-z0-9_]*\b", text):
+        word = match.group(0)
+        out.append(escape_code_text(text[pos : match.start()], target))
+        if word.lower() in keywords:
+            if target == "epub":
+                out.append(f'<span class="kw">{html.escape(word)}</span>')
+            else:
+                out.append(r"\textcolor{codeKeyword}{" + word + "}")
+        else:
+            out.append(escape_code_text(word, target))
+        pos = match.end()
+
+    out.append(escape_code_text(text[pos:], target))
+    return "".join(out)
+
+
+def escape_code_text(text: str, target: str) -> str:
+    if target == "epub":
+        return html.escape(text)
+
+    return (
+        text.replace("\\", r"\textbackslash{}")
+        .replace("{", r"\{")
+        .replace("}", r"\}")
+    )
+
+
+def highlighted_code_text(code: str, keywords: set[str], target: str) -> str:
+    protected = re.compile(r"('(?:''|[^'])*'|\"(?:\"\"|[^\"])*\"|\[[^\]]*\])")
+    parts: list[str] = []
+    pos = 0
+
+    for match in protected.finditer(code):
+        parts.append(highlight_code_segment(code[pos : match.start()], keywords, target))
+        parts.append(escape_code_text(match.group(0), target))
+        pos = match.end()
+
+    parts.append(highlight_code_segment(code[pos:], keywords, target))
+    return "".join(parts)
+
+
+def highlighted_dax_code(code: str, target: str) -> str:
+    parts: list[str] = []
+    found_measure_name = False
+
+    for line in code.splitlines(keepends=True):
+        if not found_measure_name and line.strip() and "=" in line:
+            lhs, separator, rhs = line.partition("=")
+            parts.append(escape_code_text(lhs + separator, target))
+            parts.append(highlighted_code_text(rhs, DAX_KEYWORDS, target))
+            found_measure_name = True
+        else:
+            parts.append(highlighted_code_text(line, DAX_KEYWORDS, target))
+
+    highlighted = "".join(parts)
+    return wrap_highlighted_code(highlighted, "dax", target)
+
+
+def wrap_highlighted_code(highlighted: str, language: str, target: str) -> str:
+    if target == "epub":
+        return (
+            f'\n\n<div class="pode-code pode-code-{language}">'
+            f"<pre><code>{highlighted}</code></pre></div>\n\n"
+        )
+
+    return f"\n\n\\begin{{podecode}}\n{highlighted}\n\\end{{podecode}}\n\n"
+
+
+def highlighted_code(code: str, language: str, target: str) -> str:
+    if language == "dax":
+        return highlighted_dax_code(code, target)
+
+    highlighted = highlighted_code_text(code, CODE_KEYWORDS[language], target)
+    return wrap_highlighted_code(highlighted, language, target)
+
+def highlight_code_blocks(text: str, target: str) -> str:
+    def replace_block(match: re.Match[str]) -> str:
+        opener, language, code, closer = match.groups()
+        normalized = (language or "").lower()
+        if target in {"pdf", "kdp", "epub"} and normalized in CODE_KEYWORDS:
+            return highlighted_code(code.rstrip("\n"), normalized, target)
+        return opener + code + closer
+
+    return FENCED_CODE_RE.sub(replace_block, text)
+
+
 def wrap_svg_blocks_for_epub(text: str, diagrams: DiagramRenderer) -> str:
     def replace_svg(match: re.Match[str]) -> str:
         svg = match.group(0).strip()
@@ -467,6 +648,7 @@ def clean_body(
         text = wrap_svg_blocks_for_epub(text, diagrams)
     if target in {"epub", "pdf", "kdp"}:
         text = rewrite_internal_links(text, link_map)
+        text = highlight_code_blocks(text, target)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
     text = normalize_whitespace(text)

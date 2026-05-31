@@ -786,20 +786,18 @@ The goal is to create `Bank.AccountTimeline`, which expresses the valid combinat
 
 The core SQL pattern is an interval overlap join.
 
-```SQL
-select
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
       th.[Account ID]
     , th.[Account type SK]
     , lh.[Account level SK]
     , sh.[Account status SK]
-    , greatest(th.[Start date], lh.[Start date], sh.[Start date])   as [Start date]
-    , least(   th.[End date],   lh.[End date],   sh.[End date]  )   as [End date]
-from Bank.AccountTypeHistory   th
-inner join Bank.AccountLevelHistory  lh  on   lh.[Account ID] = th.[Account ID]
-                                         and greatest(th.[Start date], lh.[Start date])                   < least(th.[End date], lh.[End date])
-inner join Bank.AccountStatusHistory sh  on   sh.[Account ID] = th.[Account ID]
-                                         and greatest( th.[Start date], lh.[Start date], sh.[Start date]) < least(th.[End date], lh.[End date], sh.[End date] );
-```
+    , greatest(th.[Start date], lh.[Start date], sh.[Start date])   <span class="kw">as</span> [Start date]
+    , least(   th.[End date],   lh.[End date],   sh.[End date]  )   <span class="kw">as</span> [End date]
+<span class="kw">from</span> Bank.AccountTypeHistory   th
+<span class="kw">inner</span> <span class="kw">join</span> Bank.AccountLevelHistory  lh  <span class="kw">on</span>   lh.[Account ID] = th.[Account ID]
+                                         <span class="kw">and</span> greatest(th.[Start date], lh.[Start date])                   &lt; least(th.[End date], lh.[End date])
+<span class="kw">inner</span> <span class="kw">join</span> Bank.AccountStatusHistory sh  <span class="kw">on</span>   sh.[Account ID] = th.[Account ID]
+                                         <span class="kw">and</span> greatest( th.[Start date], lh.[Start date], sh.[Start date]) &lt; least(th.[End date], lh.[End date], sh.[End date] );</code></pre></div>
 
 The timeline table is produced through a temporal join. Notice that, without the time component, this is an ordinary join on the entity key. This is worth remembering. The timeline table is simply what the join would have looked like "at that point in time", but pre-computed for all time intervals in the most computationally compact form.
 
@@ -1051,16 +1049,14 @@ Suppose `Cake.Sales` contains the local country code:
 
 The presentation layer can translate the local code into the warehouse reference by joining through the mapping table:
 
-```sql
-select
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
       s.[Sales ID]
     , s.[Sales value]
     , rc.[Country name]
     , rc.[Region]
-from      Cake.Sales s
-left join Cake.CountryMap     cm on cm.[Country code] = s.[Country code]
-left join Location.RefCountry rc on rc.[Country ID]   = cm.[Country ID];
-```
+<span class="kw">from</span>      Cake.Sales s
+<span class="kw">left</span> <span class="kw">join</span> Cake.CountryMap     cm <span class="kw">on</span> cm.[Country code] = s.[Country code]
+<span class="kw">left</span> <span class="kw">join</span> Location.RefCountry rc <span class="kw">on</span> rc.[Country ID]   = cm.[Country ID];</code></pre></div>
 
 The result is:
 
@@ -1259,33 +1255,31 @@ During the union, the mapping tables translate system-specific codes to conforme
 
 Example SQL would be:
 
-```SQL
-select
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
       v1.[Sales ID]
-    , 'CakeV1'              as [Source system]
+    , &#x27;CakeV1&#x27;              <span class="kw">as</span> [Source system]
     , v1.[Sales date]
-    , sm.[Status ID]        as [Status ID]
-    , -1                    as [Campaign ID]
+    , sm.[Status ID]        <span class="kw">as</span> [Status ID]
+    , -1                    <span class="kw">as</span> [Campaign ID]
     , v1.[Sales value]
-from      CakeV1.Sales      v1
-left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV1'
-                              and sm.[Source status code] = v1.[Status code]
+<span class="kw">from</span>      CakeV1.Sales      v1
+<span class="kw">left</span> <span class="kw">join</span> Cake.StatusMap    sm <span class="kw">on</span>  sm.[System]             = &#x27;CakeV1&#x27;
+                              <span class="kw">and</span> sm.[Source status code] = v1.[Status code]
 
-union all
+<span class="kw">union</span> <span class="kw">all</span>
 
-select
+<span class="kw">select</span>
       v2.[Sales ID]
-    , 'CakeV2'              as [Source system]
+    , &#x27;CakeV2&#x27;              <span class="kw">as</span> [Source system]
     , v2.[Sales date]
-    , sm.[Status ID]        as [Status ID]
-    , cm.[Campaign ID]      as [Campaign ID]
+    , sm.[Status ID]        <span class="kw">as</span> [Status ID]
+    , cm.[Campaign ID]      <span class="kw">as</span> [Campaign ID]
     , v2.[Sales value]
-from      CakeV2.Sales      v2
-left join Cake.StatusMap    sm on  sm.[System]             = 'CakeV2'
-                              and sm.[Source status code] = v2.[Status code]
-left join Cake.CampaignMap  cm on  cm.[System]             = 'CakeV2'
-                              and cm.[Source campaign code] = v2.[Campaign code];
-```
+<span class="kw">from</span>      CakeV2.Sales      v2
+<span class="kw">left</span> <span class="kw">join</span> Cake.StatusMap    sm <span class="kw">on</span>  sm.[System]             = &#x27;CakeV2&#x27;
+                              <span class="kw">and</span> sm.[Source status code] = v2.[Status code]
+<span class="kw">left</span> <span class="kw">join</span> Cake.CampaignMap  cm <span class="kw">on</span>  cm.[System]             = &#x27;CakeV2&#x27;
+                              <span class="kw">and</span> cm.[Source campaign code] = v2.[Campaign code];</code></pre></div>
 
 A sample result is:
 
@@ -1343,50 +1337,48 @@ This allows comparisons such as:
 
 An example SQL would be
 
-```SQL
-with production as (
-    select
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">with</span> production <span class="kw">as</span> (
+    <span class="kw">select</span>
           [Production date]
         , [Region ID]
-        , sum([Production volume])      as [Production volume]
-        , sum([Production cost])        as [Production cost]
-        , count(distinct [Staff ID])    as [Production staff count]
-    from Cake.Production
-    group by
+        , sum([Production volume])      <span class="kw">as</span> [Production volume]
+        , sum([Production cost])        <span class="kw">as</span> [Production cost]
+        , count(<span class="kw">distinct</span> [Staff ID])    <span class="kw">as</span> [Production staff count]
+    <span class="kw">from</span> Cake.Production
+    <span class="kw">group</span> <span class="kw">by</span>
           [Production date]
         , [Region ID]
 ),
-sales as (
-    select
+sales <span class="kw">as</span> (
+    <span class="kw">select</span>
           [Sales date]
         , [Region ID]
-        , sum([Sales volume])           as [Sales volume]
-        , sum([Sales value])            as [Sales value]
-        , count(distinct [Staff ID])    as [Sales staff count]
-    from Cake.Sales
-    group by
+        , sum([Sales volume])           <span class="kw">as</span> [Sales volume]
+        , sum([Sales value])            <span class="kw">as</span> [Sales value]
+        , count(<span class="kw">distinct</span> [Staff ID])    <span class="kw">as</span> [Sales staff count]
+    <span class="kw">from</span> Cake.Sales
+    <span class="kw">group</span> <span class="kw">by</span>
           [Sales date]
         , [Region ID]
 )
-select
+<span class="kw">select</span>
       c.[Month start date]
     , r.[Region name]
-    , sum(p.[Production volume])        as [Production volume]
-    , sum(s.[Sales volume])             as [Sales volume]
-    , sum(p.[Production cost])          as [Production cost]
-    , sum(s.[Sales value])              as [Sales value]
-    , sum(p.[Production staff count])   as [Production staff count]
-    , sum(s.[Sales staff count])        as [Sales staff count]
-from       Cake.RefCalendar c
-cross join Cake.RefRegion   r
-left join  production       p on p.[Production date] = c.[Calendar date]
-                              and p.[Region ID]       = r.[Region ID]
-left join  sales            s on s.[Sales date]      = c.[Calendar date]
-                              and s.[Region ID]      = r.[Region ID]
-group by
+    , sum(p.[Production volume])        <span class="kw">as</span> [Production volume]
+    , sum(s.[Sales volume])             <span class="kw">as</span> [Sales volume]
+    , sum(p.[Production cost])          <span class="kw">as</span> [Production cost]
+    , sum(s.[Sales value])              <span class="kw">as</span> [Sales value]
+    , sum(p.[Production staff count])   <span class="kw">as</span> [Production staff count]
+    , sum(s.[Sales staff count])        <span class="kw">as</span> [Sales staff count]
+<span class="kw">from</span>       Cake.RefCalendar c
+<span class="kw">cross</span> <span class="kw">join</span> Cake.RefRegion   r
+<span class="kw">left</span> <span class="kw">join</span>  production       p <span class="kw">on</span> p.[Production date] = c.[Calendar date]
+                              <span class="kw">and</span> p.[Region ID]       = r.[Region ID]
+<span class="kw">left</span> <span class="kw">join</span>  sales            s <span class="kw">on</span> s.[Sales date]      = c.[Calendar date]
+                              <span class="kw">and</span> s.[Region ID]      = r.[Region ID]
+<span class="kw">group</span> <span class="kw">by</span>
       c.[Month start date]
-    , r.[Region name];
-```
+    , r.[Region name];</code></pre></div>
 
 The result is:
 
@@ -1743,32 +1735,29 @@ Such tables are often composed from underlying binary flags. The exact SQL depen
  - compute mechanical columns such as `[Highest escalation]`;
  - add business interpretation columns manually or through controlled rules.
 
-```SQL
-
-select
+<div class="pode-code pode-code-sql"><pre><code>
+<span class="kw">select</span>
           1
-        + cast([Tier 1].value as int) * 1
-        + cast([Tier 2].value as int) * 2
-        + cast([Tier 3].value as int) * 4
-        + cast([Tier 4].value as int) * 8        as [Case escalation ID]
+        + <span class="kw">cast</span>([Tier 1].value <span class="kw">as</span> int) * 1
+        + <span class="kw">cast</span>([Tier 2].value <span class="kw">as</span> int) * 2
+        + <span class="kw">cast</span>([Tier 3].value <span class="kw">as</span> int) * 4
+        + <span class="kw">cast</span>([Tier 4].value <span class="kw">as</span> int) * 8        <span class="kw">as</span> [Case escalation ID]
 
-    ,     cast([Tier 1].value as bit)            as [Tier 1]
-    ,     cast([Tier 2].value as bit)            as [Tier 2]
-    ,     cast([Tier 3].value as bit)            as [Tier 3]
-    ,     cast([Tier 4].value as bit)            as [Tier 4]
+    ,     <span class="kw">cast</span>([Tier 1].value <span class="kw">as</span> bit)            <span class="kw">as</span> [Tier 1]
+    ,     <span class="kw">cast</span>([Tier 2].value <span class="kw">as</span> bit)            <span class="kw">as</span> [Tier 2]
+    ,     <span class="kw">cast</span>([Tier 3].value <span class="kw">as</span> bit)            <span class="kw">as</span> [Tier 3]
+    ,     <span class="kw">cast</span>([Tier 4].value <span class="kw">as</span> bit)            <span class="kw">as</span> [Tier 4]
 
-    ,     ...                                    as [Is escalated]
-    ,     ...                                    as [Highest escalation]
-    ,     ...                                    as [Escalation path]
-    ,     ...                                    as [Escalation summary]
-    ,     ...                                    as [Display order]
+    ,     ...                                    <span class="kw">as</span> [Is escalated]
+    ,     ...                                    <span class="kw">as</span> [Highest escalation]
+    ,     ...                                    <span class="kw">as</span> [Escalation path]
+    ,     ...                                    <span class="kw">as</span> [Escalation summary]
+    ,     ...                                    <span class="kw">as</span> [Display order]
 
-from        string_split('0,1', ',') [Tier 1]
-cross apply string_split('0,1', ',') [Tier 2]
-cross apply string_split('0,1', ',') [Tier 3]
-cross apply string_split('0,1', ',') [Tier 4];
-
-```
+<span class="kw">from</span>        string_split(&#x27;0,1&#x27;, &#x27;,&#x27;) [Tier 1]
+<span class="kw">cross</span> <span class="kw">apply</span> string_split(&#x27;0,1&#x27;, &#x27;,&#x27;) [Tier 2]
+<span class="kw">cross</span> <span class="kw">apply</span> string_split(&#x27;0,1&#x27;, &#x27;,&#x27;) [Tier 3]
+<span class="kw">cross</span> <span class="kw">apply</span> string_split(&#x27;0,1&#x27;, &#x27;,&#x27;) [Tier 4];</code></pre></div>
 
 In dimensional modelling, this type of reference table is sometimes called a junk dimension or transaction profile dimension.
 
@@ -3489,20 +3478,16 @@ Suppose `'Calendar'[Date]` has an active relationship to `'Sale'[Order date]` an
 
 A normal measure such as `[Total sales amount]` responds to the active relationship. If the user selects January, the measure returns sales ordered in January.
 
-```DAX
-Total sales amount =
-sum ( 'Sale'[Sales amount] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Total sales amount =
+<span class="kw">sum</span> ( &#x27;Sale&#x27;[Sales amount] )</code></pre></div>
 
 But the user may also need sales delivered in January. The data engineer can define a second measure that activates the delivery-date relationship only for that calculation.
 
-```DAX
-Total delivered sales amount =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Total delivered sales amount =
+<span class="kw">calculate</span> (
     [Total sales amount],
-    userelationship ( 'Calendar'[Date], 'Sale'[Delivery date] )
-)
-```
+    <span class="kw">userelationship</span> ( &#x27;Calendar&#x27;[Date], &#x27;Sale&#x27;[Delivery date] )
+)</code></pre></div>
 
 With the example above, selecting January gives `[Total sales amount] = 250`, because `S1001` and `S1002` were ordered in January. The delivered-sales measure gives `100`, because only `S1001` was delivered in January.
 
@@ -3895,13 +3880,11 @@ The solution is to use visual-level filtering. For example, a measure such as `[
 
 A simple measure might be conceptually:
 
-```DAX
-Has sales =
-if (
-    countrows ( 'Sale' ) > 0,
+<div class="pode-code pode-code-dax"><pre><code>Has sales =
+<span class="kw">if</span> (
+    <span class="kw">countrows</span> ( &#x27;Sale&#x27; ) &gt; 0,
     1
-)
-```
+)</code></pre></div>
 
 The slicer for `'Sales product'[Product name]` can then be filtered to values where `[Has sales]` is not blank. The same can be done for `'Sales calendar'[Sales date]`.
 
@@ -3937,17 +3920,15 @@ The DAX pattern is to concatenate values from `'Sales product'[Product name]` wh
 
 Conceptually:
 
-```DAX
-Refunded products =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Refunded products =
+<span class="kw">calculate</span> (
     concatenatex (
-        values ( 'Sales product'[Product name] ),
-        'Sales product'[Product name],
-        ", "
+        <span class="kw">values</span> ( &#x27;Sales product&#x27;[Product name] ),
+        &#x27;Sales product&#x27;[Product name],
+        &quot;, &quot;
     ),
-    crossfilter ( 'Sales product'[Product SK], 'Refund'[Product SK], both )
-)
-```
+    <span class="kw">crossfilter</span> ( &#x27;Sales product&#x27;[Product SK], &#x27;Refund&#x27;[Product SK], both )
+)</code></pre></div>
 
 The exact DAX depends on the model, but the principle is the same: temporarily change the filter path for this calculation only.
 
@@ -4273,10 +4254,8 @@ A common misstep is to create a single generic measure and expect users to combi
 
 For example, the model may contain a generic measure:
 
-```DAX
-Employee count =
-distinctcount ( 'Employee end of month'[Employee ID] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Employee count =
+<span class="kw">distinctcount</span> ( &#x27;Employee end of month&#x27;[Employee ID] )</code></pre></div>
 
 The data engineer may then expect users to filter manually for active employees, separated employees, employees on leave, current employees, and other cases.
 
@@ -4400,13 +4379,11 @@ For example, suppose `[Is on long service leave]` requires analysing leave trans
 
 Then the measure can remain simple:
 
-```DAX
-Current employees on long service leave =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Current employees on long service leave =
+<span class="kw">calculate</span> (
     [Current employees],
-    keepfilters ( 'Employee leave'[Is on long service leave] )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Employee leave&#x27;[Is on long service leave] )
+)</code></pre></div>
 
 The complexity has been moved to the data layer, where it can be tested and reused.
 
@@ -4430,33 +4407,27 @@ Binary flags simplify measures.
 
 Instead of writing a measure that filters text values directly:
 
-```DAX
-Current employees on long service leave =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Current employees on long service leave =
+<span class="kw">calculate</span> (
     [Current employees],
-    keepfilters ( 'Employee leave'[Leave type] in { "Long service leave", "Extended long service leave" } )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Employee leave&#x27;[Leave type] in { &quot;Long service leave&quot;, &quot;Extended long service leave&quot; } )
+)</code></pre></div>
 
 The measure can use the prepared binary flag:
 
-```DAX
-Current employees on long service leave =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Current employees on long service leave =
+<span class="kw">calculate</span> (
     [Current employees],
-    keepfilters ( 'Employee leave'[Is on long service leave] )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Employee leave&#x27;[Is on long service leave] )
+)</code></pre></div>
 
 The reverse can be expressed with `not`:
 
-```DAX
-Current employees not on long service leave =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Current employees not on long service leave =
+<span class="kw">calculate</span> (
     [Current employees],
-    keepfilters ( not 'Employee leave'[Is on long service leave] )
-)
-```
+    <span class="kw">keepfilters</span> ( <span class="kw">not</span> &#x27;Employee leave&#x27;[Is on long service leave] )
+)</code></pre></div>
 
 Binary flags have two advantages.
 
@@ -4466,16 +4437,14 @@ Second, binary flags make the business logic readable. The measure says what it 
 
 Binary flags also participate cleanly in `and` and `or` logic. For example:
 
-```DAX
-Current employees on leave or acting =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Current employees on leave or acting =
+<span class="kw">calculate</span> (
     [Current employees],
-    keepfilters (
-        'Employee status'[Is on leave]
-            || 'Employee status'[Is acting]
+    <span class="kw">keepfilters</span> (
+        &#x27;Employee status&#x27;[Is on leave]
+            || &#x27;Employee status&#x27;[Is acting]
     )
-)
-```
+)</code></pre></div>
 
 Using binary flags makes measures faster to write, easier to maintain, and easier to understand. The business logic has been named and surfaced in the model.
 
@@ -4518,17 +4487,15 @@ For example, in [Filtering behaviour](#docs-presenting-insights-filtering-behavi
 
 A simplified example is:
 
-```DAX
-Refunded products =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Refunded products =
+<span class="kw">calculate</span> (
     concatenatex (
-        values ( 'Sales product'[Product name] ),
-        'Sales product'[Product name],
-        ", "
+        <span class="kw">values</span> ( &#x27;Sales product&#x27;[Product name] ),
+        &#x27;Sales product&#x27;[Product name],
+        &quot;, &quot;
     ),
-    crossfilter ( 'Sales product'[Product SK], 'Refund'[Product SK], both )
-)
-```
+    <span class="kw">crossfilter</span> ( &#x27;Sales product&#x27;[Product SK], &#x27;Refund&#x27;[Product SK], both )
+)</code></pre></div>
 
 This is not an aggregating measure in the normal sense. It is not summing or counting fact rows. It is retrieving dimension values under a particular filter context and turning them into display text.
 
@@ -4557,13 +4524,11 @@ Examples include:
 
 A simple filtering measure might be:
 
-```DAX
-Has sales =
-if (
-    countrows ( 'Sale' ) > 0,
+<div class="pode-code pode-code-dax"><pre><code>Has sales =
+<span class="kw">if</span> (
+    <span class="kw">countrows</span> ( &#x27;Sale&#x27; ) &gt; 0,
     1
-)
-```
+)</code></pre></div>
 
 This can be added to a visual or used as a visual-level filter to show only products, dates, or IDs that have sales under the current filter context.
 
@@ -4588,14 +4553,12 @@ They may provide:
 
 For example:
 
-```DAX
-Selected product label =
-if (
-    hasonevalue ( 'Sales product'[Product name] ),
-    selectedvalue ( 'Sales product'[Product name] ),
-    "Multiple products"
-)
-```
+<div class="pode-code pode-code-dax"><pre><code>Selected product label =
+<span class="kw">if</span> (
+    <span class="kw">hasonevalue</span> ( &#x27;Sales product&#x27;[Product name] ),
+    <span class="kw">selectedvalue</span> ( &#x27;Sales product&#x27;[Product name] ),
+    &quot;Multiple products&quot;
+)</code></pre></div>
 
 Dashboard measures often inspect user context. They commonly use functions such as `selectedvalue`, `hasonevalue`, `isfiltered`, and `isinscope`.
 
@@ -4631,35 +4594,27 @@ They are the first layer of measure design. They should usually be simple, expli
 
 For example:
 
-```DAX
-Total sales amount =
-sum ( 'Sale'[Sales amount] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Total sales amount =
+<span class="kw">sum</span> ( &#x27;Sale&#x27;[Sales amount] )</code></pre></div>
 
-```DAX
-Sales transaction count =
-countrows ( 'Sale' )
-```
+<div class="pode-code pode-code-dax"><pre><code>Sales transaction count =
+<span class="kw">countrows</span> ( &#x27;Sale&#x27; )</code></pre></div>
 
-```DAX
-Total inspection hours =
-sum ( 'Inspection'[Inspection duration hours] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Total inspection hours =
+<span class="kw">sum</span> ( &#x27;Inspection&#x27;[Inspection duration hours] )</code></pre></div>
 
 For end-of-period facts, base measures often include logic to select a reporting period.
 
 For example, a current-state measure may select the latest period in context:
 
-```DAX
-Employees end of period =
-var latest_period =
-    max ( 'Reporting calendar'[Period end date] )
-return
-    calculate (
-        distinctcount ( 'Employee end of month'[Employee ID] ),
-        keepfilters ( 'Reporting calendar'[Period end date] = latest_period )
-    )
-```
+<div class="pode-code pode-code-dax"><pre><code>Employees end of period =
+<span class="kw">var</span> latest_period =
+    <span class="kw">max</span> ( &#x27;Reporting calendar&#x27;[Period end date] )
+<span class="kw">return</span>
+    <span class="kw">calculate</span> (
+        <span class="kw">distinctcount</span> ( &#x27;Employee end of month&#x27;[Employee ID] ),
+        <span class="kw">keepfilters</span> ( &#x27;Reporting calendar&#x27;[Period end date] = latest_period )
+    )</code></pre></div>
 
 The exact formula depends on the calendar design, but the pattern is common: identify the relevant period, then evaluate the base measure there.
 
@@ -4667,25 +4622,21 @@ For annotation facts, base measures may use `concatenatex` to display detail.
 
 For example:
 
-```DAX
-Inspection comments =
+<div class="pode-code pode-code-dax"><pre><code>Inspection comments =
 concatenatex (
-    'Inspection comments',
-    'Inspection comments'[Comment text],
-    " , ",
-    'Inspection comments'[Comment sequence number]
-)
-```
+    &#x27;Inspection comments&#x27;,
+    &#x27;Inspection comments&#x27;[Comment text],
+    &quot; , &quot;,
+    &#x27;Inspection comments&#x27;[Comment sequence number]
+)</code></pre></div>
 
 Base measures should carry as little business complexity as possible. They should aggregate prepared facts and use prepared dimensions. For example, failed inspections should be:
 
-```DAX
-Failed inspection count =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Failed inspection count =
+<span class="kw">calculate</span> (
     [Inspection count],
-    keepfilters ( 'Inspection outcome'[Is failed inspection] )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Inspection outcome&#x27;[Is failed inspection] )
+)</code></pre></div>
 
 ### Derived measures
 
@@ -4695,10 +4646,8 @@ They include ratios, rates, comparisons, rolling periods, and time-intelligence 
 
 For example:
 
-```DAX
-Inspection failure rate =
-divide ( [Failed inspection count], [Inspection count] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Inspection failure rate =
+<span class="kw">divide</span> ( [Failed inspection count], [Inspection count] )</code></pre></div>
 
 Derived measures should usually be built from other measures rather than repeating base logic.
 
@@ -4706,13 +4655,11 @@ Population comparison measures are another important derived pattern. These meas
 
 For example:
 
-```DAX
-National inspection count =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>National inspection count =
+<span class="kw">calculate</span> (
     [Inspection count],
-    removefilters ( 'Region' )
-)
-```
+    <span class="kw">removefilters</span> ( &#x27;Region&#x27; )
+)</code></pre></div>
 
 The meaning should be explicit. The user should understand which filters are removed and which remain.
 
@@ -4733,26 +4680,22 @@ Common functions include:
 
 A report title may use:
 
-```DAX
-Sales title =
-"Sales for "
-    & if (
-        hasonevalue ( 'Sales product'[Product name] ),
-        selectedvalue ( 'Sales product'[Product name] ),
-        "all products"
-    )
-```
+<div class="pode-code pode-code-dax"><pre><code>Sales title =
+&quot;Sales for &quot;
+    &amp; <span class="kw">if</span> (
+        <span class="kw">hasonevalue</span> ( &#x27;Sales product&#x27;[Product name] ),
+        <span class="kw">selectedvalue</span> ( &#x27;Sales product&#x27;[Product name] ),
+        &quot;all products&quot;
+    )</code></pre></div>
 
 A display measure may require an ID dimension before returning a value:
 
-```DAX
-Display sales transaction =
-if (
-    isinscope ( 'Sales ID'[Sales order number] )
-        && countrows ( 'Sale' ) > 0,
+<div class="pode-code pode-code-dax"><pre><code>Display sales transaction =
+<span class="kw">if</span> (
+    <span class="kw">isinscope</span> ( &#x27;Sales ID&#x27;[Sales order number] )
+        &amp;&amp; <span class="kw">countrows</span> ( &#x27;Sale&#x27; ) &gt; 0,
     1
-)
-```
+)</code></pre></div>
 
 Context-aware measures are useful because Power BI users interact with the model in many sequences. A measure can inspect the current context and choose an appropriate response.
 
@@ -4783,18 +4726,16 @@ In a well-designed model, the determining column should usually be expressed in 
 
 Conceptually:
 
-```DAX
-Inspected item count =
-var inspection_per_type =
-    summarize (
-        'Inspection type', -- group by dimension
-        'Inspection type'[Inspection item type], -- on the polymorphic resolving column
-        "Inspection count",
-            distinctcountnoblank ( 'Inspection'[Inspected item SK] ) -- aggregating fact per segment
+<div class="pode-code pode-code-dax"><pre><code>Inspected item count =
+<span class="kw">var</span> inspection_per_type =
+    <span class="kw">summarize</span> (
+        &#x27;Inspection type&#x27;, -- group by dimension
+        &#x27;Inspection type&#x27;[Inspection item type], -- on the polymorphic resolving column
+        &quot;Inspection count&quot;,
+            distinctcountnoblank ( &#x27;Inspection&#x27;[Inspected item SK] ) -- aggregating fact per segment
     )
-return
-    sumx ( inspection_per_type, [Inspection count] ) -- adds up the result from each segment
-```
+<span class="kw">return</span>
+    <span class="kw">sumx</span> ( inspection_per_type, [Inspection count] ) -- adds up the result from each segment</code></pre></div>
 
 If additional filters are needed, `summarize` can be wrapped inside `calculatetable` with `keepfilters`.
 
@@ -4824,20 +4765,18 @@ The solution is to reconstruct the intended grain before aggregating.
 
 For example, to calculate median inspection duration per traveller:
 
-```DAX
-Median time to inspect traveller =
-var inspection_time_per_sk =
-    summarize (
-        'Inspection',
-        'Inspection'[Inspection SK],
-        'Inspection'[Inspection duration minutes]
+<div class="pode-code pode-code-dax"><pre><code>Median time to inspect traveller =
+<span class="kw">var</span> inspection_time_per_sk =
+    <span class="kw">summarize</span> (
+        &#x27;Inspection&#x27;,
+        &#x27;Inspection&#x27;[Inspection SK],
+        &#x27;Inspection&#x27;[Inspection duration minutes]
     )
-return
+<span class="kw">return</span>
     medianx (
         inspection_time_per_sk,
         [Inspection duration minutes]
-    )
-```
+    )</code></pre></div>
 
 In SQL terms, this is similar to using `select distinct` on the columns that define the intended grain, then aggregating over that result.
 
@@ -4867,13 +4806,11 @@ For example, a refund table may need to retrieve the original sale amount throug
 
 For example, suppose `'Calendar'[Date]` has an active relationship to `'Sale'[Order date]` and an inactive relationship to `'Sale'[Delivery date]`. A delivered-sales measure can activate the delivery-date relationship:
 
-```DAX
-Total delivered sales amount =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Total delivered sales amount =
+<span class="kw">calculate</span> (
     [Total sales amount],
-    userelationship ( 'Calendar'[Date], 'Sale'[Delivery date] )
-)
-```
+    <span class="kw">userelationship</span> ( &#x27;Calendar&#x27;[Date], &#x27;Sale&#x27;[Delivery date] )
+)</code></pre></div>
 
 These functions are powerful because they allow specific measures to behave differently without changing the whole model.
 
@@ -5000,24 +4937,22 @@ The switch measure returns the correct base measure depending on the selected ro
 
 A simplified version of the measure `[Operational metric]` looks like this:
 
-```DAX
-Operational metric =
-var selected_metric =
-    selectedvalue ( 'Operational metric'[Measure name] )
-return
-    switch (
+<div class="pode-code pode-code-dax"><pre><code>Operational metric =
+<span class="kw">var</span> selected_metric =
+    <span class="kw">selectedvalue</span> ( &#x27;Operational metric&#x27;[Measure name] )
+<span class="kw">return</span>
+    <span class="kw">switch</span> (
         selected_metric,
-        "Manufacture process volume", [Manufacture process volume],
-        "Manufacture median time to process (days)", [Manufacture median time to process (days)],
-        "Manufacture volume processed on schedule", [Manufacture volume processed on schedule],
-        "Orders process volume", [Orders process volume],
-        "Orders median time to process (days)", [Orders median time to process (days)],
-        "Orders volume processed on schedule", [Orders volume processed on schedule],
-        "Shipping process volume", [Shipping process volume],
-        "Shipping median time to process (days)", [Shipping median time to process (days)],
-        "Shipping volume processed on schedule", [Shipping volume processed on schedule]
-    )
-```
+        &quot;Manufacture process volume&quot;, [Manufacture process volume],
+        &quot;Manufacture median time to process (days)&quot;, [Manufacture median time to process (days)],
+        &quot;Manufacture volume processed on schedule&quot;, [Manufacture volume processed on schedule],
+        &quot;Orders process volume&quot;, [Orders process volume],
+        &quot;Orders median time to process (days)&quot;, [Orders median time to process (days)],
+        &quot;Orders volume processed on schedule&quot;, [Orders volume processed on schedule],
+        &quot;Shipping process volume&quot;, [Shipping process volume],
+        &quot;Shipping median time to process (days)&quot;, [Shipping median time to process (days)],
+        &quot;Shipping volume processed on schedule&quot;, [Shipping volume processed on schedule]
+    )</code></pre></div>
 
 The measure table provides the selection. The switch measure provides the value.
 
@@ -5037,41 +4972,33 @@ With the measure table, the data engineer can define a more general derived meas
 
 For example, the model may contain these derived measures:
 
-```DAX
-Process volume =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Process volume =
+<span class="kw">calculate</span> (
     [Operational metric],
-    keepfilters ( 'Operational metric'[Metric] = "Process volume" )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Operational metric&#x27;[Metric] = &quot;Process volume&quot; )
+)</code></pre></div>
 
-```DAX
-Volume processed on schedule =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>Volume processed on schedule =
+<span class="kw">calculate</span> (
     [Operational metric],
-    keepfilters ( 'Operational metric'[Metric] = "Volume processed on schedule" )
-)
-```
+    <span class="kw">keepfilters</span> ( &#x27;Operational metric&#x27;[Metric] = &quot;Volume processed on schedule&quot; )
+)</code></pre></div>
 
 The percentage measure can then be written once:
 
-```DAX
-Percentage processed on schedule =
-divide (
+<div class="pode-code pode-code-dax"><pre><code>Percentage processed on schedule =
+<span class="kw">divide</span> (
     [Volume processed on schedule],
     [Process volume]
-)
-```
+)</code></pre></div>
 
 A national comparison can also be written once:
 
-```DAX
-National operational metric =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>National operational metric =
+<span class="kw">calculate</span> (
     [Operational metric],
-    removefilters ( 'Region' )
-)
-```
+    <span class="kw">removefilters</span> ( &#x27;Region&#x27; )
+)</code></pre></div>
 
 The same measure works across process stages because `[Process stage]` remains in the filter context.
 
@@ -5087,21 +5014,19 @@ In practice, this can be handled with a calculation group or another dynamic for
 
 A simplified format string expression may look like this:
 
-```DAX
-switch (
-    selectedvalue ( 'Operational metric'[Measure name] ),
-    "Manufacture process volume", "#,0",
-    "Orders process volume", "#,0",
-    "Shipping process volume", "#,0",
-    "Manufacture median time to process (days)", "#,0.0",
-    "Orders median time to process (days)", "#,0.0",
-    "Shipping median time to process (days)", "#,0.0",
-    "Manufacture volume processed on schedule", "#,0",
-    "Orders volume processed on schedule", "#,0",
-    "Shipping volume processed on schedule", "#,0",
+<div class="pode-code pode-code-dax"><pre><code><span class="kw">switch</span> (
+    <span class="kw">selectedvalue</span> ( &#x27;Operational metric&#x27;[Measure name] ),
+    &quot;Manufacture process volume&quot;, &quot;#,0&quot;,
+    &quot;Orders process volume&quot;, &quot;#,0&quot;,
+    &quot;Shipping process volume&quot;, &quot;#,0&quot;,
+    &quot;Manufacture median time to process (days)&quot;, &quot;#,0.0&quot;,
+    &quot;Orders median time to process (days)&quot;, &quot;#,0.0&quot;,
+    &quot;Shipping median time to process (days)&quot;, &quot;#,0.0&quot;,
+    &quot;Manufacture volume processed on schedule&quot;, &quot;#,0&quot;,
+    &quot;Orders volume processed on schedule&quot;, &quot;#,0&quot;,
+    &quot;Shipping volume processed on schedule&quot;, &quot;#,0&quot;,
     selectedmeasureformatstring ()
-)
-```
+)</code></pre></div>
 
 The exact implementation depends on the model and the calculation group design. The important point is that dynamic measure selection also requires deliberate formatting design.
 
@@ -5279,21 +5204,15 @@ For example, the model may have separate roles for `North`, `South`, `West`, and
 
 The `North` role may apply this filter to `'Region'`:
 
-```DAX
-'Region'[Region name] = "North"
-```
+<div class="pode-code pode-code-dax"><pre><code>&#x27;Region&#x27;[Region name] = &quot;North&quot;</code></pre></div>
 
 The `South` role may apply:
 
-```DAX
-'Region'[Region name] = "South"
-```
+<div class="pode-code pode-code-dax"><pre><code>&#x27;Region&#x27;[Region name] = &quot;South&quot;</code></pre></div>
 
 The `West` role may apply:
 
-```DAX
-'Region'[Region name] = "West"
-```
+<div class="pode-code pode-code-dax"><pre><code>&#x27;Region&#x27;[Region name] = &quot;West&quot;</code></pre></div>
 
 The `Unlimited` role has no filter. Users assigned to this role can see all rows allowed by the model.
 
@@ -5326,9 +5245,7 @@ The RLS rule can then filter the model by the regions assigned to the current us
 
 A DAX expression may look like this:
 
-```DAX
-'User access'[User principal name] = userprincipalname ()
-```
+<div class="pode-code pode-code-dax"><pre><code>&#x27;User access&#x27;[User principal name] = <span class="kw">userprincipalname</span> ()</code></pre></div>
 
 In practice, the filter often applies through relationships from the access table to a secured dimension or directly to the fact table.
 
@@ -5350,13 +5267,11 @@ For example, a regional team may need to compare its sales performance against n
 
 A measure such as this cannot recover rows removed by RLS:
 
-```DAX
-National sales volume =
-calculate (
+<div class="pode-code pode-code-dax"><pre><code>National sales volume =
+<span class="kw">calculate</span> (
     [Sales volume],
-    removefilters ( 'Sales team' )
-)
-```
+    <span class="kw">removefilters</span> ( &#x27;Sales team&#x27; )
+)</code></pre></div>
 
 `removefilters()` can remove ordinary filter context. It cannot bypass security. If RLS has already restricted the user to regional rows, then the national rows are not available to the measure.
 
@@ -5385,20 +5300,16 @@ This table contains the population sales rows, but removes columns and relations
 
 A population measure can then be defined over the anonymous fact:
 
-```DAX
-Population sales volume =
-sum ( 'Sales anonymous'[Sales volume] )
-```
+<div class="pode-code pode-code-dax"><pre><code>Population sales volume =
+<span class="kw">sum</span> ( &#x27;Sales anonymous&#x27;[Sales volume] )</code></pre></div>
 
 The user-facing comparison measure might be:
 
-```DAX
-Regional sales proportion =
-divide (
+<div class="pode-code pode-code-dax"><pre><code>Regional sales proportion =
+<span class="kw">divide</span> (
     [Sales volume],
     [Population sales volume]
-)
-```
+)</code></pre></div>
 
 The ordinary `[Sales volume]` measure reflects the user’s restricted rows. `[Population sales volume]` reflects the wider anonymous population. Both can still respond to safe shared dimensions such as calendar, product, or region grouping where appropriate.
 
@@ -7339,439 +7250,953 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 
 # Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
 
-*A mature pipeline must minimise unnecessary work while remaining stable under change.*
+*A mature pipeline keeps changes in computation aligned to changes in information.*
 
-Developers often talk about fast and slow. But what do these terms mean? Is one second fast? Is ten seconds too slow? There are situations where one second to process ten rows is unacceptably slow, and others where ten seconds to process ten thousand different rows is impressively fast. These judgements depend on the infrastructure, the structure of the incoming data, and the value of the information being processed.
+## Correspondence between information and computation
 
-A sharp intuition for whether something “can still be faster” is one of the hallmarks of a veteran developer. A developer who cannot tell that something could be faster will not attempt to improve it. On the other hand, trying to optimise a computation that is already at its limit is futile.
+A mature pipeline maintains correspondence between changes in information and changes in computation.
 
-Given the number of environmental factors involved in time-to-compute, and how slippery the idea of “fast” can be, this intuition is difficult to develop. A way to make the problem more tractable is to focus on one aspect of performance — efficiency.
+When little has changed in the business world, little should need to change in the data world, and little should need to be recomputed. When that correspondence breaks down, the pipeline becomes inefficient, unstable, or both.
 
-Efficiency in a data pipeline means using the minimal amount of resource to calculate one piece of information. There are two ways to achieve this:
+This chapter introduces efficiency and stability as two disciplines for preserving that correspondence.
 
-1. The pipeline processes the minimal amount of information needed to reflect changes in the data.
+| Concept | Question |
+|---|---|
+| Efficiency | Is the pipeline doing more computational work than the information change requires? |
+| Stability | Is the data world changing in proportion to the business world? |
 
-2. The algorithm that applies these changes uses the minimal amount of computational space-time resources.
+## Efficiency
 
-The first is informational efficiency. The second is algorithmic efficiency.
+Developers often talk about fast and slow. But fast and slow are slippery terms.
 
-Informational efficiency is about processing as little information as possible. A pipeline is inefficient if it processes hundreds of millions of rows but in the end, only a handful changed. Algorithmic efficiency is about computing those changes as cheaply as possible on a predefined computational environment. It is inefficient if it takes seconds to process one row when it could be done in milliseconds. Informational efficiency is universal across all technologies. Algorithmic efficiency is more technology dependent and varies from site to site.
+Is one second fast? Is ten seconds slow? One second to process ten rows may be unacceptably slow. Ten seconds to process ten million rows may be impressively fast.
 
-Efficiency matters because it is key to the sustainable growth of a warehouse. It also directly affects how quickly users get their results. It is within the data engineer’s control. Decisions about server configuration and information value may not be easy to influence. However, the data engineer can always ensure a pipeline does just enough work, and no more, to reflect real world changes.
+These judgements depend on infrastructure, data shape, implementation choices, and the value of the information being processed.
 
-Stability is a closely related concept. It is the idea that small changes to input should lead to small changes in output. An unstable pipeline is one where a small change leads to a large change in output. For example, changing a country name in a reference table might ripple through and rewrite many tables. A more dramatic instance of this was the fear of the Y2K bug where there were widespread concerns that switch over on the New Year’s Day 2000 would cause disastrous impacts on systems that stored years only in the final two digits.
+Because performance depends on many factors, it is more useful to focus first on efficiency.
 
-Stability matters because it shapes the user’s experience of reliability because of the magnitude of impact makes the problem obvious. Reports that suddenly become empty one day radically undermines trust. There is no point explaining it was because a change in international country names caused a ripple effect. As far as the user is concerned, the product is unreliable.
+**Efficiency** means using the minimum necessary resource to calculate the required information.
 
-Efficiency and stability are related but distinct. An inefficient pipeline is when there is a lot of work, but few results change in the table. An unstable pipeline is when there are too many changes in a table. From a business point-of-view, instability can also be inefficiency. For example, a large table with [Today’s date] column would be updating every day (unstable) but is inefficient because it is much work for little business value.
+There are two kinds of efficiency:
 
-That is, the number of row changes do not reflect information value changes.
+| Kind | Concern |
+|---|---|
+| Informational efficiency | Does the pipeline process only the information needed to reflect real change? |
+| Algorithmic efficiency | Does the pipeline calculate that information as cheaply as the environment allows? |
 
-The chapters in this part explore of efficiency and stability. A recurring theme is that meaningful fragments form the foundation of an efficient and stable pipeline.
+Informational efficiency is about processing as little information as possible. A pipeline is informationally inefficient if it processes hundreds of millions of rows when only a handful have changed.
+
+Algorithmic efficiency is about computing those changes as cheaply as possible in a given computational environment. A pipeline is algorithmically inefficient if it takes seconds to process one row when the same result could be calculated in milliseconds.
+
+Informational efficiency is largely universal across technologies. Algorithmic efficiency is more technology-dependent and varies from site to site.
+
+Efficiency is important because it is central to sustainable warehouse growth. It also affects how quickly users receive results.
+
+Some performance factors sit outside the data engineer’s immediate control: server configuration, infrastructure limits, source-system behaviour, or the business value of the information being processed. But the data engineer can still ensure that the pipeline does only the necessary work, and no more, to reflect real-world change.
+
+## Stability
+
+**Stability** is closely related to efficiency.
+
+Stability means that small changes in the business world should produce proportionate changes in the data world.
+
+An unstable pipeline amplifies change. A small input change creates a large output change.
+
+For example, changing a country name in a reference table might ripple through and rewrite many downstream tables. A more dramatic example was the fear of the Y2K bug, where systems storing years using only two digits risked treating the change from 1999 to 2000 as a catastrophic discontinuity rather than an ordinary date transition.
+
+Stability is important because it shapes the user’s experience of reliability.
+
+Reports that suddenly become empty or radically different undermine trust. There is little value in explaining that the issue came from a small reference-data change, a refreshed update timestamp, or a ripple effect in the pipeline. As far as the user is concerned, the product became unreliable.
+
+A stable pipeline does not merely run successfully. It changes in ways that correspond to changes in the world it represents.
+
+## Efficiency and stability together
+
+Efficiency and stability are related but distinct.
+
+A pipeline can be algorithmically inefficient without being unstable. For example, a pipeline may scan a full source table every night to identify a few changed rows, then update only those changed rows in the warehouse. The final data-world change is proportionate, because only the changed rows are updated. However, the computation is inefficient, because the pipeline read far more source data than the information change required.
+
+A pipeline can also be unstable without being algorithmically inefficient. For example, truncate-and-reload may be the cheapest implementation for a small table. In computational terms, this may be acceptable. But it is unstable because the table temporarily disappears or becomes incomplete during the load. If the reload fails after the truncate, the data product is left in an unsafe state.
+
+Sometimes inefficiency and instability overlap. For example, a large table with a `[Today’s date]` column may update every row every day. This is unstable because the table changes constantly even when the underlying business entities have not changed. It is also informationally inefficient because the pipeline performs large amounts of work for little business value.
+
+In all cases, the problem is broken correspondence.
+
+The amount of data change and computational work no longer reflects the amount of information change.
+
+Meaningful fragments help preserve this correspondence. When each table has a clear informational purpose, changes can stay local. A change in one concept does not need to churn unrelated data. This makes the pipeline easier to load, easier to test, easier to reason about, and more stable under change.
+
+The chapters in **Efficiency & stability** explore how to build pipelines that are efficient and stable over time.
+
+> **Key ideas.**
+>
+> A mature pipeline maintains correspondence between changes in information and changes in computation.
+>
+> Informational efficiency means processing only the information needed to reflect real-world change.
+>
+> Algorithmic efficiency means calculating that information as cheaply as the environment allows.
+>
+> Stability means that small changes in the business world should produce proportionate changes in the data world.
+>
+> Inefficiency and instability both occur when pipeline work stops corresponding to information change.
+>
+> Meaningful fragments help preserve correspondence by keeping change local, legible, and proportionate.
 
 # Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
 
-*Loading data well means controlling change rather than replacing everything blindly.*
+*A mature load applies only genuine changes, after checking that they are safe.*
 
-During a load, a table’s data needs to update with the most recent set. The simplest approach is to drop the original table and replace the data with a new set. This is how every data engineer starts. But it violates the key tenets of pipeline efficiency and stability.
+## Controlling change
 
-When a table’s content is replaced en masse, it is not possible to know which rows changed. Downstream processes cannot respond with precision because every row looks new and needs response. This breaks the goal of efficiency to ensure database changes are minimal.
+Efficiency and stability both depend on the warehouse remaining in control of change.
 
-More importantly, when a table is dropped and replaced, any error that prevents a successful load becomes catastrophic. Reports may become empty for the user. It can also result in a domino effect of errors in downstream tables.
+Efficiency requires the warehouse to know which rows genuinely changed, so it does not waste work reprocessing rows whose information stayed the same.
 
-In a production pipeline that transforms hundreds or thousands of tables, the cumulative probability and effect of these problems become untenably disruptive.
+Stability requires the warehouse to know whether the proposed changes are safe, so abnormal changes do not spread through the pipeline.
 
-Instead of drop and replace, updating the data of a table should occur through three steps:
+Therefore, the purpose of a load is not only to keep the target table current. The purpose is to keep the warehouse in control of change.
 
-1. Stage the incoming copy of the data into a temporary location
+For every change applied to a table, the warehouse should be able to explain why the change happened, whether it should happen, what changed, and when it changed.
 
-2. Check the incoming data against current data to pick up changes, anomalies and constraint violations
+A naive load loses this control.
 
-3. Apply genuine changes to the target table, updating any timestamp columns.
+When a table is replaced wholesale, the pipeline can no longer reason precisely about change. Every row may appear new. Unchanged rows are mixed with changed rows. Unsafe rows are mixed with safe rows. Deletes are difficult to distinguish from load failures. Downstream tables cannot respond with precision because the warehouse has not preserved the meaning of what happened.
 
-These are the same steps whether the incoming data is a full extract or a subset of increments.
+This is inefficient because downstream tables may need to respond to rows that did not genuinely change. It is unstable because one abnormal load may cause a disproportionate change in the target and downstream tables.
 
-## Loading
+The extra work in controlling change takes effort, but it lays the foundation for an efficient and stable pipeline. This is the topic of **load mechanics**.
 
-Suppose the current table is X. The goal is to update X with the latest batch of data. X has a primary key column [PK col1], [PK col2].
+The standard pattern has three steps:
 
-### Step 1 – Stage
+| Step | Question |
+|---|---|
+| Stage | What incoming data is available? |
+| Check | Which rows genuinely changed, and are those changes safe? |
+| Apply | How should the target table be updated without losing history or spreading faults? |
 
-The first step is to load the latest batch of data into a temporary table. In traditional warehousing terminology, this is the staging table. Suppose it is called X_staging.
+![](book/epub-assets/diagram-008.png)
 
-X_staging may be the full load of data to replace X. It may be less than the full set but still cover all the changed records in a recent batch. This is an incremental extract. An incremental extract reduces the number of records to stage, check, and apply from hundreds of millions to a couple of thousand. The ways to do this reliably are covered in Tracking change and Responding to change.
+*Figure 1. The load mechanics pattern: stage incoming data, check proposed changes, then apply safe changes and log what happened.*
 
-### Step 2 – Check
+## The three-step load pattern
 
-The next step is to check the content of X_staging against X for changes and validity before loading onto X. This is the most intensive step and is the one usually skipped in naive approaches to loading.
+Suppose the target table is `Sales.Order`. The goal is to update `Sales.Order` with the latest batch of data.
 
-The aspects to check are:
+For this pattern to work, the target table must have a defined primary key.
 
-- Changes:
+In this example, `Sales.Order` is keyed by `[Order ID]`.
 
-- Which rows to insert?
+For any target table, the standard load pattern may create the following artefacts:
 
-- Which rows to update?
+| Artefact | Purpose |
+|---|---|
+| `Sales.Order_staging` | Incoming data before `Sales.Order` is touched. |
+| `Sales.Order_upsert` | Rows that are new or genuinely changed. |
+| `Sales.Order_delete` | Rows that should be removed from the current target. |
+| `Sales.Order_reject` | Changed rows that violate constraints and should not enter the target. |
+| `Sales.Order_history` | Previous versions of rows that were updated or deleted. |
 
-- Which rows to delete?
+This may seem like a lot of machinery. The rest of this chapter explains why each part exists.
 
-- Instability:
+### Step 1—Stage the incoming data
 
-- Are there a concerningly high number of rows to insert or update?
+The first step is to load the latest batch of data into a staging table.
 
-- Are there a concerningly high number of rows to delete?
+The staging table holds incoming data before the target table is touched. For `Sales.Order`, this table is `Sales.Order_staging`.
 
-- Violations:
+`Sales.Order_staging` may contain a full extract of the source data. It may also contain only a subset of recently changed records. The latter is an incremental extract.
 
-- Are there rows of uniqueness violations to reject?
+An incremental extract can reduce the number of records to stage, check, and apply from hundreds of millions to a few thousand. The ways to do this reliably are covered in [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) and [Responding to changes](/docs/efficient-stable-pipeline/responding-to-changes/).
 
-- Are there rows of existence (not null) violations to reject?
+The staging step applies regardless of full or incremental extract.
 
-Checking for changes is essential. Checking for instability is highly desirable. Checking for each of the violations is not critical, but proactively rejecting a small number of bad rows and allowing correct rows to pass through can reduce disruption to users by allowing them to get access to most of their data.
+Suppose the current target table looks like this.
 
-#### Checking for changes
+**Current `Sales.Order`**
 
-Not every row in X_staging is a genuine change in X. In fact, during a full load, only a few hundred out of millions may differ in the latest batch. The first step is to detect which rows are the ones that changed.
+| Order ID | Customer ID | Order reference | Order status | Order amount | Row insert datetime | Row update datetime |
+|---|---|---|---|---:|---|---|
+| O1001 | C001 | REF-1001 | Submitted | 120.00 | 2025-04-01 09:00 | 2025-04-01 09:00 |
+| O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 |
+| O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 |
 
-This check is necessary even if X_staging is incrementally extracted with the intention of capturing only changed data. Despite the best effort of the data engineer, it is often difficult to extract only the changed rows, especially when there are multiple joins and transformations. While incremental extract may narrow the number of candidate rows from millions to thousands, some of them may still be identical to the rows in X, requiring a check to find those that are truly changed.
+The incoming staging table may look like this.
 
-In checking for changes, there are three possibilities:
+**Incoming `Sales.Order_staging`**
 
-- For a row in X_staging, is the primary key value new? If so, it is an insert.
+| Order ID | Customer ID | Order reference | Order status | Order amount |
+|---|---|---|---|---:|
+| O1001 | C001 | REF-1001 | Submitted | 120.00 |
+| O1002 | C002 | REF-1002 | Fulfilled | 95.00 |
+| O1004 | C004 | REF-1004 | Submitted | 140.00 |
+| O1005 |  | REF-1005 | Submitted | 75.00 |
+| O1006 | C006 | REF-1003 | Submitted | 160.00 |
 
-- For a row in X_staging that has an existing primary key value in X, are any of the column values different? If so, it is an update.
+At this point, the target table has not yet changed. The incoming data is available for checking.
 
-- For a row in X, should the primary key value still be retained? If not, the row should be deleted.
+### Step 2—Check the incoming data
 
-The first two are collectively known as an upsert. A computationally effective way of calculating inserts and updates simultaneously in SQL is to:
+The Check step compares `Sales.Order_staging` against `Sales.Order` before loading data into the target.
 
-1. Start from X_staging and left join X on the primary key columns [PK col1], [PK col2].
+The Check step asks three kinds of question:
 
-2. Keep only the rows from X_staging that do not identically exist in X. This can be done using an EXCEPT comparison in the WHERE clause.
+| Check | Question |
+|---|---|
+| Genuine change | Which rows should be inserted, updated, or deleted? |
+| Instability | Are there abnormally high numbers of inserts, updates, or deletes? |
+| Violations | Are there rows that should be rejected rather than loaded? |
 
-3. Add a computed column [Is new row] depending on whether the X primary key column value is null.
+Checking for genuine changes is essential. Checking for instability is highly desirable. Checking for violations is a practical way to improve fault tolerance, because a small number of bad rows can be rejected while the rest of the table proceeds.
 
-Storing the result of this query into X_upsert gives only the rows that changed, with a column [Is new row] to indicate whether it is an insert or update.
+Instability and violation checks are part of [Fault tolerance](#docs-quality-reliability-fault-tolerance).
 
-> **Note.**
+#### Check for genuine changes
+
+Not every row in `Sales.Order_staging` is a genuine change.
+
+During a full extract, millions of rows may arrive, but only a small number may differ from the current target. During an incremental extract, the incoming rows may only be candidates for change. Some may still be identical to the current target.
+
+The Check step identifies which rows genuinely need action by comparing rows on the primary key, then comparing non-key values for rows whose primary key already exists.
+
+There are three possibilities:
+
+| Change type | Meaning |
+|---|---|
+| Insert | A primary key exists in `Sales.Order_staging` but not in `Sales.Order`. |
+| Update | A primary key exists in both tables, but one or more non-key values differ. |
+| Delete | A primary key exists in `Sales.Order` but should no longer exist in the final target. |
+
+In the example:
+
+| Order ID | Interpretation |
+|---|---|
+| O1001 | Unchanged. |
+| O1002 | Existing row with changed status, so it is an update. |
+| O1003 | Missing from a full extract, so it is a delete. |
+| O1004 | New row, so it is an insert. |
+| O1005 | New row, so it is an insert, but `[Customer ID]` is missing. |
+| O1006 | New row, so it is an insert, but its `[Order reference]` clashes with existing order `O1003`. |
+
+Inserts and updates are isolated into an upsert table.
+
+The first version of the upsert table contains all rows that are new or genuinely changed. It also has a column `[Is new row]` to indicate whether the row is to be inserted or not.
+
+**Example structure of `Sales.Order_upsert` before checking violations**
+
+| Order ID | Customer ID | Order reference | Order status | Order amount | Is new row |
+|---|---|---|---|---:|---|
+| O1002 | C002 | REF-1002 | Fulfilled | 95.00 | false |
+| O1004 | C004 | REF-1004 | Submitted | 140.00 | true |
+| O1005 |  | REF-1005 | Submitted | 75.00 | true |
+| O1006 | C006 | REF-1003 | Submitted | 160.00 | true |
+
+`O1001` does not appear because it has not changed.
+
+If `Sales.Order_staging` is a full extract, deletes can be identified by finding rows in `Sales.Order` whose primary key values no longer appear in `Sales.Order_staging`.
+
+**Example structure of `Sales.Order_delete`**
+
+| Order ID |
+|---|
+| O1003 |
+
+If `Sales.Order_staging` is an incremental extract, delete detection must be tailored to the incremental logic. The staging table may contain only a fraction of the desired final table, so absence from staging does not necessarily mean deletion from the target.
+
+This distinction is covered in [Responding to changes](/docs/efficient-stable-pipeline/responding-to-changes/).
+
+#### Check for instability
+
+Once `Sales.Order_upsert` and `Sales.Order_delete` have been calculated, the pipeline can check whether the proposed changes are abnormal.
+
+These checks are stability thresholds.
+
+A stability threshold does not prove that the proposed change is wrong. It says the proposed change is large enough to require attention before it is allowed to spread.
+
+For example, suppose `Sales.Order` normally changes by a small percentage each day. If half the table is about to be updated or deleted, this may indicate a source-system issue, extraction error, or accidental change in load logic.
+
+**Example stability check**
+
+| Check | Existing rows | Proposed changed rows | Percentage changed | Action |
+|---|---:|---:|---:|---|
+| Upsert threshold | 100,000 | 2,500 | 2.5% | Proceed |
+| Delete threshold | 100,000 | 45,000 | 45.0% | Abort and alert |
+
+The threshold for deletes should usually be lower than the threshold for upserts. In many business processes, deletes are rarer than inserts or updates.
+
+A simple default threshold can catch most serious abnormalities across a pipeline. Specific tables may need tailored thresholds based on their normal pattern of change.
+
+Logging change statistics over time helps set these thresholds. If a table normally updates between 0.5% and 2% of rows each day, then a 20% update is worth investigating.
+
+If a table frequently breaches its threshold, the data engineer should not simply increase the threshold until the alert disappears. The extraction logic, source behaviour, and business process should be understood. The alert may be exposing instability that should be fixed.
+
+#### Check for violations
+
+After genuine changes have been identified, the pipeline should check whether any rows in `Sales.Order_upsert` are unsafe to load.
+
+A brittle load may fail the whole table. A fault-tolerant load can move the unsafe row from `Sales.Order_upsert` into `Sales.Order_reject`, then allow the remaining safe rows to proceed.
+
+While the pipeline can contain tailored rules for each table, it is useful to check for two common violations: existence and uniqueness constraints.
+
+For example, if `[Customer ID]` is required for `Sales.Order`, then an incoming order with a null `[Customer ID]` violates the existence expectation for the table.
+
+Checking for uniqueness is more complex.
+
+Suppose `Sales.Order` has a unique column `[Order reference]`. The pipeline needs to check two kinds of uniqueness violation.
+
+First, the incoming rows may contain duplicates within the upsert set itself. This occurs when two rows in `Sales.Order_upsert` have the same `[Order reference]`.
+
+Second, an incoming row may clash with an existing row in `Sales.Order`. This occurs when applying the upsert would create an `[Order reference]` that already exists on another row in the target table.
+
+The second case must be checked carefully. It is not a violation if the incoming row is updating its own existing record and keeping the same `[Order reference]`. It is also not necessarily a violation if another row is changing away from that value in the same load. The question is whether the final target table would contain two rows with the same unique value after the upsert is applied.
+
+These violations should be sent to a reject table.
+
+**Example structure of `Sales.Order_reject`**
+
+| Order ID | Customer ID | Order reference | Order status | Order amount | Rejection reason |
+|---|---|---|---|---:|---|
+| O1005 |  | REF-1005 | Submitted | 75.00 | Existence violation |
+| O1006 | C006 | REF-1003 | Submitted | 160.00 | Uniqueness violation |
+
+After rejection, `Sales.Order_upsert` contains only safe rows to apply.
+
+**Example structure of `Sales.Order_upsert` after checking violations**
+
+| Order ID | Customer ID | Order reference | Order status | Order amount | Is new row |
+|---|---|---|---|---:|---|
+| O1002 | C002 | REF-1002 | Fulfilled | 95.00 | false |
+| O1004 | C004 | REF-1004 | Submitted | 140.00 | true |
+
+The table is now safe to load.
+
+### Step 3—Apply the changes
+
+After the Check step, the pipeline has separated incoming data into the actions it needs to take:
+
+| Artefact | Action |
+|---|---|
+| `Sales.Order_upsert` | Insert new rows and update changed rows. |
+| `Sales.Order_delete` | Remove rows that should no longer be current. |
+| `Sales.Order_reject` | Preserve unsafe rows for attention, without loading them into the target. |
+
+The Apply step updates the target table in a controlled way.
+
+First, rows marked for deletion should be removed from the current target. But they should not simply disappear. Their previous values should be preserved in `Sales.Order_history`. This is not merely for archival purposes, but to inform downstream processes which rows have been deleted, so they can respond accordingly.
+
+Second, rows in `Sales.Order_upsert` where `[Is new row] = false` should be used to update existing rows in the target. Again, the previous values should be preserved in `Sales.Order_history`.
+
+Third, rows in `Sales.Order_upsert` where `[Is new row] = true` should be inserted into the target.
+
+The Apply step should also manage architectural columns for change datetimes:
+
+| Column | Meaning |
+|---|---|
+| `[Row insert datetime]` | When the row, defined by its primary key, first entered the target table. |
+| `[Row update datetime]` | When the row, defined by its primary key, was most recently updated with a genuine change. |
+| `[Row delete datetime]` | When the row stopped being current. Current rows use `9999-12-31 00:00:00` to indicate that they have not been deleted. |
+
+Because the Check step removed unchanged rows, `[Row update datetime]` is updated only when row content genuinely changes.
+
+As we will see in [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes), these artefacts are necessary for downstream processing.
+
+After applying the change, the target may look like this.
+
+**Updated `Sales.Order`**
+
+| Order ID | Customer ID | Order reference | Order status | Order amount | Row insert datetime | Row update datetime | Row delete datetime |
+|---|---|---|---|---:|---|---|---|
+| O1001 | C001 | REF-1001 | Submitted | 120.00 | 2025-04-01 09:00 | 2025-04-01 09:00 | 9999-12-31 00:00:00 |
+| O1002 | C002 | REF-1002 | Fulfilled | 95.00 | 2025-04-01 09:05 | 2025-05-01 08:00 | 9999-12-31 00:00:00 |
+| O1004 | C004 | REF-1004 | Submitted | 140.00 | 2025-05-01 08:00 | 2025-05-01 08:00 | 9999-12-31 00:00:00 |
+
+`O1001` remains unchanged. `O1002` has been updated. `O1003` has been deleted from the current table. `O1004` has been inserted. `O1005` has been rejected because `[Customer ID]` is missing. `O1006` has been rejected because its `[Order reference]` clashes with an existing target row.
+
+The history table preserves previous versions of updated and deleted rows.
+
+**Example structure of `Sales.Order_history`**
+
+| Order ID | Customer ID | Order reference | Order status | Order amount | Row insert datetime | Row update datetime | Row delete datetime |
+|---|---|---|---|---:|---|---|---|
+| O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 | 2025-05-01 08:00 |
+| O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 | 2025-05-01 08:00 |
+
+## After the load
+
+The loading process finishes with cleaning up temporary artefacts and logging what happened.
+
+### Clean up temporary artefacts
+
+If there are no errors, temporary tables such as `Sales.Order_staging`, `Sales.Order_upsert`, and `Sales.Order_delete` do not usually need to be retained.
+
+`Sales.Order_history` may also be purged after a suitable period, once downstream tables have had time to respond to updates and deletes. In Delta table contexts, purging old removed rows is often known as vacuuming.
+
+If there are errors, temporary artefacts and `Sales.Order_reject` may need to be retained for troubleshooting.
+
+These artefacts should be secured in the same way as the target table. Temporary load tables can contain the same sensitive information as the production table. They should not become a source of unintended data leakage.
+
+### Log, bookmarks and change statistics
+
+The pipeline should log enough information to explain what happened during each load.
+
+At minimum, the log should record whether the load succeeded, failed, or was aborted, along with any associated failure message.
+
+**Example structure of `Pipeline.LoadLog`**
+
+| Load ID | Table name | Load start datetime | Load end datetime | Load status | Failure message |
+|---:|---|---|---|---|---|
+| 10001 | Sales.Order | 2025-05-01 08:00 | 2025-05-01 08:03 | Succeeded |  |
+| 10002 | Sales.Customer | 2025-05-01 08:03 | 2025-05-01 08:05 | Succeeded |  |
+| 10003 | Sales.Payment | 2025-05-01 08:05 | 2025-05-01 08:06 | Failed | Source extract timeout |
+| 10004 | Sales.Product | 2025-05-01 08:06 | 2025-05-01 08:06 | Aborted | Delete threshold exceeded |
+
+For incremental processing, the pipeline should also log the table’s refresh bookmark.
+
+A refresh bookmark records when the table started reading from its source data, if the load completed successfully. Suppose `Sales.Order` draws from several source tables. Any source records that appear after the bookmark belong to a later load.
+
+This bookmark gives the next load a safe starting point for incremental extraction. This is explained in greater detail in [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes).
+
+The refresh bookmark should only be advanced when the load succeeds. If the load fails or aborts, the bookmark should not move forward, because the next load still needs to consider the same source period.
+
+**Example structure of `Pipeline.RefreshBookmark`**
+
+| Table name | Load ID | Refresh bookmark datetime |
+|---|---:|---|
+| Sales.Order | 10001 | 2025-05-01 08:00 |
+| Sales.Customer | 10002 | 2025-05-01 08:03 |
+
+In this example, `Sales.Order` completed successfully, so its bookmark is set to `2025-05-01 08:00`. `Sales.Payment` failed, so no bookmark is recorded. `Sales.Product` was aborted by a stability threshold, so its bookmark is also not advanced.
+
+The Check step also calculates useful change statistics. Since these statistics have already been calculated as part of the load, they are worth logging.
+
+**Example structure of `Pipeline.LoadStatistics`**
+
+| Load ID | Rows staged | Rows inserted | Rows updated | Rows deleted | Rows rejected | Target row count |
+|---:|---:|---:|---:|---:|---:|---:|
+| 10001 | 5 | 1 | 1 | 1 | 2 | 3 |
+| 10002 | 1,250 | 12 | 34 | 0 | 0 | 42,810 |
+
+The change statistics should normally be logged only for successful loads. For failed or aborted loads, the failure is recorded in `Pipeline.LoadLog`, but the bookmark and final change statistics are not advanced.
+
+Over time, these logs form a history of how each table behaves.
+
+That history is valuable for troubleshooting, setting stability thresholds, capacity planning, and understanding whether a table’s behaviour has changed. For example, if `Sales.Order` normally updates between 1% and 3% of rows each day, a load that updates 40% of rows is immediately suspicious. Without change statistics, the pipeline has no memory of what normal looks like.
+
+## Is the extra work worth it?
+
+At first glance, the three-step load pattern looks like overhead.
+
+For one target table, the pattern may create several temporary or supporting artefacts: staging, upsert, delete, reject, and history tables. It also creates architectural columns such as `[Row insert datetime]`, `[Row update datetime]`, and `[Row delete datetime]`. The logic is much more complex than dropping a table and replacing it.
+
+In a small environment, this may be unnecessary. If there are few tables, little downstream dependency, and low business risk, a simpler approach may be enough.
+
+But as the pipeline grows, the calculation changes.
+
+The extra work is necessary because the warehouse needs to know and control every change that happens within it. Each artefact preserves a distinction that the warehouse needs in order to achieve this.
+
+| Artefact | Why it matters |
+|---|---|
+| `Sales.Order_staging` | Holds incoming data separately so the target is not touched until the batch has been checked. |
+| `Sales.Order_upsert` | Identifies candidate inserts and updates before they are applied, allowing the pipeline to separate genuine changes from unchanged rows. |
+| `Sales.Order_delete` | Identifies candidate deletes before they are applied, allowing the pipeline to check whether the volume of deletion is safe before rows are removed from the current target. |
+| `Sales.Order_reject` | Isolates unsafe changed rows so they can be reported and remediated without contaminating the target or stopping safe rows from loading. |
+| `Sales.Order_history` | Preserves previous versions of updated and deleted rows. This is not merely archival: downstream tables need history to know that a row changed or stopped being current. |
+| Row change datetimes | Allow downstream incremental processing to respond precisely to inserts, updates, and deletes. |
+| `Pipeline.LoadLog` | Records success, failure, aborts, and error messages, so the pipeline can be troubleshot and audited. |
+| `Pipeline.RefreshBookmark` | Records where the next incremental load should restart, but only after a successful load. |
+| `Pipeline.LoadStatistics` | Builds a history of how each table changes over time, supporting stability thresholds, capacity planning, and diagnosis of abnormal behaviour. |
+
+This is the price of controlled change.
+
+Without these artefacts, the warehouse may still produce a current-looking table, but it cannot explain how that table changed. It cannot reliably tell downstream processes which rows require action. It cannot distinguish genuine change from noisy candidate change. It cannot isolate unsafe rows and report on errors. It cannot remember what happened during the load.
+
+The value of the pattern grows with scale. On one table, the extra machinery may seem excessive. Across a serious pipeline, it becomes the backbone of efficiency, stability, and fault tolerance.
+
+Investment in automation or appropriate technology ensures that this logic can be applied by default, without requiring the data engineer to handcraft every part for every table.
+
+> **Key ideas.**
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[EXAMPLE SQL]`.
-
-Checking for deletes depends on whether X_staging is fully extracted or incrementally extracted.
-
-If X_staging is fully extracted, then it represents all the records that should be in the final table. Rows from X that should be deleted are those whose primary key values are not in X_staging. An implementation in SQL would be a left anti-join of X on X_staging.
-
-The primary keys to delete should be stored in a table X_delete.
-
-> **Note.**
+> A mature load applies only genuine changes, after checking that they are safe.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[EXAMPLE SQL]`.
-
-If X_staging is incrementally extracted, the idea would not work because it only has a fraction of the primary keys in the desired final output. Rather, X_delete needs to be tailored to the incremental extract logic for X. This is explored in greater depth in Responding to change.
-
-#### Checking for instability
-
-With the tables X_upsert and X_delete, it is easy to check whether there are an abnormally high number of rows to be upserted or deleted in a batch. If there are an abnormally high number of rows, then the load should abort.
-
-The thresholds for abnormality can be a combination of the number of rows in the base table and the percentage of rows. These are stability thresholds.
-
-For example, if the table X has a hundred thousand rows, and more than 10% are upserted, then this can be a sign of abnormality for aborting the load.
-
-The threshold for deletes should be different from the threshold for upserts. There are usually far fewer deletes than upserts. For example, less than 5% of a large table should be deleted on a given day.
-
-In practice, a simple stability threshold can apply as a default across the entire pipeline to catch most abnormalities, such as having half the rows disappear. Specific tables may have their stability thresholds tailored to their case. Examining a table’s history of changes can be useful in determining the threshold. This can be done if these statistics are logged. This logging is discussed in a subsequent subsection.
-
-The SQL for aborting on the upsert threshold can be done by checking the number of rows in X_upsert versus that of X:
-
-> **Note.**
+> Load mechanics are about keeping the warehouse in control of change.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[EXAMPLE SQL]`.
-
-Checking the delete threshold is only possible on a full extract. The SQL is as follows:
-
-> **Note.**
+> Drop-and-replace loading is simple, but it hides genuine change, creates instability, and magnifies failure.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[EXAMPLE SQL]`.
-
-These checks are an important part of monitoring and improving a pipeline’s stability. It is very unlikely that every record of a business process’s entire history, or even more than 5% of them, changes their content. If the upsert rows in X_staging do exceed this number, it is more likely to be an unintended side-effect of a system change rather than a change in informational content. Stability thresholds prevent these unintended changes from propagating.
-
-If the load is frequently aborted for a table, then the extraction logic needs to be improved for stability, or the thresholds need to be adjusted.
-
-#### Checking for violations
-
-When there are too many rows to upsert or delete, the entire table aborts its load. This means the user does not get any of the latest data. This can be too drastic when only one row out of thousands is problematic.
-
-Instead, if the table has uniqueness constraints and existence constraints (not null property on a column), only the rows which violate these constraints need to be discarded, and the rest can proceed. These are the reject rows and can be stored in X_reject.
-
-The algorithm for rejecting existence violations is simply to discard rows in X_staging which have a null value on a column with a not null property, and send them to X_reject.
-
-Suppose X has a column [Col not null] with a not null property, the SQL is as follows:
-
-> **Note.**
+> The standard load pattern is stage, check, and apply.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Example SQL]`.
-
-The algorithm for detecting uniqueness violations has two scenarios. Suppose X_staging has a column [Col unique]. The possibilities are:
-
-1. The duplicates exist in X_staging when two rows have the same value on [Col unique].
-
-2. The duplicate happens when X_staging applies an upsert that creates a value in [Col unique] that already exists in X, but not if that same row swaps its value to another one to avoid a duplicate.
-
-In these cases, all but one of the rows should be sent to X_reject. Example SQL follows.
-
-> **Note.**
+> Staging tables hold incoming data before the target table is touched.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Example SQL]`.
-
-The two criteria can also be extended to other criteria such as data type violations. In theory, any tailored criteria can be applied to abort a load or reject some rows on a particular table. These two cover many of the problems that a large pipeline encounters. They can be applied by default to every load through automation rather than manual tailoring.
-
-### Step 3 - Apply
-
-Once the changes are determined in X_upsert and X_delete, and invalid rows are sent to X_reject, the changes can be applied to X.
-
-The first step is to delete the rows in X using the keys in X_delete. Rather than completely losing the rows, it is important to send the deletes to a history table so that downstream processes know which rows have been deleted. In some platforms, this can be done automatically. In this example, the table to hold the old records is X_history. The SQL is as follows:
-
-> **Note.**
+> Upsert, delete, and reject tables separate genuine changes, unsafe changes, and candidate deletions before anything is applied.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Example SQL]`.
-
-Then the upserts should be applied. The rows to be inserted from X_upsert into X are identified by loading X_upsert where [Is new row] = 1. The rows in X to be updated using values from X_upsert are identified by [Is new row] = 0.
-
-As with deletes, the old values in X that are to be updated should be sent to X_history rather than being overridden and lost. Keeping these rows is important for incremental processing downstream.
-
-This step of applying changes should also add architectural columns for change datetimes. They are:
-
-- [Row insert datetime] — when was the row, defined by the primary key value, first inserted into the table.
-
-- [Row update datetime] — when was the row, defined by the primary key value, most recently updated with a new value. Because of the Check step, these are always genuine changes.
-
-- [Row delete datetime] — when was the row, now in X_history, deleted from X.
-
-This could be because of a full delete by its primary key or because it was overridden by an update.
-
-Some platforms calculate one or more of these automatically.
-
-> **Note.**
+> History tables preserve previous versions of updated and deleted rows for downstream processing.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Example SQL]`.
-
-By the end of this step, and if there were no other errors, the changes would be applied to X. The additional artefacts – X_history, [Row insert datetime], [Row update datetime], and [Row delete datetime] – provide information for downstream tables that rely on X to incrementally extract from it.
-
-## After loading
-
-Cleaning-up and logging are important part of the load mechanics.
-
-### Cleaning-up
-
-If there are no errors, the tables X_staging, X_upsert, and X_delete do not need to be retained. The rows in X_history can also be purged after a while, once they have informed incremental processing downstream. In Delta table context, the history rows are the tombstoned rows, and their purge is known as vacuuming.
-
-If there are errors, then the intermediary tables and X_reject need to be retained for troubleshooting. It is important to ensure they are secured in the same way as X, and do not accidentally cause unintended data leakage.
-
-### Logging
-
-In addition, it is essential to log the table’s bookmark, and highly valuable to log the change statistics.
-
-The table’s refresh bookmark is the datetime of the start of the load, if the load successfully completed. Suppose the table X draws data from A, B, and C. The refresh bookmark of a load defines when X started reading from its source data, and any records that appear in A, B, and C after that datetime have come afterwards. When X is incrementally extracted in the next batch, the updated records in the source tables are easily identified. This is explained in greater depth in Tracking changes.
-
-> **Note.**
+> Row change datetimes allow downstream tables to respond precisely to inserts, updates, and deletes.
 >
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+> Load logging records bookmarks, change statistics, and success or failure so the pipeline can explain what happened.
 
-The Check step calculates the number of rows to be inserted, updated, and deleted. It is only a small additional effort to log these numbers. While not essential, they form a rich history to understand a table’s evolution and can be valuable for troubleshooting.
+# Load orchestration {#docs-efficient-stable-pipeline-load-orchestration}
 
-Since they are already calculated as part of the load, it is easily worthwhile to log them.
+*Load dependencies are one of the first bottlenecks in a growing warehouse.*
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT]`.
+## Load stack
 
-The success, or failure and associated failure messages, should be logged.
+Load dependencies are one of the first bottlenecks in a growing warehouse.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[EXAMPLE SCREENSHOT]`.
+The previous chapter explained how to load one table safely. A real pipeline must load many tables safely, in the right order, without making independent tables wait unnecessarily.
 
-## Analysis
+At small scale, load order can be managed manually. A developer can remember that customers load before orders, orders load before order items, and reference tables load before the facts that use them.
 
-The full three steps create five extra tables in addition to X — X_staging, X_upsert, X_delete, X_reject, and X_history. It also creates three extra columns — [Row insert datetime], [Row update datetime], and [Row delete datetime]. The logic is also much more complex than simply dropping and replacing the table X.
+This does not last.
 
-In a simple environment with five or even fifty tables, all the additional work may be unjustified overhead. In a moderately sized pipeline, the benefits offered by the extra work outweigh the cost. Past a certain point where errors and resource become costly, they are non-negotiable.
+As the warehouse grows, dependencies multiply. A pipeline may contain hundreds or thousands of tables, with tens of thousands of dependency relationships between them. At that scale, load order cannot be safely maintained as a hand-coded sequence. The execution plan becomes brittle, opaque, and difficult to change.
 
-From the view of efficiency, the row-by-row check for genuine change seems exorbitant. But in a table with millions of rows and only a small fraction changing in a load, it is much faster to check for changes and apply them than to load all rows and perform any re-indexing.
+The problem is not only correctness. It is also throughput. Tables should not load before their dependencies are complete, but independent tables should not wait behind unrelated work. A growing warehouse needs both dependency order and parallel execution.
 
-More importantly, checking each row and updating [Row update datetime] only for rows with a genuine change informs downstream tables how to respond. Without such a check, all downstream tables will need to reload all rows in every batch.
+A load stack addresses this by exposing the pipeline’s execution queue as data.
 
-Seen in a different way, the data warehouse has responsibility to keep track of every single change that happens within it. The row check is the foundation for this tracking.
+Instead of hiding load order inside procedural orchestration code, the load stack records which tables belong to the current workflow, which tables have started, and which tables have ended. Dependency metadata records what depends on what. A load candidate view combines both to determine which tables are ready to load now.
 
-From the view of stability, the row-by-row check plays an important role in stabilising a pipeline of incremental extract by eliminating noisy changes. Incremental extract typically works by selecting candidate change rows through a change detection column. If an external factor causes the change detection column to shift all its value but none of the other column values changed in the row, this process of row-by-row checking eliminates these nil changes and informs downstream tables not to incorrectly react.
+The governing rule is simple:
 
-To rephrase, a pipeline of incremental extract relies on change detection columns, but when one such column goes wrong, the effect can be disastrous. Instead of relying solely on the change detection column, it should be used as a first pass, while allowing the Check step to do a second pass to eliminate any noise if things go wrong.
+> A table should load as soon as it is ready, and never before it is ready.
 
-Finally, the Check step improves stability and fault tolerance by limiting the impact of abnormalities or errors. To take advantage of the fault tolerance, tables must not have unstable columns that change frequently for no informational reason, or may suddenly change on many rows, such as on a switch to new year. Examples of these are discussed in the Fault tolerance chapter.
+Modern data platforms often treat orchestration as a separate tool. Schedulers and workflow engines define tasks, dependencies, retries, and parallel execution. These tools can be valuable.
 
-On a specific table, the additional work may seem excessive. But doing the work consistently as a pattern is the backbone of a sophisticated pipeline by monitoring and controlling row changes. Investment in automation or appropriate technology ensures that the additional logic is applied by default, with no development cost to the engineer.
+This chapter is not an argument against orchestration tools. The point is more basic: whatever orchestration tool is used, the pipeline still needs a clear model of execution readiness.
 
-# Load stack {#docs-efficient-stable-pipeline-load-stack}
-
-*A load stack gives order to the build and maintenance of a pipeline.*
-
-The chapter Load mechanics look at the details of how a single table is loaded. This chapter looks at how load across multiple tables can be orchestrated across the pipeline.
-
-In a data pipeline, tables need to be loaded in the correct order. Even with a small number of tables, such as twenty to fifty, their dependencies can become difficult to manage. Poor implementation, such as manually coding their load order, leads to an unmaintainable pipeline that is hard to debug.
-
-In addition, loading tables in parallel is an easy way to reduce the total amount of time to process a large pipeline. Even a four-fold reduction may mean the difference between meeting the start of the business day or not.
-
-Load orchestration is the task of ensuring the loads in a pipeline happen correctly, always in order, and in parallel if computational resources are available.
-
-There are two main ways of orchestrating a load:
-
-- A centralised approach where a main process assigns work to workers
-
-- A decentralised approach where workers grab work from a queue
-
-In the centralised approach, a software orchestrates other server jobs to load tables in the right order and manages the parallelism. It is often difficult for data engineering teams to create such software at scale and requires the purchase of a vendor product.
-
-On the other hand, the decentralised approach in this chapter is easy for any team to implement. All it takes are:
-
-- An accurate record of pipeline lineage as metadata, that is, how one table draws data from other tables in the pipeline.
-
-- The ability to load one table at a time, that is, there are no procedures or functions that load two tables in an entangled fashion.
-
-The decentralised approach achieves the aim by maintaining a queue of work, making the queue visible, and allowing workers to grab from the queue. We call this queue the load stack.
+A load stack is a minimal pattern for expressing that model directly in the warehouse. It can be used on its own, or underneath a vendor orchestration tool. Its value is that dependency structure and execution state become visible as data.
 
 ## Load stack and load candidates
 
-The load stack is a list of tables to be loaded. Each row represents a table to be loaded and annotated with two columns: [Is started] and [Is ended]. These indicate whether the load for that table has begun or finished. If [Is started] = 0, the table has not yet started loading and needs processing.
+The load stack approach rests on three objects.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+| Object | Role |
+|---|---|
+| `Pipeline.TableDependency` | Records dependency structure: which tables depend on which upstream tables. |
+| `Pipeline.LoadStack` | Records execution state for the current workflow: which tables have started and ended. |
+| `Pipeline.LoadCandidate` | Combines dependency structure and execution state to show which tables are ready to load now. |
 
-But not every table with [Is started] = 0 is ready to load. Loads must follow the correct order. A table is ready only when all the tables it depends on have finished loading, a concept known as execution readiness. These are the load candidates.
+The dependency table by itself knows the structure of the pipeline, but not what has already loaded.
 
-Identifying the load candidates requires a list of each table’s load dependencies. That is, the tables which directly feed into a table through a load.
+The load stack by itself knows what has started and ended, but not what depends on what.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+The load candidate view combines both. It asks: given the dependency structure, and given the current execution state, which tables are ready to load now?
 
-It is instructive to visualise the dependencies in a directional graph. Each arrow shows a direct feed from one table into another.
+Once readiness is visible, workers can claim ready tables independently. Parallelism follows from the readiness rule. It does not need to be separately planned.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+### Dependency metadata
 
-By tracing dependencies upstream, the full set of prerequisites for each table can be found. These are the expanded dependencies of a table.
+Dependency metadata records which tables must be loaded before another table can load.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+Suppose a sales pipeline contains six tables:
 
-The load stack and the expanded dependencies are all that are needed to identify the load candidates, that is, the tables that are ready to load.
+- `Sales.Customer`
+- `Sales.Product`
+- `Reference.Calendar`
+- `Sales.Order`
+- `Sales.OrderItem`
+- `Sales.OrderSummary`
 
-A table is a load candidate if there are none of the tables in its expanded dependencies that have not ended. That is, there are no dependencies where [Is ended] = 0. This logic also works for tables with no dependencies at all, since their expanded dependency list is empty and therefore contains no unfinished loads. When a table has no unfinished loads in an upstream table, it is a candidate to start loading.
+The dependency graph might look like this.
 
-This logic can be exposed as a view. The view shows the current list of load candidates and can be queried at any time to find which tables are ready to load.
+![](book/epub-assets/diagram-009.png)
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SQL and SCREENSHOT]`.
+*Figure 1. Example dependency graph for a sales pipeline. A table can load only after all upstream tables pointing into it have finished.*
+
+The same dependency structure can be recorded in a metadata table.
+
+**Example structure of `Pipeline.TableDependency`**
+
+| Table name | Depends on table name |
+|---|---|
+| Sales.Order | Sales.Customer |
+| Sales.OrderItem | Sales.Order |
+| Sales.OrderItem | Sales.Product |
+| Sales.OrderSummary | Sales.Order |
+| Sales.OrderSummary | Sales.OrderItem |
+| Sales.OrderSummary | Reference.Calendar |
+
+Each row states one direct dependency.
+
+`Sales.Order` depends on `Sales.Customer`. `Sales.OrderItem` depends on both `Sales.Order` and `Sales.Product`. `Sales.OrderSummary` depends on `Sales.Order`, `Sales.OrderItem`, and `Reference.Calendar`.
+
+Some tables have no dependencies. In this example, `Sales.Customer`, `Sales.Product`, and `Reference.Calendar` can load at the beginning of the workflow because nothing upstream needs to finish first.
+
+### The load stack
+
+The load stack is the list of tables to be loaded in a workflow.
+
+At the beginning of the workflow, the stack is refreshed. Every table that belongs to the workflow is added to `Pipeline.LoadStack`, with `[Is started] = false` and `[Is ended] = false`.
+
+**Initial `Pipeline.LoadStack`**
+
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | false | false |  |
+| 9001 | Sales.Product | false | false |  |
+| 9001 | Reference.Calendar | false | false |  |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
+
+The load stack records execution state. It does not itself decide which table is ready.
+
+A table is ready only when all the tables it depends on have ended. This condition is called execution readiness.
+
+### Load candidates
+
+A load candidate is a table in the load stack that is ready to load.
+
+At the beginning of the workflow, only tables with no unfinished dependencies are ready.
+
+**Initial `Pipeline.LoadCandidate`**
+
+| Table name | Reason |
+|---|---|
+| Sales.Customer | No dependencies. |
+| Sales.Product | No dependencies. |
+| Reference.Calendar | No dependencies. |
+
+A load candidate view can expose this list at any time.
+
+Conceptually, a table is a candidate when:
+
+- it is in the current load stack;
+- it has not started;
+- none of its dependencies are unfinished.
+
+This logic also works for tables with no dependencies. Their dependency list is empty, so they have no unfinished dependencies.
+
+The load candidate view turns execution readiness into something workers can query.
 
 ## Using the load stack
 
-The load stack table and the load candidate view can be used to implement a parallel load using the following algorithm.
+The load stack can be used to implement dependency-aware parallel loading.
 
-### Step 1
+The basic algorithm is simple.
 
-At the beginning of the load, populate the load stack and set [Is started] and [Is ended] to 0 for all rows. This is called refreshing the load stack and may require deleting existing rows.
+### Step 1—Refresh the load stack
 
-### Step 2
+At the beginning of the workflow, populate `Pipeline.LoadStack` with the tables that need to load.
 
-Start any number of workers. These could be functions in sub-processes or stored procedures in independent sessions. Each worker continuously polls the load stack and continues polling until there are no more tables with [Is started] = 0.
+Set `[Is started] = false` and `[Is ended] = false` for all rows. This creates a visible queue of work for the workflow.
 
-If there are still tables to be loaded, the worker queries the load candidate view to pick up a table that is ready to load.
+The stack may contain the full pipeline, or only a selected part of it. If a subset of tables is being loaded, the stack should include the necessary upstream tables required for that subset to load correctly.
 
-If the view returns a table, the worker
+### Step 2—Start workers
 
-1. sets [Is started] = 1 for that table in the load stack. This is claiming the table for loading,
+Start any number of workers.
 
-2. invokes the function or procedure to load the table, and
+Workers may be stored procedures, functions, notebooks, jobs, or other executable units. Each worker repeatedly checks the load stack until there is no more work to claim.
 
-3. sets [Is ended] = 1 when the load finishes or is aborted due to an error.
+A worker performs the following loop:
 
-If the view returns no tables, the worker pauses for two seconds before polling again.
+1. Check whether any unstarted tables remain in `Pipeline.LoadStack`.
+2. Query `Pipeline.LoadCandidate`.
+3. If no candidate is available, pause briefly and poll again.
+4. If a candidate is available, claim one table by setting `[Is started] = true`.
+5. Load the table.
+6. Set `[Is ended] = true` when the load finishes, fails, or aborts.
+7. Repeat until no unstarted tables remain.
 
-The worker exits when there are no more tables in the load stack with [Is started] = 0.
+The worker exits when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
+
+### Step 3—Claim a candidate
+
+If three workers are available at the start of the example workflow, each can claim one initial candidate.
+
+**After workers claim the initial candidates**
+
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | false | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
+
+A table that has started but not ended is not available to other workers. Downstream tables also remain blocked until their dependencies have ended.
 
 Claiming from the load stack must be done in a way that prevents multiple workers from claiming the same table. This can be achieved by wrapping the read from the load candidate view and the update to the load stack in a transaction. This avoids race conditions.
 
-In summary, this is all that is necessary to implement parallel load:
+A simplified claim pattern is:
 
-- The load candidate view, informed by expanded dependencies, ensures that a table is only offered for loading if it has no upstream tables still loading. This guarantees correct load order.
+"""sql
+begin transaction;
 
-- Multiple workers can pick up jobs as soon as they become available.
+select top 1
+    [Table name]
+from Pipeline.LoadCandidate
+where [Workflow ID] = 9001
+order by [Table name];
 
-- Transactions and locks around the claim step ensure that workers do not clash when selecting the same table.
+update Pipeline.LoadStack
+set
+    [Is started] = 1,
+    [Worker ID] = 'W01',
+    [Load start datetime] = current_timestamp
+where
+    [Workflow ID] = 9001
+    and [Table name] = @TableName
+    and [Is started] = 0;
 
-While these steps are sufficient for parallel loading, it is useful to log additional columns.
+commit transaction;
+"""
 
-- Start and end datetimes for each table in the load stack.
+The exact syntax will vary by SQL platform. The important point is that the worker should not select and claim a candidate in two unsafe steps. The claim should happen atomically.
 
-- A single [Workflow ID] assigned to every table in the load stack when it is refreshed. This ID represents the batch of load.
+### Step 4—Load, end, and repeat
 
-- A [Worker ID] generated by each worker, recorded against the table to show how jobs are distributed.
+When a table finishes loading, the worker marks it as ended.
 
-## Advantages
+"""sql
+update Pipeline.LoadStack
+set
+    [Is ended] = 1,
+    [Load end datetime] = current_timestamp
+where
+    [Workflow ID] = 9001
+    and [Table name] = 'Sales.Customer'
+    and [Worker ID] = 'W01';
+"""
 
-The advantages of the load stack are numerous.
+Suppose `Sales.Customer` finishes first.
 
-### No special code for parallelism
+**After `Sales.Customer` ends**
 
-There is no special code for parallelism. The logic looks identical whether one worker or many are used. The primary purpose of the load stack and the load candidate view is to ensure that tables load in the correct order. The ability to load multiple tables simultaneously is a natural side-effect of the design. The only difference between serial and parallel load is the number of workers started at a given moment. This does not need to be known to any central orchestrator. In fact, the load stack does not even track how many workers are active.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-### Unlimited and dynamic workers
+`Sales.Order` now becomes a load candidate because its only dependency, `Sales.Customer`, has ended.
 
-The number of workers is unlimited and can be turned on or off at any time. Many parallel load algorithms decide on the number of workers at the beginning and launch them accordingly. The load stack approach allows the platform engineer to respond to server resources in real time by adjusting the number of workers. Only minor changes are needed to allow workers to exit the polling loop early.
+**Current `Pipeline.LoadCandidate`**
 
-### Greedy and balanced work assignment
+| Table name | Reason |
+|---|---|
+| Sales.Order | `Sales.Customer` has ended. |
 
-The algorithm is well load-balanced by default. It uses a greedy approach to assigning work. As soon as a load candidate is ready, a worker picks up the job. There are no situations where a table is ready to load and a worker is available, but the load does not happen. While this does not guarantee optimal load time, it minimises idle workers. For further improvements, the load candidate view can be adjusted to return the next table based on a more fine-tuned balancing logic.
+A worker can now claim `Sales.Order`.
 
-### Partial pipeline support
+**After `Sales.Order` is claimed**
 
-It is easy to load only a portion of the pipeline. The expanded dependencies show exactly which tables are upstream from any given set. Loading only part of the pipeline can be achieved by populating the load stack with just those tables. This allows a subset of the pipeline to run more frequently or on a different schedule than the full pipeline, without needing changes to a central orchestration plan.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | true | false | W01 |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-### Mid-load interference
+Suppose `Sales.Product`, `Reference.Calendar`, and `Sales.Order` have all finished.
 
-Since load is controlled by making tables available on the load stack, the approach supports mid-load interference by editing the load stack. For example, tables can be put back on the load stack during a load by setting [Is started] = 0 for those tables. This supports error correction and retries mid-load.
+**After `Sales.Product`, `Reference.Calendar`, and `Sales.Order` end**
 
-### Increased load frequency
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-Most warehouses run loads in a daily batch, but some business needs require more up-to-date information that could be hourly or minutes latency, demanding a higher load frequency.
+`Sales.OrderItem` is now ready because both of its dependencies have ended.
 
-In practice, higher load frequencies are only practical if each of the table in the pipeline is incrementally processed. It is unlikely that every table in a large warehouse would be implemented this way. The load stack makes it a possible to load any portion of the pipeline. This means that it is easy to select a path within the overall pipeline for increased load frequency while allowing the rest to happen in usual batches.
+**Current `Pipeline.LoadCandidate`**
 
-In the most demanding case, editing the load stack mid-load can be used to implement continuous loads. For example, workers start to process the pipeline, while another process periodically resets one or more tables by setting [Is started] = 0 on the load stack. This puts the tables back on the queue for continuous processing.
+| Table name | Reason |
+|---|---|
+| Sales.OrderItem | `Sales.Order` and `Sales.Product` have ended. |
 
-The load stack allows a data engineering team to treat low and high frequency loads with the same orchestration. A path within a pipeline where all the tables are efficient can be loaded more regularly, increasing the frequency from once a day to multiples times in an hour, and ultimately to run continuously. It only depends on the investment in making each of the table in the path to process within the required response time.
+`Sales.OrderSummary` is not ready yet. Even though `Sales.Order` and `Reference.Calendar` have ended, `Sales.OrderItem` has not.
 
-This graduation allows “just-enough” investment to meet frequency targets. This gives teams a continuous-load option before considering the need to adopt dedicated streaming platform.
+After a worker claims and finishes `Sales.OrderItem`, the stack looks like this.
 
-### Cross-technology orchestration
+**After `Sales.OrderItem` ends**
 
-The load stack supports orchestration across multiple technologies. While many pipelines run on a single stack, complex problems may require different technologies for different parts of the load. The usual solution is to purchase orchestration software with connectors for each technology. The load stack reverses this. The only requirement is that the central load stack table is visible to all technologies. There is no need for a central worker to have connectors. For example, the load stack and load candidate view may be implemented in a SQL database, with claiming done through a stored procedure. As long as other technologies, such as Spark or other SQL warehouses, can connect via ODBC, they can participate. The load stack enables cross-technology orchestration with minimal requirements.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | true | true | W02 |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-## Conclusion
+`Sales.OrderSummary` is now ready.
 
-Load orchestration is the task of ensuring tables in a data pipeline load correctly with respect to their dependencies, even when doing so in parallel.
+**Current `Pipeline.LoadCandidate`**
 
-It is easy for load orchestration to go out of hand, creating pipelines that are opaque and impossible to maintain. When the pipeline becomes complex, some organisations may purchase orchestration software and additional servers to host them.
+| Table name | Reason |
+|---|---|
+| Sales.OrderSummary | `Sales.Order`, `Sales.OrderItem`, and `Reference.Calendar` have ended. |
 
-The load stack approach is a simple alternative. It does not require additional servers or software. Only minor amendments using tools already available to a data engineer are needed. The only requirements for the data engineer are to capture each table with its direct dependencies in a metadata table, and to modularise code so that each table can be loaded independently. The load candidate view computes execution readiness by consulting the state of the load stack to know what jobs have been complete and comparing it to the metadata table of dependencies. This ensures the load happens in the correct order no matter the level of complexity in dependencies, and no matter the number of workers, even in the absence of a centralised orchestrator.
+After `Sales.OrderSummary` ends, the workflow is complete.
 
-Compared to other common approaches towards orchestration, the load stack is a queue-based coordination adjusted for lineage-awareness. At any given point, it uses the actual state of upstream tables to determine readiness of tables to load. This allows the load to respond immediately to changes in circumstances, something that is not easy in other approaches.
+**Completed `Pipeline.LoadStack`**
 
-It is technology-agnostic, lightweight, and easy to adopt — which makes it ideal for any team to implement with low investment cost.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | true | true | W02 |
+| 9001 | Sales.OrderSummary | true | true | W03 |
+
+The workflow ends when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
+
+### Handling failure
+
+If the table fails or aborts, the worker can still mark the table as ended, but should also record the outcome.
+
+"""sql
+update Pipeline.LoadStack
+set
+    [Is ended] = 1,
+    [Load end datetime] = current_timestamp,
+    [Load status] = 'Failed',
+    [Failure message] = 'Source extract timeout'
+where
+    [Workflow ID] = 9001
+    and [Table name] = 'Sales.Order'
+    and [Worker ID] = 'W01';
+"""
+
+Whether downstream tables should proceed after a failure depends on the pipeline’s policy.
+
+A strict pipeline may treat failed upstream loads as incomplete and block downstream work.
+
+A more fault-tolerant pipeline may allow downstream tables to proceed if they can safely use the previous successful version of the upstream table.
+
+The important point is that the decision is visible. The load stack records what started, what ended, what failed, and what remains blocked.
+
+## Why the load stack works
+
+The load stack works because it makes dependency order visible, computable, and controllable.
+
+It does not remove dependency complexity. It changes where that complexity lives.
+
+If load order is hidden in procedural orchestration code, dependency complexity becomes hard to inspect and hard to change. If load order is expressed as metadata and execution state, the same complexity can be queried, tested, visualised, and controlled.
+
+This is why the pattern can scale. A warehouse may grow to tens of thousands of dependency relationships without requiring the load sequence itself to be hand-coded. The dependency graph can be large because readiness is computed from data.
+
+### Correct order is computed, not hard-coded
+
+The load candidate view ensures that a table is offered for loading only when its upstream dependencies have ended.
+
+This means correct order does not depend on a developer manually maintaining a sequence of execution steps. The order emerges from dependency metadata and the current state of the load stack.
+
+When a new table is added, the data engineer adds its dependency metadata. The load candidate view uses that metadata to determine when it is ready. The orchestration logic does not need to be rewritten for every new dependency path.
+
+### Parallelism follows from readiness
+
+Parallelism is a consequence of the readiness rule.
+
+If three independent tables are ready, three workers can claim them. If ten independent tables are ready, ten workers can claim them. If only one table is ready, only one table is available.
+
+There is no need for a central process to decide in advance which tables should run side by side. Workers simply claim tables that are ready.
+
+The number of workers can be adjusted according to available resources. The load stack does not need to know how many workers exist. It only needs to expose which tables are ready.
+
+### Execution state is visible
+
+Because the load stack is a table, the state of the workflow can be inspected while the load is running.
+
+The data engineer can see:
+
+- which tables have not started;
+- which tables are currently loading;
+- which tables have ended;
+- which worker claimed each table;
+- which tables are blocked;
+- which tables failed or aborted.
+
+This makes troubleshooting easier. A stalled pipeline is no longer a hidden procedural state inside a scheduler. It becomes visible as rows in a table.
+
+### Partial loads become ordinary
+
+The load stack does not need to contain the entire warehouse.
+
+If a data engineer wants to load only a portion of the pipeline, the stack can be populated with that subset and the required upstream dependencies. This supports targeted reloads, repair loads, and loads that run on different schedules.
+
+This is difficult when the pipeline is defined only as a single hard-coded sequence. It is much easier when the execution queue is visible and editable.
+
+### Higher-frequency loads become local decisions
+
+Most warehouses run in daily batches, but some parts of a warehouse may need to load more frequently.
+
+A load stack allows a selected path through the pipeline to be loaded more often than the whole warehouse. This only works if the tables in that path are efficient enough to meet the required frequency, but the orchestration pattern does not need to change.
+
+A path that is incrementally processed can be loaded hourly, every few minutes, or continuously, while the rest of the warehouse remains on its normal batch schedule.
+
+This gives the data engineering team a gradual path toward higher-frequency loading before adopting a dedicated streaming platform. The team can invest only where higher frequency is actually needed.
+
+### Cross-technology loading requires shared state, not shared tooling
+
+The load stack can also support orchestration across technologies.
+
+A complex pipeline may use SQL stored procedures, Spark notebooks, Python functions, or other processing technologies. A central orchestration product may provide connectors for each of these technologies, but the load stack takes a different approach.
+
+The only requirement is that each worker can read and update the shared load stack.
+
+For example, `Pipeline.LoadStack` and `Pipeline.LoadCandidate` may be implemented in a SQL database. A SQL procedure, Spark notebook, and Python process can all participate as workers if they can connect to the database, claim candidates, and update the stack.
+
+This makes the load stack technology-agnostic. The coordination happens through shared execution state.
+
+## Is the extra machinery worth it?
+
+The load stack introduces additional machinery.
+
+The data engineer needs dependency metadata, a load stack table, a load candidate view, worker logic, transaction-safe claiming, and execution logging.
+
+In a small pipeline, this may be unnecessary. If there are only a handful of tables and dependencies, a simple sequence may be easier to understand.
+
+But as the warehouse grows, dependency management becomes its own engineering problem. The cost of maintaining hard-coded load order increases. The risk of running tables in the wrong order increases. The difficulty of debugging and retrying failed loads increases. Parallel execution becomes harder to reason about.
+
+The load stack is worthwhile because it keeps dependency complexity explicit.
+
+| Object | Why it matters |
+|---|---|
+| `Pipeline.TableDependency` | Keeps dependency structure visible as metadata rather than hidden in procedural code. |
+| `Pipeline.LoadStack` | Keeps execution state visible while the workflow is running. |
+| `Pipeline.LoadCandidate` | Computes readiness from dependency structure and execution state. |
+| Workers | Claim ready tables independently, allowing parallel loading without a central scheduler. |
+| Transactional claim logic | Prevents two workers from claiming the same table. |
+| Worker and status columns | Make execution observable, debuggable, and recoverable. |
+
+The value of the pattern grows with scale. On one small pipeline, it may seem excessive. Across a large warehouse, it removes one of the first bottlenecks: dependency-constrained loading.
+
+The point is not that every warehouse needs this exact implementation. The point is that a serious warehouse needs a visible model of execution readiness.
+
+A load stack is one simple way to provide it.
+
+> **Key ideas.**
+>
+> Load dependencies are one of the first bottlenecks in a growing warehouse.
+>
+> A load stack exposes the pipeline’s execution queue as data.
+>
+> Dependency metadata records which tables depend on which upstream tables.
+>
+> The load stack records which tables in the current workflow have started and ended.
+>
+> A load candidate is a table whose upstream dependencies have all ended.
+>
+> The load candidate view combines dependency metadata with the current state of the load stack.
+>
+> Workers can claim load candidates independently, allowing dependency-aware parallel loading without a central scheduler.
+>
+> The load stack makes orchestration visible, controllable, and easier to debug.
+>
+> The same pattern supports partial loads, higher-frequency loads, and cross-technology orchestration.
 
 # Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
 

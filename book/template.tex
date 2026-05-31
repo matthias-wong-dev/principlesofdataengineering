@@ -68,6 +68,7 @@
 \definecolor{codeBack}{HTML}{F6F8FA}
 \definecolor{codeFrame}{HTML}{C9D3DD}
 \definecolor{codeText}{HTML}{17202A}
+\definecolor{codeKeyword}{HTML}{005A9C}
 \arrayrulecolor{pbiGrid}
 \setlength{\arrayrulewidth}{0.35pt}
 \renewcommand{\arraystretch}{1.18}
@@ -104,6 +105,31 @@
   ]\color{codeText}%
 }
 \AfterEndEnvironment{verbatim}{\end{mdframed}}
+
+\newenvironment{podecode}{%
+  \VerbatimEnvironment
+  \begin{mdframed}[
+    backgroundcolor=codeBack,
+    linecolor=codeFrame,
+    linewidth=0.35pt,
+    roundcorner=2pt,
+    innerleftmargin=7pt,
+    innerrightmargin=7pt,
+    innertopmargin=6pt,
+    innerbottommargin=6pt,
+    skipabove=0.8em,
+    skipbelow=0.9em
+  ]\color{codeText}%
+  \begin{Verbatim}[
+    breaklines,
+    breakanywhere,
+    fontsize=\small,
+    commandchars=\\\{\}
+  ]%
+}{%
+  \end{Verbatim}%
+  \end{mdframed}%
+}
 
 \pagestyle{fancy}
 \fancyhf{}
