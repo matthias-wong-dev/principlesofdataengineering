@@ -19,11 +19,9 @@ Valid for what? Valid now, or valid at creation? Valid according to the source s
 
 Renaming `[Valid]` to `[Is current name]` is not cosmetic. It changes the user’s ability to understand the data.
 
-This is why metadata is a quality issue.
+This is why metadata is not an add-on task. It is part of modelling. No transformation can help a user who cannot tell what the result means. 
 
-Quality metadata adds value at the point of interpretation. No transformation can help a user who cannot tell what the result means.
-
-Metadata is not an add-on task. It is part of modelling. In complex cases, writing metadata first is a way to lay out the logic in plain language before implementation.
+In complex cases, writing metadata first is a way to lay out the logic in plain language before implementation.
 
 There are three basic kinds of metadata discussed in this chapter:
 
@@ -65,13 +63,13 @@ Names should also be able to stand alone. Data tables and columns can often be t
 
 For example, `[Is non-compliant]` may be better as `[Is financially non-compliant]`. This may involve repeating some of the table meaning in the column name.
 
+When in doubt, the data engineer should err on the side of explicitness, because it is easier to shorten a name in a Power BI visual than for a user to creatively extend it.
+
 Another compromise to recognisability is filler language.
 
 Words such as `type`, `group`, `summary`, and `details` are often used by developers without adding meaning. They can function like “um” and “ah” in a sentence: they fill space but obscure meaning.
 
 If a table is called `summary`, it should usually be renamed to reflect what is being summarised. `Details` should be avoided unless it is truly a finer-grain expansion of a header row.
-
-When in doubt, the data engineer should err on the side of explicitness, because it is easier to shorten a name in a Power BI visual than for a user to creatively extend it.
 
 These principles apply just as much to code. Temporary tables and CTEs should be named with business meaning, not cryptic abbreviations like `tmp`. In complex code, column renaming should happen early, on first contact, and persist throughout transformation.
 
@@ -81,7 +79,7 @@ Descriptions make artefacts comprehensible.
 
 A name may tell the user what an artefact is, but the name cannot carry the whole interpretation. The user may still need to know what business reality is represented, how the value was derived, what assumptions were made, when the artefact is unsafe, and how it differs from related concepts.
 
-This is why business descriptions are not an add-on. They are meaning explanations. They enhance data quality by aligning artefacts to business reality through interpretative context.
+This is why business descriptions are part of the meaning rather than an add-on. They enhance data quality by aligning artefacts to business reality through interpretative context.
 
 Too often, descriptions merely restate the artefact name. For example, `Cake.Sales` may be described as “A list of cakes sold”, or `[Is non-compliant]` as “True if found non-compliant.” These descriptions do nothing more than take up storage space. At worst, they harm trust by conveying shallowness.
 
@@ -131,21 +129,15 @@ Database keys include primary keys, foreign keys, and unique keys. They are also
 
 Keys stop records from becoming lost.
 
-A business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them.
+As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
+
+Moreover, a business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them. 
 
 In this sense, keys are a map for the warehouse. They show which row represents which business entity, which records belong together, and how one fragment of reality relates to another.
 
-Names and business descriptions explain artefacts in themselves. Keys explain where those artefacts sit in the wider business landscape.
-
-Relationships are part of meaning. The relationship between one table and another tells the user something about both tables that neither table can say in isolation.
+Keys also recognise that relationships are part of meaning. The relationship between one table and another tells the user something about both tables that neither table can say in isolation.
 
 For example, a foreign key between `Cake.Sales` and `Cake.RefProfitability` immediately signals that some sales may be profitable and some may not.
-
-Database keys also help users navigate the database and perform joins. Without them, users are left to guess which path through the warehouse is safe. This is not acceptable.
-
-Primary keys play a special role. As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity.
-
-This is why primary keys matter so much. They are not only technical identifiers. They are the anchor between a row and the entity it claims to represent.
 
 Each organisation implements keys differently. Some store them only in conceptual diagrams or third-party tools. The disadvantage is that they cannot be easily read or queried.
 
@@ -163,13 +155,9 @@ The primary purpose of metadata is not governance, tagging, discoverability, or 
 
 Metadata should be understood in the context of the data engineer’s task: shaping data in light of business intent. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business reality.
 
-Without this context, interpretation is left to the user.
-
-That is not merely a documentation gap. It is abandoning the user to guess.
+Without this context, the data engineer is abandoning the user to guess.
 
 Finally, whether metadata describes names, descriptions, or keys, it should be stored and made available as data.
-
-If metadata carries meaning, it should be available to the systems and users that need meaning.
 
 Instead of recording metadata only in diagrams, specialist tools, or database constructs, it should also be available as tables. Treating metadata as data enhances the ability to distribute it, automate it, and surface it to appropriate tools through APIs.
 
