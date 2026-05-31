@@ -61,7 +61,7 @@ The six sections are loosely independent and can be read on their own:
 - Presenting insights
 - Quality & reliability
 - Efficient & stable pipeline
-- Beyond techniques
+- Judgement under ambiguity
 
 It can also be searched for specific topics such as dimensional modelling or incremental processing after the reader gains an overview of the book through scanning the table of contents.
 

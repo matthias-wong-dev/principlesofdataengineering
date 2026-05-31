@@ -1,6 +1,6 @@
 ---
 title: Construction planning
-url: /docs/beyond-techniques/construction-planning/
+url: /docs/judgement-under-ambiguity/construction-planning/
 description: Shows how to turn discovery, vision, and scope into a practical construction plan for data delivery.
 lede: A strong construction plan creates momentum by giving delivery an orderly shape.
 weight: 3

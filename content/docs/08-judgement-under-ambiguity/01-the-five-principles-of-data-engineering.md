@@ -1,6 +1,6 @@
 ---
 title: The five principles of data engineering
-url: /docs/beyond-techniques/the-five-principles-of-data-engineering/
+url: /docs/judgement-under-ambiguity/the-five-principles-of-data-engineering/
 description: "Five principles for data engineering beyond shallow curation: expressive entities, meaningful fragments, anticipate errors, build momentum, and root cause."
 lede: Good data engineering is guided by principles, not just techniques.
 weight: 1
@@ -11,7 +11,7 @@ The earlier sections outlined patterns and practices for data engineering scenar
 
 They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
 
-This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Beyond techniques, is where patterns culminate and summarised in five principles.
+This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and summarised in five principles.
 
 ## The problem with shallow curation
 
