@@ -463,7 +463,7 @@ def clean_body(
     text = strip_hugo_markup(text)
     if target in {"epub", "pdf", "kdp"}:
         text = wrap_svg_blocks_for_epub(text, diagrams)
-    if target == "epub":
+    if target in {"epub", "pdf", "kdp"}:
         text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
@@ -483,11 +483,48 @@ def clean_title(title: str, target: str) -> str:
     return title
 
 
+def latex_escape(text: str) -> str:
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(char, char) for char in text)
+
+
 def render_heading(page: Page, target: str) -> str:
     title = clean_title(page.title, target)
-    if target == "epub":
+    if target in {"epub", "pdf", "kdp"}:
         return f"# {title} {{#{page_anchor(page)}}}"
     return f"# {title}"
+
+
+def render_section_break(page: Page, target: str) -> str:
+    if target == "epub":
+        return render_heading(page, target)
+
+    title = latex_escape(clean_title(page.title, target))
+    anchor = page_anchor(page)
+    return "\n".join(
+        [
+            r"\thispagestyle{empty}",
+            r"\phantomsection",
+            f"\\hypertarget{{{anchor}}}{{}}",
+            f"\\addcontentsline{{toc}}{{part}}{{{title}}}",
+            r"\vspace*{0.34\textheight}",
+            r"\begin{center}",
+            f"{{\\Huge\\bfseries {title}}}",
+            r"\end{center}",
+            r"\cleardoublepage",
+        ]
+    )
 
 
 def render_chapter(
@@ -504,84 +541,10 @@ def render_chapter(
 
 
 def render_pdf_front_matter() -> str:
-    return "\n".join(
-        [
-            "---",
-            f'title: "{TITLE}"',
-            f'author: "{AUTHOR}"',
-            'documentclass: book',
-            'classoption:',
-            "  - oneside",
-            "  - openany",
-            "  - 11pt",
-            "geometry: margin=1in",
-            "fontsize: 11pt",
-            "linestretch: 1.15",
-            "toc: true",
-            "toc-depth: 3",
-            "numbersections: false",
-            "links-as-notes: false",
-            "header-includes:",
-            "  - |",
-            "    \\usepackage{microtype}",
-            "  - |",
-            "    \\usepackage{setspace}",
-            "  - |",
-            "    \\usepackage{titlesec}",
-            "  - |",
-            "    \\usepackage{fancyhdr}",
-            "  - |",
-            "    \\pagestyle{fancy}",
-            "  - |",
-            "    \\fancyhf{}",
-            "  - |",
-            "    \\fancyfoot[C]{\\thepage}",
-            "  - |",
-            "    \\renewcommand{\\headrulewidth}{0pt}",
-            "  - |",
-            "    \\titleformat{\\chapter}[display]{\\normalfont\\bfseries\\Huge}{}{0pt}{\\Huge}",
-            "  - |",
-            "    \\titlespacing*{\\chapter}{0pt}{0pt}{24pt}",
-            "---",
-            "",
-            "\\thispagestyle{empty}",
-            "",
-            "\\vspace*{0.25\\textheight}",
-            "",
-            "\\begin{center}",
-            "",
-            f"{{\\Huge\\bfseries {TITLE}\\\\}}",
-            "",
-            "\\vspace{1.5cm}",
-            "",
-            f"{{\\Large {AUTHOR}}}",
-            "",
-            "\\end{center}",
-            "",
-            "\\newpage",
-            "",
-            "\\thispagestyle{empty}",
-            "",
-            "\\vspace*{0.35\\textheight}",
-            "",
-            "\\noindent "
-            f"The book is available on \\href{{{BOOK_URL}}}{{{BOOK_DOMAIN}}}.",
-            "",
-            "\\vspace{1em}",
-            "",
-            "\\noindent Downloadable PDF and EPUB editions are available for offline reading. "
-            "The online version is canonical and may be updated over time.",
-            "",
-            "\\newpage",
-            "",
-            "\\tableofcontents",
-            "",
-            "\\newpage",
-        ]
-    )
+    return render_print_front_matter()
 
 
-def render_kdp_front_matter() -> str:
+def render_print_front_matter() -> str:
     return "\n".join(
         [
             "---",
@@ -641,6 +604,10 @@ def render_kdp_front_matter() -> str:
     )
 
 
+def render_kdp_front_matter() -> str:
+    return render_print_front_matter()
+
+
 def render_epub_front_matter() -> str:
     return "\n".join(
         [
@@ -676,14 +643,12 @@ def build_book(target: str) -> str:
 
     for section, children in sections:
         if section.title.lower() != "about":
-            chunks.append(render_heading(section, target))
-            if target in {"pdf", "kdp"}:
-                chunks.append(r"\cleardoublepage" if target == "kdp" else r"\newpage")
+            chunks.append(render_section_break(section, target))
 
         for child in children:
             chunks.append(render_chapter(child, target, link_map, diagrams))
             if target in {"pdf", "kdp"}:
-                chunks.append(r"\cleardoublepage" if target == "kdp" else r"\newpage")
+                chunks.append(r"\cleardoublepage")
 
     while chunks and chunks[-1] in {r"\newpage", r"\cleardoublepage"}:
         chunks.pop()

@@ -50,7 +50,7 @@ links-as-notes: false
 
 \mainmatter
 
-# The author
+# The author {#docs-about-the-author}
 
 ## About the author
 
@@ -68,7 +68,7 @@ For contact information, see [the author's website](https://matthiaswong.me).
 
 \cleardoublepage
 
-# The book
+# The book {#docs-about-the-book}
 
 ## Dedication and acknowledgements
 
@@ -97,11 +97,17 @@ Web adaptation and additional material © Matthias Wong 2026
 
 \cleardoublepage
 
-# Foundations
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-foundations}{}
+\addcontentsline{toc}{part}{Foundations}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Foundations}
+\end{center}
 \cleardoublepage
 
-# What is data engineering?
+# What is data engineering? {#docs-foundations-what-is-data-engineering}
 
 ## The aim is insight
 
@@ -175,7 +181,7 @@ The search for business insights is both demanding in complexity and fluid in na
 
 \cleardoublepage
 
-# What is data?
+# What is data? {#docs-foundations-what-is-data}
 
 ## The central premise
 
@@ -229,7 +235,7 @@ We will return frequently to the concepts illustrated in Figure 1 throughout thi
 
 \cleardoublepage
 
-# Data and organisations
+# Data and organisations {#docs-foundations-data-and-organisations}
 
 ## Data and organisational self-understanding
 
@@ -277,15 +283,21 @@ The agency cycle therefore shows why no part of data work is neutral. The busine
 
 \cleardoublepage
 
-# Creating information
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-creating-information}{}
+\addcontentsline{toc}{part}{Creating information}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Creating information}
+\end{center}
 \cleardoublepage
 
-# Expressiveness and fragment modelling
+# Expressiveness and fragment modelling {#docs-creating-information-expressiveness-and-fragment-modelling}
 
 ## From data to reusable information
 
-Data engineering reshapes [fragments of reality](/docs/foundations/what-is-data/) into forms the business can use.
+Data engineering reshapes [fragments of reality](#docs-foundations-what-is-data) into forms the business can use.
 
 This work must be done efficiently, reproducibly, and over sustained periods of time. The goal is not merely to produce isolated reports or one-off datasets, but to create a cost-effective and robust pipeline of valuable, reusable blocks of information that are conducive to business insight.
 
@@ -299,7 +311,7 @@ This book introduces five principles of data engineering. The first two are **ex
 
 ## Expressiveness
 
-Insight is [information analysed in the light of intent](/docs/foundations/what-is-data-engineering/). A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise data in a way that makes sense for business decisions.
+Insight is [information analysed in the light of intent](#docs-foundations-what-is-data-engineering). A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise data in a way that makes sense for business decisions.
 
 This is the task of applying business intent to reshape data. When done successfully, the output is expressive of business intent.
 
@@ -321,7 +333,7 @@ Expressiveness encompasses all aspects of a good data engineer’s work. It lies
 
 ## Fragment modelling
 
-The [fluid nature of business insight](/docs/foundations/what-is-data-engineering/) means that the data engineer cannot know in advance exactly what needs to be built.
+The [fluid nature of business insight](#docs-foundations-what-is-data-engineering) means that the data engineer cannot know in advance exactly what needs to be built.
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 
@@ -351,7 +363,7 @@ A wide table with a large number of miscellaneous columns buries multiple busine
 
 It is impossible to achieve a truly expressive data model without deconstructing source data into meaningful fragments and reorganising them to better reflect real-world entities.
 
-This chapter introduces fragment modelling as a principle. The later chapter [Meaningful fragments](/docs/creating-information/meaningful-fragments/) explores the practice in detail.
+This chapter introduces fragment modelling as a principle. The later chapter [Meaningful fragments](#docs-creating-information-meaningful-fragments) explores the practice in detail.
 
 Fragment modelling can be disorienting for an engineer used to traditional warehousing approaches. Once familiar, it becomes a powerful approach to creating sustainable and flexible pipelines. The following chapters explain how this is done.
 
@@ -367,7 +379,7 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 
 \cleardoublepage
 
-# Mapping the data world
+# Mapping the data world {#docs-creating-information-mapping-the-data-world}
 
 ## From records to entities
 
@@ -458,7 +470,7 @@ The distinction between immutable and mutable entities shapes the overall approa
 | Data engineering approach | Entity processing | Entity tracking |
 | Pipeline focus | Process the entity through business logic | Track attributes, behaviour, and state over time |
 
-These are the subjects of the next two chapters: [Entity processing](/docs/creating-information/entity-processing/) and [Entity tracking](/docs/creating-information/entity-tracking/).
+These are the subjects of the next two chapters: [Entity processing](#docs-creating-information-entity-processing) and [Entity tracking](#docs-creating-information-entity-tracking).
 
 > **Key ideas.**
 >
@@ -474,11 +486,11 @@ These are the subjects of the next two chapters: [Entity processing](/docs/creat
 
 \cleardoublepage
 
-# Entity processing
+# Entity processing {#docs-creating-information-entity-processing}
 
 ## Processing immutable entities
 
-Entity processing is the main pattern for [immutable business entities](/docs/creating-information/mapping-the-data-world/): entities that are treated as fixed once created.
+Entity processing is the main pattern for [immutable business entities](#docs-creating-information-mapping-the-data-world): entities that are treated as fixed once created.
 
 Examples include a sales order, a bank transfer, or an import declaration. If such an entity changes, the change is treated as though it were a different entity. For immutable entities, the business objective is to process the entity according to defined business logic. Hence the term **entity processing**.
 
@@ -505,7 +517,7 @@ Usually this is clear. Sometimes it is not. A sales transaction may have multipl
 
 The correct lens is the one that supports business action.
 
-Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](/docs/creating-information/expressiveness-and-fragment-modelling/) is suited to this task because different aspects of the entity can be maintained in different fragments.
+Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](#docs-creating-information-expressiveness-and-fragment-modelling) is suited to this task because different aspects of the entity can be maintained in different fragments.
 
 ## Building the pipeline
 
@@ -525,7 +537,7 @@ It has three stages: identifying keys, defining reference tables, and extracting
 
 The first task is to identify the business keys that serve as primary keys to the raw data. These may be defined as database constraints in the source data, or inferred through exploratory analysis.
 
-Defining primary and foreign keys is a simple but powerful way to [bridge the data world and the business world](/docs/creating-information/mapping-the-data-world/).
+Defining primary and foreign keys is a simple but powerful way to [bridge the data world and the business world](#docs-creating-information-mapping-the-data-world).
 
 In some cases, key columns need to be created. For immutable entities, the two common scenarios are versioning and sequence numbers.
 
@@ -715,15 +727,15 @@ The same temptation applies to all three passes. Convenience at the beginning cr
 
 \cleardoublepage
 
-# Entity tracking
+# Entity tracking {#docs-creating-information-entity-tracking}
 
 ## Tracking mutable entities
 
-Entity tracking is the main pattern for [mutable business entities](/docs/creating-information/mapping-the-data-world/): those that change over time while still being considered the same entity.
+Entity tracking is the main pattern for [mutable business entities](#docs-creating-information-mapping-the-data-world): those that change over time while still being considered the same entity.
 
 Examples include a customer whose contact details, preferences, or purchasing behaviour evolve; an employee whose qualifications, role, or performance record changes; or a supplier whose compliance status shifts over time.
 
-[Entity processing](/docs/creating-information/entity-processing/) asks what happened to a fixed entity. Entity tracking asks how an entity changed while remaining itself.
+[Entity processing](#docs-creating-information-entity-processing) asks what happened to a fixed entity. Entity tracking asks how an entity changed while remaining itself.
 
 Mutable entities share common characteristics:
 
@@ -759,7 +771,7 @@ The same three-pass structure applies to both modes, but with different emphasis
 
 ## Building the pipeline
 
-Much of the approach from entity processing still applies. The data engineer must identify the entity of interest, craft [expressive reference tables](/docs/creating-information/reference-data/), preserve necessary detail, and tell a coherent story.
+Much of the approach from entity processing still applies. The data engineer must identify the entity of interest, craft [expressive reference tables](#docs-creating-information-reference-data), preserve necessary detail, and tell a coherent story.
 
 The difference is that mutable entities introduce time into the entity itself. In entity processing, time usually appears around the entity: orders, confirmation, shipment, completion. In entity tracking, time defines the state of the entity.
 
@@ -956,17 +968,17 @@ Computational performance can also become a bottleneck, especially in end-of-per
 
 \cleardoublepage
 
-# Reference data
+# Reference data {#docs-creating-information-reference-data}
 
 ## A stable place for meaning
 
-In the chapters [Entity processing](/docs/creating-information/entity-processing/) and [Entity tracking](/docs/creating-information/entity-tracking/), reference tables appeared as a way to make business meaning expressive. They gave names, descriptions, and analytical attributes a stable place to live.
+In the chapters [Entity processing](#docs-creating-information-entity-processing) and [Entity tracking](#docs-creating-information-entity-tracking), reference tables appeared as a way to make business meaning expressive. They gave names, descriptions, and analytical attributes a stable place to live.
 
 This chapter takes the next step. The goal is to introduce reference data into the warehouse and connect individual systems to it. Local systems may continue using their own terminology, codes, and classifications, while the warehouse provides shared points of reference for business meaning.
 
 Two constructs are important for this purpose: **reference tables** and **mapping tables**. Reference tables define the meanings the business wants to use. Mapping tables connect local system values to those shared meanings.
 
-This chapter focuses on applying these ideas within a single system. The next chapter extends the same pattern across [multiple systems](/docs/creating-information/conforming-systems/).
+This chapter focuses on applying these ideas within a single system. The next chapter extends the same pattern across [multiple systems](#docs-creating-information-conforming-systems).
 
 ## A point of reference
 
@@ -974,7 +986,7 @@ A reference table that applies to multiple business processes becomes a shared p
 
 The calendar is a simple example. Most business processes can map directly to a calendar table through a date column. A country table is another common example. Product categories, organisational structures, geographic hierarchies, and customer classifications often play the same role.
 
-Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition. This makes reference data one of the main ways a warehouse gives stable form to [negotiated organisational meaning](/docs/foundations/data-and-organisations/).
+Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition. This makes reference data one of the main ways a warehouse gives stable form to [negotiated organisational meaning](#docs-foundations-data-and-organisations).
 
 The term **golden record** is also used, particularly when a single reference table represents the authoritative version of a concept.
 
@@ -1177,7 +1189,7 @@ Above all, it is a discipline of separation, not a mechanical implementation rec
 
 \cleardoublepage
 
-# Conforming systems
+# Conforming systems {#docs-creating-information-conforming-systems}
 
 ## Integration without distortion
 
@@ -1187,7 +1199,7 @@ Business often needs to see multiple systems together. A legacy system may be re
 
 New engineers often fall into two traps: forcing a union of tables that do not naturally fit, or performing large joins that create ambiguous grain and duplicated data. Both approaches can produce outputs that run but no longer mean what they appear to mean.
 
-Conforming systems is the discipline of integrating information without distorting the [business entities](/docs/creating-information/mapping-the-data-world/) being represented. Fragment modelling handles this by refusing to collapse meaning into convenience.
+Conforming systems is the discipline of integrating information without distorting the [business entities](#docs-creating-information-mapping-the-data-world) being represented. Fragment modelling handles this by refusing to collapse meaning into convenience.
 
 There are two approaches:
 
@@ -1228,7 +1240,7 @@ At this stage, no union is required. The goal is to represent each incoming syst
 
 ### Step 2—Build conformed references
 
-The second step is to build [reference data](/docs/creating-information/reference-data/) that expresses shared business meaning across both systems.
+The second step is to build [reference data](#docs-creating-information-reference-data) that expresses shared business meaning across both systems.
 
 For example, suppose the two systems record sales status differently.
 
@@ -1507,7 +1519,7 @@ When the answer to either question is no, then vertical integration is likely to
 
 \cleardoublepage
 
-# Storytelling
+# Storytelling {#docs-creating-information-storytelling}
 
 ## Meaning beyond correctness
 
@@ -1557,7 +1569,7 @@ As a simplified example, a `Cake.Production` process may contain inspection resu
 
 The source system may record production events and inspection notes, but the business needs to see whether a production run failed and why. The data engineer creates that interpretation as a reusable fragment.
 
-The definition of good and bad can be a significant point of debate in a complex organisation with different business viewpoints. In these situations, it can be extremely challenging to arrive at a consensus. Many organisations fail to do so, crippling their ability to see issues consistently. In this case, it is often [the creativity and technical expertise of the data engineer](/docs/foundations/data-and-organisations/) that can broker between parties by showing the way forward.
+The definition of good and bad can be a significant point of debate in a complex organisation with different business viewpoints. In these situations, it can be extremely challenging to arrive at a consensus. Many organisations fail to do so, crippling their ability to see issues consistently. In this case, it is often [the creativity and technical expertise of the data engineer](#docs-foundations-data-and-organisations) that can broker between parties by showing the way forward.
 
 ## Trading detail for insight
 
@@ -1711,7 +1723,7 @@ The business no longer needs to inspect every individual inspection result. The 
 
 A storytelling dimension brings multiple acts of interpretation together into a single reusable business view.
 
-Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through [reference data](/docs/creating-information/reference-data/) rather than in the transaction table itself.
+Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through [reference data](#docs-creating-information-reference-data) rather than in the transaction table itself.
 
 Continuing the help desk example:
 
@@ -1826,7 +1838,7 @@ Once the storytelling dimension exists, the entity of interest can be mapped to 
 | H1003 | 7 |
 | H1004 | 2 |
 
-The calculation should be done at the grain of the entity of interest during the reduce stage of the pipeline, as described in the chapter on [Entity Processing](/docs/creating-information/entity-processing/).
+The calculation should be done at the grain of the entity of interest during the reduce stage of the pipeline, as described in the chapter on [Entity Processing](#docs-creating-information-entity-processing).
 
 The calculation can be added to an existing aggregation table if appropriate or implemented as a new fragment. Continuing the help desk example, this would result in a `Helpdesk.CaseEscalation` table paired with `Helpdesk.RefCaseEscalation`.
 **Example result after joining to `Helpdesk.RefCaseEscalation`**
@@ -1870,7 +1882,7 @@ Storytelling is important because correctness is not enough. A table can be accu
 
 The data engineer’s task is to create forms of information that make the business visible: its outcomes, patterns, and journeys.
 
-This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](/docs/foundations/data-and-organisations/), and where the data engineer plays an influential role in how organisation understands its own business.
+This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](#docs-foundations-data-and-organisations), and where the data engineer plays an influential role in how organisation understands its own business.
 
 ## Key ideas
 
@@ -1892,17 +1904,17 @@ This involves decisions and compromise: details to discard, or journeys to empha
 
 \cleardoublepage
 
-# Meaningful fragments
+# Meaningful fragments {#docs-creating-information-meaningful-fragments}
 
 ## Fragment modelling
 
-The earlier chapters introduced [entity processing](/docs/creating-information/entity-processing/), [entity tracking](/docs/creating-information/entity-tracking/), [reference data](/docs/creating-information/reference-data/), [conforming systems](/docs/creating-information/conforming-systems/), and [storytelling](/docs/creating-information/storytelling/). Each depended on the same discipline: break complexity into individual fragments and connect them deliberately.
+The earlier chapters introduced [entity processing](#docs-creating-information-entity-processing), [entity tracking](#docs-creating-information-entity-tracking), [reference data](#docs-creating-information-reference-data), [conforming systems](#docs-creating-information-conforming-systems), and [storytelling](#docs-creating-information-storytelling). Each depended on the same discipline: break complexity into individual fragments and connect them deliberately.
 
 This approach is **fragment modelling**.
 
 This chapter closes the section on creating information by making fragment modelling explicit. It steps back from those specific patterns and names the broader practice. It then introduces additional fragment patterns that commonly appear in real business pipelines: milestones, current-version selectors, timelines, mappings, distribution weights, and hubs.
 
-The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/):
+The key idea is summarised by the [second principle of data engineering](#docs-creating-information-expressiveness-and-fragment-modelling):
 
 > Instead of building giant tables, create meaningful fragments.
 
@@ -2057,7 +2069,7 @@ This is one case where fragment modelling can reduce immediate expressiveness if
 
 When entities change over time, users often need consistent point-in-time views. This can be error-prone for users when the attributes are spread across multiple tables, because joins require careful handling of time conditions. The data engineer can make these results easily accessible through corresponding fragments.
 
-The relevant fragments—timelines and end-of-period tables— are discussed in [Entity tracking](/docs/creating-information/entity-tracking/).
+The relevant fragments—timelines and end-of-period tables— are discussed in [Entity tracking](#docs-creating-information-entity-tracking).
 
 ### Mapping
 
@@ -2235,15 +2247,21 @@ This is one of the hallmarks of mature data engineering: the ability to see a da
 
 \cleardoublepage
 
-# Presenting insights
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-presenting-insights}{}
+\addcontentsline{toc}{part}{Presenting insights}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Presenting insights}
+\end{center}
 \cleardoublepage
 
-# The craft of dimensional modelling
+# The craft of dimensional modelling {#docs-presenting-insights-the-craft-of-dimensional-modelling}
 
 ## From information to insight
 
-Insight is information analysed in light of intent. The previous section, [Creating information](/docs/creating-information/expressiveness-and-fragment-modelling/), focused on building reusable blocks of information from data.
+Insight is information analysed in light of intent. The previous section, [Creating information](#docs-creating-information-expressiveness-and-fragment-modelling), focused on building reusable blocks of information from data.
 
 This section, **Presenting insights**, asks the next question.
 
@@ -2285,7 +2303,7 @@ Three guiding questions organise the chapters in this section:
 
 \cleardoublepage
 
-# Anticipating questions
+# Anticipating questions {#docs-presenting-insights-anticipating-questions}
 
 ## Designing for questions not yet asked
 
@@ -2357,7 +2375,7 @@ Zooming out often involves grouping sub-processes into a single process, or deno
 
 For example, the quality control process may involve multiple testing steps for different criteria. Rather than creating one fact table for quality samples and another for quality sample tests, it may be more expressive to model the process as a single fact called `'Quality control'`, with the lower-level testing detail embedded where appropriate.
 
-Power BI’s flexibility with its DAX engine supports this approach. In simple cases, a `distinctcount` can recover the embedded grain, such as counting headers by their ID. In more complex cases, DAX can still retrieve the embedded grain, as explained in [Designing measures](/docs/presenting-insights/designing-measures/).
+Power BI’s flexibility with its DAX engine supports this approach. In simple cases, a `distinctcount` can recover the embedded grain, such as counting headers by their ID. In more complex cases, DAX can still retrieve the embedded grain, as explained in [Designing measures](#docs-presenting-insights-designing-measures).
 
 This question often challenges engineers trained in traditional dimensional modelling who are learning Power BI for the first time. The classical approach tends to split facts by grain rather than by business process. This can obscure the business view.
 
@@ -2577,7 +2595,7 @@ This is how the data engineer anticipates questions.
 
 \cleardoublepage
 
-# A good dimensional model
+# A good dimensional model {#docs-presenting-insights-a-good-dimensional-model}
 
 ## What makes a good dimensional model?
 
@@ -2632,7 +2650,7 @@ This requires the data engineer to think beyond the immediate request and consid
 
 In practice, this means a business process should either be outside the model, or, if included, represented in a form that supports its expected usage. All information captured by that process should be accessible in a way that allows users to ask sensible questions of it.
 
-This is subject of the chapter [anticipating questions](/docs/presenting-insights/anticipating-questions/).
+This is subject of the chapter [anticipating questions](#docs-presenting-insights-anticipating-questions).
 
 ### Support both summary and detail
 
@@ -2650,7 +2668,7 @@ Most queries should return in under a second. Complex or infrequent queries shou
 
 Performance is not merely a user-experience consideration. It can also signal deeper issues in the articulation of information.
 
-A slow model often indicates that key information has not been pre-computed through [meaningful fragments](/docs/creating-information/meaningful-fragments). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
+A slow model often indicates that key information has not been pre-computed through [meaningful fragments](#docs-creating-information-meaningful-fragments). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
 
 ## What are the signs of a good model?
 
@@ -2707,11 +2725,11 @@ The second is the storytelling dimension. It sits at the opposite end of the spe
 
 The presence of both ID dimensions and storytelling dimensions suggests that the data engineer has considered a broad range of user needs. It is not a guarantee of quality, but it is a useful sign.
 
-The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/dimensional-modelling-for-ux/).
+The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](#docs-presenting-insights-dimensional-modelling-for-ux).
 
 ### Facts and measures
 
-Power BI is designed so that users primarily interact with dimensions and measures rather than facts. This is explained in greater depth in the chapter on [filtering behaviour](/docs/presenting-insights/filtering-behaviour/).
+Power BI is designed so that users primarily interact with dimensions and measures rather than facts. This is explained in greater depth in the chapter on [filtering behaviour](#docs-presenting-insights-filtering-behaviour).
 
 For now, it is enough to note that a good Power BI dimensional model usually reduces the prominence of fact tables. In the ideal case, fact tables are hidden from the user.
 
@@ -2761,7 +2779,7 @@ The criterion is whether the dimension belongs naturally to the grain of the fac
 | Manufacture date | 1 → * | 1 → * |
 | Shipping date |  | 1 → * |
 
-Relationships are explored in greater depth in the chapter on [anticipating questions](/docs/presenting-insights/anticipating-questions/).
+Relationships are explored in greater depth in the chapter on [anticipating questions](#docs-presenting-insights-anticipating-questions).
 
 Since dimensions are the user's access point to the model, the column on the filtered side of the relationship, usually in the fact table, should be hidden to avoid ambiguity. The user should use the column on the filtering side, usually in the dimension.
 
@@ -2793,13 +2811,13 @@ The Zen of Python is a useful guide to designing a dimensional model. Its emphas
 
 \cleardoublepage
 
-# Dimensional modelling for UX
+# Dimensional modelling for UX {#docs-presenting-insights-dimensional-modelling-for-ux}
 
 ## Facts and dimensions as interaction
 
 Dimensional modelling is usually taught as a distinction between table types—facts record activity; dimensions provide context.
 
-That distinction is correct, but not enough to achieve the expectations of a [good dimensional model](/docs/presenting-insights/a-good-dimensional-model/). The more important distinction is between what the user can touch and what responds—dimensions are what the user touches; facts are what respond.
+That distinction is correct, but not enough to achieve the expectations of a [good dimensional model](#docs-presenting-insights-a-good-dimensional-model). The more important distinction is between what the user can touch and what responds—dimensions are what the user touches; facts are what respond.
 
 A model is good when the user can answer questions without guessing. This chapter explains facts and dimensions from that point of view. That is, dimensional modelling for user experience (UX).
 
@@ -2911,7 +2929,7 @@ The measures still respond from the fact. A measure may sum `[Inspection count]`
 
 The physical grain is different, but the modelling role is the same: `'Inspection daily aggregates'` supplies measurable material for measures to calculate against and for dimensions to control.
 
-Measurable facts are the default facts for [entity processing](/docs/creating-information/entity-processing/) scenarios.
+Measurable facts are the default facts for [entity processing](#docs-creating-information-entity-processing) scenarios.
 
 ### End-of-period fact
 
@@ -2919,7 +2937,7 @@ An **end-of-period fact** records the state of an entity at a regular reporting 
 
 This pattern applies when the business needs to ask what existed, or what state something was in, at the end of a period. Examples include an account at the end of each month, an employee at the end of each pay cycle, or a supplier at the end of each reporting quarter.
 
-End-of-period facts are usually produced from [entity tracking](/docs/creating-information/entity-tracking/) pipelines. They let the model answer point-in-time questions without requiring users to solve validity-window logic inside the report.
+End-of-period facts are usually produced from [entity tracking](#docs-creating-information-entity-tracking) pipelines. They let the model answer point-in-time questions without requiring users to solve validity-window logic inside the report.
 
 **Example structure of `'Account end of month'`**
 
@@ -3004,7 +3022,7 @@ The most common example is a calendar. The same `'Reporting calendar'` table may
 
 The same `'Reporting calendar'` table may filter a fact through different columns, such as `[Order date]`, `[Shipment date]`, and `[Completion date]`.
 
-A user selecting January may be asking for orders placed in January, shipments sent in January, or cases completed in January. Role-playing dimensions play an important role in comparing different business processes using a common denominator, as explained in the chapter [Conforming systems](/docs/creating-information/conforming-systems/).
+A user selecting January may be asking for orders placed in January, shipments sent in January, or cases completed in January. Role-playing dimensions play an important role in comparing different business processes using a common denominator, as explained in the chapter [Conforming systems](#docs-creating-information-conforming-systems).
 
 The model should make that role clear. If a role-playing dimension is exposed to users, the field names, measure names, or hover text should explain which role is being used.
 
@@ -3224,7 +3242,7 @@ This pattern is used when the raw process is too detailed for the user’s first
 
 Where a Sankey dimension shows movement, a storytelling dimension translates these movements into manageable categories that are business-meaningful.
 
-For example, the [Storytelling](/docs/creating-information/storytelling/) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order. The point is not merely to record the path a case took, but to express what that path means to the business.
+For example, the [Storytelling](#docs-creating-information-storytelling) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order. The point is not merely to record the path a case took, but to express what that path means to the business.
 
 A storytelling dimension is created when the data engineer steps back from raw data and asks how the business understands the movement of the entity.
 
@@ -3268,7 +3286,7 @@ If the user expects to search using the field, model it as a search dimension. I
 
 Search dimensions can significantly increase model size. They should be used deliberately, and they are not ideal for aggregation.
 
-Due to Power BI filtering behaviour, search dimensions often need to be used with a unit-record display measure. This is explained in the [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/) and [Designing measures](/docs/presenting-insights/designing-measures/) chapters.
+Due to Power BI filtering behaviour, search dimensions often need to be used with a unit-record display measure. This is explained in the [Filtering behaviour](#docs-presenting-insights-filtering-behaviour) and [Designing measures](#docs-presenting-insights-designing-measures) chapters.
 
 ### Degenerate dimension
 
@@ -3339,7 +3357,7 @@ That is the heart of dimensional modelling in an interactive model.
 
 \cleardoublepage
 
-# Filtering behaviour
+# Filtering behaviour {#docs-presenting-insights-filtering-behaviour}
 
 ## Filtering as interaction design
 
@@ -3353,7 +3371,7 @@ A self-service model is not a puzzle for the user to solve. The user should not 
 
 The data engineer’s task is therefore not only to make the correct answer possible. It is to anticipate how users will try to reach that answer. More generally, it is to anticipate what buttons the user will click, and what effects the model should produce.
 
-A good dimensional model is designed around the interaction between [buttons and effects](/docs/presenting-insights/dimensional-modelling-for-ux/). Filtering is the mechanism through which this interaction takes place.
+A good dimensional model is designed around the interaction between [buttons and effects](#docs-presenting-insights-dimensional-modelling-for-ux). Filtering is the mechanism through which this interaction takes place.
 
 This chapter explains how filtering works so the data engineer can anticipate user interaction and design the model’s response deliberately.
 
@@ -4260,7 +4278,7 @@ Power BI supports this through the five filtering mechanisms described at the st
 
 \cleardoublepage
 
-# Designing measures
+# Designing measures {#docs-presenting-insights-designing-measures}
 
 ## Measures as compression and re-expression
 
@@ -4276,7 +4294,7 @@ This chapter covers three areas:
 - interface roles of measures;
 - technical patterns for building measures.
 
-The next chapter, [Measure of measures](/docs/presenting-insights/measure-of-measures/), introduces a pattern for managing structured families of measures.
+The next chapter, [Measure of measures](#docs-presenting-insights-measure-of-measures), introduces a pattern for managing structured families of measures.
 
 ## Signs of good measures
 
@@ -4565,7 +4583,7 @@ A dimensional measure turns dimension values into a measure result.
 
 This sounds unusual because dimensions are normally used for grouping or filtering. But sometimes a user wants a dimension value displayed as a measure.
 
-For example, in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), the user may want to show all products refunded on a particular day. The product names come from `'Sales product'`, but the result is displayed as a measure.
+For example, in [Filtering behaviour](#docs-presenting-insights-filtering-behaviour), the user may want to show all products refunded on a particular day. The product names come from `'Sales product'`, but the result is displayed as a measure.
 
 A simplified example is:
 
@@ -4595,7 +4613,7 @@ Its chief purpose is display.
 
 Filtering measures exist to control what appears.
 
-As explained in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), Power BI often retains visual rows where at least one measure returns a non-blank value. A measure can therefore be used as a filtering device.
+As explained in [Filtering behaviour](#docs-presenting-insights-filtering-behaviour), Power BI often retains visual rows where at least one measure returns a non-blank value. A measure can therefore be used as a filtering device.
 
 Filtering measures typically return `1` or blank.
 
@@ -4908,7 +4926,7 @@ The most useful tools are:
 - `treatas`
 - `userelationship`
 
-`crossfilter` temporarily changes relationship direction for a calculation. As shown in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), it can be used to retrieve dimension values through a relationship path that normally flows the wrong way.
+`crossfilter` temporarily changes relationship direction for a calculation. As shown in [Filtering behaviour](#docs-presenting-insights-filtering-behaviour), it can be used to retrieve dimension values through a relationship path that normally flows the wrong way.
 
 `treatas` applies values from one table as though they filtered another table. It is powerful when the information is already in the model but no physical relationship exists.
 
@@ -4950,7 +4968,7 @@ They should be used deliberately. If many measures require complex relationship 
 
 \cleardoublepage
 
-# Measure of measures
+# Measure of measures {#docs-presenting-insights-measure-of-measures}
 
 ## Measures as a modelled structure
 
@@ -5222,7 +5240,7 @@ Inexperienced data engineers sometimes try to solve the same problem by forcing 
 
 That may be appropriate in some models, but not always. If the processes are genuinely different and already have good measures, it may be better to structure the measures rather than reshape the facts.
 
-The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](/docs/creating-information/conforming-systems/) when vertical integration of the underlying facts is not appropriate.
+The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](#docs-creating-information-conforming-systems) when vertical integration of the underlying facts is not appropriate.
 
 ## Dangers
 
@@ -5298,7 +5316,7 @@ Without anchor in business meaning, dynamic measure selection can easily become 
 
 \cleardoublepage
 
-# Interactive row level security
+# Interactive row level security {#docs-presenting-insights-interactive-row-level-security}
 
 ## Security without losing context
 
@@ -5573,17 +5591,23 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 
 \cleardoublepage
 
-# Quality & reliability
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-quality-reliability}{}
+\addcontentsline{toc}{part}{Quality \& reliability}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Quality \& reliability}
+\end{center}
 \cleardoublepage
 
-# The foundations of trust
+# The foundations of trust {#docs-quality-reliability-the-foundations-of-trust}
 
 ## Quality and reliability
 
 Data is a fragment of reality captured by process.
 
-Because of this, data is an [imperfect projection](/docs/foundations/what-is-data/) of the business world into the data world. Data quality issues arise from the gap between the business world and this projection.
+Because of this, data is an [imperfect projection](#docs-foundations-what-is-data) of the business world into the data world. Data quality issues arise from the gap between the business world and this projection.
 
 For example, key information required for decisions may not be captured. It may be captured in free-text format. It may be captured at the wrong grain.
 
@@ -5640,7 +5664,7 @@ Because of these changes, a trustworthy data product cannot depend on everything
 
 \cleardoublepage
 
-# Quality metadata
+# Quality metadata {#docs-quality-reliability-quality-metadata}
 
 ## When metadata is missing
 
@@ -5764,7 +5788,7 @@ Database keys include primary keys, foreign keys, and unique keys. They are also
 
 Keys stop records from becoming lost.
 
-As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
+As explained in [Mapping the data world](#docs-creating-information-mapping-the-data-world), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
 
 Moreover, a business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them.
 
@@ -5814,7 +5838,7 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 
 \cleardoublepage
 
-# Three approaches to data quality
+# Three approaches to data quality {#docs-quality-reliability-three-approaches-to-data-quality}
 
 ## Quality means fitness for intent
 
@@ -5881,7 +5905,7 @@ Fuzzy logic is handled through iterative approximation.
 
 One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
 
-This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+This is covered in more detail in [Tests and assumptions](#docs-quality-reliability-tests-and-assumptions).
 
 ## Human curation: when judgement is needed
 
@@ -5964,7 +5988,7 @@ If data quality issues are frequent or systemic, a data quality report may be mo
 
 Data quality reports are suitable when issues are frequent, numerous, or easier to treat in bulk on a periodic basis.
 
-An effective implementation is to create a [combination or choice dimension](/docs/presenting-insights/dimensional-modelling-for-ux/). A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
+An effective implementation is to create a [combination or choice dimension](#docs-presenting-insights-dimensional-modelling-for-ux). A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
 
 **Example structure of `'Sales data quality'`**
 
@@ -6017,7 +6041,7 @@ Defining analytical concepts closes the quality gap between operational detail a
 
 Since business insight is information analysed in light of business intent, a direct way of improving data quality is to define the analytical concept that the business needs.
 
-Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
+Defining analytical concepts takes [leadership and negotiation skill](#docs-foundations-data-and-organisations). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
 #### Good and bad entities
 
@@ -6052,7 +6076,7 @@ This gives the user an immediate view of the process at the level of business ju
 
 It is not reasonable to expect operational systems to always define these concepts. Their primary job is to execute workflows while preserving records. The data engineer plays a role by adding the analytical lens.
 
-This implementation is studied in greater depth in [Entity processing](/docs/creating-information/entity-processing/).
+This implementation is studied in greater depth in [Entity processing](#docs-creating-information-entity-processing).
 
 #### Milestones
 
@@ -6110,7 +6134,7 @@ In this example, the three milestones correspond to different control points. Ad
 
 To deal with loops and repeated events, the data engineer can define the earliest or latest relevant occurrence. For example, `[Advertisement published datetime]` may use the first publication event, while `[Offer accepted datetime]` may use the final accepted offer event.
 
-This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
+This pattern is studied in [Meaningful fragments](#docs-creating-information-meaningful-fragments).
 
 #### Conformed dimensions
 
@@ -6165,13 +6189,13 @@ This allows sales and shipping data to be analysed through the same country dime
 
 When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
 
-Conformed dimensions are studied in [Reference data](/docs/creating-information/reference-data/).
+Conformed dimensions are studied in [Reference data](#docs-creating-information-reference-data).
 
 ### Defining primary keys
 
 Defining primary keys closes the quality gap between database rows and real-world entities by making their link explicit.
 
-Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/). Unfortunately, some business processes do not rigorously define primary keys.
+Primary keys serve as the [link between data records and their counterparts in the real world](#docs-creating-information-mapping-the-data-world). Unfortunately, some business processes do not rigorously define primary keys.
 
 This can lead to slippery definitions in the database. In other cases, the primary key is defined at the application layer but remains invisible at the data layer, leaving the business user without a clear way to interpret the data.
 
@@ -6219,7 +6243,7 @@ In general, sequence numbers are effective wherever there is a miscellaneous lis
 
 Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
 
-Version numbers are useful for [entities whose changes should be preserved as new versions](/docs/creating-information/entity-processing/).
+Version numbers are useful for [entities whose changes should be preserved as new versions](#docs-creating-information-entity-processing).
 
 For example, a customer order may be submitted, revised, and resubmitted before it is fulfilled. The business may still regard this as the same order, but each revision changes the content that was true at a particular point in time.
 
@@ -6253,7 +6277,7 @@ Temporality closes the quality gap where the business needs historical interpret
 
 Temporality refers to tracking changes over time. In data warehousing, this is commonly handled through Type II tracking.
 
-Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the [entity is mutable](/docs/creating-information/entity-tracking/).
+Some business processes are designed to handle only the current event, without tracking history. But when the business is interested in change over time, the [entity is mutable](#docs-creating-information-entity-tracking).
 
 Mutable entities should usually include a time component in their business key. The data engineer may define the business key as `[Employee ID]`, `[Start datetime]`, with `[End datetime]` marking the end of the validity period.
 
@@ -6452,9 +6476,9 @@ The logic may be based on a business rule such as:
 | T001 | M001 | FO002 | 0.5 |
 | T001 | M002 | FO002 | 0.5 |
 
-Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](#docs-quality-reliability-tests-and-assumptions).
 
-Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
+Variants of this are studied in [Meaningful fragments](#docs-creating-information-meaningful-fragments).
 
 ## Fuzzy logic: when intent can only be approximated
 
@@ -6668,7 +6692,7 @@ Useful drift statistics may include:
 
 \cleardoublepage
 
-# Tests and assumptions
+# Tests and assumptions {#docs-quality-reliability-tests-and-assumptions}
 
 ## Anticipating errors
 
@@ -7139,7 +7163,7 @@ New engineers naturally spend more time choosing patterns and building their imp
 
 \cleardoublepage
 
-# Fault tolerance
+# Fault tolerance {#docs-quality-reliability-fault-tolerance}
 
 ## Containing failure
 
@@ -7372,7 +7396,7 @@ Narrow meaningful fragments are more stable. When each table has a clear informa
 
 Another habit is to manage dependencies carefully. Small reference tables can have large downstream effects. If a country reference table fails to load, and downstream transformations depend on it early in the pipeline, country data may disappear across many products.
 
-These design habits are developed further in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) and [Load dependencies](/docs/efficient-stable-pipeline/load-dependencies/).
+These design habits are developed further in [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics) and [Load dependencies](#docs-efficient-stable-pipeline-load-dependencies).
 
 ## Conclusion
 
@@ -7406,11 +7430,17 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 
 \cleardoublepage
 
-# Efficient & stable pipeline
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-efficient-stable-pipeline}{}
+\addcontentsline{toc}{part}{Efficient \& stable pipeline}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Efficient \& stable pipeline}
+\end{center}
 \cleardoublepage
 
-# Efficiency and stability
+# Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
 
 Developers often talk about fast and slow. But what do these terms mean? Is one second fast? Is ten seconds too slow? There are situations where one second to process ten rows is unacceptably slow, and others where ten seconds to process ten thousand different rows is impressively fast. These judgements depend on the infrastructure, the structure of the incoming data, and the value of the information being processed.
 
@@ -7442,7 +7472,7 @@ The chapters in this part explore of efficiency and stability. A recurring theme
 
 \cleardoublepage
 
-# Load mechanics
+# Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
 
 During a load, a table’s data needs to update with the most recent set. The simplest approach is to drop the original table and replace the data with a new set. This is how every data engineer starts. But it violates the key tenets of pipeline efficiency and stability.
 
@@ -7684,7 +7714,7 @@ On a specific table, the additional work may seem excessive. But doing the work 
 
 \cleardoublepage
 
-# Load stack
+# Load stack {#docs-efficient-stable-pipeline-load-stack}
 
 The chapter Load mechanics look at the details of how a single table is loaded. This chapter looks at how load across multiple tables can be orchestrated across the pipeline.
 
@@ -7846,7 +7876,7 @@ It is technology-agnostic, lightweight, and easy to adopt — which makes it ide
 
 \cleardoublepage
 
-# Load dependencies
+# Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
 
 One of the biggest factors impacting efficiency and stability is the use of dependencies in a pipeline.
 
@@ -7974,7 +8004,7 @@ Dependencies are an effective tool for propagating information and achieving eff
 
 \cleardoublepage
 
-# Tracking changes
+# Tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
 
 The aim of information efficiency is to process only what has changed. If there were no records changed after a table is processed, then ideal is have spent zero processing time it. In practice, even when there are no changes in input, a load still takes time to process.
 
@@ -8104,7 +8134,7 @@ Given the complexity of tracking sources and the fragility of relying on other s
 
 \cleardoublepage
 
-# Responding to change
+# Responding to change {#docs-efficient-stable-pipeline-responding-to-change}
 
 The previous chapter Tracking changes focused on tracking changes in the source. The chapter builds on the previous and addresses the harder task of responding correctly to these changes. This is often known as incremental extract and load.
 
@@ -8357,7 +8387,7 @@ Performance evaluation should be done step by step, with each component tested i
 
 \cleardoublepage
 
-# Optimising Power BI load
+# Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
 
 Loading a Power BI model is often one of the longest steps. This is particularly true for models with large fact tables. New technologies such as DirectLake promise to remove this step entirely, yet Import mode remains the most reliable way to deliver a fast and responsive experience. Consequently, it is important to establish efficiency for Power BI loads.
 
@@ -8509,11 +8539,17 @@ All this means the data engineer plans far ahead, letting Power BI’s efficienc
 
 \cleardoublepage
 
-# Beyond techniques
-
+\thispagestyle{empty}
+\phantomsection
+\hypertarget{docs-beyond-techniques}{}
+\addcontentsline{toc}{part}{Beyond techniques}
+\vspace*{0.34\textheight}
+\begin{center}
+{\Huge\bfseries Beyond techniques}
+\end{center}
 \cleardoublepage
 
-# The five principles of data engineering
+# The five principles of data engineering {#docs-beyond-techniques-the-five-principles-of-data-engineering}
 
 The earlier sections outlined patterns and practices for data engineering scenarios.
 
@@ -8563,7 +8599,7 @@ The section ends with the chapter Hallmarks of quality. This essay was written y
 
 \cleardoublepage
 
-# Working with stakeholders
+# Working with stakeholders {#docs-beyond-techniques-working-with-stakeholders}
 
 The most common cause of project failure is the inability of the delivery team to build momentum with stakeholders. When momentum stalls, two patterns can often be found.
 
@@ -8839,7 +8875,7 @@ These principles move the team beyond reacting to requirements. Applied well, th
 
 \cleardoublepage
 
-# Construction planning
+# Construction planning {#docs-beyond-techniques-construction-planning}
 
 The fourth principle of data engineering is to build momentum through guiding attention rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
 
@@ -9055,7 +9091,7 @@ Consequently, success hinges increasingly on planning. This is why the mark of a
 
 \cleardoublepage
 
-# Sound judgement
+# Sound judgement {#docs-beyond-techniques-sound-judgement}
 
 Sound judgement is the defining capability of a mature data engineer.
 
@@ -9282,11 +9318,11 @@ Sound judgement is not a talent. It is a discipline — and it is the thread tha
 
 \cleardoublepage
 
-# Automation
+# Automation {#docs-beyond-techniques-automation}
 
 \cleardoublepage
 
-# Getting started as a data engineer
+# Getting started as a data engineer {#docs-beyond-techniques-getting-started-as-a-data-engineer}
 
 The full set of concepts and patterns can feel overwhelming for a new data engineer. It is not necessary to master everything upfront. In fact, a good data engineer is defined by much more than technical proficiency.
 
@@ -9352,7 +9388,7 @@ These habits are not optional—they serve as the foundation for everything else
 
 \cleardoublepage
 
-# Closing essay: Hallmarks of quality
+# Closing essay: Hallmarks of quality {#docs-beyond-techniques-closing-essay-hallmarks-of-quality}
 
 As developers, and broadly as a team with the goal of delivering products, we are under the constant temptation to build products that answer to the demands of the day.
 
@@ -9522,4 +9558,4 @@ The developer is constantly under the pressures of deadlines. However, if one do
 
 \cleardoublepage
 
-# Example patterns
+# Example patterns {#docs-beyond-techniques-example-patterns}

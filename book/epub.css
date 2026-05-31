@@ -76,6 +76,11 @@ blockquote {
   padding: 0.05em 0 0.05em 1em;
 }
 
+a {
+  color: #1f5f9f;
+  text-decoration: underline;
+}
+
 img,
 svg {
   display: block;
