@@ -28,6 +28,13 @@ DEFAULT_ARTIFACTS = {
 }
 EPUB_ASSETS_DIR = ROOT / "epub-assets"
 PDF_SAFE_REPLACEMENTS: dict[str, str] = {}
+BOOK_URL = "https://principlesofdataengineering.org"
+BOOK_DOMAIN = "principlesofdataengineering.org"
+AVAILABILITY_NOTE = (
+    f"The book is available on [{BOOK_DOMAIN}]({BOOK_URL}).\n\n"
+    "Downloadable PDF and EPUB editions are available for offline reading. "
+    "The online version is canonical and may be updated over time."
+)
 
 
 @dataclass
@@ -551,6 +558,20 @@ def render_pdf_front_matter() -> str:
             "",
             "\\newpage",
             "",
+            "\\thispagestyle{empty}",
+            "",
+            "\\vspace*{0.35\\textheight}",
+            "",
+            "\\noindent "
+            f"The book is available on \\href{{{BOOK_URL}}}{{{BOOK_DOMAIN}}}.",
+            "",
+            "\\vspace{1em}",
+            "",
+            "\\noindent Downloadable PDF and EPUB editions are available for offline reading. "
+            "The online version is canonical and may be updated over time.",
+            "",
+            "\\newpage",
+            "",
             "\\tableofcontents",
             "",
             "\\newpage",
@@ -571,6 +592,8 @@ def render_epub_front_matter() -> str:
             "links-as-notes: false",
             "css: book/epub.css",
             "---",
+            "",
+            AVAILABILITY_NOTE,
         ]
     )
 

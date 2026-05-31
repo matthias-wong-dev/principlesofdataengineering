@@ -52,7 +52,37 @@ header-includes:
 
 \newpage
 
+\thispagestyle{empty}
+
+\vspace*{0.35\textheight}
+
+\noindent The book is available on \href{https://principlesofdataengineering.org}{principlesofdataengineering.org}.
+
+\vspace{1em}
+
+\noindent Downloadable PDF and EPUB editions are available for offline reading. The online version is canonical and may be updated over time.
+
+\newpage
+
 \tableofcontents
+
+\newpage
+
+# The author
+
+## About the author
+
+Matthias Wong's work examines how organisations see, understand, and act in complex environments. His writing spans organisational theory, data, AI, business, and people leadership.
+
+As part of this work, he has led and trained advanced data engineering teams working on high-stakes systems, with a focus on transforming fragmented operational data into usable, decision-ready information.
+
+*Principles of Data Engineering* forms the technical segment of this broader work: an account of how organisations make reality visible through data, and how engineers can build the representations organisations rely on to exercise sound judgement.
+
+He is especially passionate about uplifting staff from junior to advanced capability, and providing senior advisory to organisational leaders on the effective use of data to steer complex institutions.
+
+Matthias holds a PhD in Computational Mathematics.
+
+For contact information, see [the author's website](https://matthiaswong.me).
 
 \newpage
 
@@ -82,24 +112,6 @@ This web edition includes adapted and additional material by Matthias Wong.
 
 © Department of Agriculture, Fisheries and Forestry 2026
 Web adaptation and additional material © Matthias Wong 2026
-
-\newpage
-
-# The author
-
-## About the author
-
-Matthias Wong's work examines how organisations see, understand, and act in complex environments. His writing spans organisational theory, data, AI, business, and people leadership.
-
-As part of this work, he has led and trained advanced data engineering teams working on high-stakes systems, with a focus on transforming fragmented operational data into usable, decision-ready information.
-
-*Principles of Data Engineering* forms the technical segment of this broader work: an account of how organisations make reality visible through data, and how engineers can build the representations organisations rely on to exercise sound judgement.
-
-He is especially passionate about uplifting staff from junior to advanced capability, and providing senior advisory to organisational leaders on the effective use of data to steer complex institutions.
-
-Matthias holds a PhD in Computational Mathematics.
-
-For contact information, see [the author's website](https://matthiaswong.me).
 
 \newpage
 
