@@ -104,7 +104,9 @@ The Check step asks three kinds of question:
 | Instability | Are there abnormally high numbers of inserts, updates, or deletes? |
 | Violations | Are there rows that should be rejected rather than loaded? |
 
-Checking for genuine changes is essential. Checking for instability is highly desirable. Checking for violations is a practical way to improve fault tolerance, because a small number of bad rows can be rejected while the rest of the table proceeds.
+Checking for genuine changes is essential. Checking for instability is highly desirable. Checking for violations is a practical way to improve fault tolerance, because a small number of bad rows can be rejected while the rest of the table proceeds. 
+
+The latter two are part of [fault tolerance](/docs/quality-reliability/fault-tolerance/).
 
 #### Check for genuine changes
 
@@ -132,7 +134,7 @@ In the example:
 | O1005 | New row, so it is an insert, but `[Customer ID]` is missing. |
 | O1006 | New row, so it is an insert, but its `[Order reference]` clashes with existing order `O1003`. |
 
-Inserts and updates are usually handled together as an upsert.
+Inserts and updates isolated into an upsert table.
 
 The first version of the upsert table contains all rows that are new or genuinely changed. It also has a column `[Is new row]` to indicate whether the row is to be inserted or not.
 
@@ -253,7 +255,7 @@ The Apply step should also manage architectural columns for change datetimes:
 
 Because the Check step removed unchanged rows, `[Row update datetime]` is updated only when row content genuinely changes.
 
-As we will see in the later chapter [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/), these artefacts are necessary for downstream processing. Downstream tables can use row change datetimes to respond precisely to inserts, updates, and deletes.
+As we will see in the later chapter [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/), these artefacts are necessary for downstream processing. 
 
 After applying the change, the target may look like this.
 
