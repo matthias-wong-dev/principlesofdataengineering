@@ -24,10 +24,6 @@ For this reason, fault tolerance requires judgement. Some errors should abort a 
 
 This is fault tolerance.
 
-In a large-scale pipeline with hundreds or thousands of tables, the probability of errors occurring in each batch is high. Some source records will be malformed. Some expected values will be missing. Some tables will arrive late. Some incremental loads will behave unexpectedly. Some upstream systems will change.
-
-A robust pipeline should not collapse just because one part of it goes wrong.
-
 Fault tolerance is therefore an extension of the third principle of data engineering: anticipate errors.
 
 This chapter introduces three common fault patterns:
@@ -63,7 +59,6 @@ If the constraint is violated, the pipeline has several possible responses:
 | Abort the load | The violation suggests the table is unsafe to publish. |
 | Reject the violating records | The invalid records can be isolated while the rest of the table remains usable. |
 | Deduplicate automatically | The business rule for choosing the accepted record is clear and safe. |
-| Surface the violation for review | Human attention is required before the issue can be resolved. |
 
 For example, a source table may contain duplicate submissions.
 
@@ -199,11 +194,11 @@ Stability faults occur when small real-world changes produce disproportionate ch
 
 A stable pipeline changes in proportion to the world it represents.
 
-If ten sales changed in the source system, the pipeline should not rewrite ten million historical sales records. If one reference value changed, half the warehouse should not change as a side effect.
+If ten sales changed in the source system, the pipeline should not update ten million downstream records. If one reference value changed, half the warehouse should not change as a side effect.
 
 Stability means that ordinary changes should produce ordinary effects.
 
-This is important because the real world rarely rewrites all historical records at once—users do not usually go back and alter every transaction ever recorded. But the data world can suffer from massive accidental changes that do not correspond to real-world change.
+This is important because the real world rarely rewrites all historical records at once. But the data world can suffer from massive accidental changes that do not correspond to real-world change.
 
 For example, a source system update may refresh `[Row update datetime]` for every historical row. If the pipeline relies on `[Row update datetime]` for incremental extraction, it may attempt to reload the entire history.
 
@@ -246,21 +241,13 @@ These design habits are developed further in [Load mechanics](/docs/efficient-st
 
 ## Conclusion
 
-Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late. Reference data may be incomplete. Users may enter unexpected values.
+Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late.  Users may enter unexpected values.
 
 It is not useful to enumerate every possible fault.
 
 The important thing is the mindset: anticipating errors.
 
 The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
-
-A fault-tolerant pipeline expects errors, handles them, recovers from them, and above all, reports on them.
-
-The Zen of Python states the principle well:
-
-> Errors should never pass silently. Unless explicitly silenced.
-
-That is also the discipline of fault tolerance: not every error is fatal, but none should pass silently.
 
 ## Key ideas
 
