@@ -21,10 +21,12 @@ AUTHOR = "Matthias Wong"
 DEFAULT_OUTPUTS = {
     "pdf": ROOT / "book.md",
     "epub": ROOT / "book-epub.md",
+    "kdp": ROOT / "book-kdp.md",
 }
 DEFAULT_ARTIFACTS = {
     "pdf": ROOT / f"{TITLE}.pdf",
     "epub": ROOT / f"{TITLE}.epub",
+    "kdp": ROOT / f"{TITLE} - KDP Interior.pdf",
 }
 EPUB_ASSETS_DIR = ROOT / "epub-assets"
 PDF_SAFE_REPLACEMENTS: dict[str, str] = {}
@@ -459,21 +461,21 @@ def clean_body(
 ) -> str:
     text = page.body.replace("\r\n", "\n")
     text = strip_hugo_markup(text)
-    if target in {"epub", "pdf"}:
+    if target in {"epub", "pdf", "kdp"}:
         text = wrap_svg_blocks_for_epub(text, diagrams)
     if target == "epub":
         text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
     text = normalize_whitespace(text)
-    if target == "pdf":
+    if target in {"pdf", "kdp"}:
         for src, dst in PDF_SAFE_REPLACEMENTS.items():
             text = text.replace(src, dst)
     return text
 
 
 def clean_title(title: str, target: str) -> str:
-    if target != "pdf":
+    if target not in {"pdf", "kdp"}:
         return title
 
     for src, dst in PDF_SAFE_REPLACEMENTS.items():
@@ -579,6 +581,66 @@ def render_pdf_front_matter() -> str:
     )
 
 
+def render_kdp_front_matter() -> str:
+    return "\n".join(
+        [
+            "---",
+            f'title: "{TITLE}"',
+            f'author: "{AUTHOR}"',
+            'documentclass: book',
+            'classoption:',
+            "  - openright",
+            "  - 10pt",
+            "geometry: paperwidth=6in,paperheight=9in,inner=0.65in,outer=0.5in,top=0.6in,bottom=0.7in",
+            "fontsize: 10pt",
+            "linestretch: 1.08",
+            "toc: true",
+            "toc-depth: 3",
+            "numbersections: false",
+            "links-as-notes: false",
+            "---",
+            "",
+            "\\frontmatter",
+            "",
+            "\\thispagestyle{empty}",
+            "",
+            "\\vspace*{0.25\\textheight}",
+            "",
+            "\\begin{center}",
+            "",
+            f"{{\\Huge\\bfseries {TITLE}\\\\}}",
+            "",
+            "\\vspace{1.5cm}",
+            "",
+            f"{{\\Large {AUTHOR}}}",
+            "",
+            "\\end{center}",
+            "",
+            "\\cleardoublepage",
+            "",
+            "\\thispagestyle{empty}",
+            "",
+            "\\vspace*{0.35\\textheight}",
+            "",
+            "\\noindent "
+            f"The book is available on \\href{{{BOOK_URL}}}{{{BOOK_DOMAIN}}}.",
+            "",
+            "\\vspace{1em}",
+            "",
+            "\\noindent Downloadable PDF and EPUB editions are available for offline reading. "
+            "The online version is canonical and may be updated over time.",
+            "",
+            "\\cleardoublepage",
+            "",
+            "\\tableofcontents",
+            "",
+            "\\cleardoublepage",
+            "",
+            "\\mainmatter",
+        ]
+    )
+
+
 def render_epub_front_matter() -> str:
     return "\n".join(
         [
@@ -601,27 +663,29 @@ def render_epub_front_matter() -> str:
 def render_front_matter(target: str) -> str:
     if target == "epub":
         return render_epub_front_matter()
+    if target == "kdp":
+        return render_kdp_front_matter()
     return render_pdf_front_matter()
 
 
 def build_book(target: str) -> str:
     sections = section_pages()
     link_map = build_link_map(sections)
-    diagrams = DiagramRenderer(enabled=target in {"epub", "pdf"})
+    diagrams = DiagramRenderer(enabled=target in {"epub", "pdf", "kdp"})
     chunks: list[str] = [render_front_matter(target)]
 
     for section, children in sections:
         if section.title.lower() != "about":
             chunks.append(render_heading(section, target))
-            if target == "pdf":
-                chunks.append(r"\newpage")
+            if target in {"pdf", "kdp"}:
+                chunks.append(r"\cleardoublepage" if target == "kdp" else r"\newpage")
 
         for child in children:
             chunks.append(render_chapter(child, target, link_map, diagrams))
-            if target == "pdf":
-                chunks.append(r"\newpage")
+            if target in {"pdf", "kdp"}:
+                chunks.append(r"\cleardoublepage" if target == "kdp" else r"\newpage")
 
-    while chunks and chunks[-1] == r"\newpage":
+    while chunks and chunks[-1] in {r"\newpage", r"\cleardoublepage"}:
         chunks.pop()
 
     return "\n\n".join(chunks) + "\n"
@@ -636,7 +700,7 @@ def pandoc_command(target: str, source: Path, artifact: Path) -> list[str]:
         "--resource-path",
         f"{PROJECT_ROOT}:{ROOT}",
     ]
-    if target == "pdf":
+    if target in {"pdf", "kdp"}:
         command.extend(
             [
                 "-f",
@@ -655,7 +719,7 @@ def pandoc_command(target: str, source: Path, artifact: Path) -> list[str]:
 def build_artifact(target: str, source: Path, artifact: Path) -> None:
     if shutil.which("pandoc") is None:
         raise SystemExit("pandoc was not found on PATH.")
-    if target == "pdf" and shutil.which("xelatex") is None:
+    if target in {"pdf", "kdp"} and shutil.which("xelatex") is None:
         raise SystemExit("xelatex was not found on PATH; install a TeX distribution to build PDF.")
 
     artifact.parent.mkdir(parents=True, exist_ok=True)
@@ -670,14 +734,14 @@ def main() -> None:
         "--target",
         choices=sorted(DEFAULT_OUTPUTS),
         default="pdf",
-        help="Output target. Use epub for a Hugo-free EPUB manuscript. Default: pdf",
+        help="Output target. Use kdp for a 6x9 print interior PDF manuscript. Default: pdf",
     )
     parser.add_argument(
         "-o",
         "--output",
         type=Path,
         default=None,
-        help="Output Markdown file. Defaults to book/book.md for pdf or book/book-epub.md for epub.",
+        help="Output Markdown file. Defaults to book/book.md, book/book-epub.md, or book/book-kdp.md.",
     )
     parser.add_argument(
         "--build",
@@ -688,7 +752,7 @@ def main() -> None:
         "--artifact-output",
         type=Path,
         default=None,
-        help="Final PDF/EPUB path when --build is used. Defaults to book/Principles of Data Engineering.pdf or .epub.",
+        help="Final PDF/EPUB path when --build is used. Defaults to the target's artifact path.",
     )
     args = parser.parse_args()
 

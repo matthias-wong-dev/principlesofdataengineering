@@ -25,7 +25,7 @@ The same data element—personal income—therefore has different quality implic
 
 All three may prefer perfect accuracy. But none takes the same approach when under constraint.
 
-There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business objective.
+> There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business intent.
 
 Consequently, data quality is not merely data versus reality. It is data versus business intent.
 
@@ -33,7 +33,7 @@ A dogmatic insistence on reflecting the real world perfectly is costly and often
 
 With that in mind, common data quality issues arise because digital systems and business processes were not built to honour the full intent of the business. This may be due to poor design, such as missing data type constraints. It may be due to bias in the business process, such as different incentives for reporting income. It may also be due to a mismatch of purpose, such as operational forms captured for one regulatory purpose but later analysed for another.
 
-The data engineer therefore needs a practical set of interventions.
+The data engineer therefore needs a practical set of interventions. This chapter introduces thre broad approaches, with further methods for different scenarios.
 
 | Situation | Approach |
 |---|---|
@@ -82,6 +82,12 @@ Human curation closes the quality gap by allowing business judgement to enter th
 
 It is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
 
+This section covers three scenarios where human curation is appropriate:
+
+1. Data annotation
+2. Applying assumptions
+3. Data quality report
+
 ### Data annotation
 
 Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
@@ -115,9 +121,9 @@ Whether the curation concerns reference data, master data, or other forms of ann
 
 Applying assumptions is useful when a practical assumption can handle most cases, but violations need expert review.
 
-Consider the recording of dates. If users manually enter dates, they may accidentally type 2300 instead of 2030. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
+Consider the recording of dates. If users manually enter dates, they may accidentally type `2300` instead of `2030`. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
 
-One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to blank. The original issue should not simply disappear. The record should also be flagged so that a business expert can review and correct the source data.
+One way to address this is to *assume* that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to blank. Offending records should also be flagged so that a business expert can review and correct the source data.
 
 Before applying the assumption, the data may look like this.
 
@@ -141,40 +147,7 @@ After applying the assumption, the invalid date is blanked out and the row is fl
 
 This preserves analytical usefulness while making the intervention visible. The invalid date no longer distorts time-based analysis, but the issue remains available for remediation.
 
-Another example is assuming uniqueness.
-
-If records are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness for the main analytical table and separate the duplicates into a rejected-records table for review.
-
-Before applying the assumption, the data may look like this.
-
-**Example structure before deduplication**
-
-| Submission ID | Customer ID | Submission date | Submission amount |
-|---|---|---|---:|
-| S1001 | C001 | 2025-04-01 | 120.00 |
-| S1002 | C002 | 2025-04-01 | 95.00 |
-| S1003 | C001 | 2025-04-01 | 120.00 |
-| S1004 | C003 | 2025-04-02 | 80.00 |
-
-In this example, the business expects one submission per customer per date. The duplicate record is removed from the main analytical table and written to a rejected-records table.
-
-**Example structure of accepted records**
-
-| Submission ID | Customer ID | Submission date | Submission amount |
-|---|---|---|---:|
-| S1001 | C001 | 2025-04-01 | 120.00 |
-| S1002 | C002 | 2025-04-01 | 95.00 |
-| S1004 | C003 | 2025-04-02 | 80.00 |
-
-**Example structure of rejected records**
-
-| Submission ID | Customer ID | Submission date | Submission amount | Rejection reason |
-|---|---|---|---:|---|
-| S1003 | C001 | 2025-04-01 | 120.00 | Duplicate customer submission for date |
-
-This lets the main analytical table remain usable while preserving the rejected record for business attention. The duplicate is not silently lost. It is excluded from the analysis path and surfaced for remediation.
-
-This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation. This can be done in bulk for the entire pipeline, and studied in [Fault tolerance](/docs/quality-reliability/fault-tolerance/).
+This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation.
 
 If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
@@ -387,7 +360,7 @@ Conformed dimensions are studied in [Reference data](/docs/creating-information/
 
 ### Defining primary keys
 
-Defining primary keys closes the quality gap between database rows and real-world entities.
+Defining primary keys closes the quality gap between database rows and real-world entities by making their link explicit.
 
 Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/). Unfortunately, some business processes do not rigorously define primary keys.
 
