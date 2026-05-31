@@ -19,7 +19,7 @@ This does not last.
 
 As the warehouse grows, dependencies multiply. A pipeline may contain hundreds or thousands of tables, with tens of thousands of dependency relationships between them. At that scale, load order cannot be safely maintained as a hand-coded sequence.
 
-A **load stack** addresses this by exposing the pipeline’s execution queue as data. It turns load orchestration into visible execution state.
+The **load stack** approach begins from a simple observation: if the warehouse knows which tables depend on which other tables, load order can be computed at run time.
 
 ## Orchestrating a load
 
