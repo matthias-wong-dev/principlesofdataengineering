@@ -65,7 +65,7 @@ The six sections are loosely independent and can be read on their own:
 
 It can also be searched for specific topics such as dimensional modelling or incremental processing after the reader gains an overview of the book through scanning the table of contents.
 
-Once the web edition is complete, a full-length PDF will also be made available.
+The book will also be available in ePub and PDF format.
 
 > [!NOTE]
 > **Under construction**
