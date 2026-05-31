@@ -17,9 +17,9 @@ At small scale, load order can be managed manually. A developer can hard-code th
 
 This does not last.
 
-As the warehouse grows, dependencies multiply. A pipeline may contain hundreds or thousands of tables, with tens of thousands of dependency relationships between them. At that scale, load order cannot be safely maintained as a hand-coded sequence. 
+As the warehouse grows, dependencies multiply. A pipeline may contain hundreds or thousands of tables, with tens of thousands of dependency relationships between them. At that scale, load order cannot be safely maintained as a hand-coded sequence.
 
-A **load stack** addresses this by exposing the pipeline’s execution queue as data.
+A **load stack** addresses this by exposing the pipeline’s execution queue as data. It turns load orchestration into visible execution state.
 
 ## Orchestrating a load
 
@@ -175,7 +175,7 @@ A table is ready only when all the tables it depends on have ended. This conditi
 
 A load candidate is a table in the load stack that is ready to load.
 
-At the beginning of the workflow, only tables with no unfinished dependencies are ready. 
+At the beginning of the workflow, only tables with no unfinished dependencies are ready.
 
 Conceptually, a table is a candidate when:
 
@@ -185,7 +185,7 @@ Conceptually, a table is a candidate when:
 
 This logic also works for tables with no dependencies. Their dependency list is empty, so they have no unfinished dependencies.
 
-A load candidate view can expose this list at any time. The view can be simplified if `Pipeline.TableDependency` has already been expanded to contain all upstream dependencies, not only direct dependencies.
+A load candidate view can expose this list at any time. The view can be simplified if `Pipeline.LoadDependency` has already been expanded to contain all upstream dependencies, not only direct dependencies.
 
 **Initial `Pipeline.LoadCandidate`**
 
@@ -384,7 +384,9 @@ The workflow ends when there are no rows in `Pipeline.LoadStack` where `[Is star
 
 ### Handling failure
 
-If the table fails or aborts, the worker can still mark the table as ended, but should also record the outcome.
+If a table fails or aborts, the worker still marks it as ended.
+
+This is deliberate. In this pattern, `[Is ended]` does not mean the load succeeded. It means the worker has finished attempting the load, so the table no longer blocks the workflow.
 
 ```sql
 update Pipeline.LoadStack
@@ -399,14 +401,13 @@ where
     and [Worker ID] = 'W01';
 ```
 
-Whether downstream tables should proceed after a failure depends on the pipeline’s policy.
+This allows the pipeline to continue. Downstream tables can still run, usually against the last successfully loaded version of the upstream table.
 
-A strict pipeline may treat failed upstream loads as incomplete and block downstream work.
+This is consistent with the principle of fault tolerance. A failed table should be visible, logged, and available for repair, but it should not automatically stop unrelated or downstream work unless the pipeline has a specific reason to enforce that behaviour.
 
-A more fault-tolerant pipeline may allow downstream tables to proceed if they can safely use the previous successful version of the upstream table.
+The important point is that the decision is visible. The load stack records what started, what ended, and what remains available to run. Errors should be separately logged.
 
-
-## Advantages of the load stack
+## Consequences of the load stack
 
 ### Correct order is computed, not hard-coded
 
@@ -416,7 +417,7 @@ This means correct order does not depend on a developer manually maintaining a s
 
 When a new table is added, the data engineer adds its dependency metadata. The load candidate view uses that metadata to determine when it is ready. The orchestration logic does not need to be rewritten for every new dependency path.
 
-### Parallelism is free
+### Parallelism follows from readiness
 
 Parallelism is a consequence of the readiness rule.
 
@@ -457,7 +458,7 @@ A load stack allows a selected path through the pipeline to be loaded more often
 
 A path that is incrementally processed can be loaded hourly, every few minutes, or continuously, while the rest of the warehouse remains on its normal batch schedule.
 
-This gives the data engineering team a gradual path toward higher-frequency loading.
+This gives the data engineering team a gradual path toward higher-frequency loading. Instead of adopting a dedicated streaming platform for the whole warehouse, the team can increase load frequency only where the business need and pipeline efficiency justify it.
 
 ### Cross-technology loading requires shared state, not shared tooling
 
@@ -476,18 +477,8 @@ This makes the load stack technology-agnostic. The coordination happens through 
 >
 > Load dependencies are one of the first bottlenecks in a growing warehouse.
 >
-> A load stack exposes the pipeline’s execution queue as data.
+> A load stack exposes the pipeline’s execution queue as data. Allowing dependency-aware parallel loading without a central scheduler.
 >
-> Dependency metadata records which tables depend on which upstream tables.
->
-> The load stack records which tables in the current workflow have started and ended.
->
-> A load candidate is a table whose upstream dependencies have all ended.
->
-> The load candidate view combines dependency metadata with the current state of the load stack.
->
-> Workers can claim load candidates independently, allowing dependency-aware parallel loading without a central scheduler.
->
-> The load stack makes orchestration visible, controllable, and easier to debug.
+> Because execution state is data, the load stack can be inspected, retried, edited, and reused for partial or continuous loading.
 >
 > The same pattern supports partial loads, higher-frequency loads, and cross-technology orchestration.
