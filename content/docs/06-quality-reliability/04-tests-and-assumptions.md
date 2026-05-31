@@ -13,7 +13,9 @@ Data engineering is not only building the transformation that works. It is build
 
 A data product is not trustworthy merely because it is correct today. It is trustworthy when users are not caught unawares by eventual failures.
 
-This is the third principle of data engineering: anticipate errors.
+This is the third principle of data engineering: 
+
+> instead of stopping with what works now, anticipate errors that may occur.
 
 The principle follows from two facts.
 
