@@ -3,7 +3,7 @@ title: The book
 url: /docs/about/the-book/
 description: Context, origin, acknowledgements, and attribution for Principles of Data Engineering and its web edition.
 lede: The context, origin, and attribution of this work.
-weight: 1
+weight: 2
 ---
 
 ## Dedication and acknowledgements
