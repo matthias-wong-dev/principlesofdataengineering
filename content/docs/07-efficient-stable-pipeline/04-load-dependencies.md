@@ -1,132 +1,321 @@
 ---
 title: Load dependencies
 url: /docs/efficient-stable-pipeline/load-dependencies/
-description: Explains how dependencies affect efficiency and stability, and how to manage them without creating unnecessary ripple effects.
+description: Explains how load dependencies affect efficiency and stability, and how to decide when a dependency is worth creating.
 lede: Every dependency is a trade-off between reuse, efficiency, and stability.
 weight: 4
-draft: true
+# draft: true
 ---
 
-One of the biggest factors impacting efficiency and stability is the use of dependencies in a pipeline.
+## Dependency as coupling
 
-Dependencies occur when a materialised table selects from other tables for its load.
+A dependency occurs when one object relies on another object for information or logic.
 
-This is a load dependency, because the materialised table needs to be loaded in the pipeline. Load dependencies propagate information from downstream.
+Dependencies are useful because they allow the warehouse to reuse information. A table can calculate a piece of meaning once, persist it, and allow downstream tables to build on it. This improves efficiency because the same information does not need to be recalculated repeatedly. It also improves quality because the same logic is not copied into many places where it can drift out of sync.
 
-Dependencies also occur through views. Views also propagate information, but they do so indirectly by propagating logic rather than persisted data. We distinguish them as a view dependency.
+But a dependency is also coupling.
 
-Load dependency is the focus of this chapter. Whenever the word “dependency” is used in this chapter, it refers to load dependency.
+When one table depends on another, change can propagate. A failure upstream can affect downstream tables. A small logic change upstream may require many downstream tables to reload. A small reference-data change can trigger large downstream updates.
 
-Dependencies improve efficiency because they allow reuse rather than recalculation of the same piece of information. In this sense, they also improve quality by reducing the risk of logic becoming out-of-sync.
+What improves reuse can also reduce stability.
 
-However, dependencies can harm stability because failure in one table directly propagates downstream, sometimes leading to domino effect of issues.
+Therefore:
 
-Moreover, changing the business logic of a table early in the pipeline theoretically requires all downstream tables to reload, in case the change affects their results. In theory, it is possible to isolate the impact by examining the logic change. In practice, this is too error-prone, and it is safer to reload downstream tables. This may lead to a situation where small changes upstream cause large changes downstream. In this scenario of logic change, dependencies can be harmful to both efficiency and stability.
+> Every dependency is a trade-off between reuse, efficiency, and stability.
 
-They are inefficient because large amounts of processing may occur with little change in outcome. They are unstable because during the reload, many tables become temporarily empty as they are reloading.
+The data engineer therefore has to decide when a dependency is worth creating.
 
-Ultimately, at every turn the data engineer must choose between re-calculating or re-using existing information. This is a decision based on trading efficiency and stability.
+## Load dependencies and view dependencies
 
-## Criteria for dependency
+Dependencies occur in two important ways.
 
-There are three criteria to consider when committing to a dependency. The dependency should be:
+A **load dependency** occurs when a materialised table selects from another table during its load.
 
-- Valuable – the information is worth selecting and not easily recomputed.
+A **view dependency** occurs when a view selects from another table or view.
 
-- Targeted – the source table is narrow, rather than wide with miscellaneous columns.
+Both propagate information through the warehouse, but they do so differently.
 
-- Stable – small changes in the source should not cause massive changes downstream.
+| Dependency type | What it propagates |
+|---|---|
+| Load dependency | Persisted information |
+| View dependency | Logic |
 
-Valuable Using dependencies to propagate information is convenient in the short term. However, the issues that come with a heavy chain of dependencies often take time to surface.
+Load dependencies propagate persisted information. The downstream table stores the result of the dependency at load time.
 
-This can lead new data engineers to use dependencies too casually and not notice the problem until it is too late.
+View dependencies propagate logic. The downstream object does not store the result. Instead, the join, filter, or calculation is evaluated when the view is queried.
 
-The first step in managing dependencies is to ensure that the selected information has enough value to justify the dependency.
+This chapter focuses on load dependencies. Whenever the word **dependency** is used in this chapter, it refers to a load dependency unless otherwise stated.
 
-For example, the data engineer should avoid bringing in “convenience” columns from other tables. A common case is reading the country name from the reference country table simply for display or debugging purposes early in the pipeline. Instead, the fact table may only need the country code, and the join to the reference table can occur later in the presentation layer through a view.
+Views are discussed later as an alternative to load dependencies.
 
-Another method is to recalculate where it is simple. For instance, computing the first of month from a date column is preferable to looking it up from a calendar table. This may involve repeating simple logic, but it avoids forming a dependency. Similarly, using a standardised default value for unknown references can reduce unnecessary joins. For example, if the surrogate key for unknown values is always “1”, this number can be hardcoded in the transaction table with little risk, avoiding the need to select from the reference table to find the surrogate key value by name.
+## The dependency trade-off
 
-Targeted Dependencies should be targeted — selecting just enough for their purpose. When dependencies are not well targeted, more dependencies are formed than are actually useful, thus diluting the value of the dependency relative to its cost.
+At every turn, the data engineer chooses between recalculating information and reusing existing information.
 
-The smallest unit of dependency is a table. That is, when a table selects a column from a source table, the entire source table becomes a dependency. If many columns are packed into one table, then any table that needs just one of those columns must depend on the whole. This leads to a concentration of dependencies on that single table. Wide tables with miscellaneous columns not only create tangled dependencies but also reduce clarity of information flow.
+Recalculation avoids coupling, but may repeat logic or waste compute. Reuse improves efficiency and consistency, but creates a path for upstream change to propagate downstream.
 
-As an exaggerated example, if there were a table called Cake.Everything, and multiple tables selected from it, then any update to Cake.Everything would require updates to all downstream tables. It would also be unclear what information about cake is being passed downstream.
+The decision depends on whether the value of reuse exceeds the cost of coupling. This can be determined by the rule:
 
-Meaningful fragments are excellent for breaking down dependencies to ensure they are more targeted. Continuing the example, Cake.Everything can be split into well-defined fragments such as Cake.Sales, Cake.Milestones, and Cake.Quality. Selecting from these fragments helps target the dependency and makes it clearer what information is being selected.
+> A dependency should be valuable, targeted, and stable.
 
-It is often better to start a new fragment than to add a new column to an existing table — especially if the new column introduces a different concept. For example, if there is a Cake.RefCalendar table used to describe dates, and there is a need to include sales seasons, it may be tempting to add a column like [Is sales season]. This is problematic because it increases the weight of dependency on Cake.RefCalendar when the sales season is needed for analytical computation. Instead, it is better to create Cake.RefSaleSeason with a primary key [First date of week] to indicate that sale seasons operate at the week grain. Cake.RefSaleSeason would be a narrow table with just enough information to describe the sale season. Downstream tables would select from Cake.RefSaleSeason, offloading the dependency from Cake.RefCalendar and making it clear that the table is interested in sale seasons. Cake.RefSaleSeason would relate to Cake.RefCalendar via a foreign key on [Calendar date].
+| Criterion | Question |
+|---|---|
+| Valuable | Is the information worth reusing rather than recalculating? |
+| Targeted | Is the dependency narrow enough to match the actual purpose? |
+| Stable | Will small source changes avoid causing disproportionate downstream change? |
 
-Stable Stability means ensuring that small changes in the source do not cause large, unintended changes downstream.
+## Valuable dependencies
 
-A common example of instability is when a transaction table selects the country name from a reference table. If the name of a country is updated, that single change may trigger millions of downstream updates. This kind of ripple effect can be costly and difficult to manage.
+A dependency should carry information worth reusing.
 
-Where possible, dependencies should be stable. Where not possible, the risks should be mitigated. The two main sources of instability are row-wise instability and column-wise instability.
+Using dependencies to propagate information is convenient in the short term. This can lead data engineers to create dependencies casually. The problem may not appear immediately. It surfaces later, when the pipeline becomes harder to reload, debug, or change.
 
-Row-wise instability occurs when a single row drives many downstream rows. This is typical of reference tables. A small change in a reference table can affect large volumes of transaction data. Metadata-driven loads are another example. If a pipeline reads a metadata table to decide what to load, an error in that metadata can cascade into widespread changes.
+The first test is therefore value.
 
-Changes tend to be amplified when a dependency selects one row and applies it across many rows — for example, reading a small table into a large one. Small tables are often a source of instability for this reason.
+A dependency is valuable when the source table contains information that is expensive, difficult, important, or risky to recalculate.
 
-There are several ways to mitigate row-wise instability. In the country name example, the name may not need to be denormalised into the transaction table at all. It can remain in the dimension table for presentation, while the fact table stores only the country code. More generally, moving information from transaction tables to reference tables, such as adding computed columns to reference tables, and allowing the reference tables to carry the information load is best practice. Another option is to defer lookups until later in the pipeline or perform them only through views.
+A dependency is weak when it exists only for convenience.
 
-Column-wise instability occurs when the source column itself is volatile. For example, selecting [Update datetime] into a downstream table introduces risk. A routine system update that refreshes all timestamps may seem trivial to the application but can cause widespread downstream updates.
+For example, a transaction table may select a country name from a reference table simply for display or debugging. This may be convenient, but it often creates unnecessary coupling. The transaction table may only need the country code. The country name can be joined later in the presentation layer, or exposed through a view.
 
-To reduce this risk, a polling table can be used. This technique is explained in the chapter Tracking changes.
+Another example is the use of standard default values. Suppose the surrogate key for unknown values is always `1`. A transaction table can assign `1` directly for unknown references, rather than joining to a reference table to retrieve the unknown surrogate key by name. The hardcoded value is safe because it is a stable convention, not a fragile business rule.
 
-Another example is a column like [Is archived]. A digital system may perform bulk updates using this column. From the system’s perspective, the change may only affect what appears in the UI, but for the data pipeline, it can have a significant impact.
+The principle is simple:
 
-Column-wise instability is less common than row-wise instability, but it is important to monitor for both.
+> Do not create a dependency for information that is cheap, obvious, and stable enough to calculate locally.
+
+Dependencies should be reserved for information that is worth propagating.
+
+## Targeted dependencies
+
+A dependency should be targeted.
+
+A targeted dependency selects from a source table whose informational purpose matches the dependency being created.
+
+An untargeted dependency selects from a broad table that contains many unrelated columns. This creates more coupling than necessary.
+
+The smallest unit of load dependency is a table. If a downstream table selects one column from a source table, it depends on the source table as a whole. This means wide miscellaneous tables create broad dependency surfaces.
+
+For example, suppose there is a table called `Cake.Everything`.
+
+It contains:
+
+- cake sales;
+- cake milestones;
+- cake quality scores;
+- cake production notes;
+- cake marketing categories;
+- cake seasonal flags.
+
+If many tables select from `Cake.Everything`, then many tables depend on it. A change to one concept in `Cake.Everything` may force downstream work that has nothing to do with that concept. The dependency graph becomes tangled because it is unclear what information is being passed downstream.
+
+Meaningful fragments reduce this problem.
+
+Instead of `Cake.Everything`, the pipeline could create:
+
+- `Cake.Sales`
+- `Cake.Milestone`
+- `Cake.Quality`
+- `Cake.Season`
+
+A downstream table that needs sales information can depend on `Cake.Sales`. A downstream table that needs quality information can depend on `Cake.Quality`.
+
+The dependency becomes more targeted because the source table has a narrower informational purpose.
+
+This is one reason it is often better to create a new fragment than to add a new column to an existing table, especially when the new column introduces a different concept.
+
+For example, suppose `Cake.RefCalendar` describes dates. A data engineer may need to identify sales seasons. It may be tempting to add `[Is sales season]` to `Cake.RefCalendar`.
+
+That may be acceptable for display. But if sales season becomes part of analytical computation, adding it to `Cake.RefCalendar` increases the dependency weight of the calendar table. Downstream tables interested only in sales seasons now depend on the whole calendar reference.
+
+A better design may be to create `Cake.RefSaleSeason`, keyed by `[First date of week]`, because sales seasons operate at the week grain. Downstream tables that need sales seasons can depend on `Cake.RefSaleSeason`. The dependency is clearer, narrower, and more targeted.
+
+The principle is:
+
+> A dependency should point to the smallest meaningful fragment that carries the required information.
+
+## Stable dependencies
+
+A dependency should be stable.
+
+Stability means that small changes in the source should not create disproportionate downstream change.
+
+A common example is a transaction table that stores a country name from a reference country table. If the country name changes, that single reference-data update may trigger millions of downstream transaction updates.
+
+The underlying business event is small: one name changed.
+
+The data-world effect is large: many rows update.
+
+This is dependency instability.
+
+Where possible, unstable dependencies should be avoided. Where they cannot be avoided, their risk should be understood and mitigated.
+
+There are two common forms of instability:
+
+| Instability type | Description |
+|---|---|
+| Row-wise instability | One source row affects many downstream rows. |
+| Column-wise instability | A source column changes frequently or for reasons unrelated to business meaning. |
+
+### Row-wise instability
+
+Row-wise instability occurs when a small number of source rows drive many downstream rows.
+
+Reference tables are the most common example. A single row in a reference table may be used by millions of transaction rows. If that reference row changes, the downstream impact can be large.
+
+For example, if a transaction table denormalises `[Country name]` from `Reference.Country`, then a name change in `Reference.Country` can update every transaction row for that country.
+
+This may be unnecessary.
+
+The transaction table may only need `[Country code]`. The name can remain in the reference table and be joined later for presentation.
+
+The same principle applies more generally. Information that describes a reference entity should usually remain on the reference table unless there is a strong reason to materialise it downstream.
+
+Row-wise instability can also occur with metadata-driven loads. If a pipeline reads a metadata table to decide what to load, an error in that metadata can cascade into widespread change. The metadata table may be small, but it controls a large execution surface.
+
+Small tables are often sources of instability because one row can affect many downstream rows.
+
+This does not mean small tables should never be dependencies. It means the data engineer should be careful when a small table is used to drive large downstream effects.
+
+### Column-wise instability
+
+Column-wise instability occurs when the source column itself is volatile.
+
+For example, selecting `[Update datetime]` into a downstream table can introduce instability. A source system may refresh update timestamps across many rows as part of routine maintenance. From the application’s point of view, little has changed. From the pipeline’s point of view, every row may appear to have changed.
+
+The same problem can occur with columns such as `[Is archived]`, `[Last viewed datetime]`, or other operational fields that can be updated in bulk.
+
+These columns may matter for the source system, but they may not represent meaningful business change for the warehouse.
+
+A dependency on such a column can cause false downstream changes. It can make stable business information appear unstable.
+
+The mitigation is to separate change detection from business meaning. If a volatile column is only needed for polling or extraction, it should not necessarily be propagated downstream as information. Techniques for managing this are discussed in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/).
+
+The principle is:
+
+> Do not propagate volatile columns unless their volatility is meaningful to the downstream table.
 
 ## The case of surrogate keys
 
-Surrogate keys act as stand-ins for the primary key of a table. Most commonly, they allow a composite primary key made up of multiple columns to be replaced by a single integer. Surrogate keys may be created by source systems, but they are often introduced by the warehouse as part of the data pipeline.
+Surrogate keys are a special case of dependency.
 
-Surrogate keys are necessary in a warehouse for several reasons. First, and most importantly, Power BI supports only single-column relationships. If the primary key consists of multiple columns, a surrogate key is required to implement the relationship.
+A surrogate key is a stand-in for the primary key of a table. It is usually a single integer used in place of a natural or composite key.
 
-Surrogate keys also simplify Power BI measures that rely on distinct counts, making implementation more straightforward.
+Surrogate keys are useful in a warehouse for several reasons.
 
-Second, multiple-column keys can be clumsy to carry. This is especially true for storytelling dimensions, where the primary key may consist of several binary columns — sometimes more than ten. It becomes cumbersome to record all ten columns on each transaction table and join on all of them. The same issue arises with type II keys such as [Country code], [Start datetime]. A lookup to such a table involves an inequality join on the validity period [Start datetime] and [End datetime], which is error-prone when repeated across the code base.
+First, Power BI relationships use single-column relationships. If the natural key consists of multiple columns, a surrogate key may be required to implement the relationship cleanly.
 
-Third, some primary keys are slow to join on. This can happen with type II keys due to their complex predicates, or when the primary key uses data types that are not conducive to performant joins, such as long strings.
+Second, composite keys can be clumsy to carry. This is especially true for storytelling dimensions where the primary key may consist of many binary columns. Carrying ten columns across transaction tables is awkward, and joining on all ten repeatedly is error-prone.
 
-For these reasons, it is often desirable to retrieve a surrogate key. This involves looking up the table using its primary key and bringing in the surrogate key column. In this way, surrogate key retrievals can be a valuable dependency.
+Third, some keys are slow or difficult to join on. Type II dimensions often require inequality joins across validity periods, such as `[Start datetime]` and `[End datetime]`. Long string keys can also be slow or cumbersome.
 
-However, surrogate keys can become magnets for dependency. They are particularly unstable. If the surrogate keys are regenerated, because the table needs to be reloaded for amending a logic, all downstream key values reshuffle.
+For these reasons, it is often desirable to retrieve a surrogate key. This involves looking up the table using its primary key and selecting the surrogate key column. In this way, surrogate key retrieval can be a valuable dependency.
 
-There are two ways to manage surrogate key dependencies.
+However, surrogate keys can also become magnets for dependency.
 
-The first is to defer the lookup to later stages of the pipeline, perhaps only during the final load into the Power BI semantic model. If the original business key consists of only two columns and join performance is acceptable, this deferral may be reasonable.
+If downstream tables store a surrogate key, they depend on the table that generated it. If that table is rebuilt and the surrogate keys are regenerated, downstream key values may reshuffle. This can force large reloads and create instability.
 
-However, if many downstream tables rely on this key and the data types are not ideal for joins, it may be better to accept the cost and swap out the keys earlier in the pipeline.
+There are two main ways to manage this.
 
-The second approach is to compute the surrogate key rather than look it up. For example, in a storytelling dimension with five binary columns as the primary key — [Is A], [Is B], [Is C], [Is D], [Is E] — the surrogate key can be calculated by treating these as a base-two number and converting it to base-ten using a simple formula: [SK] = 1 + 2^[Is A] + 4^[Is B] + 8^[Is C] + 16^[Is D] + 32^[Is E]
+The first is to defer the surrogate key lookup until later in the pipeline. If the original business key is simple and join performance is acceptable, downstream tables can carry the business key for longer. The surrogate key can be added only when needed for the semantic model or final presentation layer.
 
-Using this formula, it is possible to derive the correct surrogate key value without performing a lookup.
+The second is to compute the surrogate key rather than look it up.
 
-Whether using this or another formula, if the computation is simple, calculating the surrogate key on the fly can provide the benefits of a surrogate key without forming a dependency.
+For example, suppose a storytelling dimension has five binary columns as its primary key:
+
+- `[Is A]`
+- `[Is B]`
+- `[Is C]`
+- `[Is D]`
+- `[Is E]`
+
+If each column is either `0` or `1`, the surrogate key can be calculated with a stable formula:
+
+`[SK] = 1 + [Is A] + 2 * [Is B] + 4 * [Is C] + 8 * [Is D] + 16 * [Is E]`
+
+This gives each combination a stable integer without requiring a lookup. The downstream table gets the benefit of a surrogate key without forming a dependency on a generated key table.
+
+This approach only works when the surrogate key can be computed safely and permanently. Many surrogate keys cannot be managed this way. But when the logic is simple and stable, calculation may be better than lookup.
+
+The principle is:
+
+> A surrogate key dependency is justified when the value of the simplified key exceeds the coupling risk created by the lookup.
 
 ## Views as an alternative
 
-Views are also a form of dependency that can propagate information. However, they are not a direct substitute for load dependencies. Load dependencies propagate information itself, while views propagate logic. For example, when two tables are joined in a view, it is the logic of the join, not the result of the join, that is passed downstream.
+Views can sometimes avoid load dependencies.
 
-This makes view dependencies and load dependencies fundamentally different.
+A load dependency propagates persisted information.
 
-However, views can be effective as an alternative in a range of scenarios, especially when the dependency is not stable. For instance, instead of denormalising a country name into a materialised table, a view can perform the same join. In this case, a change to the country name in the reference table does not trigger any update operations downstream. However, when the user queries the view, they retrieve the updated name. This is particularly useful in parameterised reports, where users look up sections of data at a time and it is not necessary to have the full set materialised in advance.
+A view dependency propagates logic.
 
-In theory, a server with infinite resources could support an entire pipeline built from views. This would eliminate the kind of instability caused by materialised dependencies. However, views can also amplify instability by instantly propagating any errors downstream. Materialised tables, by contrast, offer a buffer of stability for reporting.
+For example, instead of denormalising `[Country name]` into a transaction table, a view can join the transaction table to `Reference.Country` at query time. If the country name changes, no downstream transaction table needs to reload. The updated name appears when the view is queried.
 
-Another limitation of views is that they do not track changes. As explained in the Load mechanics chapter, the Check step of a load verifies whether a row has genuinely changed. This allows downstream workloads, such as machine learning predictions, to respond appropriately. Views do not support this type of row-level change detection.
+This can be useful when:
 
-Because views propagate logic rather than information, they also lose historical data when source systems delete older records. This can be problematic for pipelines that require long-term persistence.
+- query performance is acceptable;
+- instant propagation of source changes is acceptable;
+- the result does not need to be persisted;
+- long-term historical retention is not required;
+- downstream processes do not need row-level change tracking.
 
-Views can be an effective alternative to load dependencies under certain conditions.
+Views are especially useful in presentation scenarios. If a user is querying a small section of data through a report, it may be unnecessary to materialise every display attribute into a downstream table.
 
-They are suitable when query performance is adequate, when instant propagation of changes (including potential errors) is acceptable, when long-term persistence is not required, and when row-level tracking of changes is not needed for downstream processes.
+But views are not a complete substitute for loaded tables.
 
-## Conclusion
+Views can propagate errors instantly. If the source table contains a bad value, the view exposes it immediately. A materialised table can provide a buffer because it changes only when loaded.
 
-A good pipeline should contain a healthy level of dependencies. This is a sign that the data engineer is adding value to raw data through transformation, aggregation, and storytelling. A pipeline with almost no dependencies often reflects a garbage-in, garbage-out approach, or complex logic buried in a few scripts.
+Views also do not track row-level change. As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/), the Check step of a load determines whether a row has genuinely changed. This allows downstream tables and processes to respond precisely to inserts, updates, and deletes. A view does not provide this kind of change event.
 
-As a rule of thumb, a source system with 10 to 20 raw tables may result in 5 or 6 layers of dependencies. In larger systems with 30 to 50 tables, especially when integrated with other systems, the transformation pipeline may easily reach 10 or more layers. In the site where this work is done, there are 10000+ tables, 15000+ dependencies between them, amounting to 25+ layers of dependencies.
+Views also do not preserve history when source systems delete old records. If a view points to a source that no longer contains a record, the view cannot recover it. A materialised warehouse table can preserve the information.
 
-Dependencies are an effective tool for propagating information and achieving efficiency. They allow the data engineer to build reusable blocks of insight, articulate business meaning, and pass them for use. But they must be used with care. Each dependency increases entanglement and can reduce stability. A data engineer must be deliberate in committing to a dependency by selecting only those that are valuable, targeted, and stable.
+The choice between a load dependency and a view dependency is therefore another trade-off.
+
+| Use a load dependency when | Use a view when |
+|---|---|
+| The result should be persisted. | The result can be calculated at query time. |
+| Downstream processes need change tracking. | Downstream processes only need current logic. |
+| Historical retention matters. | Historical retention is not required. |
+| Query performance requires materialisation. | Query performance is acceptable without materialisation. |
+| A controlled loading buffer is valuable. | Instant propagation is acceptable. |
+
+## Healthy dependency depth
+
+The previous chapter showed how a load stack can make dependency orchestration manageable. That capability is powerful, but it also creates a second-order risk.
+
+Once dependencies are easy to orchestrate, they can grow too freely.
+
+A load stack prevents the pipeline from becoming tangled by execution order. It does not decide whether each dependency is valuable, targeted, and stable. That judgement still belongs to the data engineer.
+
+A good pipeline should contain a healthy level of dependencies.
+
+This may seem counterintuitive after a chapter about dependency risk, but a pipeline with almost no dependencies is usually not mature. It may reflect a garbage-in, garbage-out approach where raw tables are merely copied forward. It may also mean that complex transformation logic has been buried in scripts rather than expressed as reusable data products.
+
+Dependencies are how the warehouse accumulates meaning.
+
+A source system with 10 to 20 raw tables may produce 5 or 6 layers of dependency in the transformation pipeline. A larger system with 30 to 50 tables, especially when integrated with other systems, may produce 10 or more layers.
+
+The aim is not to minimise dependencies, but to create the right ones.
+
+A healthy dependency is valuable, targeted, and stable. It propagates meaningful information without creating unnecessary ripple effects.
+
+> [!NOTE]
+> **Key ideas**
+>
+> Every dependency is a trade-off between reuse, efficiency, and stability.
+>
+> A load dependency occurs when a materialised table selects from another table during its load.
+>
+> Load dependencies propagate persisted information; view dependencies propagate logic.
+>
+> Dependencies improve efficiency and quality by allowing information and logic to be reused.
+>
+> Dependencies reduce stability when small upstream changes cause disproportionate downstream reloads or updates.
+>
+> A dependency should be valuable, targeted, and stable.
+>
+> Wide miscellaneous tables create broad dependency surfaces and should often be split into meaningful fragments.
+>
+> Surrogate keys are useful dependencies, but can become unstable if they are regenerated.
+>
+> Views can avoid materialised reloads by propagating logic rather than persisted information, but they do not provide the same buffering, persistence, or row-level change tracking as loaded tables.
