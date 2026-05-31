@@ -463,7 +463,7 @@ New engineers naturally spend more time choosing patterns and building their imp
 >
 > Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
 >
-> The third principle of data engineering is to anticipate errors.
+> The third principle of data engineering is to **anticipate errors**.
 >
 > Tests check the same result in two independent ways.
 >

@@ -57,6 +57,7 @@ Because of these changes, a trustworthy data product cannot depend on everything
 
 > [!NOTE]
 > **Key ideas**
+> The third principle of data engineering is to **anticipate errors**.
 >
 > Trust is produced when a data product is fit for decision.
 >
@@ -67,5 +68,3 @@ Because of these changes, a trustworthy data product cannot depend on everything
 > Quality keeps users from guessing what the data means.
 >
 > Reliability keeps users from guessing whether the data worked.
->
-> The third principle of data engineering is to anticipate errors.

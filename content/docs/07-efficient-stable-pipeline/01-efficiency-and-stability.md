@@ -20,6 +20,10 @@ This chapter introduces efficiency and stability as two disciplines for preservi
 | Efficiency | Is the pipeline doing more computational work than the information change requires? |
 | Stability | Is the data world changing in proportion to the business world? |
 
+This is also the fourth principle of data engineering:
+
+> Instead of wholesale response, maintain proportionate change.
+
 ## Efficiency
 
 Developers often talk about fast and slow. But fast and slow are slippery terms.
@@ -86,7 +90,7 @@ The chapters in **Efficiency & stability** explore how to build pipelines that a
 > [!NOTE]
 > **Key ideas**
 >
-> A mature pipeline maintains correspondence between changes in information and changes in computation.
+> The fourth principle of data engineering is **proportionate change**.
 >
 > Informational efficiency means processing only the information needed to reflect real-world change.
 >

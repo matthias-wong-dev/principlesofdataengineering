@@ -1,7 +1,7 @@
 ---
-title: The five principles of data engineering
-url: /docs/judgement-under-ambiguity/the-five-principles-of-data-engineering/
-description: "Five principles for data engineering beyond shallow curation: expressive entities, meaningful fragments, anticipate errors, build momentum, and root cause."
+title: The six principles of data engineering
+url: /docs/judgement-under-ambiguity/the-six-principles-of-data-engineering/
+description: "Six principles for data engineering beyond shallow curation: expressive entities, meaningful fragments, anticipate errors, proportionate change, build momentum, and root cause."
 lede: Good data engineering is guided by principles, not just techniques.
 weight: 1
 draft: true
@@ -11,7 +11,7 @@ The earlier sections outlined patterns and practices for data engineering scenar
 
 They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
 
-This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and summarised in five principles.
+This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and are summarised in six principles.
 
 ## The problem with shallow curation
 
@@ -31,9 +31,9 @@ In other words, shallow curation is too easily satisfied. It does not sufficient
 
 The problem with shallow curation is that there are some outputs. After all, the data engineer has faithfully reproduced data from the source system for users to gain access. Such an engineer may even feel satisfied for doing an excellent job when reality is far from the potential value. If business users are dissatisfied when business objectives are not fully met, it is possible to blame poor data quality at source or on the unclear business rules. The danger of shallow curation is that, like all mindsets that starts by reducing standards, it settles for less, and by settling for less, creates a blind spot for the engineer who cannot see the failure to reach excellence.
 
-## Five principles
+## Six principles
 
-A surer basis for data engineering can be summarised in five principles:
+A surer basis for data engineering can be summarised in six principles:
 
 - Instead of garbage-in-garbage-out with raw data, add value through expressive entities.
 
@@ -41,14 +41,16 @@ A surer basis for data engineering can be summarised in five principles:
 
 - Instead of stopping with what works now, anticipate errors that may occur.
 
+- Instead of wholesale response, maintain proportionate change.
+
 - Instead of reacting to requirements, build momentum through guiding attention.
 
-- Instead of stopping at the symptoms, diagnose the root cause
+- Instead of stopping at the symptoms, diagnose the root cause.
 
-That is, instead of finding quick fixes to what is wrong, the expert data engineer focuses on what needs to be right for business intent—now and into the future. These can be remembered through five phrases: expressive entities, meaningful fragments, anticipate errors, build momentum, root cause.
+That is, instead of finding quick fixes to what is wrong, the expert data engineer focuses on what needs to be right for business intent—now and into the future. These can be remembered through six phrases: expressive entities, meaningful fragments, anticipate errors, proportionate change, build momentum, root cause.
 
-It is not a matter of “fast workaround” versus “slow and proper.” It is the difference between what gets tangled up in a mess versus what will not. In the long term, the five principles to fast and flexible paths to success.
+It is not a matter of “fast workaround” versus “slow and proper.” It is the difference between what gets tangled up in a mess versus what will not. In the long term, the six principles create fast and flexible paths to success.
 
-The earlier sections covered three of the principles–expressiveness entities, meaningful fragments and anticipating errors. The remaining section introduces the final principles–build momentum, root cause.
+The earlier sections covered four of the principles–expressive entities, meaningful fragments, anticipating errors, and proportionate change. The remaining chapters introduce the final principles–build momentum and root cause.
 
 The section ends with the chapter Hallmarks of quality. This essay was written years before this text and reproduced with minimal edits. The essay guided the years of work now summarised in this book.

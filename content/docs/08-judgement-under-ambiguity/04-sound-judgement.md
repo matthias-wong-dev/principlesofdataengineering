@@ -15,7 +15,7 @@ Sound judgement is the ability to recognise at what level a problem should be ad
 
 For this reason, troubleshooting is not a special activity reserved for failures. It is the most explicit expression of a posture that pervades the entire discipline. The same judgement used to diagnose a broken pipeline is used when deciding how to model an entity, where to aggregate information, or whether a system should be conformed at all.
 
-This chapter presents a simple diagnostic framework that makes sound judgement explicit. This framework defines the final principle of data engineering—instead of treating symptoms, diagnose root cause.
+This chapter presents a simple diagnostic framework that makes sound judgement explicit. This framework defines the sixth and final principle of data engineering—instead of treating symptoms, diagnose root cause.
 
 ## A diagnostic framework for sound judgement
 

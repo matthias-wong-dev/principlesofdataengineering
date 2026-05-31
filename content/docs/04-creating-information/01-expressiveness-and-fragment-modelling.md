@@ -14,7 +14,7 @@ This work must be done efficiently, reproducibly, and over sustained periods of 
 
 How does the data engineer do this effectively?
 
-This book introduces five principles of data engineering. The first two are **expressiveness** and **fragment modelling**. The two principles are:
+This book introduces six principles of data engineering. The first two are **expressiveness** and **fragment modelling**. The two principles are:
 
 > Instead of accepting garbage-in, garbage-out with raw data, add value through expressive entities.
 > 
@@ -80,11 +80,12 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 
 > [!NOTE]
 > **Key ideas**
+> The first two principles of data engineering are **expressive entities** and **meaningful fragments**.
 >
 > Expressiveness is the principle that data models should recognisably correspond to the business world they represent.
 >
 > Expressive data is faithful, legible, and operable.
 >
-> Fragment modelling is the principle of creating reusable blocks of information rather than giant tables.
+> Meaningful fragment is the principle of creating reusable blocks of information rather than giant tables.
 >
 > In a well-designed pipeline, tables can be understood as functions that transform fragments of data into reusable information.

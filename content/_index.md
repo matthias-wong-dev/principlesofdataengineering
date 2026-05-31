@@ -22,13 +22,14 @@ That premise challenges how organisations have understood data. Data engineering
 
 The role of the data engineer is therefore not just to transform data, but to make reality legible to business.
 
-The book is organised around five principles:
+The book is organised around six principles:
 
 1. **Expressive entities**—make data recognisably correspond to the business world.
 2. **Meaningful fragments**—build reusable blocks of information instead of giant tables.
 3. **Anticipate errors**—design for the failures that real systems produce.
-4. **Build momentum**—guide attention so the work keeps moving toward insight.
-5. **Diagnose root causes**—go beyond symptoms to the conditions that produce them.
+4. **Proportionate change**—maintain correspondence between informational change and computational change.
+5. **Build momentum**—guide attention so the work keeps moving toward insight.
+6. **Diagnose root causes**—go beyond symptoms to the conditions that produce them.
 
 The approach taught in this book is **fragment modelling**: the discipline of building expressive, reusable blocks of information from imperfect operational data.
 
