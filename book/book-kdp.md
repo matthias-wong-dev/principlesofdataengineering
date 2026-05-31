@@ -5,7 +5,7 @@ documentclass: book
 classoption:
   - openright
   - 10pt
-geometry: paperwidth=6in,paperheight=9in,inner=0.65in,outer=0.5in,top=0.6in,bottom=0.7in
+geometry: paperwidth=7in,paperheight=10in,inner=0.7in,outer=0.55in,top=0.65in,bottom=0.75in
 fontsize: 10pt
 linestretch: 1.08
 toc: true
@@ -5583,48 +5583,36 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 
 Data is a fragment of reality captured by process.
 
-Because data is captured by process, it is never a perfect copy of the world. It is an imperfect projection of the business world into the data world.
+Because of this, data is an [imperfect projection](/docs/foundations/what-is-data/) of the business world into the data world. Data quality issues arise from the gap between the business world and this projection.
 
-Data quality issues arise from the gap between the business world and its projection into the data world.
-
-For example, key information required for decisions may not be captured. It may be captured in free-text format. It may be stored inconsistently across systems. It may be captured at the wrong grain. It may exist in the business process but not in a form the data product can use.
+For example, key information required for decisions may not be captured. It may be captured in free-text format. It may be captured at the wrong grain.
 
 When business users encounter these gaps, they experience a mismatch between the data product and the business world they already know. In many cases, this means they cannot trust the product for decision-making.
 
 No amount of blaming the source system changes this reality. From the business’s point of view, the product simply cannot be used.
 
-In this perspective, one of the data engineer’s jobs is to close the gap left by the projection, to the satisfaction of the decision-maker. This is how the data engineer adds to data quality.
-
-Quality concerns the projection itself. Reliability concerns what happens to that projection as it moves through the pipeline.
+In this perspective, one of the data engineer’s jobs is to close the gap left by the projection, to the satisfaction of the decision-maker. This is how the data engineer adds to data **quality**.
 
 Beyond the imperfections of the projection itself, the mechanical processes of a data pipeline may introduce further errors.
 
 An example is schema change. Users may experience this when entire tables become empty or when inconsistencies arise between business processes.
 
-On some occasions, this can be disastrous. For example, if the cost forecast has been updated to the latest month but the actual expenditure has not, the final reconciliation may show an unacceptable discrepancy.
+On some occasions, this can be disastrous. For example, if the cost forecast has been updated to the latest month but the actual expenditure has not, the final reconciliation may contain an unacceptable discrepancy. However, there may be no obvious signs of such an error.
 
-The issue is not business meaning. The issue is mechanical reliability: the pipeline has produced a data product whose parts are no longer aligned.
-
-The data engineer must build a pipeline that minimises the likelihood and impact of such errors.
+The issue is not with the source data, but with mechanical **reliability**: the pipeline has produced a data product whose parts are no longer aligned and has nothing to signal this divergence.
 
 Reliability is the discipline of making the data product stable against predictable forms of breakage.
 
 ## Trust requires both
 
-Quality and reliability answer different questions.
+Quality keeps users from guessing what the data means. Reliability keeps users from guessing whether the output worked.
+
+When both are available, users can use the product without second-guessing. Thus, quality and reliability are the foundations of trust.
 
 | Foundation | Question | User failure mode |
 |---|---|---|
 | Quality | Does this data product represent the business reality well enough for the decision? | “This does not match the world I know.” |
 | Reliability | Does the pipeline consistently produce the data product without hidden breakage? | “This number might be broken.” |
-
-Either failure destroys trust.
-
-A high-quality model that refreshes unpredictably cannot be trusted. A reliable pipeline that faithfully reproduces unusable source-system gaps cannot be trusted either.
-
-Quality keeps users from guessing what the data means. Reliability keeps users from guessing whether the data worked.
-
-Together, they are the foundations of trust.
 
 ## The third principle: anticipate errors
 
@@ -5632,7 +5620,7 @@ This section introduces the third principle of data engineering: anticipate erro
 
 This principle follows from the nature of quality and reliability. Data is an imperfect projection of complex reality, and pipelines are mechanical systems that operate in a changing world.
 
-A trustworthy data product therefore cannot depend on everything continuing as expected. The data engineer must anticipate errors.
+Because of these changes, a trustworthy data product cannot depend on everything continuing as expected. The data engineer does not stop with what works now, but anticipate errors that may occur.
 
 ## Key ideas
 
@@ -5846,7 +5834,7 @@ The same data element—personal income—therefore has different quality implic
 
 All three may prefer perfect accuracy. But none takes the same approach when under constraint.
 
-There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business objective.
+> There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business intent.
 
 Consequently, data quality is not merely data versus reality. It is data versus business intent.
 
@@ -5854,7 +5842,7 @@ A dogmatic insistence on reflecting the real world perfectly is costly and often
 
 With that in mind, common data quality issues arise because digital systems and business processes were not built to honour the full intent of the business. This may be due to poor design, such as missing data type constraints. It may be due to bias in the business process, such as different incentives for reporting income. It may also be due to a mismatch of purpose, such as operational forms captured for one regulatory purpose but later analysed for another.
 
-The data engineer therefore needs a practical set of interventions.
+The data engineer therefore needs a practical set of interventions. This chapter introduces thre broad approaches, with further methods for different scenarios.
 
 | Situation | Approach |
 |---|---|
@@ -5903,6 +5891,12 @@ Human curation closes the quality gap by allowing business judgement to enter th
 
 It is appropriate when business judgement is needed and the data engineer should not pretend the answer can be fully inferred by the system.
 
+This section covers three scenarios where human curation is appropriate:
+
+1. Data annotation
+2. Applying assumptions
+3. Data quality report
+
 ### Data annotation
 
 Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
@@ -5936,9 +5930,9 @@ Whether the curation concerns reference data, master data, or other forms of ann
 
 Applying assumptions is useful when a practical assumption can handle most cases, but violations need expert review.
 
-Consider the recording of dates. If users manually enter dates, they may accidentally type 2300 instead of 2030. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
+Consider the recording of dates. If users manually enter dates, they may accidentally type `2300` instead of `2030`. If the digital system lacks validation, such errors can end up in the database. Even a single mistake can distort a line chart or skew time-based analysis.
 
-One way to address this is to assume that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to blank. The original issue should not simply disappear. The record should also be flagged so that a business expert can review and correct the source data.
+One way to address this is to *assume* that future dates must be within 50 years. Dates outside this range are treated as invalid and converted to blank. Offending records should also be flagged so that a business expert can review and correct the source data.
 
 Before applying the assumption, the data may look like this.
 
@@ -5962,40 +5956,7 @@ After applying the assumption, the invalid date is blanked out and the row is fl
 
 This preserves analytical usefulness while making the intervention visible. The invalid date no longer distorts time-based analysis, but the issue remains available for remediation.
 
-Another example is assuming uniqueness.
-
-If records are almost always unique, but occasional duplicates occur, the pipeline can assume uniqueness for the main analytical table and separate the duplicates into a rejected-records table for review.
-
-Before applying the assumption, the data may look like this.
-
-**Example structure before deduplication**
-
-| Submission ID | Customer ID | Submission date | Submission amount |
-|---|---|---|---:|
-| S1001 | C001 | 2025-04-01 | 120.00 |
-| S1002 | C002 | 2025-04-01 | 95.00 |
-| S1003 | C001 | 2025-04-01 | 120.00 |
-| S1004 | C003 | 2025-04-02 | 80.00 |
-
-In this example, the business expects one submission per customer per date. The duplicate record is removed from the main analytical table and written to a rejected-records table.
-
-**Example structure of accepted records**
-
-| Submission ID | Customer ID | Submission date | Submission amount |
-|---|---|---|---:|
-| S1001 | C001 | 2025-04-01 | 120.00 |
-| S1002 | C002 | 2025-04-01 | 95.00 |
-| S1004 | C003 | 2025-04-02 | 80.00 |
-
-**Example structure of rejected records**
-
-| Submission ID | Customer ID | Submission date | Submission amount | Rejection reason |
-|---|---|---|---:|---|
-| S1003 | C001 | 2025-04-01 | 120.00 | Duplicate customer submission for date |
-
-This lets the main analytical table remain usable while preserving the rejected record for business attention. The duplicate is not silently lost. It is excluded from the analysis path and surfaced for remediation.
-
-This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation. This can be done in bulk for the entire pipeline, and studied in [Fault tolerance](/docs/quality-reliability/fault-tolerance/).
+This approach works best when violations are rare and the business expert can correct the issue before the next batch load. It is suitable for irregular data quality issues that do not require bulk remediation.
 
 If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
@@ -6208,7 +6169,7 @@ Conformed dimensions are studied in [Reference data](/docs/creating-information/
 
 ### Defining primary keys
 
-Defining primary keys closes the quality gap between database rows and real-world entities.
+Defining primary keys closes the quality gap between database rows and real-world entities by making their link explicit.
 
 Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/). Unfortunately, some business processes do not rigorously define primary keys.
 

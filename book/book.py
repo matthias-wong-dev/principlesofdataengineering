@@ -591,7 +591,7 @@ def render_kdp_front_matter() -> str:
             'classoption:',
             "  - openright",
             "  - 10pt",
-            "geometry: paperwidth=6in,paperheight=9in,inner=0.65in,outer=0.5in,top=0.6in,bottom=0.7in",
+            "geometry: paperwidth=7in,paperheight=10in,inner=0.7in,outer=0.55in,top=0.65in,bottom=0.75in",
             "fontsize: 10pt",
             "linestretch: 1.08",
             "toc: true",
