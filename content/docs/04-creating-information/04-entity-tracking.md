@@ -199,7 +199,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
      aria-label="Three passes of entity tracking with purpose and example artefacts">
 
   <defs>

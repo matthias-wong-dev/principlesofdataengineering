@@ -22,7 +22,7 @@ The central premise "Data is a fragment of reality captured by process" can be i
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"
-     style="background:#ffffff" role="img"
+     style="background:transparent" role="img"
      aria-label="Policy, Business, Digital, Data cycle with Defines, Collect, Informs transitions">
 
   <rect x="0" y="0" width="800" height="600" fill="#ffffff"/>

@@ -93,7 +93,7 @@ Continuing with the example above:
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="background:#ffffff" role="img"
+     style="background:transparent" role="img"
      aria-label="Linear process diagram showing design, production, and sales stages from research and development to customer feedback">
 
   <defs>

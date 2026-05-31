@@ -537,7 +537,7 @@ Combination dimensions, choice dimensions, Sankey dimensions, and storytelling d
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="display:block;width:100%;max-width:42rem;height:auto;background:#ffffff" role="img"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
      aria-label="Three stage movement from lower-grain detail to entity-level signal to dimension value">
 
   <defs>

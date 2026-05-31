@@ -49,7 +49,7 @@ In this perspective, data engineering is the task of taking data projected by bu
 <svg xmlns="http://www.w3.org/2000/svg"
      width="760" height="520"
      viewBox="0 0 760 520"
-     style="background:#ffffff"
+     style="background:transparent"
      role="img"
      aria-label="Business world projects down into data world, and data world is refashioned back into business understanding">
 

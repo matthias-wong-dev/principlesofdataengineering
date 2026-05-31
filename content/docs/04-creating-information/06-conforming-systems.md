@@ -182,7 +182,7 @@ The overall workflow would look like:
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620"
-     style="background:#ffffff" role="img"
+     style="background:transparent" role="img"
      aria-label="Vertical integration flow from local systems to conformed references and conformed transactions">
 
   <defs>
