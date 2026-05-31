@@ -1,16 +1,37 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
 
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{textcomp}
-\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+  \setmainfont{lmroman10-regular.otf}[
+    BoldFont=lmroman10-bold.otf,
+    ItalicFont=lmroman10-italic.otf,
+    BoldItalicFont=lmroman10-bolditalic.otf
+  ]
+  \setsansfont{lmsans10-regular.otf}[
+    BoldFont=lmsans10-bold.otf,
+    ItalicFont=lmsans10-oblique.otf
+  ]
+  \setmonofont{lmmono10-regular.otf}[Scale=MatchLowercase]
+\fi
 \usepackage{microtype}
 \usepackage[$if(geometry)$$geometry$$else$margin=1in$endif$]{geometry}
 \usepackage{setspace}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
-\usepackage{xcolor}
+\usepackage[export]{adjustbox}
+\providecommand{\pandocbounded}[1]{%
+  \begin{adjustbox}{max width=\linewidth,max totalheight=0.62\textheight,center}
+  #1%
+  \end{adjustbox}%
+}
+\usepackage[table]{xcolor}
 \usepackage{hyperref}
 \usepackage{bookmark}
 \usepackage{longtable}
@@ -20,7 +41,8 @@
 \usepackage{etoolbox}
 \usepackage{enumitem}
 \usepackage{amssymb}
-\usepackage{iftex}
+\usepackage{fvextra}
+\usepackage{mdframed}
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -39,6 +61,49 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.7em}
 \setlist{itemsep=0.25em, topsep=0.4em}
+
+\definecolor{pbiHeader}{HTML}{EAF2F8}
+\definecolor{pbiStripe}{HTML}{F7FAFC}
+\definecolor{pbiGrid}{HTML}{C9D3DD}
+\definecolor{codeBack}{HTML}{F6F8FA}
+\definecolor{codeFrame}{HTML}{C9D3DD}
+\definecolor{codeText}{HTML}{17202A}
+\arrayrulecolor{pbiGrid}
+\setlength{\arrayrulewidth}{0.35pt}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\toprule}{\arrayrulecolor{pbiGrid}\hline\rowcolor{pbiHeader}}
+\renewcommand{\midrule}{\hline}
+\renewcommand{\bottomrule}{\hline}
+\AtBeginEnvironment{longtable}{%
+  \small
+  \setlength{\LTpre}{0.45em}
+  \setlength{\LTpost}{0.9em}
+  \rowcolors{2}{white}{pbiStripe}
+}
+\AtEndEnvironment{longtable}{\rowcolors{2}{}{}}
+
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{%
+  breaklines,
+  breakanywhere,
+  fontsize=\small,
+  commandchars=\\\{\}
+}
+\BeforeBeginEnvironment{verbatim}{%
+  \begin{mdframed}[
+    backgroundcolor=codeBack,
+    linecolor=codeFrame,
+    linewidth=0.35pt,
+    roundcorner=2pt,
+    innerleftmargin=7pt,
+    innerrightmargin=7pt,
+    innertopmargin=6pt,
+    innerbottommargin=6pt,
+    skipabove=0.8em,
+    skipbelow=0.9em
+  ]\color{codeText}%
+}
+\AfterEndEnvironment{verbatim}{\end{mdframed}}
 
 \pagestyle{fancy}
 \fancyhf{}

@@ -164,7 +164,7 @@ Data is captured by business processes. Once collected, it can be used to return
 
 In this perspective, data engineering is the task of taking data projected by business processes and reshaping it into a form required by business intent. This can be summarised in Figure 1.
 
-![Diagram](book/epub-assets/diagram-001.png)
+![](book/epub-assets/diagram-001.png)
 
 *Figure 1. Business reality is projected into the data world, then shaped back into business understanding.*
 
@@ -192,7 +192,7 @@ To understand this, it is useful to visualise an organisation as a feedback loop
 
 The central premise "Data is a fragment of reality captured by process" can be interpreted as a feedback loop around three components: business processes, digital systems, and captured data. This relationship is illustrated in Figure 1.
 
-![Diagram](book/epub-assets/diagram-002.png)
+![](book/epub-assets/diagram-002.png)
 
 *Figure 1. Business intent defines business process, business process defines digital systems, digital systems capture data, and data feeds back into business understanding.*
 
@@ -238,8 +238,9 @@ How does the data engineer do this effectively?
 
 This book introduces five principles of data engineering. The first two are **expressiveness** and **fragment modelling**. The two principles are:
 
-- Instead of accepting garbage-in, garbage-out with raw data, add value through expressive entities.
-- Instead of building giant tables, create meaningful fragments.
+> Instead of accepting garbage-in, garbage-out with raw data, add value through expressive entities.
+>
+> Instead of building giant tables, create meaningful fragments.
 
 ## Expressiveness
 
@@ -305,7 +306,7 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 >
 > Expressive data is faithful, legible, and operable.
 >
-> Fragment modelling creates reusable blocks of information rather than isolated data products.
+> Fragment modelling is the principle of creating reusable blocks of information rather than giant tables.
 >
 > In a well-designed pipeline, tables can be understood as functions that transform fragments of data into reusable information.
 
@@ -621,7 +622,7 @@ These blocks are ready for downstream use, including self-service dimensional mo
 
 An overview of the three passes and examples is summarised in Figure 1.
 
-![Diagram](book/epub-assets/diagram-003.png)
+![](book/epub-assets/diagram-003.png)
 
 *Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.*
 
@@ -842,7 +843,7 @@ These blocks are ready for downstream use where users can access information wit
 
 An overview of the three passes and examples is summarised in Figure 1.
 
-![Diagram](book/epub-assets/diagram-004.png)
+![](book/epub-assets/diagram-004.png)
 
 *Figure 1. The three passes of entity tracking, showing both the purpose of each pass and example artefacts produced in a bank account pipeline.*
 
@@ -1284,7 +1285,7 @@ In practice, simplifications may be appropriate. The decision to simplify should
 
 The overall workflow would look like:
 
-![Diagram](book/epub-assets/diagram-005.png)
+![](book/epub-assets/diagram-005.png)
 
 *Figure 1. Vertical integration. Local systems are modelled separately, mapped to conformed references, and then integrated into a unified transaction table.*
 
@@ -2295,7 +2296,7 @@ Continuing with the example above:
 - Production—Sourcing, Manufacturing, Quality control
 - Sales—Orders, Shipping, Customer feedback
 
-![Diagram](book/epub-assets/diagram-006.png)
+![](book/epub-assets/diagram-006.png)
 
 *Figure 1. Linear process diagram. Business processes are arranged in chronological order and grouped into Design, Production, and Sales.*
 
@@ -3225,7 +3226,7 @@ One common theme in this chapter is the movement from information at a finer gra
 
 Combination dimensions, choice dimensions, Sankey dimensions, and storytelling dimensions all follow this pattern.
 
-![Diagram](book/epub-assets/diagram-007.png)
+![](book/epub-assets/diagram-007.png)
 
 *Figure 1. Lower-grain detail is pushed back to the entity grain, then exposed as a dimension value that users can interact with safely.*
 
@@ -5572,11 +5573,9 @@ Valid for what? Valid now, or valid at creation? Valid according to the source s
 
 Renaming `[Valid]` to `[Is current name]` is not cosmetic. It changes the user’s ability to understand the data.
 
-This is why metadata is a quality issue.
+This is why metadata is not an add-on task. It is part of modelling. No transformation can help a user who cannot tell what the result means.
 
-Quality metadata adds value at the point of interpretation. No transformation can help a user who cannot tell what the result means.
-
-Metadata is not an add-on task. It is part of modelling. In complex cases, writing metadata first is a way to lay out the logic in plain language before implementation.
+In complex cases, writing metadata first is a way to lay out the logic in plain language before implementation.
 
 There are three basic kinds of metadata discussed in this chapter:
 
@@ -5618,13 +5617,13 @@ Names should also be able to stand alone. Data tables and columns can often be t
 
 For example, `[Is non-compliant]` may be better as `[Is financially non-compliant]`. This may involve repeating some of the table meaning in the column name.
 
+When in doubt, the data engineer should err on the side of explicitness, because it is easier to shorten a name in a Power BI visual than for a user to creatively extend it.
+
 Another compromise to recognisability is filler language.
 
 Words such as `type`, `group`, `summary`, and `details` are often used by developers without adding meaning. They can function like “um” and “ah” in a sentence: they fill space but obscure meaning.
 
 If a table is called `summary`, it should usually be renamed to reflect what is being summarised. `Details` should be avoided unless it is truly a finer-grain expansion of a header row.
-
-When in doubt, the data engineer should err on the side of explicitness, because it is easier to shorten a name in a Power BI visual than for a user to creatively extend it.
 
 These principles apply just as much to code. Temporary tables and CTEs should be named with business meaning, not cryptic abbreviations like `tmp`. In complex code, column renaming should happen early, on first contact, and persist throughout transformation.
 
@@ -5634,7 +5633,7 @@ Descriptions make artefacts comprehensible.
 
 A name may tell the user what an artefact is, but the name cannot carry the whole interpretation. The user may still need to know what business reality is represented, how the value was derived, what assumptions were made, when the artefact is unsafe, and how it differs from related concepts.
 
-This is why business descriptions are not an add-on. They are meaning explanations. They enhance data quality by aligning artefacts to business reality through interpretative context.
+This is why business descriptions are part of the meaning rather than an add-on. They enhance data quality by aligning artefacts to business reality through interpretative context.
 
 Too often, descriptions merely restate the artefact name. For example, `Cake.Sales` may be described as “A list of cakes sold”, or `[Is non-compliant]` as “True if found non-compliant.” These descriptions do nothing more than take up storage space. At worst, they harm trust by conveying shallowness.
 
@@ -5684,21 +5683,15 @@ Database keys include primary keys, foreign keys, and unique keys. They are also
 
 Keys stop records from becoming lost.
 
-A business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them.
+As explained in [Mapping the data world](#docs-creating-information-mapping-the-data-world), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
+
+Moreover, a business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them.
 
 In this sense, keys are a map for the warehouse. They show which row represents which business entity, which records belong together, and how one fragment of reality relates to another.
 
-Names and business descriptions explain artefacts in themselves. Keys explain where those artefacts sit in the wider business landscape.
-
-Relationships are part of meaning. The relationship between one table and another tells the user something about both tables that neither table can say in isolation.
+Keys also recognise that relationships are part of meaning. The relationship between one table and another tells the user something about both tables that neither table can say in isolation.
 
 For example, a foreign key between `Cake.Sales` and `Cake.RefProfitability` immediately signals that some sales may be profitable and some may not.
-
-Database keys also help users navigate the database and perform joins. Without them, users are left to guess which path through the warehouse is safe. This is not acceptable.
-
-Primary keys play a special role. As explained in [Mapping the data world](#docs-creating-information-mapping-the-data-world), the primary key is what links a database record to its real-world business entity.
-
-This is why primary keys matter so much. They are not only technical identifiers. They are the anchor between a row and the entity it claims to represent.
 
 Each organisation implements keys differently. Some store them only in conceptual diagrams or third-party tools. The disadvantage is that they cannot be easily read or queried.
 
@@ -5716,13 +5709,9 @@ The primary purpose of metadata is not governance, tagging, discoverability, or 
 
 Metadata should be understood in the context of the data engineer’s task: shaping data in light of business intent. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business reality.
 
-Without this context, interpretation is left to the user.
-
-That is not merely a documentation gap. It is abandoning the user to guess.
+Without this context, the data engineer is abandoning the user to guess.
 
 Finally, whether metadata describes names, descriptions, or keys, it should be stored and made available as data.
-
-If metadata carries meaning, it should be available to the systems and users that need meaning.
 
 Instead of recording metadata only in diagrams, specialist tools, or database constructs, it should also be available as tables. Treating metadata as data enhances the ability to distribute it, automate it, and surface it to appropriate tools through APIs.
 
@@ -6625,11 +6614,11 @@ Useful drift statistics may include:
 
 ## Anticipating errors
 
-Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
-
 A data product is not trustworthy merely because it is correct today. It is trustworthy when users are not caught unawares by eventual failures.
 
-This is the third principle of data engineering: anticipate errors.
+This is the third principle of data engineering:
+
+> instead of stopping with what works now, anticipate errors that may occur.
 
 The principle follows from two facts.
 
@@ -6643,7 +6632,9 @@ The deeper danger is that errors occur silently.
 
 A silent error allows a data product to remain polished and apparently authoritative while no longer being safe to use.
 
-The data engineer therefore needs explicit mechanisms for making failure visible.
+Therefore:
+
+> Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
 
 This chapter covers two such mechanisms:
 
@@ -6664,9 +6655,9 @@ Both should run regularly, such as once per pipeline batch. Their purpose is not
 
 A data test is strongest when expected and actual results are calculated independently.
 
-The premise of testing is simple: when the same problem is solved in two different ways, and both methods arrive at the same result, confidence is justified.
+The premise of testing is this: when the same problem is solved in two different ways, and both methods arrive at the same result, confidence is justified.
 
-In data engineering, this means a test has two parts:
+In data engineering, a test has two parts:
 
 | Test part | Meaning |
 |---|---|
@@ -6677,7 +6668,7 @@ The test passes if expected and actual results match.
 
 In a data pipeline, the expected part of a test may be calculated from raw or partly transformed data. The actual part uses the transformed output.
 
-In a Power BI semantic model, the expected part of a test may be calculated from the underlying data source, such as SQL or a data lake. The actual part may be calculated using DAX. This approach is effective for validating complex DAX measures, especially measures that rely on hidden grain.
+In a Power BI semantic model, the expected part of a test may be calculated from the underlying data source, such as SQL or a data lake. The actual part may be calculated using DAX. This approach is effective for validating complex DAX measures, especially measures that rely on embedded grain or complex DAX.
 
 Power BI tests are easy to create. The data engineer can drag and drop to build a table visual with dimensions and measures. The Performance Analyzer in Power BI Desktop reveals the DAX query behind the visual. This can serve as the actual portion of the test. The engineer then compares the DAX evaluation with a calculation from the underlying data source.
 
@@ -6716,13 +6707,13 @@ For example, instead of only counting all rows, the data engineer may group by a
 | West | 1,920 | 1,918 |
 | New store not annotated | 12 | 14 |
 
-The total row count may still match because one group is undercounted while another is overcounted. Grouped counts reveal the problem. Grouping by reference values helps catch update errors, join errors, and mapping issues.
+The total row count may still match because one group is undercounted while another is overcounted. Grouped counts reveal the problem, helping catch update errors, join errors, and mapping issues.
 
-The expected and actual calculations should use different logical paths where possible. For example, the expected query may group raw records using source fields, while the actual query groups transformed records using curated dimensions.
+The expected and actual calculations should use different logical paths. For example, the expected query may group raw records using source fields, while the actual query groups transformed records using curated dimensions.
 
 Row count tests are especially important for incremental loads.
 
-If the extract relies on an architectural column such as `[Row update datetime]`, the test should preferably use a different datetime column, such as `[Staff update datetime]`, `[Submission datetime]`, or another business-centric column. This separation avoids self-confirmation.
+If the extract relies on an architectural column such as `[Row update datetime]`, the test should use a different datetime column, such as `[Staff update datetime]`, `[Submission datetime]`, or another business-centric column. This separation avoids self-confirmation.
 
 Selecting a sample of recent records is also useful. A recent-record sample can check creation, update, and deletion behaviour across many columns, not only row counts.
 
@@ -6805,7 +6796,7 @@ The data engineer introduces `Club.CustomerFoodOrderMap` to allocate food orders
 | T001 | M001 | FO002 | 0.5 |
 | T001 | M002 | FO002 | 0.5 |
 
-Regardless of how complex the mapping logic becomes, some totals should remain stable. The total cost of food ordered at the table should not change after allocation.
+Regardless of how complex the mapping logic becomes, some totals should remain the same. The total cost of food ordered at the table should not change after allocation.
 
 **Example mapping checksum**
 
@@ -6909,15 +6900,6 @@ However, assumptions may fail over time. Sometimes the failure is unanticipated.
 A monitored assumption is a query that returns records if and only if human attention is required.
 
 If no rows are returned, the assumption remains valid. If rows are returned, each row is a violation that needs attention.
-
-This is different from a test.
-
-A test asks whether two independent paths agree to provide confidence that they are correct. A monitored assumption asks whether the world still fits the condition the data product relies on.
-
-| Mechanism | Typical result | Example |
-|---|---|---|
-| Test | Pass/fail | Row counts before and after transformation match. |
-| Monitored assumption | Records requiring attention | New country codes require mapping. |
 
 The key to monitoring assumptions is recognising that an assumption exists.
 
@@ -7079,8 +7061,6 @@ Thoughtful tests are best, but even simple tests are valuable. Many errors in da
 
 New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. Mature engineers dealing with greater complexity spend proportionately more time anticipating failure: defining tests, monitoring assumptions, and making sure that the data product will reveal when it is no longer safe.
 
-As a rough heuristic, teams should expect to spend a meaningful part of each development cycle on this work. The exact proportion will vary, but the principle is the same: if the data product matters, the means of detecting failure matters too.
-
 ## Key ideas
 
 > **Key ideas.**
@@ -7119,10 +7099,6 @@ For this reason, fault tolerance requires judgement. Some errors should abort a 
 
 This is fault tolerance.
 
-In a large-scale pipeline with hundreds or thousands of tables, the probability of errors occurring in each batch is high. Some source records will be malformed. Some expected values will be missing. Some tables will arrive late. Some incremental loads will behave unexpectedly. Some upstream systems will change.
-
-A robust pipeline should not collapse just because one part of it goes wrong.
-
 Fault tolerance is therefore an extension of the third principle of data engineering: anticipate errors.
 
 This chapter introduces three common fault patterns:
@@ -7149,7 +7125,7 @@ The reverse can also occur. Two distinct real-world entities may be forced to oc
 
 Uniqueness violations can arise from business process failures, such as duplicate entry. They can also arise from mechanical failures, such as incremental load logic incorrectly loading the same record twice.
 
-The data engineer must express uniqueness expectations in the warehouse. While they may be implemented as technical constraints, they are better understood as statements of business intent.
+The data engineer must express uniqueness expectations in the warehouse. They are physical expressions of business intent.
 
 If the constraint is violated, the pipeline has several possible responses:
 
@@ -7158,7 +7134,6 @@ If the constraint is violated, the pipeline has several possible responses:
 | Abort the load | The violation suggests the table is unsafe to publish. |
 | Reject the violating records | The invalid records can be isolated while the rest of the table remains usable. |
 | Deduplicate automatically | The business rule for choosing the accepted record is clear and safe. |
-| Surface the violation for review | Human attention is required before the issue can be resolved. |
 
 For example, a source table may contain duplicate submissions.
 
@@ -7294,11 +7269,11 @@ Stability faults occur when small real-world changes produce disproportionate ch
 
 A stable pipeline changes in proportion to the world it represents.
 
-If ten sales changed in the source system, the pipeline should not rewrite ten million historical sales records. If one reference value changed, half the warehouse should not change as a side effect.
+If ten sales changed in the source system, the pipeline should not update ten million downstream records. If one reference value changed, half the warehouse should not change as a side effect.
 
 Stability means that ordinary changes should produce ordinary effects.
 
-This is important because the real world rarely rewrites all historical records at once—users do not usually go back and alter every transaction ever recorded. But the data world can suffer from massive accidental changes that do not correspond to real-world change.
+This is important because the real world rarely rewrites all historical records at once. But the data world can suffer from massive accidental changes that do not correspond to real-world change.
 
 For example, a source system update may refresh `[Row update datetime]` for every historical row. If the pipeline relies on `[Row update datetime]` for incremental extraction, it may attempt to reload the entire history.
 
@@ -7310,13 +7285,13 @@ The data engineer should therefore design pipelines so that changes are commensu
 
 One way to do this is to avoid unstable elements:
 
-| Unstable element | Why it is risky |
-|---|---|
-| `[Today’s date]` stored on every row | Causes every row to change every day. |
-| Non-deterministic ranking | Causes rows to change between runs without real-world change. |
-| Incomplete tie-breaking logic | Makes selected records unstable. |
-| Overwritten single-row control tables | Causes downstream volatility when append-only history would be safer. |
-| Wide miscellaneous tables | Amplifies small changes because unrelated attributes share one row. |
+| Unstable element                     | Why it is risky                                                       |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| `[Today’s date]` stored on every row | Causes every row to change every day.                                 |
+| Non-deterministic ranking            | Causes rows to change between runs without real-world change.         |
+| Incomplete tie-breaking logic        | Makes selected records unstable.                                      |
+| Single-row control tables            | Causes downstream volatility when append-only history would be safer. |
+| Wide miscellaneous tables            | Amplifies small changes because unrelated attributes share one row.   |
 
 Another way is to use stability thresholds.
 
@@ -7341,7 +7316,7 @@ These design habits are developed further in [Load mechanics](#docs-efficient-st
 
 ## Conclusion
 
-Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late. Reference data may be incomplete. Users may enter unexpected values.
+Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late.  Users may enter unexpected values.
 
 It is not useful to enumerate every possible fault.
 
@@ -7349,13 +7324,7 @@ The important thing is the mindset: anticipating errors.
 
 The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
 
-A fault-tolerant pipeline expects errors, handles them, recovers from them, and above all, reports on them.
-
-The Zen of Python states the principle well:
-
-> Errors should never pass silently. Unless explicitly silenced.
-
-That is also the discipline of fault tolerance: not every error is fatal, but none should pass silently.
+This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
 
 ## Key ideas
 

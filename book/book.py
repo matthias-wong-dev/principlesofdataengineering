@@ -5,8 +5,10 @@ import argparse
 import html
 import re
 import shutil
+import struct
 import subprocess
 import time
+import zlib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -14,23 +16,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 PROJECT_ROOT = ROOT.parent
 DOCS_DIR = PROJECT_ROOT / "content" / "docs"
+TITLE = "Principles of Data Engineering"
+AUTHOR = "Matthias Wong"
 DEFAULT_OUTPUTS = {
     "pdf": ROOT / "book.md",
     "epub": ROOT / "book-epub.md",
 }
-EPUB_ASSETS_DIR = ROOT / "epub-assets"
-PDF_SAFE_REPLACEMENTS = {
-    "\u00a9": "(c)",
-    "\u2013": "--",
-    "\u2014": "---",
-    "\u2018": "'",
-    "\u2019": "'",
-    "\u201c": '"',
-    "\u201d": '"',
-    "\u2026": "...",
-    "\u2264": "<=",
-    "\u2265": ">=",
+DEFAULT_ARTIFACTS = {
+    "pdf": ROOT / f"{TITLE}.pdf",
+    "epub": ROOT / f"{TITLE}.epub",
 }
+EPUB_ASSETS_DIR = ROOT / "epub-assets"
+PDF_SAFE_REPLACEMENTS: dict[str, str] = {}
 
 
 @dataclass
@@ -41,10 +38,6 @@ class Page:
     body: str
     is_section: bool
     url: str | None
-
-
-TITLE = "Principles of Data Engineering"
-AUTHOR = "Matthias Wong"
 
 
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
@@ -101,11 +94,140 @@ class DiagramRenderer:
                 svg_path.unlink(missing_ok=True)
                 return raw_html_block(svg)
             candidates[0].replace(png_path)
+            crop_png_whitespace(png_path)
             svg_path.unlink(missing_ok=True)
-            return f"\n\n![Diagram](book/epub-assets/{png_path.name})\n\n"
+            return f"\n\n![](book/epub-assets/{png_path.name})\n\n"
         except (OSError, subprocess.CalledProcessError):
             svg_path.unlink(missing_ok=True)
             return raw_html_block(svg)
+
+
+def png_chunks(data: bytes) -> list[tuple[bytes, bytes]]:
+    if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("not a PNG")
+
+    chunks: list[tuple[bytes, bytes]] = []
+    offset = 8
+    while offset < len(data):
+        length = struct.unpack(">I", data[offset : offset + 4])[0]
+        kind = data[offset + 4 : offset + 8]
+        chunk_data = data[offset + 8 : offset + 8 + length]
+        chunks.append((kind, chunk_data))
+        offset += length + 12
+        if kind == b"IEND":
+            break
+    return chunks
+
+
+def paeth_predictor(left: int, above: int, upper_left: int) -> int:
+    estimate = left + above - upper_left
+    distances = (
+        abs(estimate - left),
+        abs(estimate - above),
+        abs(estimate - upper_left),
+    )
+    if distances[0] <= distances[1] and distances[0] <= distances[2]:
+        return left
+    if distances[1] <= distances[2]:
+        return above
+    return upper_left
+
+
+def unfilter_png_scanlines(raw: bytes, width: int, height: int, channels: int) -> bytearray:
+    stride = width * channels
+    out = bytearray(height * stride)
+    raw_offset = 0
+
+    for y in range(height):
+        filter_type = raw[raw_offset]
+        raw_offset += 1
+        row = bytearray(raw[raw_offset : raw_offset + stride])
+        raw_offset += stride
+        previous = out[(y - 1) * stride : y * stride] if y else bytearray(stride)
+
+        for x in range(stride):
+            left = row[x - channels] if x >= channels else 0
+            above = previous[x]
+            upper_left = previous[x - channels] if x >= channels else 0
+            if filter_type == 1:
+                row[x] = (row[x] + left) & 0xFF
+            elif filter_type == 2:
+                row[x] = (row[x] + above) & 0xFF
+            elif filter_type == 3:
+                row[x] = (row[x] + ((left + above) // 2)) & 0xFF
+            elif filter_type == 4:
+                row[x] = (row[x] + paeth_predictor(left, above, upper_left)) & 0xFF
+            elif filter_type != 0:
+                raise ValueError(f"unsupported PNG filter: {filter_type}")
+
+        out[y * stride : (y + 1) * stride] = row
+
+    return out
+
+
+def encode_png(width: int, height: int, channels: int, pixels: bytes) -> bytes:
+    color_type = 6 if channels == 4 else 2
+    rows = []
+    stride = width * channels
+    for y in range(height):
+        rows.append(b"\x00" + pixels[y * stride : (y + 1) * stride])
+
+    def chunk(kind: bytes, chunk_data: bytes) -> bytes:
+        checksum = zlib.crc32(kind + chunk_data) & 0xFFFFFFFF
+        return struct.pack(">I", len(chunk_data)) + kind + chunk_data + struct.pack(">I", checksum)
+
+    header = struct.pack(">IIBBBBB", width, height, 8, color_type, 0, 0, 0)
+    return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", header) + chunk(
+        b"IDAT", zlib.compress(b"".join(rows), level=9)
+    ) + chunk(b"IEND", b"")
+
+
+def crop_png_whitespace(path: Path, padding: int = 24, threshold: int = 245) -> None:
+    data = path.read_bytes()
+    chunks = png_chunks(data)
+    ihdr = next(chunk_data for kind, chunk_data in chunks if kind == b"IHDR")
+    width, height, bit_depth, color_type, _, _, _ = struct.unpack(">IIBBBBB", ihdr)
+    if bit_depth != 8 or color_type not in {2, 6}:
+        return
+
+    channels = 4 if color_type == 6 else 3
+    compressed = b"".join(chunk_data for kind, chunk_data in chunks if kind == b"IDAT")
+    pixels = unfilter_png_scanlines(zlib.decompress(compressed), width, height, channels)
+    stride = width * channels
+
+    left = width
+    top = height
+    right = -1
+    bottom = -1
+    for y in range(height):
+        row_offset = y * stride
+        for x in range(width):
+            offset = row_offset + x * channels
+            red, green, blue = pixels[offset : offset + 3]
+            alpha = pixels[offset + 3] if channels == 4 else 255
+            if alpha > 0 and (red < threshold or green < threshold or blue < threshold):
+                left = min(left, x)
+                top = min(top, y)
+                right = max(right, x)
+                bottom = max(bottom, y)
+
+    if right < left or bottom < top:
+        return
+
+    left = max(0, left - padding)
+    top = max(0, top - padding)
+    right = min(width - 1, right + padding)
+    bottom = min(height - 1, bottom + padding)
+    cropped_width = right - left + 1
+    cropped_height = bottom - top + 1
+
+    cropped = bytearray(cropped_width * cropped_height * channels)
+    for y in range(cropped_height):
+        src = ((top + y) * width + left) * channels
+        dst = y * cropped_width * channels
+        cropped[dst : dst + cropped_width * channels] = pixels[src : src + cropped_width * channels]
+
+    path.write_bytes(encode_png(cropped_width, cropped_height, channels, bytes(cropped)))
 
 
 def parse_front_matter(text: str) -> tuple[dict[str, str], str]:
@@ -330,8 +452,9 @@ def clean_body(
 ) -> str:
     text = page.body.replace("\r\n", "\n")
     text = strip_hugo_markup(text)
-    if target == "epub":
+    if target in {"epub", "pdf"}:
         text = wrap_svg_blocks_for_epub(text, diagrams)
+    if target == "epub":
         text = rewrite_internal_links(text, link_map)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
@@ -461,7 +584,7 @@ def render_front_matter(target: str) -> str:
 def build_book(target: str) -> str:
     sections = section_pages()
     link_map = build_link_map(sections)
-    diagrams = DiagramRenderer(enabled=target == "epub")
+    diagrams = DiagramRenderer(enabled=target in {"epub", "pdf"})
     chunks: list[str] = [render_front_matter(target)]
 
     for section, children in sections:
@@ -481,6 +604,41 @@ def build_book(target: str) -> str:
     return "\n\n".join(chunks) + "\n"
 
 
+def pandoc_command(target: str, source: Path, artifact: Path) -> list[str]:
+    command = [
+        "pandoc",
+        str(source),
+        "-o",
+        str(artifact),
+        "--resource-path",
+        f"{PROJECT_ROOT}:{ROOT}",
+    ]
+    if target == "pdf":
+        command.extend(
+            [
+                "-f",
+                "markdown-smart",
+                "--pdf-engine=xelatex",
+                "--syntax-highlighting=none",
+                "--template",
+                str(ROOT / "template.tex"),
+            ]
+        )
+    else:
+        command.extend(["--toc", "--toc-depth=3"])
+    return command
+
+
+def build_artifact(target: str, source: Path, artifact: Path) -> None:
+    if shutil.which("pandoc") is None:
+        raise SystemExit("pandoc was not found on PATH.")
+    if target == "pdf" and shutil.which("xelatex") is None:
+        raise SystemExit("xelatex was not found on PATH; install a TeX distribution to build PDF.")
+
+    artifact.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(pandoc_command(target, source, artifact), check=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Concatenate Hugo book chapters into a Pandoc-friendly Markdown manuscript."
@@ -498,12 +656,28 @@ def main() -> None:
         default=None,
         help="Output Markdown file. Defaults to book/book.md for pdf or book/book-epub.md for epub.",
     )
+    parser.add_argument(
+        "--build",
+        action="store_true",
+        help="Also run Pandoc to build the final PDF or EPUB artifact.",
+    )
+    parser.add_argument(
+        "--artifact-output",
+        type=Path,
+        default=None,
+        help="Final PDF/EPUB path when --build is used. Defaults to book/Principles of Data Engineering.pdf or .epub.",
+    )
     args = parser.parse_args()
 
     output = args.output or DEFAULT_OUTPUTS[args.target]
     book = build_book(args.target)
     output.write_text(book)
     print(f"Wrote {output}")
+
+    if args.build:
+        artifact = args.artifact_output or DEFAULT_ARTIFACTS[args.target]
+        build_artifact(args.target, output, artifact)
+        print(f"Wrote {artifact}")
 
 
 if __name__ == "__main__":
