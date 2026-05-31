@@ -18,4 +18,4 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 
 Matthias holds a PhD in Computational Mathematics.
 
-For contact information, see [the author's website](https://matthiaswong.me).
+For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me).
