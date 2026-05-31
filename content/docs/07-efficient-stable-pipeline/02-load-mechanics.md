@@ -35,7 +35,6 @@ The standard pattern has three steps:
 | Check | Which rows genuinely changed, and are those changes safe? |
 | Apply | How should the target table be updated without losing history or spreading faults? |
 
-
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
      style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
@@ -101,7 +100,7 @@ The standard pattern has three steps:
         font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
         font-size="13" fill="#333333">Sales.Order_reject</text>
 
-  <!-- Apply and log -->
+  <!-- Apply -->
   <rect x="745" y="45" width="290" height="245" rx="16"
         fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
 
@@ -169,7 +168,7 @@ For any target table, the standard load pattern may create the following artefac
 | `Sales.Order_staging` | Incoming data before `Sales.Order` is touched. |
 | `Sales.Order_upsert` | Rows that are new or genuinely changed. |
 | `Sales.Order_delete` | Rows that should be removed from the current target. |
-| `Sales.Order_reject` | Rows that violate constraints and should not enter the target. |
+| `Sales.Order_reject` | Changed rows that violate constraints and should not enter the target. |
 | `Sales.Order_history` | Previous versions of rows that were updated or deleted. |
 
 This may seem like a lot of machinery. The rest of this chapter explains why each part exists.
@@ -222,15 +221,16 @@ The Check step asks three kinds of question:
 | Instability | Are there abnormally high numbers of inserts, updates, or deletes? |
 | Violations | Are there rows that should be rejected rather than loaded? |
 
-Checking for genuine changes is essential. Checking for instability is highly desirable. Checking for violations is a practical way to improve fault tolerance, because a small number of bad rows can be rejected while the rest of the table proceeds. 
+Checking for genuine changes is essential. Checking for instability is highly desirable. Checking for violations is a practical way to improve fault tolerance, because a small number of bad rows can be rejected while the rest of the table proceeds.
 
-The latter two are part of [fault tolerance](/docs/quality-reliability/fault-tolerance/).
+Instability and violation checks are part of [Fault tolerance](/docs/quality-reliability/fault-tolerance/).
 
 #### Check for genuine changes
 
 Not every row in `Sales.Order_staging` is a genuine change.
 
 During a full extract, millions of rows may arrive, but only a small number may differ from the current target. During an incremental extract, the incoming rows may only be candidates for change. Some may still be identical to the current target.
+
 The Check step identifies which rows genuinely need action by comparing rows on the primary key, then comparing non-key values for rows whose primary key already exists.
 
 There are three possibilities:
@@ -356,12 +356,11 @@ After the Check step, the pipeline has separated incoming data into the actions 
 
 The Apply step updates the target table in a controlled way.
 
-First, rows marked for deletion should be removed from the current target. But they should not simply disappear. Their previous values should be preserved in `Sales.Order_history`. This is not merely for archival purposes, but to inform downstream processes which rows have been deleted, so they can respon accordingly.
+First, rows marked for deletion should be removed from the current target. But they should not simply disappear. Their previous values should be preserved in `Sales.Order_history`. This is not merely for archival purposes, but to inform downstream processes which rows have been deleted, so they can respond accordingly.
 
 Second, rows in `Sales.Order_upsert` where `[Is new row] = false` should be used to update existing rows in the target. Again, the previous values should be preserved in `Sales.Order_history`.
 
 Third, rows in `Sales.Order_upsert` where `[Is new row] = true` should be inserted into the target.
-
 
 The Apply step should also manage architectural columns for change datetimes:
 
@@ -373,7 +372,7 @@ The Apply step should also manage architectural columns for change datetimes:
 
 Because the Check step removed unchanged rows, `[Row update datetime]` is updated only when row content genuinely changes.
 
-As we will see in the later chapter [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/), these artefacts are necessary for downstream processing. 
+As we will see in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/), these artefacts are necessary for downstream processing.
 
 After applying the change, the target may look like this.
 
@@ -385,11 +384,9 @@ After applying the change, the target may look like this.
 | O1002 | C002 | REF-1002 | Fulfilled | 95.00 | 2025-04-01 09:05 | 2025-05-01 08:00 | 9999-12-31 00:00:00 |
 | O1004 | C004 | REF-1004 | Submitted | 140.00 | 2025-05-01 08:00 | 2025-05-01 08:00 | 9999-12-31 00:00:00 |
 
-
 `O1001` remains unchanged. `O1002` has been updated. `O1003` has been deleted from the current table. `O1004` has been inserted. `O1005` has been rejected because `[Customer ID]` is missing. `O1006` has been rejected because its `[Order reference]` clashes with an existing target row.
 
 The history table preserves previous versions of updated and deleted rows.
-
 
 **Example structure of `Sales.Order_history`**
 
@@ -397,7 +394,6 @@ The history table preserves previous versions of updated and deleted rows.
 |---|---|---|---|---:|---|---|---|
 | O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 | 2025-05-01 08:00 |
 | O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 | 2025-05-01 08:00 |
-
 
 ## After the load
 
@@ -460,7 +456,6 @@ Over time, these logs form a history of how each table behaves.
 
 That history is valuable for troubleshooting, setting stability thresholds, capacity planning, and understanding whether a table’s behaviour has changed. For example, if `Sales.Order` normally updates between 1% and 3% of rows each day, a load that updates 40% of rows is immediately suspicious. Without change statistics, the pipeline has no memory of what normal looks like.
 
-
 ## Is the extra work worth it?
 
 At first glance, the three-step load pattern looks like overhead.
@@ -470,7 +465,6 @@ For one target table, the pattern may create several temporary or supporting art
 In a small environment, this may be unnecessary. If there are few tables, little downstream dependency, and low business risk, a simpler approach may be enough.
 
 But as the pipeline grows, the calculation changes.
-
 
 The extra work is necessary because the warehouse needs to know and control every change that happens within it. Each artefact preserves a distinction that the warehouse needs in order to achieve this.
 
@@ -499,13 +493,15 @@ Investment in automation or appropriate technology ensures that this logic can b
 >
 > A mature load applies only genuine changes, after checking that they are safe.
 >
+> Load mechanics are about keeping the warehouse in control of change.
+>
 > Drop-and-replace loading is simple, but it hides genuine change, creates instability, and magnifies failure.
 >
 > The standard load pattern is stage, check, and apply.
 >
 > Staging tables hold incoming data before the target table is touched.
 >
-> Upsert, delete, and reject tables separate genuine changes from unsafe rows.
+> Upsert, delete, and reject tables separate genuine changes, unsafe changes, and candidate deletions before anything is applied.
 >
 > History tables preserve previous versions of updated and deleted rows for downstream processing.
 >
