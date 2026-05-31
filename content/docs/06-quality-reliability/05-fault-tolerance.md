@@ -50,7 +50,7 @@ The reverse can also occur. Two distinct real-world entities may be forced to oc
 
 Uniqueness violations can arise from business process failures, such as duplicate entry. They can also arise from mechanical failures, such as incremental load logic incorrectly loading the same record twice.
 
-The data engineer must express uniqueness expectations in the warehouse. While they may be implemented as technical constraints, they are better understood as statements of business intent.
+The data engineer must express uniqueness expectations in the warehouse. They are physical expressions of business intent.
 
 If the constraint is violated, the pipeline has several possible responses:
 
@@ -210,13 +210,13 @@ The data engineer should therefore design pipelines so that changes are commensu
 
 One way to do this is to avoid unstable elements:
 
-| Unstable element | Why it is risky |
-|---|---|
-| `[Today’s date]` stored on every row | Causes every row to change every day. |
-| Non-deterministic ranking | Causes rows to change between runs without real-world change. |
-| Incomplete tie-breaking logic | Makes selected records unstable. |
-| Overwritten single-row control tables | Causes downstream volatility when append-only history would be safer. |
-| Wide miscellaneous tables | Amplifies small changes because unrelated attributes share one row. |
+| Unstable element                     | Why it is risky                                                       |
+| ------------------------------------ | --------------------------------------------------------------------- |
+| `[Today’s date]` stored on every row | Causes every row to change every day.                                 |
+| Non-deterministic ranking            | Causes rows to change between runs without real-world change.         |
+| Incomplete tie-breaking logic        | Makes selected records unstable.                                      |
+| Single-row control tables            | Causes downstream volatility when append-only history would be safer. |
+| Wide miscellaneous tables            | Amplifies small changes because unrelated attributes share one row.   |
 
 Another way is to use stability thresholds.
 

@@ -9,8 +9,6 @@ weight: 4
 
 ## Anticipating errors
 
-Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
-
 A data product is not trustworthy merely because it is correct today. It is trustworthy when users are not caught unawares by eventual failures.
 
 This is the third principle of data engineering: 
@@ -29,7 +27,9 @@ The deeper danger is that errors occur silently.
 
 A silent error allows a data product to remain polished and apparently authoritative while no longer being safe to use.
 
-The data engineer therefore needs explicit mechanisms for making failure visible.
+Therefore: 
+
+> Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
 
 This chapter covers two such mechanisms:
 
@@ -50,9 +50,9 @@ Both should run regularly, such as once per pipeline batch. Their purpose is not
 
 A data test is strongest when expected and actual results are calculated independently.
 
-The premise of testing is simple: when the same problem is solved in two different ways, and both methods arrive at the same result, confidence is justified.
+The premise of testing is this: when the same problem is solved in two different ways, and both methods arrive at the same result, confidence is justified.
 
-In data engineering, this means a test has two parts:
+In data engineering, a test has two parts:
 
 | Test part | Meaning |
 |---|---|
@@ -63,7 +63,7 @@ The test passes if expected and actual results match.
 
 In a data pipeline, the expected part of a test may be calculated from raw or partly transformed data. The actual part uses the transformed output.
 
-In a Power BI semantic model, the expected part of a test may be calculated from the underlying data source, such as SQL or a data lake. The actual part may be calculated using DAX. This approach is effective for validating complex DAX measures, especially measures that rely on hidden grain.
+In a Power BI semantic model, the expected part of a test may be calculated from the underlying data source, such as SQL or a data lake. The actual part may be calculated using DAX. This approach is effective for validating complex DAX measures, especially measures that rely on embedded grain or complex DAX.
 
 Power BI tests are easy to create. The data engineer can drag and drop to build a table visual with dimensions and measures. The Performance Analyzer in Power BI Desktop reveals the DAX query behind the visual. This can serve as the actual portion of the test. The engineer then compares the DAX evaluation with a calculation from the underlying data source.
 
@@ -102,13 +102,13 @@ For example, instead of only counting all rows, the data engineer may group by a
 | West | 1,920 | 1,918 |
 | New store not annotated | 12 | 14 |
 
-The total row count may still match because one group is undercounted while another is overcounted. Grouped counts reveal the problem. Grouping by reference values helps catch update errors, join errors, and mapping issues.
+The total row count may still match because one group is undercounted while another is overcounted. Grouped counts reveal the problem, helping catch update errors, join errors, and mapping issues.
 
-The expected and actual calculations should use different logical paths where possible. For example, the expected query may group raw records using source fields, while the actual query groups transformed records using curated dimensions.
+The expected and actual calculations should use different logical paths. For example, the expected query may group raw records using source fields, while the actual query groups transformed records using curated dimensions.
 
 Row count tests are especially important for incremental loads.
 
-If the extract relies on an architectural column such as `[Row update datetime]`, the test should preferably use a different datetime column, such as `[Staff update datetime]`, `[Submission datetime]`, or another business-centric column. This separation avoids self-confirmation.
+If the extract relies on an architectural column such as `[Row update datetime]`, the test should use a different datetime column, such as `[Staff update datetime]`, `[Submission datetime]`, or another business-centric column. This separation avoids self-confirmation.
 
 Selecting a sample of recent records is also useful. A recent-record sample can check creation, update, and deletion behaviour across many columns, not only row counts.
 
@@ -191,7 +191,7 @@ The data engineer introduces `Club.CustomerFoodOrderMap` to allocate food orders
 | T001 | M001 | FO002 | 0.5 |
 | T001 | M002 | FO002 | 0.5 |
 
-Regardless of how complex the mapping logic becomes, some totals should remain stable. The total cost of food ordered at the table should not change after allocation.
+Regardless of how complex the mapping logic becomes, some totals should remain the same. The total cost of food ordered at the table should not change after allocation.
 
 **Example mapping checksum**
 
@@ -295,15 +295,6 @@ However, assumptions may fail over time. Sometimes the failure is unanticipated.
 A monitored assumption is a query that returns records if and only if human attention is required.
 
 If no rows are returned, the assumption remains valid. If rows are returned, each row is a violation that needs attention.
-
-This is different from a test.
-
-A test asks whether two independent paths agree to provide confidence that they are correct. A monitored assumption asks whether the world still fits the condition the data product relies on.
-
-| Mechanism | Typical result | Example |
-|---|---|---|
-| Test | Pass/fail | Row counts before and after transformation match. |
-| Monitored assumption | Records requiring attention | New country codes require mapping. |
 
 The key to monitoring assumptions is recognising that an assumption exists.
 
@@ -464,8 +455,6 @@ If something is easy to test, it should be tested because the cost is low. If so
 Thoughtful tests are best, but even simple tests are valuable. Many errors in data products are not profound misunderstandings. They are careless mistakes made during rapid development. Simple tests and assumptions can catch these before they reach the user.
 
 New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. Mature engineers dealing with greater complexity spend proportionately more time anticipating failure: defining tests, monitoring assumptions, and making sure that the data product will reveal when it is no longer safe.
-
-As a rough heuristic, teams should expect to spend a meaningful part of each development cycle on this work. The exact proportion will vary, but the principle is the same: if the data product matters, the means of detecting failure matters too.
 
 ## Key ideas
 
