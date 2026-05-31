@@ -1,161 +1,493 @@
 ---
-title: Load stack
-url: /docs/efficient-stable-pipeline/load-stack/
-description: Introduces the load stack as a practical way to sequence and manage materialised tables in a growing pipeline.
-lede: A load stack gives order to the build and maintenance of a pipeline.
+title: Load orchestration
+url: /docs/efficient-stable-pipeline/load-orchestration/
+description: Explains how to manage dependency-constrained parallel loads using a visible load stack, load candidates, and workers.
+lede: Load dependencies are one of the first bottlenecks in a growing warehouse.
 weight: 3
-draft: true
+# draft: true
 ---
 
-The chapter Load mechanics look at the details of how a single table is loaded. This chapter looks at how load across multiple tables can be orchestrated across the pipeline.
+## Load stack
 
-In a data pipeline, tables need to be loaded in the correct order. Even with a small number of tables, such as twenty to fifty, their dependencies can become difficult to manage. Poor implementation, such as manually coding their load order, leads to an unmaintainable pipeline that is hard to debug.
+Load dependencies are one of the first bottlenecks in a growing warehouse.
 
-In addition, loading tables in parallel is an easy way to reduce the total amount of time to process a large pipeline. Even a four-fold reduction may mean the difference between meeting the start of the business day or not.
+The previous chapter explained how to load one table safely. A real pipeline must load many tables safely, in the right order, without making independent tables wait unnecessarily.
 
-Load orchestration is the task of ensuring the loads in a pipeline happen correctly, always in order, and in parallel if computational resources are available.
+At small scale, load order can be managed manually. A developer can hard-code that customers load before orders, orders load before order items, and reference tables load before the facts that use them.
 
-There are two main ways of orchestrating a load:
+This does not last.
 
-- A centralised approach where a main process assigns work to workers
+As the warehouse grows, dependencies multiply. A pipeline may contain hundreds or thousands of tables, with tens of thousands of dependency relationships between them. At that scale, load order cannot be safely maintained as a hand-coded sequence. 
 
-- A decentralised approach where workers grab work from a queue
+A **load stack** addresses this by exposing the pipeline’s execution queue as data.
 
-In the centralised approach, a software orchestrates other server jobs to load tables in the right order and manages the parallelism. It is often difficult for data engineering teams to create such software at scale and requires the purchase of a vendor product.
+## Orchestrating a load
 
-On the other hand, the decentralised approach in this chapter is easy for any team to implement. All it takes are:
+The load stack approach rests on three objects.
 
-- An accurate record of pipeline lineage as metadata, that is, how one table draws data from other tables in the pipeline.
+| Object | Role |
+|---|---|
+| `Pipeline.LoadDependency` | Records dependency structure: which tables depend on which upstream tables. |
+| `Pipeline.LoadStack` | Records execution state for the current workflow: which tables have started and ended. |
+| `Pipeline.LoadCandidate` | A view which combines dependency structure and execution state to show which tables are ready to load now. |
 
-- The ability to load one table at a time, that is, there are no procedures or functions that load two tables in an entangled fashion.
+The dependency table by itself knows the structure of the pipeline, but not what has already loaded.
 
-The decentralised approach achieves the aim by maintaining a queue of work, making the queue visible, and allowing workers to grab from the queue. We call this queue the load stack.
+The load stack by itself knows what has started and ended, but not what depends on what.
 
-## Load stack and load candidates
+The load candidate view combines both. It asks: given the dependency structure, and given the current execution state, which tables are ready to load now?
 
-The load stack is a list of tables to be loaded. Each row represents a table to be loaded and annotated with two columns: [Is started] and [Is ended]. These indicate whether the load for that table has begun or finished. If [Is started] = 0, the table has not yet started loading and needs processing.
+Once readiness is visible, workers can claim ready tables independently at run-time, without pre-planned orchestration.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+### Dependency metadata
 
-But not every table with [Is started] = 0 is ready to load. Loads must follow the correct order. A table is ready only when all the tables it depends on have finished loading, a concept known as execution readiness. These are the load candidates.
+Dependency metadata records which tables must be loaded before another table can load.
 
-Identifying the load candidates requires a list of each table’s load dependencies. That is, the tables which directly feed into a table through a load.
+Suppose a sales pipeline contains six tables:
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+- `Sales.Customer`
+- `Sales.Product`
+- `Reference.Calendar`
+- `Sales.Order`
+- `Sales.OrderItem`
+- `Sales.OrderSummary`
 
-It is instructive to visualise the dependencies in a directional graph. Each arrow shows a direct feed from one table into another.
+The dependency graph might look like this.
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
+     aria-label="Example dependency graph for a sales pipeline load">
 
-By tracing dependencies upstream, the full set of prerequisites for each table can be found. These are the expanded dependencies of a table.
+  <defs>
+    <marker id="arrowhead-load-stack-dag" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[Screenshot]`.
+  <!-- Nodes -->
+  <rect x="45" y="55" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="155" y="96" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Sales.Customer</text>
 
-The load stack and the expanded dependencies are all that are needed to identify the load candidates, that is, the tables that are ready to load.
+  <rect x="45" y="220" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="155" y="261" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Sales.Product</text>
 
-A table is a load candidate if there are none of the tables in its expanded dependencies that have not ended. That is, there are no dependencies where [Is ended] = 0. This logic also works for tables with no dependencies at all, since their expanded dependency list is empty and therefore contains no unfinished loads. When a table has no unfinished loads in an upstream table, it is a candidate to start loading.
+  <rect x="325" y="55" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="435" y="96" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Sales.Order</text>
 
-This logic can be exposed as a view. The view shows the current list of load candidates and can be queried at any time to find which tables are ready to load.
+  <rect x="605" y="138" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="715" y="179" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Sales.OrderItem</text>
 
-> [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SQL and SCREENSHOT]`.
+  <rect x="325" y="255" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="435" y="296" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Reference.Calendar</text>
+
+  <rect x="845" y="138" width="220" height="70" rx="14"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+  <text x="955" y="179" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="15" font-weight="700" fill="#111111">Sales.OrderSummary</text>
+
+  <!-- Arrows -->
+  <line x1="265" y1="90" x2="305" y2="90"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-stack-dag)"/>
+
+  <path d="M545 90 C575 90, 575 173, 585 173"
+        fill="none" stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-stack-dag)"/>
+
+  <path d="M265 255 C430 255, 430 173, 585 173"
+        fill="none" stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-stack-dag)"/>
+
+  <line x1="825" y1="173" x2="845" y2="173"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-stack-dag)"/>
+
+  <path d="M545 290 C710 290, 710 205, 825 205"
+        fill="none" stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-stack-dag)"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:42rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. Example dependency graph for a sales pipeline. A table can load only after all upstream tables pointing into it have finished.
+</div>
+
+The same dependency structure can be recorded in a metadata table.
+
+**Example structure of `Pipeline.LoadDependency`**
+
+| Table name | Depends on table name |
+|---|---|
+| Sales.Order | Sales.Customer |
+| Sales.OrderItem | Sales.Order |
+| Sales.OrderItem | Sales.Product |
+| Sales.OrderSummary | Sales.Order |
+| Sales.OrderSummary | Sales.OrderItem |
+| Sales.OrderSummary | Reference.Calendar |
+
+Each row states one direct dependency.
+
+`Sales.Order` depends on `Sales.Customer`. `Sales.OrderItem` depends on both `Sales.Order` and `Sales.Product`. `Sales.OrderSummary` depends on `Sales.Order`, `Sales.OrderItem`, and `Reference.Calendar`.
+
+Some tables have no dependencies. In this example, `Sales.Customer`, `Sales.Product`, and `Reference.Calendar` can load at the beginning of the workflow because nothing upstream needs to finish first.
+
+### The load stack
+
+The load stack is the list of tables to be loaded in a workflow.
+
+At the beginning of the workflow, the stack is refreshed. Every table that belongs to the workflow is added to `Pipeline.LoadStack`, with `[Is started] = false` and `[Is ended] = false`.
+
+**Initial `Pipeline.LoadStack`**
+
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | false | false |  |
+| 9001 | Sales.Product | false | false |  |
+| 9001 | Reference.Calendar | false | false |  |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
+
+The load stack records execution state. It does not itself decide which table is ready.
+
+A table is ready only when all the tables it depends on have ended. This condition is called execution readiness.
+
+### Load candidates
+
+A load candidate is a table in the load stack that is ready to load.
+
+At the beginning of the workflow, only tables with no unfinished dependencies are ready. 
+
+Conceptually, a table is a candidate when:
+
+- it is in the current load stack;
+- it has not started;
+- none of its dependencies are unfinished.
+
+This logic also works for tables with no dependencies. Their dependency list is empty, so they have no unfinished dependencies.
+
+A load candidate view can expose this list at any time. The view can be simplified if `Pipeline.TableDependency` has already been expanded to contain all upstream dependencies, not only direct dependencies.
+
+**Initial `Pipeline.LoadCandidate`**
+
+| Table name | Reason |
+|---|---|
+| Sales.Customer | No dependencies. |
+| Sales.Product | No dependencies. |
+| Reference.Calendar | No dependencies. |
 
 ## Using the load stack
 
-The load stack table and the load candidate view can be used to implement a parallel load using the following algorithm.
+The load stack can be used to implement dependency-aware parallel loading.
 
-### Step 1
+The basic algorithm is simple.
 
-At the beginning of the load, populate the load stack and set [Is started] and [Is ended] to 0 for all rows. This is called refreshing the load stack and may require deleting existing rows.
+### Step 1—Refresh the load stack
 
-### Step 2
+At the beginning of the workflow, populate `Pipeline.LoadStack` with the tables that need to load.
 
-Start any number of workers. These could be functions in sub-processes or stored procedures in independent sessions. Each worker continuously polls the load stack and continues polling until there are no more tables with [Is started] = 0.
+Set `[Is started] = false` and `[Is ended] = false` for all rows. This creates a visible queue of work for the workflow.
 
-If there are still tables to be loaded, the worker queries the load candidate view to pick up a table that is ready to load.
+The stack may contain the full pipeline, or only a selected part of it. If a subset of tables is being loaded, the stack should include the necessary upstream tables required for that subset to load correctly.
 
-If the view returns a table, the worker
+### Step 2—Start workers
 
-1. sets [Is started] = 1 for that table in the load stack. This is claiming the table for loading,
+Start any number of workers.
 
-2. invokes the function or procedure to load the table, and
+Workers may be stored procedures, functions, notebooks, jobs, or other executable units. Each worker repeatedly checks the load stack until there is no more work to claim.
 
-3. sets [Is ended] = 1 when the load finishes or is aborted due to an error.
+A worker performs the following loop:
 
-If the view returns no tables, the worker pauses for two seconds before polling again.
+1. Check whether any unstarted tables remain in `Pipeline.LoadStack`.
+2. Query `Pipeline.LoadCandidate`.
+3. If no candidate is available, pause briefly and poll again.
+4. If a candidate is available, claim one table by setting `[Is started] = true`.
+5. Load the table.
+6. Set `[Is ended] = true` when the load finishes, fails, or aborts.
+7. Repeat until no unstarted tables remain.
 
-The worker exits when there are no more tables in the load stack with [Is started] = 0.
+The worker exits when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
+
+### Step 3—Claim a candidate
+
+Once the workers have started, they can pick up load candidates for load.
+
+If three workers are available at the start of the example workflow, each can claim one initial candidate.
+
+**After workers claim the initial candidates**
+
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | false | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
+
+A table that has started but not ended is not available to other workers. Downstream tables also remain blocked until their dependencies have ended.
 
 Claiming from the load stack must be done in a way that prevents multiple workers from claiming the same table. This can be achieved by wrapping the read from the load candidate view and the update to the load stack in a transaction. This avoids race conditions.
 
-In summary, this is all that is necessary to implement parallel load:
+A simplified claim pattern is:
 
-- The load candidate view, informed by expanded dependencies, ensures that a table is only offered for loading if it has no upstream tables still loading. This guarantees correct load order.
+```sql
+begin transaction;
 
-- Multiple workers can pick up jobs as soon as they become available.
+select top 1
+    [Table name]
+from Pipeline.LoadCandidate
+where [Workflow ID] = 9001
+order by [Table name];
 
-- Transactions and locks around the claim step ensure that workers do not clash when selecting the same table.
+update Pipeline.LoadStack
+set
+    [Is started] = 1,
+    [Worker ID] = 'W01',
+    [Load start datetime] = current_timestamp
+where
+    [Workflow ID] = 9001
+    and [Table name] = @TableName
+    and [Is started] = 0;
 
-While these steps are sufficient for parallel loading, it is useful to log additional columns.
+commit transaction;
+```
 
-- Start and end datetimes for each table in the load stack.
+The exact syntax will vary by SQL platform. The important point is that the worker should not select and claim a candidate in two unsafe steps. The claim should happen atomically.
 
-- A single [Workflow ID] assigned to every table in the load stack when it is refreshed. This ID represents the batch of load.
+### Step 4—Load, end, and repeat
 
-- A [Worker ID] generated by each worker, recorded against the table to show how jobs are distributed.
+When a table finishes loading, the worker marks it as ended.
 
-## Advantages
+```sql
+update Pipeline.LoadStack
+set
+    [Is ended] = 1,
+    [Load end datetime] = current_timestamp
+where
+    [Workflow ID] = 9001
+    and [Table name] = 'Sales.Customer'
+    and [Worker ID] = 'W01';
+```
 
-The advantages of the load stack are numerous.
+Suppose `Sales.Customer` finishes first.
 
-### No special code for parallelism
+**After `Sales.Customer` ends**
 
-There is no special code for parallelism. The logic looks identical whether one worker or many are used. The primary purpose of the load stack and the load candidate view is to ensure that tables load in the correct order. The ability to load multiple tables simultaneously is a natural side-effect of the design. The only difference between serial and parallel load is the number of workers started at a given moment. This does not need to be known to any central orchestrator. In fact, the load stack does not even track how many workers are active.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | false | false |  |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-### Unlimited and dynamic workers
+`Sales.Order` now becomes a load candidate because its only dependency, `Sales.Customer`, has ended.
 
-The number of workers is unlimited and can be turned on or off at any time. Many parallel load algorithms decide on the number of workers at the beginning and launch them accordingly. The load stack approach allows the platform engineer to respond to server resources in real time by adjusting the number of workers. Only minor changes are needed to allow workers to exit the polling loop early.
+**Current `Pipeline.LoadCandidate`**
 
-### Greedy and balanced work assignment
+| Table name | Reason |
+|---|---|
+| Sales.Order | `Sales.Customer` has ended. |
 
-The algorithm is well load-balanced by default. It uses a greedy approach to assigning work. As soon as a load candidate is ready, a worker picks up the job. There are no situations where a table is ready to load and a worker is available, but the load does not happen. While this does not guarantee optimal load time, it minimises idle workers. For further improvements, the load candidate view can be adjusted to return the next table based on a more fine-tuned balancing logic.
+A worker can now claim `Sales.Order`.
 
-### Partial pipeline support
+**After `Sales.Order` is claimed**
 
-It is easy to load only a portion of the pipeline. The expanded dependencies show exactly which tables are upstream from any given set. Loading only part of the pipeline can be achieved by populating the load stack with just those tables. This allows a subset of the pipeline to run more frequently or on a different schedule than the full pipeline, without needing changes to a central orchestration plan.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | false | W02 |
+| 9001 | Reference.Calendar | true | false | W03 |
+| 9001 | Sales.Order | true | false | W01 |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-### Mid-load interference
+Suppose `Sales.Product`, `Reference.Calendar`, and `Sales.Order` have all finished.
 
-Since load is controlled by making tables available on the load stack, the approach supports mid-load interference by editing the load stack. For example, tables can be put back on the load stack during a load by setting [Is started] = 0 for those tables. This supports error correction and retries mid-load.
+**After `Sales.Product`, `Reference.Calendar`, and `Sales.Order` end**
 
-### Increased load frequency
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | false | false |  |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-Most warehouses run loads in a daily batch, but some business needs require more up-to-date information that could be hourly or minutes latency, demanding a higher load frequency.
+`Sales.OrderItem` is now ready because both of its dependencies have ended.
 
-In practice, higher load frequencies are only practical if each of the table in the pipeline is incrementally processed. It is unlikely that every table in a large warehouse would be implemented this way. The load stack makes it a possible to load any portion of the pipeline. This means that it is easy to select a path within the overall pipeline for increased load frequency while allowing the rest to happen in usual batches.
+**Current `Pipeline.LoadCandidate`**
 
-In the most demanding case, editing the load stack mid-load can be used to implement continuous loads. For example, workers start to process the pipeline, while another process periodically resets one or more tables by setting [Is started] = 0 on the load stack. This puts the tables back on the queue for continuous processing.
+| Table name | Reason |
+|---|---|
+| Sales.OrderItem | `Sales.Order` and `Sales.Product` have ended. |
 
-The load stack allows a data engineering team to treat low and high frequency loads with the same orchestration. A path within a pipeline where all the tables are efficient can be loaded more regularly, increasing the frequency from once a day to multiples times in an hour, and ultimately to run continuously. It only depends on the investment in making each of the table in the path to process within the required response time.
+`Sales.OrderSummary` is not ready yet. Even though `Sales.Order` and `Reference.Calendar` have ended, `Sales.OrderItem` has not.
 
-This graduation allows “just-enough” investment to meet frequency targets. This gives teams a continuous-load option before considering the need to adopt dedicated streaming platform.
+After a worker claims and finishes `Sales.OrderItem`, the stack looks like this.
 
-### Cross-technology orchestration
+**After `Sales.OrderItem` ends**
 
-The load stack supports orchestration across multiple technologies. While many pipelines run on a single stack, complex problems may require different technologies for different parts of the load. The usual solution is to purchase orchestration software with connectors for each technology. The load stack reverses this. The only requirement is that the central load stack table is visible to all technologies. There is no need for a central worker to have connectors. For example, the load stack and load candidate view may be implemented in a SQL database, with claiming done through a stored procedure. As long as other technologies, such as Spark or other SQL warehouses, can connect via ODBC, they can participate. The load stack enables cross-technology orchestration with minimal requirements.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | true | true | W02 |
+| 9001 | Sales.OrderSummary | false | false |  |
 
-## Conclusion
+`Sales.OrderSummary` is now ready.
 
-Load orchestration is the task of ensuring tables in a data pipeline load correctly with respect to their dependencies, even when doing so in parallel.
+**Current `Pipeline.LoadCandidate`**
 
-It is easy for load orchestration to go out of hand, creating pipelines that are opaque and impossible to maintain. When the pipeline becomes complex, some organisations may purchase orchestration software and additional servers to host them.
+| Table name | Reason |
+|---|---|
+| Sales.OrderSummary | `Sales.Order`, `Sales.OrderItem`, and `Reference.Calendar` have ended. |
 
-The load stack approach is a simple alternative. It does not require additional servers or software. Only minor amendments using tools already available to a data engineer are needed. The only requirements for the data engineer are to capture each table with its direct dependencies in a metadata table, and to modularise code so that each table can be loaded independently. The load candidate view computes execution readiness by consulting the state of the load stack to know what jobs have been complete and comparing it to the metadata table of dependencies. This ensures the load happens in the correct order no matter the level of complexity in dependencies, and no matter the number of workers, even in the absence of a centralised orchestrator.
+After `Sales.OrderSummary` ends, the workflow is complete.
 
-Compared to other common approaches towards orchestration, the load stack is a queue-based coordination adjusted for lineage-awareness. At any given point, it uses the actual state of upstream tables to determine readiness of tables to load. This allows the load to respond immediately to changes in circumstances, something that is not easy in other approaches.
+**Completed `Pipeline.LoadStack`**
 
-It is technology-agnostic, lightweight, and easy to adopt — which makes it ideal for any team to implement with low investment cost.
+| Workflow ID | Table name | Is started | Is ended | Worker ID |
+|---:|---|---|---|---|
+| 9001 | Sales.Customer | true | true | W01 |
+| 9001 | Sales.Product | true | true | W02 |
+| 9001 | Reference.Calendar | true | true | W03 |
+| 9001 | Sales.Order | true | true | W01 |
+| 9001 | Sales.OrderItem | true | true | W02 |
+| 9001 | Sales.OrderSummary | true | true | W03 |
+
+The workflow ends when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
+
+### Handling failure
+
+If the table fails or aborts, the worker can still mark the table as ended, but should also record the outcome.
+
+```sql
+update Pipeline.LoadStack
+set
+    [Is ended] = 1,
+    [Load end datetime] = current_timestamp,
+    [Load status] = 'Failed',
+    [Failure message] = 'Source extract timeout'
+where
+    [Workflow ID] = 9001
+    and [Table name] = 'Sales.Order'
+    and [Worker ID] = 'W01';
+```
+
+Whether downstream tables should proceed after a failure depends on the pipeline’s policy.
+
+A strict pipeline may treat failed upstream loads as incomplete and block downstream work.
+
+A more fault-tolerant pipeline may allow downstream tables to proceed if they can safely use the previous successful version of the upstream table.
+
+
+## Advantages of the load stack
+
+### Correct order is computed, not hard-coded
+
+The load candidate view ensures that a table is offered for loading only when its upstream dependencies have ended.
+
+This means correct order does not depend on a developer manually maintaining a sequence of execution steps. The order emerges from dependency metadata and the current state of the load stack.
+
+When a new table is added, the data engineer adds its dependency metadata. The load candidate view uses that metadata to determine when it is ready. The orchestration logic does not need to be rewritten for every new dependency path.
+
+### Parallelism is free
+
+Parallelism is a consequence of the readiness rule.
+
+If three independent tables are ready, three workers can claim them. If ten independent tables are ready, ten workers can claim them. If only one table is ready, only one table is available.
+
+There is no need for a central process to decide in advance which tables should run side by side. Workers simply claim tables that are ready.
+
+The number of workers can be adjusted according to available resources. The load stack does not need to know how many workers exist. It only needs to expose which tables are ready.
+
+Moreover, the algorithm is load-balanced by default with a greedy approach to assigning work. As soon as a load candidate is ready, a worker picks up the job. There are no situations where a table is ready to load and a worker is available, but the load does not happen.
+
+### Execution state is visible and manipulable
+
+Because the load stack is a table, the state of the workflow can be inspected while the load is running.
+
+The data engineer can see:
+
+- which tables have not started;
+- which tables are currently loading;
+- which tables have ended;
+- which worker claimed each table;
+- which tables are blocked;
+- which tables failed or aborted.
+
+But visibility is only part of the value.
+
+Because execution state is stored as data, it can also be manipulated. A table can be placed back on the stack by setting `[Is started] = false` and `[Is ended] = false`. A subset of tables can be added to the stack for a targeted repair load.
+
+This makes the workflow controllable while it is running.
+
+The load is no longer a hidden procedural state inside a scheduler. It is visible and editable execution state.
+
+### Higher-frequency loads
+
+Most warehouses run in daily batches, but some parts of a warehouse may need to load more frequently.
+
+A load stack allows a selected path through the pipeline to be loaded more often than the whole warehouse. This works if the tables in that path are efficient enough to meet the required frequency, but the orchestration pattern does not need to change.
+
+A path that is incrementally processed can be loaded hourly, every few minutes, or continuously, while the rest of the warehouse remains on its normal batch schedule.
+
+This gives the data engineering team a gradual path toward higher-frequency loading.
+
+### Cross-technology loading requires shared state, not shared tooling
+
+The load stack can also support orchestration across technologies.
+
+A complex pipeline may use SQL stored procedures, Spark notebooks, Python functions, or other processing technologies. A central orchestration product may provide connectors for each of these technologies, but the load stack takes a different approach.
+
+The only requirement is that each worker can read and update the shared load stack.
+
+For example, `Pipeline.LoadStack` and `Pipeline.LoadCandidate` may be implemented in a SQL database. A SQL procedure, Spark notebook, and Python process can all participate as workers if they can connect to the database, claim candidates, and update the stack.
+
+This makes the load stack technology-agnostic. The coordination happens through shared execution state.
+
+> [!NOTE]
+> **Key ideas**
+>
+> Load dependencies are one of the first bottlenecks in a growing warehouse.
+>
+> A load stack exposes the pipeline’s execution queue as data.
+>
+> Dependency metadata records which tables depend on which upstream tables.
+>
+> The load stack records which tables in the current workflow have started and ended.
+>
+> A load candidate is a table whose upstream dependencies have all ended.
+>
+> The load candidate view combines dependency metadata with the current state of the load stack.
+>
+> Workers can claim load candidates independently, allowing dependency-aware parallel loading without a central scheduler.
+>
+> The load stack makes orchestration visible, controllable, and easier to debug.
+>
+> The same pattern supports partial loads, higher-frequency loads, and cross-technology orchestration.
