@@ -174,8 +174,23 @@ body,
 }
 
 .markdown blockquote {
-  border-inline-start-color: #6b7f99;
-  background: rgba(107, 127, 153, 0.08);
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  border-inline-start-color: rgba(18, 63, 107, 0.35);
+  background: transparent;
+  font-style: bold;
+  // color: #435266;
+}
+
+.markdown blockquote.book-hint {
+  @each $name in (note, tip, important, warning, caution, default, info, success, danger) {
+    &.#{$name} {
+      padding-top: $padding-8;
+      padding-bottom: $padding-8;
+      color: var(--body-font-color);
+      font-style: normal;
+    }
+  }
 }
 
 .markdown hr {
