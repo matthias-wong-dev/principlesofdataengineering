@@ -19,7 +19,7 @@ The world is not so straightforward. The most difficult part of a data project i
 
 Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, the stakeholders uncover what they need to “see” from the data for them to achieve business outcomes. These discovered needs—not an initial list—are the real requirements. This shift turns a one-way process into a two-way dialogue where the delivery team plays a leading role by guiding collective attention.
 
-The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum through guiding attention.
+The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum through leading discovery.
 
 ## Guided attention
 

@@ -9367,7 +9367,7 @@ A surer basis for data engineering can be summarised in six principles:
 
 - Instead of wholesale response, maintain proportionate change.
 
-- Instead of reacting to requirements, build momentum through guiding attention.
+- Instead of reacting to requirements, build momentum.
 
 - Instead of stopping at the symptoms, diagnose the root cause.
 
@@ -9397,7 +9397,7 @@ The world is not so straightforward. The most difficult part of a data project i
 
 Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, the stakeholders uncover what they need to “see” from the data for them to achieve business outcomes. These discovered needs—not an initial list—are the real requirements. This shift turns a one-way process into a two-way dialogue where the delivery team plays a leading role by guiding collective attention.
 
-The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum through guiding attention.
+The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum.
 
 ## Guided attention
 
@@ -9663,7 +9663,7 @@ These principles move the team beyond reacting to requirements. Applied well, th
 
 *A strong construction plan creates momentum by giving delivery an orderly shape.*
 
-The fifth principle of data engineering is to build momentum through guiding attention rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
+The fifth principle of data engineering is to build momentum rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
 
 In complex projects, a data engineer stays organised and guides the delivery team by formulating a plan. This plan is expected from an experienced engineer because:
 

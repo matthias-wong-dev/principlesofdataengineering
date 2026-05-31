@@ -43,7 +43,7 @@ A surer basis for data engineering can be summarised in six principles:
 
 - Instead of wholesale response, maintain proportionate change.
 
-- Instead of reacting to requirements, build momentum through guiding attention.
+- Instead of reacting to requirements, build momentum through leading discovery.
 
 - Instead of stopping at the symptoms, diagnose the root cause.
 

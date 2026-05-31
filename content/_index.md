@@ -24,12 +24,12 @@ The role of the data engineer is therefore not just to transform data, but to ma
 
 The book is organised around six principles:
 
-1. **Expressive entities**—make data recognisably correspond to the business world.
-2. **Meaningful fragments**—build reusable blocks of information instead of giant tables.
-3. **Anticipate errors**—design for the failures that real systems produce.
-4. **Proportionate change**—maintain correspondence between informational change and computational change.
-5. **Build momentum**—guide attention so the work keeps moving toward insight.
-6. **Diagnose root causes**—go beyond symptoms to the conditions that produce them.
+1. **Expressive entities**—make data recognisable as the business world.
+2. **Meaningful fragments**—compose information from reusable, purposeful parts.
+3. **Anticipate errors**—design for the failures real systems produce.
+4. **Proportionate change**—keep computation aligned with informational change.
+5. **Build momentum**—turn ambiguous business intent into ordered progress.
+6. **Diagnose root causes**—act on the conditions that make problems recur.
 
 The approach taught in this book is **fragment modelling**: the discipline of building expressive, reusable blocks of information from imperfect operational data.
 
