@@ -249,6 +249,8 @@ The important thing is the mindset: anticipating errors.
 
 The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
 
+This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
+
 ## Key ideas
 
 > [!NOTE]
