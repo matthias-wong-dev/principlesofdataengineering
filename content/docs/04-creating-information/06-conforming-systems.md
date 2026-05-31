@@ -395,7 +395,7 @@ When both questions can be answered positively, vertical integration is often th
 
 When the answer to either question is no, then vertical integration is likely to distort meaning. Horizontal integration would be more appropriate. 
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

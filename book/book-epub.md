@@ -15,6 +15,8 @@ Downloadable PDF and EPUB editions are available for offline reading. The online
 
 # The author {#docs-about-the-author}
 
+*Matthias Wong writes from experience at the intersection of theory, systems, and delivery.*
+
 ## About the author
 
 Matthias Wong's work examines how organisations see, understand, and act in complex environments. His writing spans organisational theory, data, AI, business, and people leadership.
@@ -30,6 +32,8 @@ Matthias holds a PhD in Computational Mathematics.
 For contact information, see [the author's website](https://matthiaswong.me).
 
 # The book {#docs-about-the-book}
+
+*The context, origin, and attribution of this work.*
 
 ## Dedication and acknowledgements
 
@@ -59,6 +63,8 @@ Web adaptation and additional material © Matthias Wong 2026
 # Foundations {#docs-foundations}
 
 # What is data engineering? {#docs-foundations-what-is-data-engineering}
+
+*The aim of data engineering is insight.*
 
 ## The aim is insight
 
@@ -132,6 +138,8 @@ The search for business insights is both demanding in complexity and fluid in na
 
 # What is data? {#docs-foundations-what-is-data}
 
+*Data is a fragment of reality.*
+
 ## The central premise
 
 Insight is information analysed in the light of intent. However, the data engineer starts one step further back than information. Data engineering starts with data.
@@ -184,6 +192,8 @@ We will return frequently to the concepts illustrated in Figure 1 throughout thi
 
 # Data and organisations {#docs-foundations-data-and-organisations}
 
+*Data helps organisations see themselves.*
+
 ## Data and organisational self-understanding
 
 Data is a fragment of reality. This includes the reality of the environment in which they operate, but also the reality of the organisation itself.
@@ -231,6 +241,8 @@ The agency cycle therefore shows why no part of data work is neutral. The busine
 # Creating information {#docs-creating-information}
 
 # Expressiveness and fragment modelling {#docs-creating-information-expressiveness-and-fragment-modelling}
+
+*Data engineering begins by shaping data into expressive, reusable fragments.*
 
 ## From data to reusable information
 
@@ -315,6 +327,8 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 > In a well-designed pipeline, tables can be understood as functions that transform fragments of data into reusable information.
 
 # Mapping the data world {#docs-creating-information-mapping-the-data-world}
+
+*The data engineer's first task is to relate records back to the business entities behind them.*
 
 ## From records to entities
 
@@ -420,6 +434,8 @@ These are the subjects of the next two chapters: [Entity processing](#docs-creat
 > Mutable entities lead to entity tracking.
 
 # Entity processing {#docs-creating-information-entity-processing}
+
+*Entity processing applies to business processes built around immutable transactional entities.*
 
 ## Processing immutable entities
 
@@ -660,6 +676,8 @@ The same temptation applies to all three passes. Convenience at the beginning cr
 
 # Entity tracking {#docs-creating-information-entity-tracking}
 
+*Entity tracking applies when business entities change over time while remaining the same entity.*
+
 ## Tracking mutable entities
 
 Entity tracking is the main pattern for [mutable business entities](#docs-creating-information-mapping-the-data-world): those that change over time while still being considered the same entity.
@@ -899,6 +917,8 @@ Computational performance can also become a bottleneck, especially in end-of-per
 
 # Reference data {#docs-creating-information-reference-data}
 
+*Reference data gives business meaning a stable place to live.*
+
 ## A stable place for meaning
 
 In the chapters [Entity processing](#docs-creating-information-entity-processing) and [Entity tracking](#docs-creating-information-entity-tracking), reference tables appeared as a way to make business meaning expressive. They gave names, descriptions, and analytical attributes a stable place to live.
@@ -1117,6 +1137,8 @@ Above all, it is a discipline of separation, not a mechanical implementation rec
 > Changes to shared references can amplify across the warehouse; delay the dependency until presentation when possible.
 
 # Conforming systems {#docs-creating-information-conforming-systems}
+
+*Systems should be integrated only after the nature of their sameness is understood.*
 
 ## Integration without distortion
 
@@ -1428,8 +1450,6 @@ When both questions can be answered positively, vertical integration is often th
 
 When the answer to either question is no, then vertical integration is likely to distort meaning. Horizontal integration would be more appropriate.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Integration should begin by asking what kind of sameness is involved.
@@ -1445,6 +1465,8 @@ When the answer to either question is no, then vertical integration is likely to
 > The central danger of integration is collapsing meaning for technical convenience.
 
 # Storytelling {#docs-creating-information-storytelling}
+
+*Data engineering is not finished when the data is correct. It is finished when the business can see.*
 
 ## Meaning beyond correctness
 
@@ -1809,8 +1831,6 @@ The data engineer’s task is to create forms of information that make the busin
 
 This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](#docs-foundations-data-and-organisations), and where the data engineer plays an influential role in how organisation understands its own business.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Data engineering is not finished when the data is correct. It is finished when the business can see.
@@ -1828,6 +1848,8 @@ This involves decisions and compromise: details to discard, or journeys to empha
 > Visual checks are an essential part of developing storytelling dimensions.
 
 # Meaningful fragments {#docs-creating-information-meaningful-fragments}
+
+*Fragment modelling makes complex business meaning easier to build, test, reuse, and change.*
 
 ## Fragment modelling
 
@@ -2154,8 +2176,6 @@ In practice, anything can become a meaningful fragment. It does not need to fall
 
 This is one of the hallmarks of mature data engineering: the ability to see a data product not as a pile of tables, but as a set of minimal informational components.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > The second principle of data engineering—Instead of building giant tables, create meaningful fragments.
@@ -2171,6 +2191,8 @@ This is one of the hallmarks of mature data engineering: the ability to see a da
 # Presenting insights {#docs-presenting-insights}
 
 # The craft of dimensional modelling {#docs-presenting-insights-the-craft-of-dimensional-modelling}
+
+*Information does not become insight until users can see it, touch it, and ask it questions.*
 
 ## From information to insight
 
@@ -2215,6 +2237,8 @@ Three guiding questions organise the chapters in this section:
 - What modelling tools are available to anticipate a range of user behaviours?
 
 # Anticipating questions {#docs-presenting-insights-anticipating-questions}
+
+*A strong dimensional model preserves the structure needed to answer questions before they are formally asked.*
 
 ## Designing for questions not yet asked
 
@@ -2486,8 +2510,6 @@ In future, when a user asks a different question, the model can answer it if the
 
 This is how the data engineer anticipates questions.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > A strong dimensional model preserves enough business structure to answer all reasonable future questions.
@@ -2505,6 +2527,8 @@ This is how the data engineer anticipates questions.
 > The chronological bus shows which questions the model can and cannot answer.
 
 # A good dimensional model {#docs-presenting-insights-a-good-dimensional-model}
+
+*A good dimensional model lets users ask real business questions without guessing.*
 
 ## What makes a good dimensional model?
 
@@ -2719,6 +2743,8 @@ The Zen of Python is a useful guide to designing a dimensional model. Its emphas
 > A strong model makes answers appear naturally because the data engineer has already made the hard design decisions.
 
 # Dimensional modelling for UX {#docs-presenting-insights-dimensional-modelling-for-ux}
+
+*In an interactive model, dimensions are what users touch; facts are what respond.*
 
 ## Facts and dimensions as interaction
 
@@ -3263,6 +3289,8 @@ That is the heart of dimensional modelling in an interactive model.
 > A good dimensional model lets users interact with business activity reliably without guessing how the model works.
 
 # Filtering behaviour {#docs-presenting-insights-filtering-behaviour}
+
+*Filtering design is what makes a Power BI model feel intuitive—or frustrating.*
 
 ## Filtering as interaction design
 
@@ -4161,8 +4189,6 @@ This is the philosophy of separation of concerns from software design. It mainta
 
 Power BI supports this through the five filtering mechanisms described at the start of the chapter. This perspective pushes the data engineer to see a data model as software and to design a clean interface that is business-centric and intuitive for the user.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Filtering design is what makes a Power BI model feel intuitive—or frustrating.
@@ -4182,6 +4208,8 @@ Power BI supports this through the five filtering mechanisms described at the st
 > Good filtering design anticipates how users will interact with the model and makes sensible behaviour occur naturally.
 
 # Designing measures {#docs-presenting-insights-designing-measures}
+
+*Measures compress facts into business meaning, then unpack that meaning in user context.*
 
 ## Measures as compression and re-expression
 
@@ -4851,8 +4879,6 @@ These functions are powerful because they allow specific measures to behave diff
 
 They should be used deliberately. If many measures require complex relationship overrides, the model may need redesign. But when the exception is narrow and well understood, measure-defined filtering is often cleaner than adding confusing bidirectional relationships or distorting facts.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Measures compress fact-table content into business meaning, then unpack that meaning in user context.
@@ -4870,6 +4896,8 @@ They should be used deliberately. If many measures require complex relationship 
 > If measure logic becomes difficult to explain, the data engineer should consider whether the model or pipeline should be improved.
 
 # Measure of measures {#docs-presenting-insights-measure-of-measures}
+
+*Sometimes the measures themselves have dimensional structure, and that structure should be modelled.*
 
 ## Measures as a modelled structure
 
@@ -5193,8 +5221,6 @@ A measure of measures is not a slicer trick. It is a modelling technique for exp
 
 Without anchor in business meaning, dynamic measure selection can easily become frustrating. The model may become clever, but not clearer.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Sometimes the measures themselves have dimensional structure, and that structure should be modelled.
@@ -5216,6 +5242,8 @@ Without anchor in business meaning, dynamic measure selection can easily become 
 > Aggregating across measures must be defined deliberately. Blank results are often a useful safeguard against accidental nonsense.
 
 # Interactive row level security {#docs-presenting-insights-interactive-row-level-security}
+
+*RLS should limit access without destroying unit-record interactivity.*
 
 ## Security without losing context
 
@@ -5470,8 +5498,6 @@ If that risk is unacceptable, the required design is no longer merely anonymous 
 
 The choice between anonymous population facts and pseudonymous dimensions is not purely technical. It reflects the organisation’s appetite for risk, governance requirements, security obligations, and expected user behaviour.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > RLS should limit access without destroying analytical context.
@@ -5491,6 +5517,8 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 # Quality & reliability {#docs-quality-reliability}
 
 # The foundations of trust {#docs-quality-reliability-the-foundations-of-trust}
+
+*Quality and reliability are the foundations of trust in a data product.*
 
 ## Quality and reliability
 
@@ -5535,8 +5563,6 @@ This principle follows from the nature of quality and reliability. Data is an im
 
 Because of these changes, a trustworthy data product cannot depend on everything continuing as expected. The data engineer does not stop with what works now, but anticipate errors that may occur.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Trust is produced when a data product is fit for decision.
@@ -5552,6 +5578,8 @@ Because of these changes, a trustworthy data product cannot depend on everything
 > The third principle of data engineering is to anticipate errors.
 
 # Quality metadata {#docs-quality-reliability-quality-metadata}
+
+*Without metadata, everyone is guessing.*
 
 ## When metadata is missing
 
@@ -5707,8 +5735,6 @@ Finally, whether metadata describes names, descriptions, or keys, it should be s
 
 Instead of recording metadata only in diagrams, specialist tools, or database constructs, it should also be available as tables. Treating metadata as data enhances the ability to distribute it, automate it, and surface it to appropriate tools through APIs.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Without metadata, everyone is guessing.
@@ -5724,6 +5750,8 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 > Metadata should be stored and treated as data.
 
 # Three approaches to data quality {#docs-quality-reliability-three-approaches-to-data-quality}
+
+*When recorded data does not meet business intent, choose the right kind of intervention.*
 
 ## Quality means fitness for intent
 
@@ -6559,8 +6587,6 @@ Useful drift statistics may include:
 - proportion of records requiring manual review;
 - proportion of null or rejected records.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Data quality is fitness for business intent, not perfect correspondence with reality.
@@ -6576,6 +6602,8 @@ Useful drift statistics may include:
 > All three approaches depend on monitoring the assumptions that make the intervention safe.
 
 # Tests and assumptions {#docs-quality-reliability-tests-and-assumptions}
+
+*Good engineering makes failure visible before it reaches the user.*
 
 ## Anticipating errors
 
@@ -7026,8 +7054,6 @@ Thoughtful tests are best, but even simple tests are valuable. Many errors in da
 
 New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. Mature engineers dealing with greater complexity spend proportionately more time anticipating failure: defining tests, monitoring assumptions, and making sure that the data product will reveal when it is no longer safe.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
@@ -7045,6 +7071,8 @@ New engineers naturally spend more time choosing patterns and building their imp
 > Monitored assumptions detect changes that make the logic unsafe.
 
 # Fault tolerance {#docs-quality-reliability-fault-tolerance}
+
+*Good engineering contains errors before they spread through the pipeline.*
 
 ## Containing failure
 
@@ -7291,8 +7319,6 @@ The experienced data engineer designs for what the world might do to the pipelin
 
 This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
 
-## Key ideas
-
 > **Key ideas.**
 >
 > Fault tolerance is the discipline of containing failure.
@@ -7312,6 +7338,8 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 # Efficient & stable pipeline {#docs-efficient-stable-pipeline}
 
 # Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
+
+*A mature pipeline must minimise unnecessary work while remaining stable under change.*
 
 Developers often talk about fast and slow. But what do these terms mean? Is one second fast? Is ten seconds too slow? There are situations where one second to process ten rows is unacceptably slow, and others where ten seconds to process ten thousand different rows is impressively fast. These judgements depend on the infrastructure, the structure of the incoming data, and the value of the information being processed.
 
@@ -7342,6 +7370,8 @@ That is, the number of row changes do not reflect information value changes.
 The chapters in this part explore of efficiency and stability. A recurring theme is that meaningful fragments form the foundation of an efficient and stable pipeline.
 
 # Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
+
+*Loading data well means controlling change rather than replacing everything blindly.*
 
 During a load, a table’s data needs to update with the most recent set. The simplest approach is to drop the original table and replace the data with a new set. This is how every data engineer starts. But it violates the key tenets of pipeline efficiency and stability.
 
@@ -7583,6 +7613,8 @@ On a specific table, the additional work may seem excessive. But doing the work 
 
 # Load stack {#docs-efficient-stable-pipeline-load-stack}
 
+*A load stack gives order to the build and maintenance of a pipeline.*
+
 The chapter Load mechanics look at the details of how a single table is loaded. This chapter looks at how load across multiple tables can be orchestrated across the pipeline.
 
 In a data pipeline, tables need to be loaded in the correct order. Even with a small number of tables, such as twenty to fifty, their dependencies can become difficult to manage. Poor implementation, such as manually coding their load order, leads to an unmaintainable pipeline that is hard to debug.
@@ -7743,6 +7775,8 @@ It is technology-agnostic, lightweight, and easy to adopt — which makes it ide
 
 # Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
 
+*Every dependency is a trade-off between reuse, efficiency, and stability.*
+
 One of the biggest factors impacting efficiency and stability is the use of dependencies in a pipeline.
 
 Dependencies occur when a materialised table selects from other tables for its load.
@@ -7868,6 +7902,8 @@ As a rule of thumb, a source system with 10 to 20 raw tables may result in 5 or 
 Dependencies are an effective tool for propagating information and achieving efficiency. They allow the data engineer to build reusable blocks of insight, articulate business meaning, and pass them for use. But they must be used with care. Each dependency increases entanglement and can reduce stability. A data engineer must be deliberate in committing to a dependency by selecting only those that are valuable, targeted, and stable.
 
 # Tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
+
+*Incremental work begins with knowing what has genuinely changed.*
 
 The aim of information efficiency is to process only what has changed. If there were no records changed after a table is processed, then ideal is have spent zero processing time it. In practice, even when there are no changes in input, a load still takes time to process.
 
@@ -7996,6 +8032,8 @@ Deletes are much harder to track without additional artefacts or audit tables. I
 Given the complexity of tracking sources and the fragility of relying on other systems to maintain reliable architectural columns, it is important that each pipeline begins with an uncomplicated extract from the source data. The Load mechanics process annotates this extract with reliable change detection artefacts for downstream processing.
 
 # Responding to change {#docs-efficient-stable-pipeline-responding-to-change}
+
+*Detecting change is only the first step; the pipeline must also respond intelligently.*
 
 The previous chapter Tracking changes focused on tracking changes in the source. The chapter builds on the previous and addresses the harder task of responding correctly to these changes. This is often known as incremental extract and load.
 
@@ -8248,6 +8286,8 @@ Performance evaluation should be done step by step, with each component tested i
 
 # Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
 
+*Power BI performs best when the underlying pipeline is designed with loading in mind.*
+
 Loading a Power BI model is often one of the longest steps. This is particularly true for models with large fact tables. New technologies such as DirectLake promise to remove this step entirely, yet Import mode remains the most reliable way to deliver a fast and responsive experience. Consequently, it is important to establish efficiency for Power BI loads.
 
 Loading of Power BI should focus on assembling prepared fragments. It is not the stage to curate information. The restaurant analogy from Meaningful fragments makes the point. Mise en place is the long process before service time to customers. During mise en place, ingredients are washed, cut and portioned in advance. At service the kitchen completes the final assembly and plates dishes quickly, rather than peeling potatoes when the orders are made. Likewise, a Power BI load should be focusing on assembling finished fragments rather than transforming data.
@@ -8400,6 +8440,8 @@ All this means the data engineer plans far ahead, letting Power BI’s efficienc
 
 # The five principles of data engineering {#docs-beyond-techniques-the-five-principles-of-data-engineering}
 
+*Good data engineering is guided by principles, not just techniques.*
+
 The earlier sections outlined patterns and practices for data engineering scenarios.
 
 They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
@@ -8447,6 +8489,8 @@ The earlier sections covered three of the principles–expressiveness entities, 
 The section ends with the chapter Hallmarks of quality. This essay was written years before this text and reproduced with minimal edits. The essay guided the years of work now summarised in this book.
 
 # Working with stakeholders {#docs-beyond-techniques-working-with-stakeholders}
+
+*Successful data projects depend on guiding attention, not merely collecting requirements.*
 
 The most common cause of project failure is the inability of the delivery team to build momentum with stakeholders. When momentum stalls, two patterns can often be found.
 
@@ -8722,6 +8766,8 @@ These principles move the team beyond reacting to requirements. Applied well, th
 
 # Construction planning {#docs-beyond-techniques-construction-planning}
 
+*A strong construction plan creates momentum by giving delivery an orderly shape.*
+
 The fourth principle of data engineering is to build momentum through guiding attention rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
 
 In complex projects, a data engineer stays organised and guides the delivery team by formulating a plan. This plan is expected from an experienced engineer because:
@@ -8935,6 +8981,8 @@ This is no surprise. As developers mature, development becomes more mechanical a
 Consequently, success hinges increasingly on planning. This is why the mark of an experienced data engineer is an effective plan.
 
 # Sound judgement {#docs-beyond-techniques-sound-judgement}
+
+*Sound judgement means acting at the level where problems stop recurring.*
 
 Sound judgement is the defining capability of a mature data engineer.
 
@@ -9161,6 +9209,8 @@ Sound judgement is not a talent. It is a discipline — and it is the thread tha
 
 # Getting started as a data engineer {#docs-beyond-techniques-getting-started-as-a-data-engineer}
 
+*A strong start in data engineering depends more on habits and judgment than on flashy technique.*
+
 The full set of concepts and patterns can feel overwhelming for a new data engineer. It is not necessary to master everything upfront. In fact, a good data engineer is defined by much more than technical proficiency.
 
 Starting out as a data engineer is less about mastering every technique and more about developing the habits and perspective that sustain growth. The priority is to internalise the engineering principles until they become second nature.
@@ -9224,6 +9274,8 @@ The ability to formulate an effective construction plan is built on consistent t
 These habits are not optional—they serve as the foundation for everything else in this book.
 
 # Closing essay: Hallmarks of quality {#docs-beyond-techniques-closing-essay-hallmarks-of-quality}
+
+*Quality is recognised through patterns of work that endure beyond the immediate feature.*
 
 As developers, and broadly as a team with the goal of delivering products, we are under the constant temptation to build products that answer to the demands of the day.
 

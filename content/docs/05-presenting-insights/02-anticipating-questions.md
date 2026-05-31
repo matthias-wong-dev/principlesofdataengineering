@@ -388,7 +388,7 @@ In future, when a user asks a different question, the model can answer it if the
 
 This is how the data engineer anticipates questions.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

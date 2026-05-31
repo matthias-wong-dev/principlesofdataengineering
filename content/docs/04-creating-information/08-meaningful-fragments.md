@@ -332,7 +332,7 @@ In practice, anything can become a meaningful fragment. It does not need to fall
 
 This is one of the hallmarks of mature data engineering: the ability to see a data product not as a pile of tables, but as a set of minimal informational components.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

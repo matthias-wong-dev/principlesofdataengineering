@@ -47,6 +47,7 @@ class Page:
     body: str
     is_section: bool
     url: str | None
+    lede: str | None
 
 
 FRONT_MATTER_RE = re.compile(r"\A---\n(.*?)\n---\n?", re.DOTALL)
@@ -271,6 +272,7 @@ def load_page(path: Path) -> Page:
         body=body,
         is_section=is_section,
         url=front_matter.get("url"),
+        lede=front_matter.get("lede"),
     )
 
 
@@ -535,6 +537,9 @@ def render_chapter(
 ) -> str:
     body = clean_body(page, target, link_map, diagrams)
     heading = render_heading(page, target)
+    if page.lede:
+        lede = f"*{page.lede.strip()}*"
+        return f"{heading}\n\n{lede}\n\n{body}" if body else f"{heading}\n\n{lede}"
     if body:
         return f"{heading}\n\n{body}"
     return heading

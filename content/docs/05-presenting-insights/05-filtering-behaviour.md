@@ -941,7 +941,7 @@ This is the philosophy of separation of concerns from software design. It mainta
 
 Power BI supports this through the five filtering mechanisms described at the start of the chapter. This perspective pushes the data engineer to see a data model as software and to design a clean interface that is business-centric and intuitive for the user.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

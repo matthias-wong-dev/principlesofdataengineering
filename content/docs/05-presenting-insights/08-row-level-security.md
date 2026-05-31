@@ -261,7 +261,7 @@ If that risk is unacceptable, the required design is no longer merely anonymous 
 
 The choice between anonymous population facts and pseudonymous dimensions is not purely technical. It reflects the organisation’s appetite for risk, governance requirements, security obligations, and expected user behaviour.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

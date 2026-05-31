@@ -53,7 +53,7 @@ This principle follows from the nature of quality and reliability. Data is an im
 Because of these changes, a trustworthy data product cannot depend on everything continuing as expected. The data engineer does not stop with what works now, but anticipate errors that may occur.
 
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

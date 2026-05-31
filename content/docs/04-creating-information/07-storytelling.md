@@ -373,7 +373,7 @@ The data engineer’s task is to create forms of information that make the busin
 
 This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](/docs/foundations/data-and-organisations/), and where the data engineer plays an influential role in how organisation understands its own business.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

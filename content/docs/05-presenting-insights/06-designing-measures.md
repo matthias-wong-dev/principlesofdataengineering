@@ -675,7 +675,7 @@ These functions are powerful because they allow specific measures to behave diff
 
 They should be used deliberately. If many measures require complex relationship overrides, the model may need redesign. But when the exception is narrow and well understood, measure-defined filtering is often cleaner than adding confusing bidirectional relationships or distorting facts.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

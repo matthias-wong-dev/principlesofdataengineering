@@ -13,7 +13,7 @@ A data product is not trustworthy merely because it is correct today. It is trus
 
 This is the third principle of data engineering: 
 
-> instead of stopping with what works now, anticipate errors that may occur.
+> Instead of stopping with what works now, anticipate errors that may occur.
 
 The principle follows from two facts.
 
@@ -456,7 +456,7 @@ Thoughtful tests are best, but even simple tests are valuable. Many errors in da
 
 New engineers naturally spend more time choosing patterns and building their implementation. With experience, design becomes more mechanical and rapid. Mature engineers dealing with greater complexity spend proportionately more time anticipating failure: defining tests, monitoring assumptions, and making sure that the data product will reveal when it is no longer safe.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

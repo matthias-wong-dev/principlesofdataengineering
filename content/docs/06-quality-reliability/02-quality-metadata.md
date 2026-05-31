@@ -161,7 +161,7 @@ Finally, whether metadata describes names, descriptions, or keys, it should be s
 
 Instead of recording metadata only in diagrams, specialist tools, or database constructs, it should also be available as tables. Treating metadata as data enhances the ability to distribute it, automate it, and surface it to appropriate tools through APIs.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

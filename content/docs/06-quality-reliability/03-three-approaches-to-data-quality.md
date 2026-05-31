@@ -841,7 +841,7 @@ Useful drift statistics may include:
 - proportion of records requiring manual review;
 - proportion of null or rejected records.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

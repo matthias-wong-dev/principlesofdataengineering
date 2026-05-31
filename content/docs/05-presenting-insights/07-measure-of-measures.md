@@ -333,7 +333,7 @@ A measure of measures is not a slicer trick. It is a modelling technique for exp
 
 Without anchor in business meaning, dynamic measure selection can easily become frustrating. The model may become clever, but not clearer.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**

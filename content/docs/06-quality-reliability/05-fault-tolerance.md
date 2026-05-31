@@ -251,7 +251,7 @@ The experienced data engineer designs for what the world might do to the pipelin
 
 This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
 
-## Key ideas
+
 
 > [!NOTE]
 > **Key ideas**
