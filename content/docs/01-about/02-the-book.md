@@ -20,14 +20,14 @@ Special thanks to E.D. and M.T. for their contribution and support throughout th
 
 *Principles of Data Engineering* was written in the Department of Agriculture, Fisheries and Forestry, and released under Freedom of Information.
 
-This website is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
+The site [principlesofdataengineering.org](https://principlesofdataengineering.org) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
 
 
 ## Attribution
 
 Department of Agriculture, Fisheries and Forestry. 2026. *Principles of Data Engineering manual* [FOI Disclosure Log Reference 35670](https://www.agriculture.gov.au/sites/default/files/documents/35670.pdf).
 
-This web edition includes adapted and additional material by Matthias Wong.
+The book *Principles of Data Engineering* includes adapted and additional material by Matthias Wong.
 
 © Department of Agriculture, Fisheries and Forestry 2026  
-Web adaptation and additional material © Matthias Wong 2026
+Adaptation and additional material © Matthias Wong 2026

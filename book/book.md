@@ -66,7 +66,7 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 
 Matthias holds a PhD in Computational Mathematics.
 
-For contact information, see [the author's website](https://matthiaswong.me).
+For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me).
 
 \cleardoublepage
 
@@ -88,16 +88,16 @@ Special thanks to E.D. and M.T. for their contribution and support throughout th
 
 *Principles of Data Engineering* was written in the Department of Agriculture, Fisheries and Forestry, and released under Freedom of Information.
 
-This website is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
+The site [principlesofdataengineering.org](https://principlesofdataengineering.org) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
 
 ## Attribution
 
 Department of Agriculture, Fisheries and Forestry. 2026. *Principles of Data Engineering manual* [FOI Disclosure Log Reference 35670](https://www.agriculture.gov.au/sites/default/files/documents/35670.pdf).
 
-This web edition includes adapted and additional material by Matthias Wong.
+The book *Principles of Data Engineering* includes adapted and additional material by Matthias Wong.
 
 © Department of Agriculture, Fisheries and Forestry 2026
-Web adaptation and additional material © Matthias Wong 2026
+Adaptation and additional material © Matthias Wong 2026
 
 \cleardoublepage
 
@@ -6728,7 +6728,7 @@ A data product is not trustworthy merely because it is correct today. It is trus
 
 This is the third principle of data engineering:
 
-> instead of stopping with what works now, anticipate errors that may occur.
+> Instead of stopping with what works now, anticipate errors that may occur.
 
 The principle follows from two facts.
 
@@ -8581,15 +8581,15 @@ All this means the data engineer plans far ahead, letting Power BI’s efficienc
 
 \thispagestyle{empty}
 \phantomsection
-\hypertarget{docs-beyond-techniques}{}
-\addcontentsline{toc}{part}{Beyond techniques}
+\hypertarget{docs-judgement-under-ambiguity}{}
+\addcontentsline{toc}{part}{Judgement under ambiguity}
 \vspace*{0.34\textheight}
 \begin{center}
-{\Huge\bfseries Beyond techniques}
+{\Huge\bfseries Judgement under ambiguity}
 \end{center}
 \cleardoublepage
 
-# The five principles of data engineering {#docs-beyond-techniques-the-five-principles-of-data-engineering}
+# The five principles of data engineering {#docs-judgement-under-ambiguity-the-five-principles-of-data-engineering}
 
 *Good data engineering is guided by principles, not just techniques.*
 
@@ -8597,7 +8597,7 @@ The earlier sections outlined patterns and practices for data engineering scenar
 
 They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
 
-This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Beyond techniques, is where patterns culminate and summarised in five principles.
+This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and summarised in five principles.
 
 ## The problem with shallow curation
 
@@ -8641,7 +8641,7 @@ The section ends with the chapter Hallmarks of quality. This essay was written y
 
 \cleardoublepage
 
-# Working with stakeholders {#docs-beyond-techniques-working-with-stakeholders}
+# Working with stakeholders {#docs-judgement-under-ambiguity-working-with-stakeholders}
 
 *Successful data projects depend on guiding attention, not merely collecting requirements.*
 
@@ -8919,7 +8919,7 @@ These principles move the team beyond reacting to requirements. Applied well, th
 
 \cleardoublepage
 
-# Construction planning {#docs-beyond-techniques-construction-planning}
+# Construction planning {#docs-judgement-under-ambiguity-construction-planning}
 
 *A strong construction plan creates momentum by giving delivery an orderly shape.*
 
@@ -9137,7 +9137,7 @@ Consequently, success hinges increasingly on planning. This is why the mark of a
 
 \cleardoublepage
 
-# Sound judgement {#docs-beyond-techniques-sound-judgement}
+# Sound judgement {#docs-judgement-under-ambiguity-sound-judgement}
 
 *Sound judgement means acting at the level where problems stop recurring.*
 
@@ -9366,7 +9366,7 @@ Sound judgement is not a talent. It is a discipline — and it is the thread tha
 
 \cleardoublepage
 
-# Getting started as a data engineer {#docs-beyond-techniques-getting-started-as-a-data-engineer}
+# Getting started as a data engineer {#docs-judgement-under-ambiguity-getting-started-as-a-data-engineer}
 
 *A strong start in data engineering depends more on habits and judgment than on flashy technique.*
 
@@ -9434,7 +9434,7 @@ These habits are not optional—they serve as the foundation for everything else
 
 \cleardoublepage
 
-# Closing essay: Hallmarks of quality {#docs-beyond-techniques-closing-essay-hallmarks-of-quality}
+# Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
 
 *Quality is recognised through patterns of work that endure beyond the immediate feature.*
 
