@@ -35,7 +35,125 @@ The standard pattern has three steps:
 | Check | Which rows genuinely changed, and are those changes safe? |
 | Apply | How should the target table be updated without losing history or spreading faults? |
 
-These are the same steps whether the incoming data is a full extract or an incremental extract.
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
+     aria-label="Three-step load mechanics pattern: stage, check, and apply">
+
+  <defs>
+    <marker id="arrowhead-load-mechanics" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- Stage -->
+  <rect x="45" y="45" width="290" height="245" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="190" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Stage</text>
+
+  <text x="190" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">hold incoming data</text>
+  <text x="190" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">before the target is touched</text>
+
+  <line x1="75" y1="168" x2="305" y2="168"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="190" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">Sales.Order_staging</text>
+
+  <!-- Check -->
+  <rect x="395" y="45" width="290" height="245" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="540" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Check</text>
+
+  <text x="540" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">check for genuine changes</text>
+  <text x="540" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">check for instability</text>
+  <text x="540" y="158" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">check for violations</text>
+
+  <line x1="425" y1="180" x2="655" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="540" y="207" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">Sales.Order_upsert</text>
+  <text x="540" y="228" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">Sales.Order_delete</text>
+  <text x="540" y="249" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="13" fill="#333333">Sales.Order_reject</text>
+
+  <!-- Apply and log -->
+  <rect x="745" y="45" width="290" height="245" rx="16"
+        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
+
+  <text x="890" y="83" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="24" font-weight="700" fill="#111111">Apply</text>
+
+  <text x="890" y="116" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">apply safe changes</text>
+  <text x="890" y="137" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">preserve previous row states</text>
+  <text x="890" y="158" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#555555">log what happened</text>
+
+  <line x1="775" y1="180" x2="1005" y2="180"
+        stroke="#dddddd" stroke-width="1.4"/>
+
+  <text x="890" y="204" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="12.5" fill="#333333">Sales.Order</text>
+  <text x="890" y="224" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="12.5" fill="#333333">Sales.Order_history</text>
+  <text x="890" y="244" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="12.5" fill="#333333">Pipeline.LoadLog</text>
+  <text x="890" y="264" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="12.5" fill="#333333">Pipeline.RefreshBookmark</text>
+  <text x="890" y="284" text-anchor="middle"
+        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+        font-size="12.5" fill="#333333">Pipeline.LoadStatistics</text>
+
+  <!-- Arrows -->
+  <line x1="350" y1="168" x2="375" y2="168"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-mechanics)"/>
+
+  <line x1="700" y1="168" x2="725" y2="168"
+        stroke="#222222" stroke-width="2.2"
+        marker-end="url(#arrowhead-load-mechanics)"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:42rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. The load mechanics pattern: stage incoming data, check proposed changes, then apply safe changes and log what happened.
+</div>
+
 ## The three-step load pattern
 
 Suppose the target table is `Sales.Order`. The goal is to update `Sales.Order` with the latest batch of data.
@@ -134,7 +252,7 @@ In the example:
 | O1005 | New row, so it is an insert, but `[Customer ID]` is missing. |
 | O1006 | New row, so it is an insert, but its `[Order reference]` clashes with existing order `O1003`. |
 
-Inserts and updates isolated into an upsert table.
+Inserts and updates are isolated into an upsert table.
 
 The first version of the upsert table contains all rows that are new or genuinely changed. It also has a column `[Is new row]` to indicate whether the row is to be inserted or not.
 
