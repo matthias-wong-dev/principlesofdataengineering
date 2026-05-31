@@ -8,7 +8,7 @@ bookToC: false
 
 **Principles of Data Engineering** is the definitive guide to building data representations that make business reality visible.
 
-Most data engineering books teach pipelines, platforms, and patterns. This book is about something far more durable. It explains what data engineering is fundamentally for: turning fragments of reality into reliable information that organisations can use to understand, decide, and act.
+Most data engineering books teach pipelines, platforms, and patterns. This book is about something more fundamental. It explains what data engineering is fundamentally for: turning fragments of reality into reliable information that organisations can use to understand, decide, and act.
 
 The recurring theme of the book is:
 
