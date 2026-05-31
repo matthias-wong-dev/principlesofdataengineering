@@ -25,7 +25,7 @@ The central premise "Data is a fragment of reality captured by process" can be i
      style="background:transparent" role="img"
      aria-label="Policy, Business, Digital, Data cycle with Defines, Collect, Informs transitions">
 
-  <rect x="0" y="0" width="800" height="600" fill="#ffffff"/>
+  <rect x="0" y="0" width="800" height="600" fill="none"/>
 
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="8"
