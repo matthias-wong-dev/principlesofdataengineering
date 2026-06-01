@@ -1,134 +1,575 @@
 ---
-title: Tracking changes
+title: "Incremental load: tracking changes"
 url: /docs/efficient-stable-pipeline/tracking-changes/
-description: How to detect inserts, updates, and deletes in a data pipeline, the foundation of incremental processing and efficient data engineering.
-lede: Incremental work begins with knowing what has genuinely changed.
+description: Explains how to detect source inserts, updates, and deletes using refresh bookmarks, polling tables, and change detection columns.
+lede: Incremental work begins with reliable knowledge of what changed.
 weight: 5
-draft: true
+# draft: true
 ---
 
-The aim of information efficiency is to process only what has changed. If there were no records changed after a table is processed, then ideal is have spent zero processing time it. In practice, even when there are no changes in input, a load still takes time to process.
+## Change observability
 
-Every unnecessary scan consumes resources without adding value. Efficiency is achieved when downstream tables can reliably extract only the records that have changed and ignore the rest.
+The aim of information efficiency is to process only what has changed.
 
-Doing this well requires systematic change tracking. Without it, pipelines fall back bespoke methods for tracking changes. This leads to errors in incremental processing, periodic full reloads, and fragile recovery from disruptions. A robust pattern avoids these pitfalls.
+If no records have changed since a table was last processed, the ideal load would spend no time processing that table. In practice, even when there are no input changes, a load still takes time to check its inputs and confirm that nothing needs to happen.
 
-The following is a simple approach illustrate the concept of change tracking, before unpacking the details of a more robust approach.
+Efficiency improves when downstream tables can reliably identify the records that may have changed and ignore the rest.
 
-## Simple approach
+Doing this well requires systematic change tracking.
 
-The most basic approach is to include an update datetime column from the source system and filter on it. This works when the source table deletes do not occur, and the target table mirrors the source one to one.
+Tracking change is the discipline of establishing a reliable relationship between source change and the pipeline’s own processing state, so we can answer the question:
 
-### Example scenario
+> What source records may have changed since this target table last loaded successfully?
 
-- Source table Raw.Event with columns [PK1], [PK2], [Col1]…[Col15], [Update datetime]
 
-- Target table Curated.Event with [PK1], [PK2], [Col1], [Col2], [Update datetime]
+## The problem of time
 
-Incremental extract logic would be as follows:
+Incremental loading depends on a deceptively simple question:
 
-While straightforward and intuitive, this approach suffers from a few problems.
+> What has changed since this table was last processed?
 
-First, it is not scalable to complexity. Additional source tables will break the logic because it is not practical to add the update datetime from each source onto the target table. It is possible to create a complex compound datetime, but it would be error prone.
+The difficulty is that this question does not refer to one time. It refers to a relationship between two states.
 
-Second, it is not stable. If a system update shifts all values in [Update datetime], the pipeline will reprocess every row, causing a blow out in processing time for updates, and triggering similar issues downstream.
+There are multiple times, and they are not always comparable. Confusing them can lead to missed records, unnecessary scans, or incorrect incremental loads.
 
-Third, the approach is not scalable to continuous load. For example, if Curated.Event filters Raw.Event for rare events, then the maximum update datetime on Curated.Event will not represent latest processing time of Raw.Event. The simple approach will force a re-scan that goes too far back. For a continuous load scenario, this will be prohibitive.
+| Time | Meaning |
+|---|---|
+| Source row change time | The time the row in the source table was changed. |
+| Source arrival time | When the row became visible to the warehouse. |
+| Target bookmark time | When the target last started a successful load. |
+| Target row change time | The time a row in the target table was changed. |
 
-A more scalable and reusable pattern is to separate the time-tracking artefacts from the data content itself.
+The key distinction is whether a time is **in-sync** or **out-of-sync** with the pipeline.
 
-## Refresh bookmarks and polling tables
+A time is in-sync when it is created by the pipeline or can be safely compared for processing.
 
-As explained in Load mechanics, as each table is processed, the pipeline logs the refresh bookmark of a load. That is, the starting datetime of the load of each table is logged if the load succeeded. The refresh bookmark for all tables in the pipeline can be stored in one table. Each row of this table is one table that was loaded, together with the starting datetime of that load.
+A time is out-of-sync when it belongs to another system and may lag behind, arrive late, or reflect a different notion of change.
 
-This bookmark defines the cut off for what records in a source has fully made it to the processing of a target table. Any records that have come to the source table after this bookmark datetime would need to be considered in the next batch of processing. If the table load aborted because of a fault, then the bookmark should not be logged so that the next batch can resume from last success point.
+The question:
 
-### Advanced note
+> Which source rows changed after the target last loaded successfully?
 
-If the source is continuously loading, then some stray records may still come into the source table after the bookmark datetime, but before the processing has complete. However, there are no guarantees. Consequently, either the incoming source needs to be frozen, or the next batch should still resume from bookmark and reprocess these late records.
+is only safe when the source change time is in-sync with the target’s processing time.
 
-The query to retrieve the latest bookmark for a table is simple:
+Doing this systematically and accurately requires additional artefacts: refresh bookmarks and polling tables.
 
-On the other hand, keeping track of source changes depends on whether the source table was created by the pipeline or whether it was raw data table from external source.
+## The simple update-datetime approach
 
-In the former case, the tables created by the pipeline have reliable update datetimes created by the process in Load mechanics – [Row insert datetime], [Row update datetime] and [Row delete datetime]. Since these are created by the pipeline itself, they are comparable with the refresh bookmark and can be compared directly for understanding what records have come in after the latest bookmark.
+To understand the general approach, it is useful to start with the simplest one.
 
-However, for tables that were not created by the pipeline, even though they may have a column called [Update datetime], there may be a substantial lag between that value versus when the row made it to the database. Hence, they cannot be used directly.
+The most basic approach is to include an update datetime column from the source system and filter on it.
 
-To distinguish these two cases, we would say that the update datetimes in pipelines are in-sync while the update datetimes from source systems that are loaded in a separate process are out-of-sync with the data pipeline.
+Suppose the pipeline loads from `Raw.Event` into `Curated.Event`.
 
-If the datetimes are out-of-sync with the refresh bookmark, they cannot be directly compared. Instead, just as the target table’s state of processing can be tracked by a separate table, the source table’s state of processing can be tracked by a separate polling table.
+**Example source table: `Raw.Event`**
 
-A polling table is any table that can be consulted to know whether and what portion of data needs to be refreshed. For a polling table to be effective, it needs to be structured so that it can be queried rapidly – much more rapidly than the time to process the full data. Ideally, this query should be close to zero time to support continuous load.
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1001 | Login | 2021-05-01 07:45 |
+| E1002 | Payment | 2021-05-01 08:03 |
+| E1003 | Refund | 2021-05-01 08:07 |
 
-Following the example, direct comparison of Raw.Event[Update datetime] with the latest bookmark in Curated.Event is not possible. There can be an unknown lag between the update timestamp and its arrival in the database. The only safe assumption is that the datetime increases monotonically.
+**Example target table: `Curated.Event`**
 
-A polling table provides a way to map the pipeline’s refresh time to the latest update datetime observed in Raw.Event. Suppose this table is called Raw.Bookmark, and is loaded using an append-only process. Each appended row records the maximum update datetime from Raw.Event at the time of the refresh.
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1001 | Login | 2021-05-01 07:45 |
 
-The columns of Raw.Bookmark are:
+We assume that:
 
-- [Refresh datetime] — the datetime of the check as the row is appended. This datetime, since it is computed by the load, is part of the pipeline and thus in-sync with the refresh bookmarks.
+- the source table does not delete rows;
+- the target table mirrors the source table one to one;
+- `[Update datetime]` is carried from the source into the target.
 
-- [Bookmark datetime] — the maximum of Raw.Event[Update datetime] as at that time of refresh. This datetime, coming from the source and later loaded, is out-of-sync.
+In the simple approach, the target table remembers how far it has processed by storing the source update datetime. The next extract compares the source table against the maximum `[Update datetime]` already loaded into the target.
 
-This table maps the [Update datetime] column, which is out-of-sync with the pipeline, to a column, [Refresh datetime], that is in-sync with the pipeline. This mapping makes it possible to compare changes to the incoming data tracked by the source’s [Update datetime] with processing events, which are tracked against the pipeline’s record of datetimes.
+In this example, the maximum `[Update datetime]` in `Curated.Event` is `2021-05-01 07:45`.
 
-In theory, refreshing this table infinitely often would allow the pipeline to translate its own time into the update datetime of Raw.Event at any point. In practice, the refresh frequency aligns with the pipeline cadence. There is no benefit in refreshing the table when Raw.Event has not changed. In addition, Raw.Bookmark can contain the bookmarks for multiple tables, such as Raw.Event, Raw.Event2, Raw.Event3 rather than creating one table for each.
+A simple incremental extract might therefore filter:
 
-At the start of processing Curated.Event, the polling table Raw.Bookmark allows the pipeline to fetch the maximum bookmark of Raw.Event as of Curated.Event’s previous batch start. Any row on Raw.Event whose [Update datetime] represents data that have come after the previous batch start and eligible for processing.
+```sql
+-- Step 1: Find the latest source update datetime loaded in target.
+declare @latest_update_datetime datetime2(7);
 
-In summary, tracking records that have changed in a source table since the last process depends on two components:
+set @latest_update_datetime =
+(
+    select max([Update datetime])
+    from Curated.Event
+);
 
-- Tracking the target. A bookmark table for the pipeline that records the processing datetimes of each table whenever a load completes successfully.
+-- Step 2: Pull only newer rows from the source.
+select
+    [Event ID],
+    [Event type],
+    [Update datetime]
+from Raw.Event
+where [Update datetime] > @latest_update_datetime;
+```
 
-- Tracking the source. If the source table has an [Update datetime] column that is synchronised with the pipeline, this column can be used directly to retrieve updated rows. If not, a polling table is required to map the source table’s update datetime back to the pipeline’s datetime for comparison.
+This retrieves `E1002` and `E1003`.
 
-With these components, it becomes possible to identify changes in the source relative to the target’s last processed state.
+The approach is straightforward, but it suffers from several problems.
 
-## Change detection columns
+First, it does not scale to complex transformations. If `Curated.Event` draws from several source tables, it is not practical to carry every source update datetime into the target. A compound update datetime can be created, but this becomes error-prone as the query grows.
 
-The previous example assumes that the source table Raw.Event has a reliable [Update datetime] column for change detection. This is not always the case.
+Second, it is unstable. If a source system update shifts all values in `[Update datetime]`, the pipeline may reprocess every row. This can cause a blowout in processing time and trigger unnecessary downstream work.
 
-In the ideal scenario, the change detection column is an architectural column from the source system. Examples include server constructs, trigger-managed datetimes, or built-in datetimes from commercial products that can be trusted. This is also true for pipeline tables loaded as described in Load mechanics.
+Third, it does not scale well to continuous or high-frequency loading. For example, if `Curated.Event` filters `Raw.Event` for rare events, then the maximum update datetime in `Curated.Event` does not represent the latest processing time of `Raw.Event`. The simple approach may force the pipeline to rescan too far back.
 
-Less ideally, the change detection column is managed by the source application through application logic. These columns are generally reliable but can be prone to developer error or fail to capture direct database changes.
+The problem is not that the simple approach is wrong. It is that it makes the target remember its processing state through a source business column. That is only safe when the target remains close to the source.
 
-Finally, there may be no change detection columns at all. In this case, it is not possible to determine whether a source row has been updated. However, it may still be possible to identify inserted records by performing an anti-join between the source and target tables. This approach is useful for append-only loads such as building of hub tables.
+A more scalable pattern separates the time-tracking artefacts from the data content itself.
 
-## Tracking deletes
+## Refresh bookmarks
 
-Polling tables can be used for tracking updates and inserts. Tracking deletes is equally important. However, this can be far more difficult because, in the case of deletes, rows disappear completely from the table itself.
+As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/), each successful table load should record a refresh bookmark.
 
-In the ideal scenario, deletes are tracked in the source through architectural artefacts.
+A **refresh bookmark** is target-side state. It records how far the target table has successfully refreshed, without relying on the target table’s business columns to remember that state.
 
-Some database technologies implement default history tables or delta logs. These history tables allow reliable tracking of deletes, provided they include a change detection column to indicate when the delete occurred.
+In the simplest update-datetime approach, the target table carries the source `[Update datetime]`, and the next load compares the source against the maximum value already loaded into the target. Thus, a business column is used as the marker for the processing cut-off.
 
-Less ideally, some applications maintain dedicated business audit tables that track changes, including deletes. These tables can be highly reliable, though they are often difficult to query.
+A refresh bookmark separates this processing state from the target’s business data.
 
-In the worst case, there is no change tracking. Rows can disappear without a trace. The only option is to compare the source and target using an anti-join on the primary key.
+The bookmark records the starting datetime of a successful load. This becomes the target table’s processing boundary. If the load fails or aborts, the bookmark should not advance. The next load should resume from the last successful boundary.
 
-## The role of the Filter step
+The bookmark has no necessary relationship with the business datetime in the source column. They may be minutes apart, days apart, or years apart. One belongs to the pipeline’s processing time. The other belongs to the source system’s business or application time.
 
-Two themes recur, whether for tracking upserts or tracking deletes:
+**Example structure of `Pipeline.RefreshBookmark`**
 
-- Source update datetimes that are synchronised with the pipeline’s process datetimes are trivial to query.
+| Table name | Load ID | Bookmark datetime |
+|---|---:|---|
+| Curated.Event | 10001 | 2026-05-01 08:01 |
 
-- Architectural artefacts, rather than business artefacts, are the most reliable way to track inserts, updates, and deletes.
+In this example, `Curated.Event` last completed a successful load that began at `2026-05-01 08:01`—five years after the events themselves.
 
-When either of these is absent, tracking changes becomes complex or even impossible.
 
-This is one of the reasons why pipelines begin with a Filter step that keeps transformation minimal. The filter step is designed to be the first interaction with the source data. On first arrival of the data, the pipeline adds the architectural artefacts required for change tracking. Doing this once at the start allows the rest of the pipeline to apply transformations incrementally with reliable change tracking.
+Fetching the refresh bookmark is simple.
 
-The optimal case is if the incoming data can be incrementally extracted using polling tables and the filter step adds the architectural columns for change-tracking. This effectively converts the source change detection columns, which may be out-of-sync with the pipeline, to change detection columns which are in-sync the datetimes tracked by the pipeline.
+```sql
+declare @refresh_bookmark_datetime datetime2(7);
 
-The Filter step, which is a simple extract of the necessary rows and columns with minimal joins or aggregations, may look like a step with low value-add. However, this step is serving as a critical foundation for an efficient pipeline because proper load mechanics computes change-tracking artefacts to support efficient downstream response.
+-- Step 1: Look up the refresh bookmark datetime for Curated.Event.
+-- This is when the previous successful load started.
+select @refresh_bookmark_datetime =
+(
+    select [Bookmark datetime]
+    from Pipeline.RefreshBookmark
+    where [Table name] = 'Curated.Event'
+);
+```
 
-## Conclusion
+The refresh bookmark tracks the target table’s last successful processing state. It does not, by itself, identify source changes.
 
-An efficient pipeline requires knowing exactly what changed in the source so that it responds only to those records. These changes include inserts, updates, and deletes.
+To identify source changes, the pipeline needs a source-side change signal.
 
-A simple approach to tracking upserts is to include the source change detection column in the target table. However, this can be problematic for non-trivial extracts and is at risk of instability. Instead, bookmarks to track the target and polling tables to track the source are reliable patterns for tracking changes relative to each other.
+## The source time problem
 
-Deletes are much harder to track without additional artefacts or audit tables. If these artefacts are not available, a full comparison of each batch is necessary to identify changes for upserts, deletes, or both.
+The refresh bookmark is in pipeline time. It records when the target table last started a successful load.
 
-Given the complexity of tracking sources and the fragility of relying on other systems to maintain reliable architectural columns, it is important that each pipeline begins with an uncomplicated extract from the source data. The Load mechanics process annotates this extract with reliable change detection artefacts for downstream processing.
+A source `[Update datetime]` may be in source time. It records when the source system says a row changed.
+
+These two datetimes are not automatically comparable.
+
+In our example, `Curated.Event` last refreshed at `2026-05-01 08:01`, but `Raw.Event[Update datetime]` contains business events from 2021.
+
+The following filter to fetch the next batch of records would make no sense:
+
+```sql
+where Raw.Event.[Update datetime] > '2026-05-01 08:01'
+```
+
+It compares a source-system datetime with a pipeline refresh datetime. The result would incorrectly return no rows, even though new records may have arrived in the warehouse since the target last loaded.
+
+A target refresh bookmark tells the pipeline where the target got to. It does not necessarily tell the pipeline what source update datetime had been safely observed at that point.
+
+To use source update datetimes safely, the pipeline must know how source time relates to pipeline time.
+
+There are two cases:
+
+| Case | Meaning | Consequence |
+|---|---|---|
+| In-sync source | The source change datetime is created by the pipeline or safely comparable with pipeline time. | The refresh bookmark can be compared directly to the source row change datetime. |
+| Out-of-sync source | The source change datetime belongs to another system and may lag behind arrival in the warehouse. | A polling table is needed to map pipeline time to source time. |
+
+External raw tables are often out-of-sync. Even if they contain an `[Update datetime]`, that value may record when the row changed in the source system, not when the row became visible to the warehouse.
+
+When datetimes are out-of-sync, the pipeline needs a polling table.
+
+## Polling tables
+
+A polling table is source-side state.
+
+It records how far the source’s update timeline was safely observable at particular points in pipeline time. Its purpose is to let the pipeline translate the target’s refresh bookmark into the source’s own update timeline.
+
+A polling table should be much faster to query than the source table itself. Ideally, the polling query should be close to zero time so that it can support frequent or continuous loads.
+
+Suppose `Raw.Event[Update datetime]` is out-of-sync with the refresh bookmark for `Curated.Event`. There may be an unknown lag between the source update timestamp and the row’s arrival in the warehouse. The only safe assumption is that `Raw.Event[Update datetime]` increases monotonically within the source system.
+
+A polling table provides a way to map pipeline time to source time.
+
+For example, the pipeline may append a row to `Raw.Bookmark` each time it checks `Raw.Event`.
+
+```sql
+insert into Raw.Bookmark
+(
+    [Source table name],
+    [Refresh datetime],
+    [Bookmark datetime]
+)
+select
+    'Raw.Event',
+    sysutcdatetime(),
+    max([Update datetime])
+from Raw.Event;
+```
+
+**Example structure of `Raw.Bookmark`**
+
+| Source table name | Refresh datetime | Bookmark datetime |
+|---|---|---|
+| Raw.Event | 2026-05-01 07:55 | 2021-05-01 07:48 |
+| Raw.Event | 2026-05-01 08:00 | 2021-05-01 07:56 |
+| Raw.Event | 2026-05-01 08:05 | 2021-05-01 08:02 |
+| Raw.Event | 2026-05-01 08:10 | 2021-05-01 08:08 |
+
+The columns have different meanings:
+
+| Column | Meaning |
+|---|---|
+| `[Source table name]` | The source table being polled. |
+| `[Refresh datetime]` | The pipeline datetime when the polling row was created. This is in-sync with the pipeline. |
+| `[Bookmark datetime]` | The maximum `Raw.Event[Update datetime]` observed at that polling moment. This is in the source system’s time-world. |
+
+The refresh bookmark datetime of `Curated.Event` is now in-sync with `[Refresh datetime]` in `Raw.Bookmark` because they are both managed by the pipeline. `Raw.Bookmark[Refresh datetime]` is linked to the source system’s update timeline through `Raw.Bookmark[Bookmark datetime]`.
+
+With the polling table as the bridge, we can now ask:
+
+> When the target last refreshed, how far through the source’s update timeline had the source safely arrived?
+
+Suppose `Curated.Event` last successfully started at `2026-05-01 08:01`.
+
+The polling table shows that, at pipeline time `2026-05-01 08:01`, the latest observed source bookmark was `2021-05-01 07:56`.
+
+The next extract should therefore consider:
+
+```sql
+Raw.Event[Update datetime] > '2021-05-01 07:56'
+```
+
+The query pattern is:
+
+
+```sql
+declare @refresh_bookmark_datetime datetime2(7);
+declare @latest_process_datetime datetime2(7);
+
+-- Step 1: Look up the refresh bookmark datetime for Curated.Event.
+-- This is when the previous successful load started.
+select @refresh_bookmark_datetime =
+(
+    select [Bookmark datetime]
+    from Pipeline.RefreshBookmark
+    where [Table name] = 'Curated.Event'
+);
+
+-- Step 2: Obtain the latest source update datetime that was
+-- safely observable at or before that refresh bookmark.
+select top 1
+    @latest_process_datetime = [Bookmark datetime]
+from Raw.Bookmark
+where [Source table name] = 'Raw.Event'
+  and [Refresh datetime] <= @refresh_bookmark_datetime
+order by [Refresh datetime] desc;
+
+-- Step 3: Fetch rows whose source update is newer than what
+-- the previous target load had safely captured.
+select
+    e.*
+from Raw.Event as e
+where e.[Update datetime] > @latest_process_datetime;
+```
+
+In the example, this returns `E1002` and `E1003`:
+
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1002 | Payment | 2021-05-01 08:03 |
+| E1003 | Refund | 2021-05-01 08:07 |
+
+The relationship between the source update time, the translation to pipeline time using the polling table, and the refresh bookmark on the target table to find the source records to update can be visualised as two parallel timelines.
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1080" height="520"
+     viewBox="0 0 1080 520"
+     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Source update time maps to pipeline time through polling rows and target refresh bookmarks">
+
+  <defs>
+    <marker id="arrowhead-refresh-map" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+  </defs>
+
+  <!-- Headings -->
+  <text x="70" y="54"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="18" font-weight="700" fill="#111111">Source update time</text>
+
+  <text x="70" y="318"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="18" font-weight="700" fill="#111111">Pipeline time</text>
+
+  <!-- Timeline baselines -->
+  <line x1="180" y1="150" x2="960" y2="150"
+        stroke="#222222" stroke-width="2.4"
+        marker-end="url(#arrowhead-refresh-map)"/>
+
+  <line x1="180" y1="390" x2="960" y2="390"
+        stroke="#222222" stroke-width="2.4"
+        marker-end="url(#arrowhead-refresh-map)"/>
+
+  <!-- Source date caption -->
+  <text x="180" y="190"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#666666">2021-05-01</text>
+
+  <!-- Pipeline date caption -->
+  <text x="180" y="430"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#666666">2026-05-01</text>
+
+  <!-- Source ticks / polling bookmark values -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+     font-size="13" fill="#333333">
+    <line x1="300" y1="139" x2="300" y2="161" stroke="#222222" stroke-width="1.7"/>
+    <text x="300" y="128" text-anchor="middle">07:48</text>
+
+    <line x1="430" y1="133" x2="430" y2="167" stroke="#222222" stroke-width="2.4"/>
+    <text x="430" y="128" text-anchor="middle">07:56</text>
+
+    <line x1="560" y1="139" x2="560" y2="161" stroke="#222222" stroke-width="1.7"/>
+    <text x="560" y="128" text-anchor="middle">08:02</text>
+
+    <line x1="690" y1="139" x2="690" y2="161" stroke="#222222" stroke-width="1.7"/>
+    <text x="690" y="128" text-anchor="middle">08:08</text>
+  </g>
+
+  <!-- Source event crosses and labels ABOVE line -->
+  <g stroke="#222222" stroke-width="2">
+    <!-- E1001 -->
+    <line x1="262" y1="142" x2="278" y2="158"/>
+    <line x1="278" y1="142" x2="262" y2="158"/>
+    <text x="270" y="108" text-anchor="middle"
+          font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+          font-size="13" font-weight="100" fill="#333333">E1001</text>
+
+    <!-- E1002 -->
+    <line x1="572" y1="142" x2="588" y2="158"/>
+    <line x1="588" y1="142" x2="572" y2="158"/>
+    <text x="580" y="108" text-anchor="middle"
+          font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+          font-size="13" font-weight="100" fill="#333333">E1002</text>
+
+    <!-- E1003 -->
+    <line x1="642" y1="142" x2="658" y2="158"/>
+    <line x1="658" y1="142" x2="642" y2="158"/>
+    <text x="650" y="108" text-anchor="middle"
+          font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+          font-size="13" font-weight="100" fill="#333333">E1003</text>
+  </g>
+
+
+
+  <!-- Bracket showing included events -->
+  <path d="M430 82 C505 45, 590 45, 650 82"
+        fill="none" stroke="#222222" stroke-width="1.8"
+        marker-end="url(#arrowhead-refresh-map)"/>
+  <text x="545" y="34" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#333333">next extract considers source events after 07:56</text>
+
+  <!-- Pipeline polling times, mostly before target starts -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+     font-size="13" fill="#333333">
+    <line x1="300" y1="379" x2="300" y2="401" stroke="#222222" stroke-width="1.7"/>
+    <text x="300" y="426" text-anchor="middle">07:55</text>
+
+    <line x1="430" y1="373" x2="430" y2="407" stroke="#222222" stroke-width="2.4"/>
+    <text x="430" y="426" text-anchor="middle">08:00</text>
+
+    <line x1="560" y1="379" x2="560" y2="401" stroke="#222222" stroke-width="1.7"/>
+    <text x="560" y="426" text-anchor="middle">08:05</text>
+  </g>
+
+  <!-- Two target refresh starts -->
+  <line x1="470" y1="365" x2="470" y2="415" stroke="#222222" stroke-width="2.4"/>
+  <circle cx="470" cy="390" r="8" fill="#ffffff" stroke="#222222" stroke-width="2.2"/>
+  <text x="470" y="455" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" font-weight="700" fill="#111111">previous Curated.Event</text>
+  <text x="470" y="474" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">refresh start</text>
+
+  <line x1="720" y1="365" x2="720" y2="415" stroke="#222222" stroke-width="2.4"/>
+  <circle cx="720" cy="390" r="8" fill="#ffffff" stroke="#222222" stroke-width="2.2"/>
+  <text x="720" y="455" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" font-weight="700" fill="#111111">current Curated.Event</text>
+  <text x="720" y="474" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">refresh start</text>
+
+  Downward polling map arrows
+  <g stroke="#222222" stroke-width="1.7" stroke-dasharray="6 5"
+     marker-end="url(#arrowhead-refresh-map)">
+    <line x1="300" y1="174" x2="300" y2="365"/>
+    <line x1="430" y1="174" x2="430" y2="365"/>
+    <line x1="560" y1="174" x2="560" y2="365"/>
+  </g>
+
+  <!-- Polling dots -->
+  <circle cx="300" cy="390" r="6" fill="#222222"/>
+  <circle cx="430" cy="390" r="7" fill="#222222"/>
+  <circle cx="560" cy="390" r="6" fill="#222222"/>
+
+  <text x="240" y="348" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">Raw.Bookmark</text>
+  <text x="240" y="365" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">updated</text>
+
+  <text x="370" y="348" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">Raw.Bookmark</text>
+  <text x="370" y="365" text-anchor="middle"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">updated</text>
+
+  <!-- Current target compares from previous refresh bookmark -->
+  <path d="M720 350 C675 292, 520 292, 470 350"
+        fill="none" stroke="#222222" stroke-width="1.8"
+        marker-end="url(#arrowhead-refresh-map)"/>
+  <text x="650" y="285"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">current refresh resumes from</text>
+  <text x="650" y="303"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="13" fill="#333333">previous target bookmark</text>
+
+  <!-- Right-side explanatory label -->
+  <text x="790" y="210"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#333333">polling table maps</text>
+  <text x="790" y="230"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#333333">source update time</text>
+  <text x="790" y="250"
+        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
+        font-size="14" fill="#333333">to pipeline time</text>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:42rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. <code>Raw.Bookmark</code> polling rows map source update time to pipeline time. The previous <code>Curated.Event</code> refresh used the latest polling row available when it started, mapping its target bookmark to source boundary <code>07:56</code>. The current refresh resumes from that target bookmark, so it considers source events after <code>07:56</code>.
+</div>
+
+In theory, refreshing the polling table continuously would allow the pipeline to translate pipeline time into source time at any point. In practice, the refresh frequency should align with the pipeline cadence and business need.
+
+A single polling table can store bookmarks for multiple source tables. It does not need to be one polling table per source table.
+
+> [!NOTE]
+> **Advanced note: moving source boundaries**
+>
+> If the source is continuously loading, source records may arrive while the target load is running.
+>
+> There are two safe ways to handle this.
+>
+> The first is to freeze the source boundary. The load processes only the source records that were safely observable at the start of the target load. Records that arrive later are picked up in the next batch.
+>
+> The second is to allow deliberate overlap. The next load resumes from an earlier safe bookmark, or from the previous source boundary, so that late-arriving records are read again. This may re-extract records that were already processed, but the load mechanics should treat them as upserts and apply only genuine changes.
+
+## When polling tables can be skipped
+
+Polling tables are needed when the source change datetime is out-of-sync with pipeline time.
+
+They are not usually needed when the source table was created by the pipeline itself.
+
+If the source table was created by the pipeline, its row change datetimes are reliable pipeline-managed datetimes. These include:
+
+- `[Row insert datetime]`
+- `[Row update datetime]`
+- `[Row delete datetime]`
+
+Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark.
+
+**Example pipeline-managed source table: `Filtered.Event`**
+
+| Event ID | Event type | Row insert datetime | Row update datetime | Row delete datetime |
+|---|---|---|---|---|
+| E1001 | Login | 2026-05-01 07:40 | 2026-05-01 07:40 | 9999-12-31 00:00:00 |
+| E1002 | Payment | 2026-05-01 08:03 | 2026-05-01 08:03 | 9999-12-31 00:00:00 |
+| E1003 | Refund | 2026-05-01 08:07 | 2026-05-01 08:07 | 9999-12-31 00:00:00 |
+
+If the refresh bookmark for the target is `2026-05-01 08:00`, then `E1002` and `E1003` are candidates for processing because their insert or update datetimes are after the bookmark.
+
+In this case, the target’s refresh bookmark can be compared directly against the source table’s row change datetimes.
+
+```sql
+select
+    e.*
+from Filtered.Event as e
+where
+    e.[Row insert datetime] > @refresh_bookmark_datetime
+    or e.[Row update datetime] > @refresh_bookmark_datetime
+    or e.[Row delete datetime] > @refresh_bookmark_datetime;
+```
+
+This is one of the reasons why the [Filter step](/docs/creating-information/entity-processing/) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
+
+## The role of the filter step
+
+Three themes occur when tracking inserts, updates, and deletes.
+
+First, datetimes that are synchronised with the pipeline’s processing time are easy to use.
+
+Second, architectural artefacts are more reliable than business artefacts for change tracking.
+
+Third, deletes are very hard to track unless they have been architecturally managed.
+
+When these conditions are absent, tracking change becomes complex or even impossible.
+
+This is one reason pipelines often begin with a [Filter step](/docs/creating-information/entity-processing/) that keeps transformation minimal. The Filter step is the first controlled interaction with the source data. It extracts the necessary rows and columns, then annotates them with pipeline-managed architectural columns. It also tracks deletes.
+
+The Filter step may look like low-value work because it performs little transformation. But it provides a critical foundation. Once source data has passed through a properly designed load process, downstream tables can rely on `[Row insert datetime]`, `[Row update datetime]`, and `[Row delete datetime]` to track change.
+
+The optimal case is:
+
+1. incoming data is incrementally extracted using source change detection or polling tables;
+2. the Filter step applies [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) to detect genuine change;
+3. the resulting pipeline table has reliable row change datetimes, and deleted rows are stored in a history table;
+4. downstream tables can process incrementally using those pipeline-managed datetimes.
+
+In this way, the Filter step converts fragile or out-of-sync source change signals into reliable pipeline change artefacts.
+
+> [!NOTE]
+> **Key ideas**
+>
+> Incremental work begins with reliable knowledge of what changed.
+>
+> Refresh bookmarks track the target table’s last successful processing state.
+>
+> Source change detection columns can be in-sync or out-of-sync with the pipeline’s processing time.
+>
+> Polling tables map out-of-sync source timestamps to in-sync pipeline timestamps.
+>
+> Inserts and updates are easier to track than deletes because deleted rows disappear.
+>
+> Architectural change artefacts are more reliable than business columns for detecting change.
+>
+> The Filter step converts source change signals into reliable pipeline change artefacts for downstream processing.
