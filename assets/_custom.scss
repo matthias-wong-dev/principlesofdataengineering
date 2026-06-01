@@ -146,13 +146,123 @@ body,
   max-width: 42rem;
 }
 
+.markdown code {
+  background: #f1f4f7;
+  border-color: #d7e0e8;
+  color: #17202a;
+}
+
+.markdown pre,
+.markdown .highlight pre {
+  background: #f6f8fa !important;
+  border-color: #c9d3dd;
+  color: #17202a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.markdown pre code,
+.markdown .highlight pre code {
+  background: transparent;
+  color: inherit;
+}
+
+.markdown .highlight,
+.markdown .chroma {
+  border-radius: var(--border-radius);
+}
+
+.markdown .chroma {
+  background: #f6f8fa;
+  color: #17202a;
+}
+
+.markdown .chroma span {
+  color: inherit;
+}
+
+.markdown .chroma span[style] {
+  color: inherit !important;
+}
+
+.markdown .chroma .cl,
+.markdown .chroma .line {
+  color: #17202a;
+}
+
+.markdown .chroma .c,
+.markdown .chroma .c1,
+.markdown .chroma .cm,
+.markdown .chroma .cp,
+.markdown .chroma .cs {
+  color: #6f7f90;
+}
+
+.markdown .chroma .k,
+.markdown .chroma .kc,
+.markdown .chroma .kd,
+.markdown .chroma .kn,
+.markdown .chroma .kp,
+.markdown .chroma .kr,
+.markdown .chroma .kt {
+  color: #345f86;
+  font-weight: 600;
+}
+
+.markdown .chroma .s,
+.markdown .chroma .s1,
+.markdown .chroma .s2,
+.markdown .chroma .sa,
+.markdown .chroma .sb,
+.markdown .chroma .sc,
+.markdown .chroma .sd,
+.markdown .chroma .se,
+.markdown .chroma .sh,
+.markdown .chroma .si,
+.markdown .chroma .sr,
+.markdown .chroma .ss,
+.markdown .chroma .sx {
+  color: #7a4e2f;
+}
+
+.markdown .chroma .m,
+.markdown .chroma .mb,
+.markdown .chroma .mf,
+.markdown .chroma .mh,
+.markdown .chroma .mi,
+.markdown .chroma .mo,
+.markdown .chroma .il {
+  color: #72558a;
+}
+
+.markdown .chroma .nf,
+.markdown .chroma .fm {
+  color: #4b647e;
+}
+
+.markdown .chroma .o,
+.markdown .chroma .ow,
+.markdown .chroma .p {
+  color: #5f6b78;
+}
+
+.markdown .chroma .err {
+  color: #8b5e66;
+  background: transparent;
+}
+
+.markdown .book-codeblock-filename {
+  border-color: #c9d3dd;
+  background: #edf2f6;
+  color: #435266;
+}
+
 .markdown .book-codeblock-wrap-toggle {
   display: block;
   margin: 1rem 0 -0.5rem auto;
   padding: 0.2rem 0.55rem;
-  border: 1px solid rgba(58, 95, 133, 0.2);
+  border: 1px solid #c9d3dd;
   border-radius: var(--border-radius);
-  background: #eef3f8;
+  background: #f6f8fa;
   color: #3a5f85;
   font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.75rem;
@@ -161,7 +271,7 @@ body,
 }
 
 .markdown .book-codeblock-wrap-toggle:hover {
-  background: #dbe4ee;
+  background: #eef3f8;
 }
 
 .markdown .book-codeblock-with-toggle.is-wrapped pre {
