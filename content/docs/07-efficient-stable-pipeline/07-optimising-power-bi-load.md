@@ -212,62 +212,18 @@ During refresh, Power BI compares the stored refresh bookmark for each partition
 | 2025-02 | 2026-05-02 10:30 | 2026-05-09 11:10 | Yes | Refresh partition |
 | 2025-03 | 2026-05-04 18:05 | 2026-05-04 18:05 | No | Do not refresh |
 
-Only the `2025-02` partition needs to refresh.
-
-The refresh then proceeds in steps.
-
-### Step 1—Poll each partition
-
-Power BI checks the current polling value for each partition.
-
-Conceptually, the polling query asks:
-
-```sql
-select
-    [Latest update datetime]
-from PBI.SalePolling
-where [Partition] = '2025-02';
-```
-
-For `2025-02`, the polling query returns `2026-05-09 11:10`.
-
-### Step 2—Compare polling value with stored bookmark
-
-The stored refresh bookmark for `2025-02` is `2026-05-02 10:30`.
-
-Because the polling value is different, Power BI marks the partition for refresh.
-
-### Step 3—Refresh only the changed partition
-
-Power BI reloads only the rows belonging to the changed partition.
-
-Conceptually, the partition query is:
-
-```sql
-select
-    *
-from PBI.Sale
-where [Sale date] >= '2025-02-01'
-  and [Sale date] <  '2025-03-01';
-```
-
-The partition key is `[Sale date]`, not `[Row update datetime]`.
-
-`[Sale date]` decides which partition the row belongs to. `[Row update datetime]` decides whether that partition has changed.
-
-### Step 4—Store the new bookmark
-
-After the `2025-02` partition refreshes successfully, Power BI stores the new polling value as the partition’s refresh bookmark.
+Only the `2025-02` partition needs to refresh. When it is completed, the partition bookmark is advanced to match the polling value.
 
 **Power BI partition bookmarks after refresh**
 
 | Partition | Stored refresh bookmark |
 |---|---|
 | 2025-01 | 2026-05-03 16:45 |
-| 2025-02 | 2026-05-09 11:10 |
+| 2025-02 | 2026-05-09 11:10  |
 | 2025-03 | 2026-05-04 18:05 |
 
-The next refresh repeats the same process. If the polling value for `2025-02` remains `2026-05-09 11:10`, the partition does not need to refresh again.
+
+
 
 
 ## Conclusion
@@ -289,9 +245,9 @@ In the ideal case, information efficiency is maximised end to end:
 3. source tables for Power BI, whether for DirectQuery or partitioned loads, are also incrementally materialised;
 4. Power BI tables themselves are incrementally refreshed using partitions, supported by incrementally refreshed polling tables for fast change detection.
 
-All this means the data engineer plans far ahead, letting Power BI’s efficiency requirements shape the pipeline even as the first table is built.
+At every stage, the pipeline maintains proportionate change.
 
-Power BI refresh is therefore the point at which the quality of the pipeline becomes visible.
+The implications is that the data engineer plans far ahead, letting Power BI’s efficiency requirements shape the pipeline even as the first table is built. 
 
 > [!NOTE]
 > **Key ideas**
