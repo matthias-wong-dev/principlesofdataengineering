@@ -78,7 +78,7 @@ Suppose the pipeline loads from `Raw.Event` into `Curated.Event`.
 We assume that:
 
 - the source table does not delete rows;
-- the target table mirrors the source table one to one;
+- the target table mirrors the source table row for row, with the same columns;
 - `[Update datetime]` is carried from the source into the target.
 
 In the simple approach, the target table remembers how far it has processed by storing the source update datetime. The next extract compares the source table against the maximum `[Update datetime]` already loaded into the target.
@@ -423,7 +423,7 @@ The relationship between the source update time, the translation to pipeline tim
         font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
         font-size="13" fill="#333333">refresh start</text>
 
-  Downward polling map arrows
+   <!-- Downward polling map arrows -->
   <g stroke="#222222" stroke-width="1.7" stroke-dasharray="6 5"
      marker-end="url(#arrowhead-refresh-map)">
     <line x1="300" y1="174" x2="300" y2="365"/>
@@ -493,6 +493,8 @@ A single polling table can store bookmarks for multiple source tables. It does n
 > The first is to freeze the source boundary. The load processes only the source records that were safely observable at the start of the target load. Records that arrive later are picked up in the next batch.
 >
 > The second is to allow deliberate overlap. The next load resumes from an earlier safe bookmark, or from the previous source boundary, so that late-arriving records are read again. This may re-extract records that were already processed, but the load mechanics should treat them as upserts and apply only genuine changes.
+>
+> Overlap is often safer than trying to make the boundary too precise. It is acceptable for an incremental extract to read a little too much, provided the downstream load is idempotent and unchanged rows are ignored.
 
 ## When polling tables can be skipped
 
