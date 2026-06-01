@@ -228,15 +228,25 @@ Only the `2025-02` partition needs to refresh. When it is completed, the partiti
 
 ## Conclusion
 
-Loading a Power BI model is time intensive. Using DirectQuery over a columnstore table can avoid the load entirely, but DirectQuery imposes serious limits on the queries that can be made. Consequently, the most common factor for a fast Power BI load is the efficiency of the underlying source tables. These should be simple assemblies of well-defined fragments that join easily and avoid complex transformations.
+DirectQuery, efficient source tables, and partitioned loads are the main ways to improve Power BI load performance.
 
-When fact tables become substantial, partitions can deliver a major speed boost by enabling parallel loads. This often requires rearranging data or implementing dedicated indexes to support retrieval by partition date.
+| Method | Basic idea | Best suited to | Consideration |
+|---|---|---|---|
+| DirectQuery | Avoid importing the table. | Very large, simple, narrow fact tables. | Slower report interaction and DAX limitations. |
+| Efficient source views or tables | Make import cheap by preparing the source. | Most Import models. | Complexity moves upstream. |
+| Partitioning | Refresh the table in slices. | Large fact tables with a stable business date. | Poor partition design can add overhead or miss changes. |
 
-When partitions are in place, rolling windows provide further benefit by dropping older partitions and keeping model size controlled. This introduces room for error and requires attention to detail at boundary points.
+Partitioning also offers several levels of improvement.
 
-Incremental refresh adds another layer of efficiency by refreshing only the partitions that have changed. This relies on a polling query to detect changes. Dedicated polling tables can support instant evaluation of polling queries, including complex cases where change detection cannot be represented by one column in the source table.
+| Enhancement | What it does | Benefit | Extra requirement |
+|---|---|---|---|
+| Parallel partition refresh | Splits one large table into smaller partitions that can be loaded independently. | Reduces refresh duration by allowing multiple partitions to load at once. | The source must retrieve each partition quickly using the partition key. |
+| Rolling window | Keeps only recent partitions and drops older ones. | Prevents model size and refresh time from growing indefinitely. | Fact tables, dimensions, and source-retention windows must remain aligned. |
+| Incremental partition refresh | Refreshes only partitions whose polling value has changed. | Reduces refresh work when only some partitions have changed. | Requires reliable change detection, partition bookmarks, and fast polling queries or polling tables. |
 
-Whatever the technique, the foundation for a fast-loading Power BI model is set far in advance in the pipeline. It depends on the availability of meaningful fragments to avoid complex transforms, the planned placement of indexes to support partition keys, and the careful tracking of row changes to enable polling tables.
+A single Power BI model may use different strategies for different tables. A small dimension may load fully. A large fact table may use Import mode with incremental partition refresh. A very large, narrow fact table may use DirectQuery over a dedicated columnstore source. The right strategy depends on the shape of the data, the refresh requirement, and the expected user experience.
+
+Whatever the technique, the foundation for a fast-loading Power BI model is set far in advance in the pipeline. It depends on meaningful fragments to avoid complex transforms, planned indexes to support partition retrieval, and careful row-change tracking to enable polling tables.
 
 In the ideal case, information efficiency is maximised end to end:
 
@@ -245,9 +255,10 @@ In the ideal case, information efficiency is maximised end to end:
 3. source tables for Power BI, whether for DirectQuery or partitioned loads, are also incrementally materialised;
 4. Power BI tables themselves are incrementally refreshed using partitions, supported by incrementally refreshed polling tables for fast change detection.
 
-At every stage, the pipeline maintains proportionate change.
+At every stage, the pipeline maintains proportionate change—the amount of computation changes in proportion to the amount of information that has genuinely changed.
 
-The implications is that the data engineer plans far ahead, letting Power BI’s efficiency requirements shape the pipeline even as the first table is built. 
+The implication is that the data engineer must plan far ahead. Power BI’s efficiency requirements should shape the pipeline even as the first table is built.
+
 
 > [!NOTE]
 > **Key ideas**
