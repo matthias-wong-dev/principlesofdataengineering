@@ -176,97 +176,7 @@ Data is captured by business processes. Once collected, it can be used to return
 
 In this perspective, data engineering is the task of taking data projected by business processes and reshaping it into a form required by business intent. This can be summarised in Figure 1.
 
-```{=html}
-<svg xmlns="http://www.w3.org/2000/svg"
-     width="760" height="520"
-     viewBox="0 0 760 520"
-     style="background:transparent"
-     role="img"
-     aria-label="Business world projects down into data world, and data world is refashioned back into business understanding">
-
-  <defs>
-    <marker id="arrowhead-world" markerWidth="10" markerHeight="8"
-            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
-    </marker>
-  </defs>
-
-  <ellipse cx="380" cy="145" rx="285" ry="58"
-      fill="#ffffff"
-      stroke="#222222"
-      stroke-width="2"/>
-
-  <text x="380" y="138"
-      text-anchor="middle"
-      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-      font-size="25"
-      font-weight="700"
-      fill="#111111">
-      Business world
-  </text>
-
-  <text x="380" y="163"
-      text-anchor="middle"
-      font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-      font-size="15"
-      fill="#555555">
-  reality, events, entities
-  </text>
-
-  <ellipse cx="380" cy="390" rx="210" ry="48"
-           fill="#ffffff"
-           stroke="#222222"
-           stroke-width="2"/>
-
-  <text x="380" y="386"
-        text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="23"
-        font-weight="700"
-        fill="#111111">
-    Data world
-  </text>
-
-  <text x="380" y="410"
-        text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="15"
-        fill="#555555">
-    records, tables, files
-  </text>
-
-  <path d="M 285 210 C 310 265, 330 305, 355 335"
-        fill="none"
-        stroke="#222222"
-        stroke-width="2.4"
-        marker-end="url(#arrowhead-world)"/>
-
-  <text x="245" y="292"
-        text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="15"
-        font-weight="600"
-        fill="#111111">
-    projection
-  </text>
-
-  <path d="M 430 335 C 465 305, 485 265, 505 210"
-        fill="none"
-        stroke="#222222"
-        stroke-width="2.4"
-        marker-end="url(#arrowhead-world)"/>
-
-  <text x="535" y="292"
-        text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="15"
-        font-weight="600"
-        fill="#111111">
-    shaping
-  </text>
-
-</svg>
-```
+![](book/epub-assets/diagram-001.png)
 
 *Figure 1. Business reality is projected into the data world, then shaped back into business understanding.*
 
@@ -734,118 +644,7 @@ These blocks are ready for downstream use, including self-service dimensional mo
 
 An overview of the three passes and examples is summarised in Figure 1.
 
-```{=html}
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
-     aria-label="Three passes of entity processing with purpose and example artefacts">
-
-  <defs>
-    <marker id="arrowhead-entity-processing" markerWidth="10" markerHeight="8"
-            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
-    </marker>
-  </defs>
-
-  <rect x="45" y="45" width="290" height="235" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="190" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Filter</text>
-
-  <text x="190" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">establish keys</text>
-  <text x="190" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">define reference tables</text>
-  <text x="190" y="158" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">remove noise</text>
-
-  <line x1="75" y1="180" x2="305" y2="180"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="190" y="207" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">Sales</text>
-  <text x="190" y="228" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">SalesItem</text>
-  <text x="190" y="249" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">ItemSupplierCost</text>
-  <text x="190" y="270" text-anchor="middle"
-      font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-      font-size="13" fill="#333333">SalesItemRefund · RefProduct</text>
-
-  <rect x="395" y="45" width="290" height="235" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="540" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Map</text>
-
-  <text x="540" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">compute reusable</text>
-  <text x="540" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">business meaning</text>
-  <text x="540" y="158" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">isolate complex logic</text>
-
-  <line x1="425" y1="180" x2="655" y2="180"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="540" y="217" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">SalesItemMargin</text>
-  <text x="540" y="239" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">RefSalesItemMargin</text>
-
-  <rect x="745" y="45" width="290" height="235" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="890" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Reduce</text>
-
-  <text x="890" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">aggregate detail</text>
-  <text x="890" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">to entity grain</text>
-  <text x="890" y="158" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">produce usable outputs</text>
-
-  <line x1="775" y1="180" x2="1005" y2="180"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="890" y="207" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">SalesProfit</text>
-  <text x="890" y="228" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">RefSalesProfit</text>
-  <text x="890" y="249" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">SalesProcessMilestone</text>
-
-  <line x1="350" y1="162" x2="375" y2="162"
-        stroke="#222222" stroke-width="2.2"
-        marker-end="url(#arrowhead-entity-processing)"/>
-
-  <line x1="700" y1="162" x2="725" y2="162"
-        stroke="#222222" stroke-width="2.2"
-        marker-end="url(#arrowhead-entity-processing)"/>
-
-</svg>
-```
+![](book/epub-assets/diagram-003.png)
 
 *Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.*
 
@@ -7581,115 +7380,7 @@ The standard pattern has three steps:
 | Check | Which rows genuinely changed, and are those changes safe? |
 | Apply | How should the target table be updated without losing history or spreading faults? |
 
-```{=html}
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="360" viewBox="0 0 1080 360"
-     style="display:block;width:100%;max-width:42rem;height:auto;background:transparent" role="img"
-     aria-label="Three-step load mechanics pattern: stage, check, and apply">
-
-  <defs>
-    <marker id="arrowhead-load-mechanics" markerWidth="10" markerHeight="8"
-            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
-    </marker>
-  </defs>
-
-  <rect x="45" y="45" width="290" height="245" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="190" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Stage</text>
-
-  <text x="190" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">hold incoming data</text>
-  <text x="190" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">before the target is touched</text>
-
-  <line x1="75" y1="168" x2="305" y2="168"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="190" y="207" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">Sales.Order_staging</text>
-
-  <rect x="395" y="45" width="290" height="245" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="540" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Check</text>
-
-  <text x="540" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">check for genuine changes</text>
-  <text x="540" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">check for instability</text>
-  <text x="540" y="158" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">check for violations</text>
-
-  <line x1="425" y1="180" x2="655" y2="180"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="540" y="207" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">Sales.Order_upsert</text>
-  <text x="540" y="228" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">Sales.Order_delete</text>
-  <text x="540" y="249" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="13" fill="#333333">Sales.Order_reject</text>
-
-  <rect x="745" y="45" width="290" height="245" rx="16"
-        fill="#ffffff" stroke="#222222" stroke-width="1.8"/>
-
-  <text x="890" y="83" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="24" font-weight="700" fill="#111111">Apply</text>
-
-  <text x="890" y="116" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">apply safe changes</text>
-  <text x="890" y="137" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">preserve previous row states</text>
-  <text x="890" y="158" text-anchor="middle"
-        font-family="Inter, Segoe UI, Roboto, Arial, sans-serif"
-        font-size="14" fill="#555555">log what happened</text>
-
-  <line x1="775" y1="180" x2="1005" y2="180"
-        stroke="#dddddd" stroke-width="1.4"/>
-
-  <text x="890" y="204" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="12.5" fill="#333333">Sales.Order</text>
-  <text x="890" y="224" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="12.5" fill="#333333">Sales.Order_history</text>
-  <text x="890" y="244" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="12.5" fill="#333333">Pipeline.LoadLog</text>
-  <text x="890" y="264" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="12.5" fill="#333333">Pipeline.RefreshBookmark</text>
-  <text x="890" y="284" text-anchor="middle"
-        font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
-        font-size="12.5" fill="#333333">Pipeline.LoadStatistics</text>
-
-  <line x1="350" y1="168" x2="375" y2="168"
-        stroke="#222222" stroke-width="2.2"
-        marker-end="url(#arrowhead-load-mechanics)"/>
-
-  <line x1="700" y1="168" x2="725" y2="168"
-        stroke="#222222" stroke-width="2.2"
-        marker-end="url(#arrowhead-load-mechanics)"/>
-
-</svg>
-```
+![](book/epub-assets/diagram-008.png)
 
 *Figure 1. The load mechanics pattern: stage incoming data, check proposed changes, then apply safe changes and log what happened.*
 
@@ -8764,434 +8455,1116 @@ A healthy dependency is valuable, targeted, and stable. It propagates meaningful
 >
 > Views can avoid materialised reloads by propagating logic rather than persisted information, but they do not provide the same buffering, persistence, or row-level change tracking as loaded tables.
 
-# Tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
+# Incremental load: tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
 
-*Incremental work begins with knowing what has genuinely changed.*
+*Incremental work begins with reliable knowledge of what changed.*
 
-The aim of information efficiency is to process only what has changed. If there were no records changed after a table is processed, then ideal is have spent zero processing time it. In practice, even when there are no changes in input, a load still takes time to process.
+## Change observability
 
-Every unnecessary scan consumes resources without adding value. Efficiency is achieved when downstream tables can reliably extract only the records that have changed and ignore the rest.
+The aim of information efficiency is to process only what has changed.
 
-Doing this well requires systematic change tracking. Without it, pipelines fall back bespoke methods for tracking changes. This leads to errors in incremental processing, periodic full reloads, and fragile recovery from disruptions. A robust pattern avoids these pitfalls.
+If no records have changed since a table was last processed, the ideal load would spend no time processing that table. In practice, even when there are no input changes, a load still takes time to check its inputs and confirm that nothing needs to happen.
 
-The following is a simple approach illustrate the concept of change tracking, before unpacking the details of a more robust approach.
+Efficiency improves when downstream tables can reliably identify the records that may have changed and ignore the rest.
 
-## Simple approach
+Doing this well requires systematic change tracking.
 
-The most basic approach is to include an update datetime column from the source system and filter on it. This works when the source table deletes do not occur, and the target table mirrors the source one to one.
+Tracking change is the discipline of establishing a reliable relationship between source change and the pipeline’s own processing state, so we can answer the question:
 
-### Example scenario
+> What source records may have changed since this target table last loaded successfully?
 
-- Source table Raw.Event with columns [PK1], [PK2], [Col1]…[Col15], [Update datetime]
+## The problem of time
 
-- Target table Curated.Event with [PK1], [PK2], [Col1], [Col2], [Update datetime]
+Incremental loading depends on a deceptively simple question:
 
-Incremental extract logic would be as follows:
+> What has changed since this table was last processed?
 
-While straightforward and intuitive, this approach suffers from a few problems.
+The difficulty is that this question does not refer to one time. It refers to a relationship between two states.
 
-First, it is not scalable to complexity. Additional source tables will break the logic because it is not practical to add the update datetime from each source onto the target table. It is possible to create a complex compound datetime, but it would be error prone.
+There are multiple times, and they are not always comparable. Confusing them can lead to missed records, unnecessary scans, or incorrect incremental loads.
 
-Second, it is not stable. If a system update shifts all values in [Update datetime], the pipeline will reprocess every row, causing a blow out in processing time for updates, and triggering similar issues downstream.
+| Time | Meaning |
+|---|---|
+| Source row change time | The time the row in the source table was changed. |
+| Source arrival time | When the row became visible to the warehouse. |
+| Target bookmark time | When the target last started a successful load. |
+| Target row change time | The time a row in the target table was changed. |
 
-Third, the approach is not scalable to continuous load. For example, if Curated.Event filters Raw.Event for rare events, then the maximum update datetime on Curated.Event will not represent latest processing time of Raw.Event. The simple approach will force a re-scan that goes too far back. For a continuous load scenario, this will be prohibitive.
+The key distinction is whether a time is **in-sync** or **out-of-sync** with the pipeline.
 
-A more scalable and reusable pattern is to separate the time-tracking artefacts from the data content itself.
+A time is in-sync when it is created by the pipeline or can be safely compared for processing.
 
-## Refresh bookmarks and polling tables
+A time is out-of-sync when it belongs to another system and may lag behind, arrive late, or reflect a different notion of change.
 
-As explained in Load mechanics, as each table is processed, the pipeline logs the refresh bookmark of a load. That is, the starting datetime of the load of each table is logged if the load succeeded. The refresh bookmark for all tables in the pipeline can be stored in one table. Each row of this table is one table that was loaded, together with the starting datetime of that load.
+The question:
 
-This bookmark defines the cut off for what records in a source has fully made it to the processing of a target table. Any records that have come to the source table after this bookmark datetime would need to be considered in the next batch of processing. If the table load aborted because of a fault, then the bookmark should not be logged so that the next batch can resume from last success point.
+> Which source rows changed after the target last loaded successfully?
 
-### Advanced note
+is only safe when the source change time is in-sync with the target’s processing time.
 
-If the source is continuously loading, then some stray records may still come into the source table after the bookmark datetime, but before the processing has complete. However, there are no guarantees. Consequently, either the incoming source needs to be frozen, or the next batch should still resume from bookmark and reprocess these late records.
+Doing this systematically and accurately requires additional artefacts: refresh bookmarks and polling tables.
 
-The query to retrieve the latest bookmark for a table is simple:
+## The simple update-datetime approach
 
-On the other hand, keeping track of source changes depends on whether the source table was created by the pipeline or whether it was raw data table from external source.
+To understand the general approach, it is useful to start with the simplest one.
 
-In the former case, the tables created by the pipeline have reliable update datetimes created by the process in Load mechanics – [Row insert datetime], [Row update datetime] and [Row delete datetime]. Since these are created by the pipeline itself, they are comparable with the refresh bookmark and can be compared directly for understanding what records have come in after the latest bookmark.
+The most basic approach is to include an update datetime column from the source system and filter on it.
 
-However, for tables that were not created by the pipeline, even though they may have a column called [Update datetime], there may be a substantial lag between that value versus when the row made it to the database. Hence, they cannot be used directly.
+Suppose the pipeline loads from `Raw.Event` into `Curated.Event`.
 
-To distinguish these two cases, we would say that the update datetimes in pipelines are in-sync while the update datetimes from source systems that are loaded in a separate process are out-of-sync with the data pipeline.
+**Example source table: `Raw.Event`**
 
-If the datetimes are out-of-sync with the refresh bookmark, they cannot be directly compared. Instead, just as the target table’s state of processing can be tracked by a separate table, the source table’s state of processing can be tracked by a separate polling table.
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1001 | Login | 2021-05-01 07:45 |
+| E1002 | Payment | 2021-05-01 08:03 |
+| E1003 | Refund | 2021-05-01 08:07 |
 
-A polling table is any table that can be consulted to know whether and what portion of data needs to be refreshed. For a polling table to be effective, it needs to be structured so that it can be queried rapidly – much more rapidly than the time to process the full data. Ideally, this query should be close to zero time to support continuous load.
+**Example target table: `Curated.Event`**
 
-Following the example, direct comparison of Raw.Event[Update datetime] with the latest bookmark in Curated.Event is not possible. There can be an unknown lag between the update timestamp and its arrival in the database. The only safe assumption is that the datetime increases monotonically.
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1001 | Login | 2021-05-01 07:45 |
 
-A polling table provides a way to map the pipeline’s refresh time to the latest update datetime observed in Raw.Event. Suppose this table is called Raw.Bookmark, and is loaded using an append-only process. Each appended row records the maximum update datetime from Raw.Event at the time of the refresh.
+We assume that:
 
-The columns of Raw.Bookmark are:
+- the source table does not delete rows;
+- the target table mirrors the source table row for row, with the same columns;
+- `[Update datetime]` is carried from the source into the target.
 
-- [Refresh datetime] — the datetime of the check as the row is appended. This datetime, since it is computed by the load, is part of the pipeline and thus in-sync with the refresh bookmarks.
+In the simple approach, the target table remembers how far it has processed by storing the source update datetime. The next extract compares the source table against the maximum `[Update datetime]` already loaded into the target.
 
-- [Bookmark datetime] — the maximum of Raw.Event[Update datetime] as at that time of refresh. This datetime, coming from the source and later loaded, is out-of-sync.
+In this example, the maximum `[Update datetime]` in `Curated.Event` is `2021-05-01 07:45`.
 
-This table maps the [Update datetime] column, which is out-of-sync with the pipeline, to a column, [Refresh datetime], that is in-sync with the pipeline. This mapping makes it possible to compare changes to the incoming data tracked by the source’s [Update datetime] with processing events, which are tracked against the pipeline’s record of datetimes.
+A simple incremental extract might therefore filter:
 
-In theory, refreshing this table infinitely often would allow the pipeline to translate its own time into the update datetime of Raw.Event at any point. In practice, the refresh frequency aligns with the pipeline cadence. There is no benefit in refreshing the table when Raw.Event has not changed. In addition, Raw.Bookmark can contain the bookmarks for multiple tables, such as Raw.Event, Raw.Event2, Raw.Event3 rather than creating one table for each.
+<div class="pode-code pode-code-sql"><pre><code>-- Step 1: Find the latest source update datetime loaded <span class="kw">in</span> target.
+declare @latest_update_datetime datetime2(7);
 
-At the start of processing Curated.Event, the polling table Raw.Bookmark allows the pipeline to fetch the maximum bookmark of Raw.Event as of Curated.Event’s previous batch start. Any row on Raw.Event whose [Update datetime] represents data that have come after the previous batch start and eligible for processing.
+set @latest_update_datetime =
+(
+    <span class="kw">select</span> max([Update datetime])
+    <span class="kw">from</span> Curated.Event
+);
 
-In summary, tracking records that have changed in a source table since the last process depends on two components:
+-- Step 2: Pull only newer rows <span class="kw">from</span> the source.
+<span class="kw">select</span>
+    [Event ID],
+    [Event type],
+    [Update datetime]
+<span class="kw">from</span> Raw.Event
+<span class="kw">where</span> [Update datetime] &gt; @latest_update_datetime;</code></pre></div>
 
-- Tracking the target. A bookmark table for the pipeline that records the processing datetimes of each table whenever a load completes successfully.
+This retrieves `E1002` and `E1003`.
 
-- Tracking the source. If the source table has an [Update datetime] column that is synchronised with the pipeline, this column can be used directly to retrieve updated rows. If not, a polling table is required to map the source table’s update datetime back to the pipeline’s datetime for comparison.
+The approach is straightforward, but it suffers from several problems.
 
-With these components, it becomes possible to identify changes in the source relative to the target’s last processed state.
+First, it does not scale to complex transformations. If `Curated.Event` draws from several source tables, it is not practical to carry every source update datetime into the target. A compound update datetime can be created, but this becomes error-prone as the query grows.
 
-## Change detection columns
+Second, it is unstable. If a source system update shifts all values in `[Update datetime]`, the pipeline may reprocess every row. This can cause a blowout in processing time and trigger unnecessary downstream work.
 
-The previous example assumes that the source table Raw.Event has a reliable [Update datetime] column for change detection. This is not always the case.
+Third, it does not scale well to continuous or high-frequency loading. For example, if `Curated.Event` filters `Raw.Event` for rare events, then the maximum update datetime in `Curated.Event` does not represent the latest processing time of `Raw.Event`. The simple approach may force the pipeline to rescan too far back.
 
-In the ideal scenario, the change detection column is an architectural column from the source system. Examples include server constructs, trigger-managed datetimes, or built-in datetimes from commercial products that can be trusted. This is also true for pipeline tables loaded as described in Load mechanics.
+The problem is not that the simple approach is wrong. It is that it makes the target remember its processing state through a source business column. That is only safe when the target remains close to the source.
 
-Less ideally, the change detection column is managed by the source application through application logic. These columns are generally reliable but can be prone to developer error or fail to capture direct database changes.
+A more scalable pattern separates the time-tracking artefacts from the data content itself.
 
-Finally, there may be no change detection columns at all. In this case, it is not possible to determine whether a source row has been updated. However, it may still be possible to identify inserted records by performing an anti-join between the source and target tables. This approach is useful for append-only loads such as building of hub tables.
+## Refresh bookmarks
 
-## Tracking deletes
+As explained in [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics), each successful table load should record a refresh bookmark.
 
-Polling tables can be used for tracking updates and inserts. Tracking deletes is equally important. However, this can be far more difficult because, in the case of deletes, rows disappear completely from the table itself.
+A **refresh bookmark** is target-side state. It records how far the target table has successfully refreshed, without relying on the target table’s business columns to remember that state.
 
-In the ideal scenario, deletes are tracked in the source through architectural artefacts.
+In the simplest update-datetime approach, the target table carries the source `[Update datetime]`, and the next load compares the source against the maximum value already loaded into the target. Thus, a business column is used as the marker for the processing cut-off.
 
-Some database technologies implement default history tables or delta logs. These history tables allow reliable tracking of deletes, provided they include a change detection column to indicate when the delete occurred.
+A refresh bookmark separates this processing state from the target’s business data.
 
-Less ideally, some applications maintain dedicated business audit tables that track changes, including deletes. These tables can be highly reliable, though they are often difficult to query.
+The bookmark records the starting datetime of a successful load. This becomes the target table’s processing boundary. If the load fails or aborts, the bookmark should not advance. The next load should resume from the last successful boundary.
 
-In the worst case, there is no change tracking. Rows can disappear without a trace. The only option is to compare the source and target using an anti-join on the primary key.
+The bookmark has no necessary relationship with the business datetime in the source column. They may be minutes apart, days apart, or years apart. One belongs to the pipeline’s processing time. The other belongs to the source system’s business or application time.
 
-## The role of the Filter step
+**Example structure of `Pipeline.RefreshBookmark`**
 
-Two themes recur, whether for tracking upserts or tracking deletes:
+| Table name | Load ID | Bookmark datetime |
+|---|---:|---|
+| Curated.Event | 10001 | 2026-05-01 08:01 |
 
-- Source update datetimes that are synchronised with the pipeline’s process datetimes are trivial to query.
+In this example, `Curated.Event` last completed a successful load that began at `2026-05-01 08:01`—five years after the events themselves.
 
-- Architectural artefacts, rather than business artefacts, are the most reliable way to track inserts, updates, and deletes.
+Fetching the refresh bookmark is simple.
 
-When either of these is absent, tracking changes becomes complex or even impossible.
+<div class="pode-code pode-code-sql"><pre><code>declare @refresh_bookmark_datetime datetime2(7);
 
-This is one of the reasons why pipelines begin with a Filter step that keeps transformation minimal. The filter step is designed to be the first interaction with the source data. On first arrival of the data, the pipeline adds the architectural artefacts required for change tracking. Doing this once at the start allows the rest of the pipeline to apply transformations incrementally with reliable change tracking.
+-- Step 1: Look up the refresh bookmark datetime for Curated.Event.
+-- This <span class="kw">is</span> <span class="kw">when</span> the previous successful load started.
+<span class="kw">select</span> @refresh_bookmark_datetime =
+(
+    <span class="kw">select</span> [Bookmark datetime]
+    <span class="kw">from</span> Pipeline.RefreshBookmark
+    <span class="kw">where</span> [Table name] = &#x27;Curated.Event&#x27;
+);</code></pre></div>
 
-The optimal case is if the incoming data can be incrementally extracted using polling tables and the filter step adds the architectural columns for change-tracking. This effectively converts the source change detection columns, which may be out-of-sync with the pipeline, to change detection columns which are in-sync the datetimes tracked by the pipeline.
+The refresh bookmark tracks the target table’s last successful processing state. It does not, by itself, identify source changes.
 
-The Filter step, which is a simple extract of the necessary rows and columns with minimal joins or aggregations, may look like a step with low value-add. However, this step is serving as a critical foundation for an efficient pipeline because proper load mechanics computes change-tracking artefacts to support efficient downstream response.
+To identify source changes, the pipeline needs a source-side change signal.
 
-## Conclusion
+## The source time problem
 
-An efficient pipeline requires knowing exactly what changed in the source so that it responds only to those records. These changes include inserts, updates, and deletes.
+The refresh bookmark is in pipeline time. It records when the target table last started a successful load.
 
-A simple approach to tracking upserts is to include the source change detection column in the target table. However, this can be problematic for non-trivial extracts and is at risk of instability. Instead, bookmarks to track the target and polling tables to track the source are reliable patterns for tracking changes relative to each other.
+A source `[Update datetime]` may be in source time. It records when the source system says a row changed.
 
-Deletes are much harder to track without additional artefacts or audit tables. If these artefacts are not available, a full comparison of each batch is necessary to identify changes for upserts, deletes, or both.
+These two datetimes are not automatically comparable.
 
-Given the complexity of tracking sources and the fragility of relying on other systems to maintain reliable architectural columns, it is important that each pipeline begins with an uncomplicated extract from the source data. The Load mechanics process annotates this extract with reliable change detection artefacts for downstream processing.
+In our example, `Curated.Event` last refreshed at `2026-05-01 08:01`, but `Raw.Event[Update datetime]` contains business events from 2021.
 
-# Responding to change {#docs-efficient-stable-pipeline-responding-to-change}
+The following filter to fetch the next batch of records would make no sense:
 
-*Detecting change is only the first step; the pipeline must also respond intelligently.*
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">where</span> Raw.Event.[Update datetime] &gt; &#x27;2026-05-01 08:01&#x27;</code></pre></div>
 
-The previous chapter Tracking changes focused on tracking changes in the source. The chapter builds on the previous and addresses the harder task of responding correctly to these changes. This is often known as incremental extract and load.
+It compares a source-system datetime with a pipeline refresh datetime. The result would incorrectly return no rows, even though new records may have arrived in the warehouse since the target last loaded.
 
-Accurately responding to change can be error-prone. This is because inserts, updates, and deletes upstream do not translate directly into the corresponding changes downstream. The following examples illustrate the possible complexities:
+A target refresh bookmark tells the pipeline where the target got to. It does not necessarily tell the pipeline what source update datetime had been safely observed at that point.
 
-- Inserts can trigger deletes. The Bank.CustomersToFollowUp is a computed table of customers who have not made recent deposits and require follow-up by the service team. This table takes input from the Bank.Transactions table. In this case, an insert into Bank.Transactions, such as a new deposit, would trigger a delete in Bank.CustomersToFollowUp.
+To use source update datetimes safely, the pipeline must know how source time relates to pipeline time.
 
-- Deletes can trigger updates. The Bank.AccountSummary is a computed table of account-level aggregates, such as total number of holders and balance per account. It takes input from Bank.AccountHolder, which records all individuals associated with each account. If a joint holder is removed, resulting in a delete from Bank.AccountHolder, this changes the holder count and may trigger an update in Bank.AccountSummary.
+There are two cases:
 
-- Updates can trigger inserts. The Bank.GoldCustomer is a computed table of customers whose account balance exceeds a defined threshold. It takes input from the Bank.AccountBalance table. In this case, updating a row in
+| Case | Meaning | Consequence |
+|---|---|---|
+| In-sync source | The source change datetime is created by the pipeline or safely comparable with pipeline time. | The refresh bookmark can be compared directly to the source row change datetime. |
+| Out-of-sync source | The source change datetime belongs to another system and may lag behind arrival in the warehouse. | A polling table is needed to map pipeline time to source time. |
 
-Bank.AccountBalance to increase the balance may cause a customer to newly qualify for gold status, triggering an insert into Bank.GoldCustomer.
+External raw tables are often out-of-sync. Even if they contain an `[Update datetime]`, that value may record when the row changed in the source system, not when the row became visible to the warehouse.
 
-These examples are highly artificial. However, it is easy to imagine the possibilities under general circumstances:
+When datetimes are out-of-sync, the pipeline needs a polling table.
 
-- The presence of anti-joins (e.g. not exists) means that inserts upstream can trigger deletes downstream.
+## Polling tables
 
-- The presence of aggregation or windowing (e.g. group by) means that deletes upstream can trigger updates downstream.
+A polling table is source-side state.
 
-- The presence of filters on derived expressions (e.g. having) means that updates upstream can trigger inserts downstream.
+It records how far the source’s update timeline was safely observable at particular points in pipeline time. Its purpose is to let the pipeline translate the target’s refresh bookmark into the source’s own update timeline.
 
-The following is an illustrative list of correct ways to respond to upstream changes, and a pattern for applying this response to incrementally loading a table.
+A polling table should be much faster to query than the source table itself. Ideally, the polling query should be close to zero time so that it can support frequent or continuous loads.
+
+Suppose `Raw.Event[Update datetime]` is out-of-sync with the refresh bookmark for `Curated.Event`. There may be an unknown lag between the source update timestamp and the row’s arrival in the warehouse. The only safe assumption is that `Raw.Event[Update datetime]` increases monotonically within the source system.
+
+A polling table provides a way to map pipeline time to source time.
+
+For example, the pipeline may append a row to `Raw.Bookmark` each time it checks `Raw.Event`.
+
+<div class="pode-code pode-code-sql"><pre><code>insert into Raw.Bookmark
+(
+    [Source table name],
+    [Refresh datetime],
+    [Bookmark datetime]
+)
+<span class="kw">select</span>
+    &#x27;Raw.Event&#x27;,
+    sysutcdatetime(),
+    max([Update datetime])
+<span class="kw">from</span> Raw.Event;</code></pre></div>
+
+**Example structure of `Raw.Bookmark`**
+
+| Source table name | Refresh datetime | Bookmark datetime |
+|---|---|---|
+| Raw.Event | 2026-05-01 07:55 | 2021-05-01 07:48 |
+| Raw.Event | 2026-05-01 08:00 | 2021-05-01 07:56 |
+| Raw.Event | 2026-05-01 08:05 | 2021-05-01 08:02 |
+| Raw.Event | 2026-05-01 08:10 | 2021-05-01 08:08 |
+
+The columns have different meanings:
+
+| Column | Meaning |
+|---|---|
+| `[Source table name]` | The source table being polled. |
+| `[Refresh datetime]` | The pipeline datetime when the polling row was created. This is in-sync with the pipeline. |
+| `[Bookmark datetime]` | The maximum `Raw.Event[Update datetime]` observed at that polling moment. This is in the source system’s time-world. |
+
+The refresh bookmark datetime of `Curated.Event` is now in-sync with `[Refresh datetime]` in `Raw.Bookmark` because they are both managed by the pipeline. `Raw.Bookmark[Refresh datetime]` is linked to the source system’s update timeline through `Raw.Bookmark[Bookmark datetime]`.
+
+With the polling table as the bridge, we can now ask:
+
+> When the target last refreshed, how far through the source’s update timeline had the source safely arrived?
+
+Suppose `Curated.Event` last successfully started at `2026-05-01 08:01`.
+
+The polling table shows that, at pipeline time `2026-05-01 08:01`, the latest observed source bookmark was `2021-05-01 07:56`.
+
+The next extract should therefore consider:
+
+<div class="pode-code pode-code-sql"><pre><code>Raw.Event[Update datetime] &gt; &#x27;2021-05-01 07:56&#x27;</code></pre></div>
+
+The query pattern is:
+
+<div class="pode-code pode-code-sql"><pre><code>declare @refresh_bookmark_datetime datetime2(7);
+declare @latest_process_datetime datetime2(7);
+
+-- Step 1: Look up the refresh bookmark datetime for Curated.Event.
+-- This <span class="kw">is</span> <span class="kw">when</span> the previous successful load started.
+<span class="kw">select</span> @refresh_bookmark_datetime =
+(
+    <span class="kw">select</span> [Bookmark datetime]
+    <span class="kw">from</span> Pipeline.RefreshBookmark
+    <span class="kw">where</span> [Table name] = &#x27;Curated.Event&#x27;
+);
+
+-- Step 2: Obtain the latest source update datetime that was
+-- safely observable at <span class="kw">or</span> before that refresh bookmark.
+<span class="kw">select</span> top 1
+    @latest_process_datetime = [Bookmark datetime]
+<span class="kw">from</span> Raw.Bookmark
+<span class="kw">where</span> [Source table name] = &#x27;Raw.Event&#x27;
+  <span class="kw">and</span> [Refresh datetime] &lt;= @refresh_bookmark_datetime
+<span class="kw">order</span> <span class="kw">by</span> [Refresh datetime] desc;
+
+-- Step 3: Fetch rows whose source update <span class="kw">is</span> newer than what
+-- the previous target load had safely captured.
+<span class="kw">select</span>
+    e.*
+<span class="kw">from</span> Raw.Event <span class="kw">as</span> e
+<span class="kw">where</span> e.[Update datetime] &gt; @latest_process_datetime;</code></pre></div>
+
+In the example, this returns `E1002` and `E1003`:
+
+| Event ID | Event type | Update datetime |
+|---|---|---|
+| E1002 | Payment | 2021-05-01 08:03 |
+| E1003 | Refund | 2021-05-01 08:07 |
+
+The relationship between the source update time, the translation to pipeline time using the polling table, and the refresh bookmark on the target table to find the source records to update can be visualised as two parallel timelines.
+
+![](book/epub-assets/diagram-010.png)
+
+*Figure 1. Raw.Bookmark polling rows map source update time to pipeline time. The previous Curated.Event refresh used the latest polling row available when it started, mapping its target bookmark to source boundary 07:56. The current refresh resumes from that target bookmark, so it considers source events after 07:56.*
+
+In theory, refreshing the polling table continuously would allow the pipeline to translate pipeline time into source time at any point. In practice, the refresh frequency should align with the pipeline cadence and business need.
+
+A single polling table can store bookmarks for multiple source tables. It does not need to be one polling table per source table.
+
+> **Advanced note: moving source boundaries.**
+>
+> If the source is continuously loading, source records may arrive while the target load is running.
+>
+> There are two safe ways to handle this.
+>
+> The first is to freeze the source boundary. The load processes only the source records that were safely observable at the start of the target load. Records that arrive later are picked up in the next batch.
+>
+> The second is to allow deliberate overlap. The next load resumes from an earlier safe bookmark, or from the previous source boundary, so that late-arriving records are read again. This may re-extract records that were already processed, but the load mechanics should treat them as upserts and apply only genuine changes.
+>
+> Overlap is often safer than trying to make the boundary too precise. It is acceptable for an incremental extract to read a little too much, provided the downstream load is idempotent and unchanged rows are ignored.
+
+## When polling tables can be skipped
+
+Polling tables are needed when the source change datetime is out-of-sync with pipeline time.
+
+They are not usually needed when the source table was created by the pipeline itself.
+
+If the source table was created by the pipeline, its row change datetimes are reliable pipeline-managed datetimes. These include:
+
+- `[Row insert datetime]`
+- `[Row update datetime]`
+- `[Row delete datetime]`
+
+Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark.
+
+**Example pipeline-managed source table: `Filtered.Event`**
+
+| Event ID | Event type | Row insert datetime | Row update datetime | Row delete datetime |
+|---|---|---|---|---|
+| E1001 | Login | 2026-05-01 07:40 | 2026-05-01 07:40 | 9999-12-31 00:00:00 |
+| E1002 | Payment | 2026-05-01 08:03 | 2026-05-01 08:03 | 9999-12-31 00:00:00 |
+| E1003 | Refund | 2026-05-01 08:07 | 2026-05-01 08:07 | 9999-12-31 00:00:00 |
+
+If the refresh bookmark for the target is `2026-05-01 08:00`, then `E1002` and `E1003` are candidates for processing because their insert or update datetimes are after the bookmark.
+
+In this case, the target’s refresh bookmark can be compared directly against the source table’s row change datetimes.
+
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
+    e.*
+<span class="kw">from</span> Filtered.Event <span class="kw">as</span> e
+<span class="kw">where</span>
+    e.[Row insert datetime] &gt; @refresh_bookmark_datetime
+    <span class="kw">or</span> e.[Row update datetime] &gt; @refresh_bookmark_datetime
+    <span class="kw">or</span> e.[Row delete datetime] &gt; @refresh_bookmark_datetime;</code></pre></div>
+
+This is one of the reasons why the [Filter step](#docs-creating-information-entity-processing) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
+
+## The role of the filter step
+
+Three themes occur when tracking inserts, updates, and deletes.
+
+First, datetimes that are synchronised with the pipeline’s processing time are easy to use.
+
+Second, architectural artefacts are more reliable than business artefacts for change tracking.
+
+Third, deletes are very hard to track unless they have been architecturally managed.
+
+When these conditions are absent, tracking change becomes complex or even impossible.
+
+This is one reason pipelines often begin with a [Filter step](#docs-creating-information-entity-processing) that keeps transformation minimal. The Filter step is the first controlled interaction with the source data. It extracts the necessary rows and columns, then annotates them with pipeline-managed architectural columns. It also tracks deletes.
+
+The Filter step may look like low-value work because it performs little transformation. But it provides a critical foundation. Once source data has passed through a properly designed load process, downstream tables can rely on `[Row insert datetime]`, `[Row update datetime]`, and `[Row delete datetime]` to track change.
+
+The optimal case is:
+
+1. incoming data is incrementally extracted using source change detection or polling tables;
+2. the Filter step applies [load mechanics](#docs-efficient-stable-pipeline-load-mechanics) to detect genuine change;
+3. the resulting pipeline table has reliable row change datetimes, and deleted rows are stored in a history table;
+4. downstream tables can process incrementally using those pipeline-managed datetimes.
+
+In this way, the Filter step converts fragile or out-of-sync source change signals into reliable pipeline change artefacts.
+
+> **Key ideas.**
+>
+> Incremental work begins with reliable knowledge of what changed.
+>
+> Refresh bookmarks track the target table’s last successful processing state.
+>
+> Source change detection columns can be in-sync or out-of-sync with the pipeline’s processing time.
+>
+> Polling tables map out-of-sync source timestamps to in-sync pipeline timestamps.
+>
+> Inserts and updates are easier to track than deletes because deleted rows disappear.
+>
+> Architectural change artefacts are more reliable than business columns for detecting change.
+>
+> The Filter step converts source change signals into reliable pipeline change artefacts for downstream processing.
+
+# Incremental load: responding to change {#docs-efficient-stable-pipeline-responding-to-change}
+
+*Source changes must be translated through query logic before the target can respond correctly.*
+
+## Change translation
+
+[Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) tells the pipeline what changed upstream. It does not tell the pipeline what should change downstream.
+
+That second step depends on query logic.
+
+The central problem is this:
+
+> Source inserts, updates, and deletes do not necessarily become target inserts, updates, and deletes.
+
+**Responding to change** is the discipline of translating upstream source changes into the smallest correct set of target actions.
+
+A systematic approach focuses on the primary keys. Responding to change starts by calculating the *target keys* whose result may have changed, then re-running the normal query only for those keys.
+
+A **driver set** is the set of primary keys, or primary key components, that may need action because upstream source rows changed.
+
+There are two main kinds of driver set.
+
+| Driver set | Meaning |
+|---|---|
+| Upsert driver | Keys whose rows should be recalculated and then inserted or updated in the target. |
+| Delete driver | Keys whose rows should be removed from the target. |
+
+## Source changes are not target actions
+
+The relationship between source change and target action is not straightforward.
+
+Consider the following examples.
+
+| Upstream change | Possible downstream action | Example reason |
+|---|---|---|
+| Insert | Delete | A new row causes a record to no longer qualify under an anti-join. |
+| Delete | Update | Removing a row changes an aggregate. |
+| Update | Insert | A changed value now passes a filter threshold. |
+
+For example, suppose `Bank.CustomersToFollowUp` contains customers who have not made recent deposits and need service-team follow-up. This table uses `Bank.Transaction` as an input. If a new deposit is inserted into `Bank.Transaction`, that customer may no longer require follow-up. A source insert has triggered a target delete.
+
+Suppose `Bank.AccountSummary` contains account-level aggregates, such as total number of holders and balance per account. If a joint holder is deleted from `Bank.AccountHolder`, the holder count changes. A source delete has triggered a target update.
+
+Suppose `Bank.GoldCustomer` contains customers whose account balance exceeds a threshold. If a row in `Bank.AccountBalance` is updated so that the customer now exceeds the threshold, the customer may newly qualify. A source update has triggered a target insert.
+
+These examples are simple, but the general lesson is that:
+
+> The target response is determined by the query.
 
 ## Analysing the query
 
-Suppose there are two tables X and Y, and these are used as inputs to a data pipeline.
+Suppose two source tables, `X` and `Y`, are used to produce a target table `T`.
 
-The set up is as follows:
+The setup is:
 
-- X has columns [Header ID], [Value], [Status], where [Header ID] is primary key.
+- `X` has columns `[Header ID]`, `[Value]`, and `[Status]`, where `[Header ID]` is the primary key.
+- `Y` has columns `[Header ID]`, `[Line number]`, `[Value]`, and `[Status]`, where `[Header ID]` and `[Line number]` are the primary key.
+- `Y[Header ID]` is a foreign key to `X[Header ID]`.
 
-- Y has columns [Header ID], [Line number], [Value], [Status] , where [Header ID] and [Line number] is primary key.
+There may be inserts, updates, and deletes on both `X` and `Y`.
 
-And Y[Header ID] is a foreign key to X[Header ID] and joins on this column.
+Inserts and updates are considered together as upserts. The possible source changes are:
 
-There could be inserts, updates and deletes on X, as well as on Y. Thus, there are six possible input changes each time. In practice, inserts and updates and can often be considered as a single upsert. Thus, the inputs are:
+- upserts from `X`;
+- deletes from `X`;
+- upserts from `Y`;
+- deletes from `Y`.
 
-- upserts from X
+The goal is to determine which rows in `T` need to be recalculated or removed.
 
-- deletes from X
+The way to calculate these depends on the shape of the query.
 
-- upserts from Y
+### Common query shapes
 
-- deletes from Y
+The following table summarises several common query shapes and how changes may propagate.
 
-Suppose the target table is T. The goal is to determine which rows in the target table need to be inserted, updated, or deleted. This is done by computing a driver set of primary keys that might be affected by changes in source tables (X and Y). Inserts and updates can be considered as one. Thus, the goal is to calculate:
+| Scenario | Target primary key | Approach | Keys to upsert in `T` | Keys to delete from `T` |
+|---|---|---|---|---|
+| Straight select of `X` | `[Header ID]` | Source rows map directly to target rows. | Headers from `X` that were inserted or updated. | Headers from `X` that were deleted. |
+| Filter of `X` on `[Status]` | `[Header ID]` | Filter condition means updates can add or remove rows. | Headers from `X` that were inserted or updated and now pass the filter. | Headers from `X` that were deleted, or updated and no longer pass the filter. |
+| `X` inner join `Y` | `[Header ID]`, `[Line number]` | Join means changes on either side can add or remove joined pairs. | Pairs for `Y` rows inserted or updated, plus pairs for changed `X` headers with matching `Y` rows. | Pairs for `Y` rows deleted, plus all pairs for headers deleted from `X`. |
+| `X` inner join `Y`, grouped by `[Header ID]` | `[Header ID]` | Deleting a `Y` row can change the aggregate or remove the header. | Headers from `X` or `Y` whose values may have changed, including deletes from `Y` that change the aggregate. | Headers deleted from `X`, or headers that now have zero `Y` rows. |
+| `X` left join `Y` with synthetic line `0` | `[Header ID]`, `[Line number]` | Synthetic line `0` appears only when no `Y` rows exist. | Pairs for `Y` rows inserted or updated; `(Header ID, 0)` for headers with no `Y` rows; pairs for new `X` headers. | Pairs for `Y` rows deleted; remove `(Header ID, 0)` when `Y` rows appear; remove all pairs for headers deleted from `X`. |
+| `Y` left join `X` | `[Header ID]`, `[Line number]` | Target follows `Y` lines; `X` changes matter only if `Y` lines exist. | Pairs from `Y` inserted or updated, plus pairs under headers in `X` that changed. | Pairs from `Y` that were deleted. |
+| `X` left join `Y`, grouped by `[Header ID]` | `[Header ID]` | `X` controls row presence; `Y` changes aggregates. | Headers in `X` inserted, plus headers whose values changed due to changes in `X` or `Y`, including deletes from `Y`. | Headers deleted from `X`. |
+| Union of `[Header ID]` | `[Header ID]` | Header exists if present in either `X` or `Y`. | Headers inserted or updated in `X` or `Y`; headers projected from one side but still existing on the other. | Headers deleted from both `X` and `Y`. |
+| `X` left anti-join `Y` | `[Header ID]` | Row appears only when `X` exists and `Y` does not. | Headers inserted or updated in `X` with no `Y` rows; headers where `Y` rows were deleted and now qualify. | Headers deleted from `X`; headers that gained a `Y` row. |
 
-- primary keys to upsert on T
+The table is not meant to memorise every case. Its purpose is to show that target response depends on query shape.
 
-- primary keys to deletes on T
+With more source tables, the analysis can become complicated quickly. A query with ten inputs may have many possible source changes, and each source change may affect the target differently.
 
-The way to calculate these depends on the nature of the query. Some possible scenarios include:
+### Robustness
 
-1. A straight select of X
+For robustness, upsert drivers may be broader than strictly necessary. Delete drivers should be exact.
 
-2. A filter of X on status
+This asymmetry exists because load mechanics apply upserts only for rows that have genuinely changed. If the upsert driver is too broad, the pipeline may recalculate extra rows, but the staging table is still compared with the target and only genuine inserts or updates are applied.
 
-3. X inner join Y
+A broad upsert driver is therefore usually safe, provided it remains performant. For example, it may be acceptable to construct the driver set using part of a primary key rather than the full primary key, causing the load to recalculate a slightly wider set of rows.
 
-4. X inner join Y group by [Header ID] to sum over Y[value]
+Deletes are different.
 
-5. X left join Y coalesce on [Line number] to 0 where Y[Header ID] does not exist
+A delete driver does not ask the pipeline to recalculate a row. It tells the pipeline that a row should be removed from the target. If the delete driver contains extra keys, correct rows may disappear.
 
-6. Y left join X
+A common mistake is to over-delete with the intention of reinserting extra records. This can be tempting because a delete-and-reinsert pattern can be easier to calculate than a finely targeted delete-and-upsert pattern. However, over-deleting is dangerous. If the source system has a bulk update on a column that has no impact on the final output, the entire table may be deleted and reinserted. This can create a server bottleneck and cause downstream tables to treat unchanged rows as changed.
 
-7. X left join Y group by [Header ID] to sum over Y[value]
+The rule is:
 
-8. X union Y
+> Upsert drivers may be conservative and include some extra keys. Delete drivers should contain only rows that no longer satisfy the target query’s presence rule.
 
-9. X left anti-join Y
+## Worked examples
 
-All of these would require a different treatment. These are summarised in the table:
+The following examples show how source changes are translated through query logic.
 
-| Scenario | Primary key | Approach | Primary keys to upsert in T | Primary keys to delete in T |
-| --- | --- | --- | --- | --- |
-| 1. Straight select of X | [Header ID] | Simple case: X changes map directly to T. | Headers from X that were inserted or updated | Headers from X that were deleted |
-| 2. Filter of X on status | [Header ID] | Filter condition means updates can add or remove rows. | Headers from X that were inserted or updated and now pass the filter | Headers from X that were deleted, or updated and no longer pass the filter |
-| 3. X inner join Y | ([Header ID], [Line number]) | Join means changes on either side can add or remove pairs. | Pairs for Y rows inserted/updated, plus pairs for X headers inserted/updated with matching Y rows | Pairs for Y rows deleted, plus all pairs for headers deleted from X |
-| 4. X inner join Y with group by [Header ID] | [Header ID] | Deleting a Y row can change the aggregate or remove the header. | Headers from X or Y that changed and now have Y rows; include changes in Y, deletes in Y can also change the aggregated value | Headers deleted from X, or headers that now have zero Y rows |
-| 5. X left join Y with synthetic line 0 | ([Header ID], [Line number]) | Synthetic line 0 appears only when no Y rows exist. | Pairs for Y rows inserted/updated; plus (Header ID, 0) for headers with no Y rows; plus pairs for new X headers | Pairs for Y rows deleted; remove (Header ID, 0) when Y rows exist; remove all pairs for headers deleted from X |
-| 6. Y left join X | ([Header ID], [Line number]) | T follows Y’s lines; X changes matter only if Y lines exist. | Pairs from Y inserted/updated; plus pairs under headers in X that changed | Pairs from Y that were deleted |
-| 7. X left join Y with group by [Header ID] | [Header ID] | X controls row presence; Y only changes the aggregates. | Headers in X inserted; headers where values changed due to X or Y changes, including deletes from Y | Headers deleted from X |
-| 8. Union of [Header ID] | [Header ID] | Header exists if present in either X or Y. | Headers inserted/updated in X or Y; headers projected from one side but still exist on the other | Headers deleted from both X and Y |
-| 9. X left anti-join Y | [Header ID] | Row appears only when X exists and Y does not. | Headers inserted/updated in X with no Y rows; headers where Y rows were deleted and now qualify | Headers deleted from X; headers that gained a Y row |
+### Worked example 1—Filter
 
-These show an array of considerations for two tables. If there are more tables, even up to 10, the analysis can become complicated.
+Suppose the target table contains only active headers.
 
-Consider a query that draws from several tables, such as:
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
+    [Header ID],
+    [Value],
+    [Status]
+<span class="kw">from</span> X
+<span class="kw">where</span> [Status] = &#x27;Active&#x27;;</code></pre></div>
 
-The first step is to determine conditions for upsert in the target.
+**Before source change: `X`**
 
-For each source table, evaluate how changes in that table may influence the result of the query. In general:
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H101 | 20 | Inactive |
+| H102 | 30 | Active |
 
-- An upsert in a source table typically results in an upsert in the target.
+**Before target load: `T`**
 
-Any insert or update in A, B, or C may alter projected values and therefore requires re-computation.
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H102 | 30 | Active |
 
-- A delete in a source table may also result in an upsert in the target.
+Now suppose two source rows are updated.
 
-This occurs when the query includes:
+**Source changes in `X`**
 
-- Left joins, where the absence of a row changes a value to a default rather than removing the target row.
-- Aggregations, where the removal of a contributing row modifies a computed measure.
+| Header ID | Old status | New status | Source change |
+|---|---|---|---|
+| H101 | Inactive | Active | Update |
+| H102 | Active | Inactive | Update |
 
-Thus, for each table, the question is:
+The source action is the same in both cases: an update.
 
-“Could an insert, update, or delete in this table change the values produced by the query?”
+The target action is different.
 
-If so, the corresponding key should be included in the driver set for upserts.
+`H101` now passes the filter, so it belongs in the upsert driver. It should be inserted into `T`.
 
-The next step is to determine conditions for deletes from the target.
+`H102` no longer passes the filter, so it belongs in the delete driver. It should be removed from `T`.
 
-In most cases, this occurs only when the tables that governs row presence loses the corresponding row. For example:
+**Upsert driver**
 
-- If the query begins with A left join B left join C ..., then deleting a row from A removes the target row. Deleting a row from B or C generally does not remove the target row; it only changes values.
+| Header ID | Reason |
+|---|---|
+| H101 | Updated row now passes the filter. |
 
-- If the query begins with A inner join B left join C, then deleting a row from A or B removes the target row.
+**Delete driver**
 
-But this can also happen through updates or inserts:
+| Header ID | Reason |
+|---|---|
+| H102 | Updated row no longer passes the filter. |
 
-- In the case of A left anti-join B, an insert to A can cause a row to delete.
+**After incremental load: `T`**
 
-- In the case of A filtered on a row value, an update to the value can cause a delete.
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H101 | 20 | Active |
 
-In summary, upserts arise from any change that affects projected values. Deletes occur only when the base row is removed. Filtering predicates and grouping clauses may cause deletes in a source table to behave as upserts in the target, as they alter aggregates or conditions.
+This example shows that a source update can become either a target upsert or a target delete. The filter controls row presence.
 
-The same reasoning applies to more complex constructs such as unions or set operations, as these are ultimately composed of similar units.
+### Worked example 2—Aggregation
 
-Working through these scenarios can be error prone. Latest innovations in generative AI can provide valuable assistance in this analysis. For example, the table of solutions generated for the 9 scenarios above was generated by GPT-5 using only column 1.
+Suppose the target table contains the total line value for each header.
+
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
+    [Header ID],
+    sum([Value]) <span class="kw">as</span> [Total value]
+<span class="kw">from</span> Y
+<span class="kw">group</span> <span class="kw">by</span> [Header ID];</code></pre></div>
+
+**Before source change: `Y`**
+
+| Header ID | Line number | Value |
+|---|---:|---:|
+| H100 | 1 | 10 |
+| H100 | 2 | 15 |
+| H101 | 1 | 20 |
+
+**Before target load: `T`**
+
+| Header ID | Total value |
+|---|---:|
+| H100 | 25 |
+| H101 | 20 |
+
+Now suppose one source row is deleted.
+
+**Source changes in `Y`**
+
+| Header ID | Line number | Value | Source change |
+|---|---:|---:|---|
+| H100 | 2 | 15 | Delete |
+
+The source action is a delete.
+
+But the target row for `H100` should not be deleted. The header still has another line. Instead, the aggregate must be recalculated.
+
+`H100` belongs in the upsert driver because its total value may have changed.
+
+**Upsert driver**
+
+| Header ID | Reason |
+|---|---|
+| H100 | Deleted line changes the aggregate. |
+
+**Delete driver**
+
+No rows.
+
+**After incremental load: `T`**
+
+| Header ID | Total value |
+|---|---:|
+| H100 | 10 |
+| H101 | 20 |
+
+This example shows that a source delete can become a target update. Aggregations turn row-level changes into value changes at a higher grain.
+
+### Worked example 3—Anti-join
+
+Suppose the target table contains headers in `X` that do not have any matching rows in `Y`.
+
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
+    x.[Header ID],
+    x.[Value]
+<span class="kw">from</span> X <span class="kw">as</span> x
+<span class="kw">where</span> <span class="kw">not</span> <span class="kw">exists</span>
+(
+    <span class="kw">select</span> 1
+    <span class="kw">from</span> Y <span class="kw">as</span> y
+    <span class="kw">where</span> y.[Header ID] = x.[Header ID]
+);</code></pre></div>
+
+**Before source change: `X`**
+
+| Header ID | Value |
+|---|---:|
+| H100 | 10 |
+| H101 | 20 |
+| H102 | 30 |
+
+**Before source change: `Y`**
+
+| Header ID | Line number | Value |
+|---|---:|---:|
+| H100 | 1 | 5 |
+| H102 | 1 | 8 |
+
+**Before target load: `T`**
+
+| Header ID | Value |
+|---|---:|
+| H101 | 20 |
+
+`H101` appears in `T` because it exists in `X` but has no matching row in `Y`.
+
+Now suppose a new row is inserted into `Y`.
+
+**Source changes in `Y`**
+
+| Header ID | Line number | Value | Source change |
+|---|---:|---:|---|
+| H101 | 1 | 12 | Insert |
+
+The source action is an insert.
+
+But because the target is an anti-join, this insert causes `H101` to stop qualifying. The target action is a delete.
+
+**Upsert driver**
+
+No rows.
+
+**Delete driver**
+
+| Header ID | Reason |
+|---|---|
+| H101 | Inserted `Y` row means the header no longer satisfies the anti-join. |
+
+**After incremental load: `T`**
+
+No rows.
+
+This example shows that a source insert can become a target delete. Anti-joins reverse the usual intuition because the target row exists only while a matching source row is absent.
 
 ## Applying the change
 
-Analysing the query with respect to changes from the source tables informs an incremental extract. Recall from Load mechanics that the difference between incremental extract and full extract are:
+Once the query has been analysed, the transformation can be converted from a full load to an incremental load.
+
+Recall from [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics) that the differences between incremental extract and full extract are:
 
 - The staging table for the load has only a minimal set of records that is much smaller than the full set, but still covers all the records that would need to be upserted in the current batch. This is what makes the load fast.
 
-- Deletes cannot be done automatically by comparing the full set of primary keys between the staging and the target. Instead, it needs to be customised for the query by analysing the impact of changes in source.
+- Deletes cannot be done automatically by comparing the full set of primary keys between the staging and the target. Instead, they need to be customised for the query by analysing the impact of changes in source.
 
 The detailed implementation of an incremental extract follows a consistent pattern.
 
-### Write query as normal
+### Step 1—Write the full query
 
-Begin with the full query that expresses the business logic. This is the reference point for all subsequent steps.
+Begin with the full query that expresses the business logic.
 
-### Fetch the bookmark
+For example, suppose the full target query is an inner join between `X` and `Y`. They are used to load `T`.
 
-At the start of the load, retrieve the bookmark that records the last successful refresh.
+<div class="pode-code pode-code-sql"><pre><code><span class="kw">select</span>
+    X.*,
+    Y.*
+<span class="kw">from</span>       X
+<span class="kw">inner</span> <span class="kw">join</span> Y <span class="kw">on</span> Y.[PK] = X.[PK];</code></pre></div>
 
-This value defines the boundary for change detection. The bookmark for all tables loaded by the pipeline should be logged to a central location and easily retrieved.
+This query is the definition of the target table. It should be understandable and testable as a full load before it is made incremental.
 
-### Create minimal staging table
+### Step 2—Fetch the refresh bookmark
 
-Using the analysis of the query, create a temporary table of keys to upsert to the target.
+At the start of the load, retrieve the refresh bookmark that records the target table’s last successful processing boundary.
 
-In these examples, the driver table has the full key. In practice, it may be a primary key part in the case of multi-columns primary keys.
+This bookmark defines the boundary for upstream change detection.
 
-Attach the driver set as an inner join to the original query. If performance requires, add a clustered index to the driver table.
+<div class="pode-code pode-code-sql"><pre><code>declare @refresh_bookmark_datetime datetime2(7);
 
-This is now a minimal staging table for incremental load.
+<span class="kw">select</span> @refresh_bookmark_datetime =
+(
+    <span class="kw">select</span> [Bookmark datetime]
+    <span class="kw">from</span> Pipeline.RefreshBookmark
+    <span class="kw">where</span> [Table name] = &#x27;T&#x27;
+);</code></pre></div>
 
-### Create the delete set
+### Step 3—Create the upsert driver
 
-Using the analysis of the query, create a temporary table of keys to delete from the target. This can be used to delete records that should no longer be retained by logic of the query.
+Using the query analysis, create a temporary table of target keys to upsert.
 
-Retrieving the records that are deleted would vary depending on how they are tracked.
+In this example, changes from either `X` or `Y` may affect rows in `T`, so the upsert driver takes keys from both source tables.
 
-Consider the case where overwritten or deleted records are moved to a history table.
+<div class="pode-code pode-code-sql"><pre><code>drop table if <span class="kw">exists</span> #keys_to_upsert;
 
-Then the examples would be:
+-- Upserts <span class="kw">from</span> X.
+<span class="kw">select</span>
+    X.[PK]
+into #keys_to_upsert
+<span class="kw">from</span> X
+<span class="kw">where</span> X.[Row update datetime] &gt; @refresh_bookmark_datetime
 
-This step works even if the source rows were inserted and deleted in between the load of the target table, for example, if the target table failed to load in the interim.
+<span class="kw">union</span>
 
-Inexperienced engineers can make the mistake of over-deleting with the idea of re-inserting extra records. This can be tempting because a delete + insert can be easier to calculate than a finely targeted delete + upsert. However, this approach is harmful because it is a source of potential instability. In unpredictable circumstances, this may trigger the whole table to delete. Instead, deletes should be perfect and remove only rows that no longer satisfy the query’s presence rule.
+-- Upserts <span class="kw">from</span> Y.
+<span class="kw">select</span>
+    Y.[PK]
+<span class="kw">from</span> Y
+<span class="kw">where</span> Y.[Row update datetime] &gt; @refresh_bookmark_datetime;</code></pre></div>
 
-The full script follows.
+In these examples, the driver table has the full target key. In practice, it may contain only part of a multi-column primary key, depending on the grain of the target table.
 
-This workflow offers several advantages.
+If performance requires, add an index to the driver table before joining it to the full query.
 
-Uniformity. The same query logic underpins both full loads and incremental loads. The difference lies only in the addition of a driver set join.
+<div class="pode-code pode-code-sql"><pre><code>create clustered index cix_keys_to_upsert
+<span class="kw">on</span> #keys_to_upsert ([PK]);</code></pre></div>
 
-Idempotency. The process works regardless of how many times it runs within an interval. If a load fails and is retried, the bookmark ensures correctness. If the load runs more frequently than usual, the outcome remains consistent.
+The upsert driver is then joined to the full query.
 
-Graceful fallback. If upstream changes touch many rows, say due to a system update, the driver set expands and the incremental load behaves like a full load. The fully load staging table would be compared to the target and only genuinely updated records are applied. There is no explosion of deletes that would cause a blow out in operations.
+<div class="pode-code pode-code-sql"><pre><code>drop table if <span class="kw">exists</span> #T_staging;
 
-## Best practice workflow
+<span class="kw">select</span>
+    X.*,
+    Y.*
+into #T_staging
+<span class="kw">from</span>       X
+<span class="kw">inner</span> <span class="kw">join</span> Y                <span class="kw">on</span> Y.[PK] = X.[PK]
+<span class="kw">inner</span> <span class="kw">join</span> #keys_to_upsert  <span class="kw">as</span> U <span class="kw">on</span> U.[PK] = X.[PK]; -- downfilter original query for smaller staging</code></pre></div>
 
-Given the complexity of responding to change, this section outlines a step-by-step recipe for developing and validating pipelines that respond to upstream inserts, updates, and deletes. The workflow balances technical correctness with performance assurance and safe deployment.
+This produces a minimal staging table. It contains only rows whose target values may have changed, but the row values still come from the normal business query.
 
-### Start with a unit test
+In other query shapes, deletes may also belong in the upsert driver. For example, in an aggregation, deleting a contributing row changes the aggregate value and therefore requires recalculation.
 
-- Compare row counts between the target table and the expected query.
+### Step 4—Create the delete driver
 
-- Use a datetime filter for performance, but ensure it’s independent of the extract datetime.
+Using the query analysis, create a temporary table of target keys to delete.
 
-### Simulate data needing update
+For an inner join between `X` and `Y`, a target row should disappear if the corresponding key no longer exists on either side of the join.
 
-- Load the table in full, then wait for source data to change to simulate an incremental load.
+If deleted rows are preserved in history tables, the delete driver can be calculated from those histories.
 
-### Build the upsert driver
+<div class="pode-code pode-code-sql"><pre><code>drop table if <span class="kw">exists</span> #keys_to_delete;
 
-- As each source table is added, re-run the driver query to check performance.
+-- Deletes <span class="kw">from</span> X.
+<span class="kw">select</span>
+    X_History.[PK]
+into #keys_to_delete
+<span class="kw">from</span>      X_History
+<span class="kw">left</span> <span class="kw">join</span> X         <span class="kw">on</span> X.[PK] = X_History.[PK]
+<span class="kw">where</span> X_History.[Row delete datetime] &gt; @refresh_bookmark_datetime -- recently deleted rows
+  <span class="kw">and</span> X.[PK] <span class="kw">is</span> <span class="kw">null</span>;                                             -- truly deleted
 
-- Apply indexes if performance degrades.
+<span class="kw">union</span>
 
-### Test the query filter
+-- Deletes <span class="kw">from</span> Y.
+<span class="kw">select</span>
+    Y_History.[PK]
+<span class="kw">from</span>      Y_History
+<span class="kw">left</span> <span class="kw">join</span> Y         <span class="kw">on</span> Y.[PK] = Y_History.[PK]
+<span class="kw">where</span> Y_History.[Row delete datetime] &gt; @refresh_bookmark_datetime -- recently deleted rows
+  <span class="kw">and</span> Y.[PK] <span class="kw">is</span> <span class="kw">null</span>;                                             -- truly deleted</code></pre></div>
 
-- Ensure the inner join between the driver and the original query is performant.
+The delete driver should contain only target keys that no longer satisfy the target query’s presence rule.
 
-### Calculate deletes
+Once the delete driver has been calculated, deleting from the target is straightforward.
 
-- Ensure the delete driver query runs quickly.
+<div class="pode-code pode-code-sql"><pre><code>delete T
+<span class="kw">from</span>       T
+<span class="kw">inner</span> <span class="kw">join</span> #keys_to_delete <span class="kw">as</span> D <span class="kw">on</span> D.[PK] = T.[PK];</code></pre></div>
 
-### Simulate deletes
+### Step 5—Apply load mechanics
 
-- Rather than actually deleting, use a select to simulate deletes during development to avoid accidental data loss.
+After the minimal staging table and delete driver have been created, the normal load mechanics can apply.
 
-### Apply changes and validate
+The pipeline can:
 
-Uniqueness, existence, and stability violations
+- compare staging rows with the target to identify genuine upserts;
+- check stability thresholds;
+- reject unsafe rows;
+- apply updates and inserts;
+- apply deletes;
+- preserve history;
+- record load statistics and bookmarks.
 
-- Apply upserts and deletes.
+This means full and incremental loads share the same business query and load mechanics. The difference is that incremental loads add driver sets to reduce the work.
 
-- Compare the result with a fully loaded copy of the table.
+### Full incremental extract pattern
 
-- The unit test should pass.
+Putting the steps together, the full pattern is:
 
-### Zero-load benchmark
+<div class="pode-code pode-code-sql"><pre><code>-- 1. Fetch the refresh bookmark, which <span class="kw">is</span> the point to resume.
+declare @refresh_bookmark_datetime datetime2(7);
 
-- After loading, re-run the upsert and delete drivers.
+<span class="kw">select</span> @refresh_bookmark_datetime =
+(
+    <span class="kw">select</span> [Bookmark datetime]
+    <span class="kw">from</span> Pipeline.RefreshBookmark
+    <span class="kw">where</span> [Table name] = &#x27;T&#x27;
+);
 
-- They should return no rows and run in near-zero time.
+-- 2. Determine the upsert driver table.
+drop table if <span class="kw">exists</span> #keys_to_upsert;
 
-- The time it takes to do this is the fastest the query can ever run.
+-- Upserts <span class="kw">from</span> X.
+<span class="kw">select</span>
+    X.[PK]
+into #keys_to_upsert
+<span class="kw">from</span> X
+<span class="kw">where</span> X.[Row update datetime] &gt; @refresh_bookmark_datetime
 
-### Run incrementally over time
+<span class="kw">union</span>
 
-- Continue loading incrementally over multiple days.
+-- Upserts <span class="kw">from</span> Y.
+<span class="kw">select</span>
+    Y.[PK]
+<span class="kw">from</span> Y
+<span class="kw">where</span> Y.[Row update datetime] &gt; @refresh_bookmark_datetime;
 
-- The unit test should continue to pass.
+-- 3. Create the minimal staging table <span class="kw">by</span> downfiltering the <span class="kw">full</span> query.
+drop table if <span class="kw">exists</span> #T_staging;
+
+<span class="kw">select</span>
+    X.*,
+    Y.*
+into #T_staging
+<span class="kw">from</span>       X
+<span class="kw">inner</span> <span class="kw">join</span> Y               <span class="kw">on</span> Y.[PK] = X.[PK]
+<span class="kw">inner</span> <span class="kw">join</span> #keys_to_upsert <span class="kw">as</span> U <span class="kw">on</span> U.[PK] = X.[PK]; -- downfilter original query for smaller staging
+
+-- 4. Determine the delete driver table.
+drop table if <span class="kw">exists</span> #keys_to_delete;
+
+-- Deletes <span class="kw">from</span> X.
+<span class="kw">select</span>
+    X_History.[PK]
+into #keys_to_delete
+<span class="kw">from</span>      X_History
+<span class="kw">left</span> <span class="kw">join</span> X         <span class="kw">on</span> X.[PK] = X_History.[PK]
+<span class="kw">where</span> X_History.[Row delete datetime] &gt; @refresh_bookmark_datetime -- recently deleted rows
+  <span class="kw">and</span> X.[PK] <span class="kw">is</span> <span class="kw">null</span>;                                             -- truly deleted
+
+<span class="kw">union</span>
+
+-- Deletes <span class="kw">from</span> Y.
+<span class="kw">select</span>
+    Y_History.[PK]
+<span class="kw">from</span>      Y_History
+<span class="kw">left</span> <span class="kw">join</span> Y         <span class="kw">on</span> Y.[PK] = Y_History.[PK]
+<span class="kw">where</span> Y_History.[Row delete datetime] &gt; @refresh_bookmark_datetime -- recently deleted rows
+  <span class="kw">and</span> Y.[PK] <span class="kw">is</span> <span class="kw">null</span>;                                             -- truly deleted
+
+-- 5. <span class="kw">Apply</span> the deletes.
+delete T
+<span class="kw">from</span>       T
+<span class="kw">inner</span> <span class="kw">join</span> #keys_to_delete <span class="kw">as</span> D <span class="kw">on</span> D.[PK] = T.[PK];
+
+-- 6. Continue upsert using standard load mechanics...</code></pre></div>
+
+This script illustrates the complete pattern:
+
+1. fetch the target refresh bookmark;
+2. calculate the upsert driver;
+3. downfilter the full query into a minimal staging table;
+4. calculate the delete driver;
+5. apply the target deletes.
+
+Visually the procedure looks like:
+
+![](book/epub-assets/diagram-011.png)
+
+*Figure 1. The incremental extract pattern follows the SQL script from top to bottom. The refresh bookmark defines the change boundary. The upsert driver creates a minimal staging table by downfiltering the normal query. The delete driver identifies rows to remove from T. Load mechanics then applies exact deletes and genuine upserts.*
+
+## Why this pattern works
+
+This workflow has several advantages.
+
+### Uniformity
+
+The same query logic underpins both full loads and incremental loads.
+
+The difference lies in the driver set. A full load runs the query for all target keys. An incremental load runs the same query for only the keys that may have changed.
+
+This reduces the risk that the incremental load becomes a different definition from the full load.
+
+### Idempotency
+
+The process works even if it runs more than once over the same interval.
+
+If a load fails and is retried, the refresh bookmark ensures that the pipeline considers the same source change window again.
+
+If the load runs more frequently than usual, the outcome remains consistent. There may simply be fewer source changes to respond to.
+
+### Graceful fallback
+
+If upstream changes touch many rows, the driver set expands, but the final result set may have minimal changes because the touched column is not selected for the target table.
+
+Using this approach, the incremental load will behave like a full load. This is acceptable. The staging table is still compared to the target, so only genuinely changed rows should be applied.
+
+## Best-practice workflow
+
+Given the complexity of responding to change, incremental logic should be developed as a controlled workflow rather than assembled all at once.
+
+The goal is to prove that the incremental load produces the same result as the full query, while doing less work.
+
+The following is a 9 steps pattern.
+
+### Step 1—Create a full-load comparison test
+
+Start by creating a test that compares the incrementally maintained target table with the expected result of the full query.
+
+This may include:
+
+- row counts;
+- primary key comparison;
+- sample selection.
+
+The test establishes the standard of correctness. A correct incremental load should produce the same final target as a full load.
+
+A datetime filter can be used for performance during development, but it should be independent of the extract datetime being tested.
+
+### Step 2—Create a realistic change window
+
+Load the table in full, then wait for source data to change or create controlled test changes.
+
+This gives the developer a realistic incremental window. The aim is to test the logic against actual source changes, not merely against an abstract query.
+
+### Step 3—Build the upsert driver
+
+Build the upsert driver for one source table at a time.
+
+As each source table is added, re-run the driver query and check both correctness and performance. Add indexes if performance degrades.
+
+The upsert driver should include every key whose target values may need recalculation. It may be slightly broader than necessary, provided it remains performant.
+
+### Step 4—Test the minimal staging table
+
+Join the upsert driver to the full query.
+
+This creates the minimal staging table. It should contain only the rows that may need to be inserted or updated, while preserving the same business logic as the full query.
+
+Check that the staging table is both correct and performant.
+
+### Step 5—Build the delete driver
+
+Build the delete driver separately from the upsert driver.
+
+The delete driver should contain only rows that no longer satisfy the target query’s presence rule.
+
+Special attention should be paid to performance because finding deletes often requires complex scans.
+
+### Step 6—Simulate deletes before applying them
+
+During development, simulate deletes with a `select` rather than immediately applying them.
+
+The result set should be examined and compared with the correct result.
+
+Simulating the delete reduces the risk of deleting data while the delete logic is being tested, causing rework to load the data again.
+
+### Step 7—Apply changes through load mechanics
+
+Apply the upserts and deletes through normal load mechanics.
+
+The load should:
+
+- compare staging rows with the target;
+- apply only genuine inserts and updates;
+- apply exact deletes;
+- preserve history;
+- record load statistics and bookmarks.
+
+Then compare the incrementally maintained target with a fully loaded copy of the same target. The two should match.
+
+### Step 8—Run a zero-load benchmark
+
+After a successful load, rerun the upsert and delete drivers.
+
+They should return no rows, or near zero rows, and should run quickly.
+
+This is the fastest the incremental load can ever be. It is also a useful baseline for detecting unnecessary work.
+
+### Step 9—Run incrementally over time
+
+Continue loading incrementally over multiple days.
+
+The full-load comparison test should continue to pass. If it fails, the incremental response logic is likely missing a source change condition, over-deleting, or failing to handle a query shape correctly.
+
+## Using AI as a reviewer
+
+Analysing source-change propagation through a complex query can be error-prone.
+
+This is a useful place to use generative AI as a reviewer. A model can propose how source inserts, updates, and deletes may propagate through joins, filters, aggregations, anti-joins, and set operations.
+
+A useful prompt is to provide the query shape, source keys, target key, and the possible source changes, then ask for:
+
+- target keys to upsert;
+- target keys to delete;
+- reasons for each driver.
+
+The output should then be tested against the full-load result.
 
 ## Conclusion
 
-A transformation query can be seen as a formula that takes inputs and produces output. Information efficiency is achieved when changes in the input are accurately tracked and correctly translated into changes in the output. The difficulty of doing this depends not on the volume of data, but on the shape of the query. Anti-joins, aggregations, filters, and window functions all introduce complexity in determining which rows to upsert and which to delete. This determination should be made by analysing the query through the lens of relational algebra. Modern tools, including generative AI, can assist in this analysis by surfacing the logical structure of the query and identifying the propagation of change.
+Tracking changes identifies which source rows changed. Responding to change determines what those source changes mean for the target.
 
-Once the analysis is complete, the transformation can be converted from full to incremental using a standardised approach. This is to fetch the refresh bookmark of the target, compute the upsert driver table, downfilter the original query, and compute the delete driver table. Care must be taken not to over-delete and reinsert. Deletes should perfectly represent only the rows that should no longer be part of the target as of query.
+The difficulty of incremental loading depends not only on data volume, but on query shape. Filters, joins, aggregations, anti-joins, window functions, and set operations all affect whether source changes become target upserts or deletes.
 
-When coupled with the use of refresh bookmarks and the techniques described in Tracking changes, this approach yields an efficient and resilient pipeline. Given the intricacies involved, careful implementation and testing is essential. A unit test is critical to catch errors during development, and silent failures in production.
+The standard pattern is to fetch the refresh bookmark, compute the upsert driver, create a minimal staging table from the normal query, compute the delete driver, and then apply normal load mechanics.
 
-Performance evaluation should be done step by step, with each component tested in isolation. The zero-load scenario provides a baseline benchmark for performance and correctness. This disciplined workflow ensures that the pipeline responds to change with both accuracy and speed.
+The complexity comes from analysing the query. Generative AI is helpful for this part.
+
+Together, the two steps—tracking changes and responding to change—apply the principle of proportionate change.
+
+> **Key ideas.**
+>
+> Tracking change identifies which source rows have changed. Responding to change determines what those source changes mean after they pass through the target query.
+>
+> Source actions do not map directly to target actions. A source insert can cause a target delete, a source delete can cause a target update, and a source update can cause a target insert.
+>
+> The query is the translation layer between source change and target action.
+>
+> A driver set contains the keys that may need action because upstream source rows changed.
+>
+> Upsert drivers identify rows to recalculate. They may be conservative, provided they remain performant.
+>
+> Delete drivers identify rows that no longer satisfy the target query’s presence rule. They must be exact.
+>
+> The goal of an incremental load is to apply proportionate computational change.
 
 # Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
 
-*Power BI performs best when the underlying pipeline is designed with loading in mind.*
+*Power BI load is the final expression of pipeline design.*
 
-Loading a Power BI model is often one of the longest steps. This is particularly true for models with large fact tables. New technologies such as DirectLake promise to remove this step entirely, yet Import mode remains the most reliable way to deliver a fast and responsive experience. Consequently, it is important to establish efficiency for Power BI loads.
+## Power BI as the final load boundary
 
-Loading of Power BI should focus on assembling prepared fragments. It is not the stage to curate information. The restaurant analogy from Meaningful fragments makes the point. Mise en place is the long process before service time to customers. During mise en place, ingredients are washed, cut and portioned in advance. At service the kitchen completes the final assembly and plates dishes quickly, rather than peeling potatoes when the orders are made. Likewise, a Power BI load should be focusing on assembling finished fragments rather than transforming data.
+Loading a Power BI model is often one of the longest steps in the delivery of a data product. This is particularly true for models with large fact tables.
+
+New technologies such as DirectLake promise to remove traditional import refresh in some scenarios. Even so, Import mode remains one of the most reliable ways to deliver a fast and responsive user experience.
+
+When refreshing Power BI, the core idea is:
+
+> Power BI should assemble information, not manufacture it.
+
+This is why Power BI performance depends on decisions made far earlier in the pipeline. If upstream data has been shaped into meaningful fragments, if change has been tracked carefully, and if downstream tables respond proportionately to change, then Power BI can load efficiently. If those things have not been done, Power BI refresh becomes the place where all upstream disorder is paid for.
+
+Thus, Power BI load is not merely a Power BI problem, but is the final expression of pipeline design.
 
 There are three main ways to optimise Power BI loads:
 
-- Using DirectQuery to avoid loading
-
-- Efficient underlying source tables
-
-- Partitioning for parallel refresh, with two further enhancements of rolling windows and incremental refresh
+- avoiding load with DirectQuery;
+- using efficient underlying source tables;
+- partitioning the model, with further enhancements through rolling windows and incremental refresh.
 
 This chapter assumes the model sources data from SQL, where purpose-built views or tables act as source tables that map one-to-one with the Power BI model tables.
 
-## Using DirectQuery to avoid loading
+## Avoiding load with DirectQuery
 
 DirectQuery for fact tables avoids the load entirely by sending DAX queries to the source at report time. To provide a responsive experience, the underlying source table often needs to be materialised as a columnstore table dedicated to this purpose. While materialising a large fact table is costly, it can also be incrementally loaded so that refresh remains minimal.
 
-By using DirectQuery over am incrementally loaded columnstore table, this achieves the highest possible efficiency in terms of information movement. However, there are serious drawbacks for user experience:
+By using DirectQuery over an incrementally loaded columnstore table, the pipeline can achieve high efficiency in terms of information movement. The Power BI model does not need to import the fact table because the source table is queried directly.
+
+However, DirectQuery has serious drawbacks for user experience:
 
 - DAX queries become noticeably slower.
-
-- Some complex DAX expressions are not supported at all.
-
-- Certain DAX functions behave differently in Import mode versus DirectQuery, such as in how blanks are treated.
-
+- Some complex DAX expressions are not supported.
+- Certain DAX functions behave differently in Import mode and DirectQuery mode.
 - Power BI limits how many rows can be retrieved in DirectQuery for certain operations, which restricts what reports can be built.
-
 - Dimension values can appear blank in filter lists even when the table does not actually contain blanks.
 
 DirectQuery works best when:
 
-- The table is far longer than it is wide, so queries touch fewer attributes.
-
-- Queries against the table are simple – limited to sums, counts, minimums, and maximums that work well against columnstore tables through their equivalent
-
-SQL query.
-
-- Users are not expected to browse unit records and do not hit Power BI’s retrieval limits.
+- the table is far longer than it is wide, so queries touch fewer attributes;
+- queries against the table are simple, such as sums, counts, minimums, and maximums that work well against columnstore tables;
+- users are not expected to browse unit records and do not hit Power BI’s retrieval limits.
 
 Where dimensions are shared by both Import and DirectQuery facts, dual mode must be implemented. Dual mode keeps a copy of the dimension for Import while still allowing the engine to query it in DirectQuery when needed. This ensures relationships remain fast for Import facts and correct for DirectQuery facts.
+
+DirectQuery can be powerful, but it is not a universal escape from model refresh. It shifts work from refresh time to query time. If the source is not designed for this workload, the user experiences the cost directly.
 
 ## Efficient underlying source tables
 
@@ -9199,105 +9572,229 @@ One of the biggest factors influencing Power BI load times is the efficiency of 
 
 The views may have simple logic such as:
 
-- Looking up surrogate keys to replace composite primary keys
+- looking up surrogate keys to replace composite primary keys;
+- backfilling null values with defaults;
+- adding on-demand columns, such as `[Days expired since creation]` using functions like `getdate()`.
 
-- Backfilling null values with defaults
+However, heavy transformations such as windowing, nested logic, and complex aggregation should be avoided. These belong upstream in curated layers where they can be tested, reused, and incrementally refreshed.
 
-- Adding on-demand columns, for example [Days expired since creation] using functions like GETDATE()
+String aggregation for display should also be avoided where possible, as this can often be handled with appropriate DAX measures, as explained in [Designing measures](#docs-presenting-insights-designing-measures).
 
-However, heavy transformations such as windowing or nested logic should be avoided.
+The ideal case is to create fragments that are both meaningful and effective for loading into the Power BI model. If a source table still requires elaborate logic to stitch pieces together, the issue is not merely SQL tuning. The deeper issue is that upstream fragments have not been adequately prepared.
 
-These belong upstream in curated layers where they can be tested and reused. String aggregation for display should also be avoided, as this can be handled with appropriate DAX measures, as explained in Designing Measures.
+Materialisation of the view is sometimes necessary to ensure the source table loads rapidly. This is especially true when data needs to be rearranged to support fast retrieval of load partitions against the partition key.
 
-If a source table still requires elaborate logic to stitch pieces together, the issue is not SQL tuning. The solution is to reconsider whether upstream fragments have been adequately prepared. The ideal case is to create fragments that are both meaningful and effective for loading into the Power BI model.
+In short:
 
-Materialisation is sometimes necessary to ensure the source table loads rapidly. This is especially true when data needs to be rearranged to support fast retrieval of load partitions against the partition key - a subject we turn to now.
+> Power BI source views or tables should be tuned specifically for fast retrieval, not burdened with complex logic.
 
-## Partitions
+## Partitioning the model
 
 Defining a table into partitions is the most effective way to reduce Power BI load times when fact tables grow large.
 
-Partitions are akin to having a large box of books from multiple publishing years.
+Partitioning a table offers increasing levels of enhancement that can be adopted as the situation requires:
 
-Batches of books arrive at regular intervals, and the box needs to be updated with the incoming batch. There can be new books, and old books can be updated. Updating the whole box can take a long time if the number of books is huge. Splitting them into boxes by publishing year allows a divide-and-conquer approach and vastly reduces total update time. The ability to load partitions in parallel is the first benefit of partitioning.
+1. load partitions in parallel;
+2. apply a rolling window to drop older partitions;
+3. incrementally refresh only the partitions that changed.
 
-If boxes of books that are too old become unnecessary, they do not need updating and the oldest set can be dropped. Over time, this reduces the number of boxes to update.
+### Analogy for partitions
 
-This ability to apply a rolling window is the second possible benefit of partitions.
+Partitions are akin to having a large box of books from multiple publishing years. Batches of books arrive at regular intervals, and the box needs to be updated with the incoming batch. There can be new books, and old books can be updated. Updating the whole box can take a long time if the number of books is huge.
 
-Finally, if the incoming books can be sorted by year, and in each batch only a fraction of the years have new books, then only those boxes need updating. It may take additional effort to track changes from the incoming books, but this effort can dramatically reduce total update time. This ability to incrementally refresh is the third benefit of partitions.
+Splitting the books into boxes by publishing year allows a divide-and-conquer approach. Each year’s box can be updated separately. This is the first benefit of partitioning: partitions can be loaded in parallel.
 
-Thus, partitioning a table offers increasing levels of enhancement that can be adopted as the situation requires:
+If boxes of books that are too old become unnecessary, they do not need to be kept. The oldest boxes can be dropped. This is the second benefit of partitioning: a rolling window can keep the model from growing indefinitely.
 
-1. Load partitions in parallel, immediately reducing time to load
+Finally, if the incoming books can be sorted by year, and only some years have new or updated books, then only those boxes need updating. It may take additional effort to track which years changed, but this effort can dramatically reduce total refresh time. This is the third benefit of partitioning: incremental refresh can refresh only the partitions that changed.
 
-2. Apply rolling window to drop off older partitions that are not necessary
+Each step is increasingly sophisticated, and corresponds to a deeper level of gain from partitioning Power BI tables.
 
-3. Incrementally refresh only the partitions that changed
+This is visualised below:
 
-### Parallel partitions
+![](book/epub-assets/diagram-012.png)
+
+*Figure 1. Partitioning is like sorting incoming books into boxes by publishing year. Partitioning enables divide-and-conquer loading. A rolling window means very old books are no longer processed. Incremental refresh compares each incoming segment’s latest update datetime with the stored bookmark on the matching box, then refreshes only the box whose value changed.*
+
+### Parallel partition refresh
 
 A partition key is a business date or datetime column that divides the data into intervals such as daily, monthly, or yearly. Power BI can load these partitions in parallel.
 
-Depending on the degree of parallelism, this can lead to massive improvements in load time with little effort.
+Depending on the degree of parallelism, this can lead to large improvements in load time with little effort.
 
-To make partitions effective, the source must return a single partition quickly. If the underlying view is complex, the solution is not to push SQL harder but to move complexity upstream and materialise the result with an index on the partition key. This ensures that Power BI can request “give me this month” and receive the data immediately. Continuing the analogy, the incoming batches of books must be readily accessible by publishing year. If not, it may take longer to fetch each year’s books than the time gained from divide-and-conquer. The optimal solution is to organise the incoming batches by publishing year. In SQL terms, this means storing the source data sorted by the partition key used to define the Power BI partition.
+To make partitions effective, the source must return a single partition quickly. If the underlying view is complex, the solution is not to push SQL harder but to move complexity upstream and materialise the result with an index on the partition key. This ensures that Power BI can request “give me this month” and receive the data quickly.
 
-There is a trade-off between load time and query time. Splitting one big box of books into multiple boxes by publishing year increases the total space used for storage because each box has a minimum size that can lead to wasted space. It can also take longer to fetch books because there are now more boxes to work through. The choice of interval size between publishing year, first of month, or publish date depends on the actual volume of books in the processing.
+Continuing the analogy, the incoming batches of books must be readily accessible by publishing year. If not, it may take longer to fetch each year’s books than the time gained from divide-and-conquer. The optimal solution is to organise the incoming batches by publishing year. In SQL terms, this means storing the source data so it can be efficiently retrieved by the partition key used to define the Power BI partition.
 
-When partitioning, new developers often confuse which date to use. The partition key must be a business date rather than a change-tracking column like [Row update datetime]. Using the same column for partitioning and change detection will push rows toward the end of the range and break the logic. Following the analogy, the date should be the publishing year rather than the year the book arrived in a batch. The latter will always be in the last batch and does not correctly update older books.
+There is a trade-off between load time and query time. Splitting one big box of books into multiple boxes by publishing year increases the total number of objects that need to be managed. Too many small partitions can create overhead. Too few large partitions can reduce the benefit of parallelism. The choice of interval size—year, month, day, or hour—depends on the volume of data, refresh frequency, and query behaviour.
+
+When partitioning, new developers often confuse which date to use. The partition key must be a business date rather than a change-tracking column such as `[Row update datetime]`. Using the same column for partitioning and change detection pushes rows toward the end of the range and breaks the logic. Following the analogy, the date should be the publishing year rather than the year the book arrived in a batch. The latter will always be in the last batch and does not correctly update older books.
 
 ### Rolling windows
 
 When partitions are in place, rolling windows provide the next level of efficiency. Power BI allows a data engineer to define the number of partitions to keep, and older partitions are dropped from the model. This keeps the model size under control and prevents refresh times from growing indefinitely.
 
-Boundary points in the window are error-prone. Two details deserve attention. First, if the SQL source table itself rolls history, its window must be kept in sync with the Power BI table’s rolling window to avoid mismatches. Second, the boundaries of fact tables must match related dimensions and other facts. This is particularly true of ID dimensions. If dimensions are not kept in sync, they will contain primary key values that no longer exist in the fact tables.
+Boundary points in the window are error-prone. Two details deserve attention.
 
-### Incremental refresh
+First, if the SQL source table itself rolls history, its window must be kept in sync with the Power BI table’s rolling window to avoid mismatches.
 
-Incremental refresh adds change detection on top of partitions so only partitions with changes are refreshed. The native Power BI interface allows the user to choose a datetime column in the table for change detection. During refresh, Power BI evaluates the maximum value per partition. This is the polling query. The maximum value is stored against each partition as its refresh bookmark. If the next polling query returns a different value than the bookmark, that partition is refreshed. There is a substantial benefit to load time if only a fraction of the polling queries differs from the bookmarks, and thus only that fraction of partitions are refreshed.
+Second, the boundaries of fact tables must match related dimensions and other facts. This is particularly true for ID dimensions, which may contain keys only because related fact rows still exist. If dimensions are not kept in sync, they may contain primary key values that no longer exist in the fact tables. If a dimension drops keys too aggressively, relationships may break for facts that still remain.
 
-> **Note.**
->
-> TODO: Insert manuscript screenshot or diagram from the source draft. Source PDF note: `[SCREENSHOT of XMLA partition and polling query]`.
+### Incremental partition refresh
 
-Following the analogy, each box of books by publishing year may have a label showing the last time it was updated. This is the bookmark. When batches of books arrive, they can be scanned for each publishing year to see if the update date on any book is greater than the label on the box. This is the polling query. This is only effective if incoming batches are organised so that it is easy to find the maximum update datetime for each publishing year.
+Incremental refresh adds change detection on top of partitions so only partitions with changes are refreshed.
+
+The native Power BI interface allows the data engineer to choose a datetime column in the table for change detection. During refresh, Power BI evaluates the maximum value of that column for each partition. This is the polling query. Power BI manages the partition refresh bookmarks internally. Each partition stores the polling value that was observed when that partition was last refreshed successfully.
+
+If the next polling query returns a different value from the value stored internally against the partition, Power BI refreshes that partition. After the partition refresh succeeds, Power BI stores the new polling value as the partition’s bookmark.
+
+Following the analogy, each box of books by publishing year has a label showing the last update datetime observed for that box. This is the bookmark. When batches of books arrive, each year can be checked to see whether any book has an update datetime greater than the label on the box. This is the polling query. This is effective only if incoming batches are organised so that it is easy to find the maximum update datetime for each publishing year.
+
+### Custom polling tables
 
 The native approach offered by Power BI can be limited if the source table is a view that joins multiple tables, and thus there is no single column representing change detection.
 
-It is also not applicable if partitions have deletes because the change detection column cannot reflect delete datetimes. When the native approach is not sufficient, the user can specify a custom polling query with arbitrary M code.
+It is also not sufficient if partitions have deletes because a normal update datetime cannot reflect delete datetimes. When the native approach is not sufficient, the user can specify a custom polling query with arbitrary M code through XMLA-based configuration.
 
-Polling tables can facilitate rapid evaluation of a polling query for complex cases. A polling table is simply a list of partition dates and the datetime the partition was last updated. During refresh, the polling query looks up this update datetime for a partition date.
+Polling tables can facilitate rapid evaluation of a polling query for complex cases. A polling table is simply a list of partition values and the datetime the partition was last updated. During refresh, the polling query looks up this update datetime for a partition.
 
-Following the analogy, the incoming batches of books may have a companion spreadsheet that tracks publishing years and the last update datetime of books for that year. During updates, this spreadsheet is consulted to decide whether that year’s box needs updating.
+Following the analogy, the incoming batches of books may have a companion spreadsheet that tracks publishing years and the latest update datetime of books for that year. During updates, this spreadsheet is consulted to decide whether that year’s box needs updating.
 
-Power BI does not support custom polling queries in its interface. XMLA-based configuration is required.
+Power BI does not support custom polling queries in its normal interface. XMLA-based configuration is required.
 
-If Power BI can rapidly evaluate whether a partition needs refreshing and retrieve the data for that partition quickly from the source table, this can lead to substantial improvements in load times. Supporting these requires the data engineer to prepare the data to facilitate these queries through indexing, sorting, or even constructing dedicated polling tables. This preparation itself takes time, and any base tables or polling tables should themselves be incrementally refreshed. Consequently, optimising Power BI loads means trading Power BI load times with data source load times. If not done well, implementing these artefacts can lead to even longer time than saved through defining incremental partition refreshes.
+If Power BI can rapidly evaluate whether a partition needs refreshing and retrieve the data for that partition quickly from the source table, this can lead to substantial improvements in load times. Supporting this requires the data engineer to prepare the data through indexing, sorting, materialising source tables, or constructing dedicated polling tables.
+
+This preparation itself takes time, and any base tables or polling tables should themselves be incrementally refreshed. Consequently, optimising Power BI loads means trading Power BI load time for source-side preparation time. If not done well, these artefacts can take longer to maintain than the time saved through incremental partition refresh.
+
+### Example refresh bookmarks and polling values
+
+Suppose `PBI.Sale` is partitioned monthly using `[Sale date]`.
+
+The source table contains sales across several months. Each row also has a `[Row update datetime]`, which records when that row was last inserted or updated in the pipeline.
+
+**Source table: `PBI.Sale`**
+
+| Sale ID | Sale date | Customer ID | Amount | Row update datetime |
+|---|---|---|---:|---|
+| S1001 | 2025-01-05 | C001 | 120.00 | 2026-05-01 09:15 |
+| S1002 | 2025-01-19 | C002 | 85.00 | 2026-05-03 14:20 |
+| S1003 | 2025-01-28 | C003 | 64.00 | 2026-05-03 16:45 |
+| S2001 | 2025-02-03 | C004 | 230.00 | 2026-05-02 10:30 |
+| S2002 | 2025-02-14 | C005 | 75.00 | 2026-05-09 08:40 |
+| S2003 | 2025-02-24 | C006 | 310.00 | 2026-05-09 11:10 |
+| S3001 | 2025-03-08 | C007 | 50.00 | 2026-05-04 12:00 |
+| S3002 | 2025-03-18 | C008 | 140.00 | 2026-05-04 15:30 |
+| S3003 | 2025-03-29 | C009 | 95.00 | 2026-05-04 18:05 |
+
+The Power BI partitions are done per month on `[Sale date]`.
+
+| Partition start of month | Partition filter | Rows |
+|---|---|---|
+| 2025-01 | `[Sale date] >= 2025-01-01 and [Sale date] < 2025-02-01` | S1001, S1002, S1003 |
+| 2025-02 | `[Sale date] >= 2025-02-01 and [Sale date] < 2025-03-01` | S2001, S2002, S2003 |
+| 2025-03 | `[Sale date] >= 2025-03-01 and [Sale date] < 2025-04-01` | S3001, S3002, S3003 |
+
+`PBI.SalePolling` is a companion table to `PBI.Sale`. It contains one row per partition and stores the maximum `[Row update datetime]` found inside that partition.
+
+**Companion polling table: `PBI.SalePolling`**
+
+| Partition | Latest update datetime |
+|---|---|
+| 2025-01 | 2026-05-03 16:45 |
+| 2025-02 | 2026-05-09 11:10 |
+| 2025-03 | 2026-05-04 18:05 |
+
+The values in `PBI.SalePolling` correspond to the maximum row update datetime in each partition.
+
+| Partition | Row update datetimes in `PBI.Sale` | Latest update datetime in `PBI.SalePolling` |
+|---|---|---|
+| 2025-01 | 2026-05-01 09:15; 2026-05-03 14:20; 2026-05-03 16:45 | 2026-05-03 16:45 |
+| 2025-02 | 2026-05-02 10:30; 2026-05-09 08:40; 2026-05-09 11:10 | 2026-05-09 11:10 |
+| 2025-03 | 2026-05-04 12:00; 2026-05-04 15:30; 2026-05-04 18:05 | 2026-05-04 18:05 |
+
+Each Power BI partition also has a stored refresh bookmark. This bookmark records the latest polling value observed when that partition was last refreshed successfully. Power BI manages these partition bookmarks internally.
+
+**Power BI partition bookmarks before refresh**
+
+| Partition | Stored refresh bookmark |
+|---|---|
+| 2025-01 | 2026-05-03 16:45 |
+| 2025-02 | 2026-05-02 10:30 |
+| 2025-03 | 2026-05-04 18:05 |
+
+During refresh, Power BI compares the stored refresh bookmark for each partition against the current polling value from `PBI.SalePolling`.
+
+| Partition | Stored refresh bookmark | Latest update datetime | Changed? | Action |
+|---|---|---|---|---|
+| 2025-01 | 2026-05-03 16:45 | 2026-05-03 16:45 | No | Do not refresh |
+| 2025-02 | 2026-05-02 10:30 | 2026-05-09 11:10 | Yes | Refresh partition |
+| 2025-03 | 2026-05-04 18:05 | 2026-05-04 18:05 | No | Do not refresh |
+
+Only the `2025-02` partition needs to refresh. When it is completed, the partition bookmark is advanced to match the polling value.
+
+**Power BI partition bookmarks after refresh**
+
+| Partition | Stored refresh bookmark |
+|---|---|
+| 2025-01 | 2026-05-03 16:45 |
+| 2025-02 | 2026-05-09 11:10  |
+| 2025-03 | 2026-05-04 18:05 |
 
 ## Conclusion
 
-Loading a Power BI model is time intensive. Using DirectQuery over a columnstore table avoids the load entirely, but DirectQuery imposes serious limits on the queries that can be made. Consequently, the most common factor for a fast Power BI load is the efficiency of the underlying source tables. These should be simple assemblies of well-defined fragments that join easily and avoid complex transformations.
+DirectQuery, efficient source tables, and partitioned loads are the main ways to improve Power BI load performance.
 
-When fact tables become substantial, partitions can deliver a major speed boost by enabling parallel loads. This often requires rearranging data or implementing dedicated indexes to support retrieval by partition date.
+| Method | Basic idea | Best suited to | Consideration |
+|---|---|---|---|
+| DirectQuery | Avoid importing the table. | Very large, simple, narrow fact tables. | Slower report interaction and DAX limitations. |
+| Efficient source views or tables | Make import cheap by preparing the source. | Most Import models. | Complexity moves upstream. |
+| Partitioning | Refresh the table in slices. | Large fact tables with a stable business date. | Poor partition design can add overhead or miss changes. |
 
-When partitions are in place, rolling windows provide further benefit by dropping older partitions and keeping load times consistent. This introduces room for error and requires attention to detail at boundary points.
+Partitioning also offers several levels of improvement.
 
-Incremental refresh adds another layer of efficiency by refreshing only the partitions that have changed. This relies on a polling query to detect changes. Dedicated polling table can support instant evaluation of the polling.
+| Enhancement | What it does | Benefit | Extra requirement |
+|---|---|---|---|
+| Parallel partition refresh | Splits one large table into smaller partitions that can be loaded independently. | Reduces refresh duration by allowing multiple partitions to load at once. | The source must retrieve each partition quickly using the partition key. |
+| Rolling window | Keeps only recent partitions and drops older ones. | Prevents model size and refresh time from growing indefinitely. | Fact tables, dimensions, and source-retention windows must remain aligned. |
+| Incremental partition refresh | Refreshes only partitions whose polling value has changed. | Reduces refresh work when only some partitions have changed. | Requires reliable change detection, partition bookmarks, and fast polling queries or polling tables. |
 
-Whatever the technique, the foundation for a fast-loading Power BI model is set far in advance in the pipeline. It depends on the availability of meaningful fragments to avoid complex transforms, the planned placement of indexes to support partition keys, and the careful tracking of row changes to enable polling tables.
+A single Power BI model may use different strategies for different tables. A small dimension may load fully. A large fact table may use Import mode with incremental partition refresh. A very large, narrow fact table may use DirectQuery over a dedicated columnstore source. The right strategy depends on the shape of the data, the refresh requirement, and the expected user experience.
+
+Whatever the technique, the foundation for a fast-loading Power BI model is set far in advance in the pipeline. It depends on meaningful fragments to avoid complex transforms, planned indexes to support partition retrieval, and careful row-change tracking to enable polling tables.
 
 In the ideal case, information efficiency is maximised end to end:
 
-1. Raw tables enter the pipeline incrementally, using polling tables to track changes and annotated with change-tracking artefacts.
+1. raw tables enter the pipeline incrementally, using polling tables to track changes and annotating rows with change-tracking artefacts;
+2. downstream tables transform incrementally with in-sync datetimes and are designed for ease of assembly;
+3. source tables for Power BI, whether for DirectQuery or partitioned loads, are also incrementally materialised;
+4. Power BI tables themselves are incrementally refreshed using partitions, supported by incrementally refreshed polling tables for fast change detection.
 
-2. Downstream tables transform incrementally with in-sync datetimes and are designed for ease of assembly.
+At every stage, the pipeline maintains proportionate change—the amount of computation changes in proportion to the amount of information that has genuinely changed.
 
-3. Source tables for Power BI, whether for DirectQuery or for partitioned loads, are also incrementally materialised.
+The implication is that the data engineer must plan far ahead. Power BI’s efficiency requirements should shape the pipeline even as the first table is built.
 
-4. Finally, Power BI tables themselves are incrementally refreshed using partitions, supported by incrementally refreshed polling tables for fast change detection.
-
-All this means the data engineer plans far ahead, letting Power BI’s efficiency requirements shape the pipeline even as the first table is built.
+> **Key ideas.**
+>
+> Power BI refresh is the point at which the quality of the pipeline becomes visible.
+>
+> Power BI should assemble information, not manufacture it.
+>
+> Source tables for Power BI should be simple, prepared fragments rather than complex transformation views.
+>
+> DirectQuery avoids import refresh, but shifts cost to query time and imposes user-experience limits.
+>
+> Partitioning improves refresh by dividing large tables into independently loadable slices.
+>
+> The partition key should normally be a business date, not a change-tracking datetime.
+>
+> Rolling windows keep model size and refresh time under control, but require careful boundary alignment.
+>
+> Incremental partition refresh depends on polling queries and partition bookmarks.
+>
+> Power BI manages partition bookmarks internally, but the pipeline may need to supply fast polling tables.
+>
+> Optimising Power BI load requires planning backward from the semantic model into the pipeline.
+```
 
 # Judgement under ambiguity {#docs-judgement-under-ambiguity}
 
@@ -9341,7 +9838,7 @@ A surer basis for data engineering can be summarised in six principles:
 
 - Instead of wholesale response, maintain proportionate change.
 
-- Instead of reacting to requirements, build momentum.
+- Instead of reacting to requirements, build momentum through leading discovery.
 
 - Instead of stopping at the symptoms, diagnose the root cause.
 
@@ -9369,7 +9866,7 @@ The world is not so straightforward. The most difficult part of a data project i
 
 Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, the stakeholders uncover what they need to “see” from the data for them to achieve business outcomes. These discovered needs—not an initial list—are the real requirements. This shift turns a one-way process into a two-way dialogue where the delivery team plays a leading role by guiding collective attention.
 
-The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum.
+The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum through leading discovery.
 
 ## Guided attention
 
@@ -9633,7 +10130,7 @@ These principles move the team beyond reacting to requirements. Applied well, th
 
 *A strong construction plan creates momentum by giving delivery an orderly shape.*
 
-The fifth principle of data engineering is to build momentum rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
+The fifth principle of data engineering is to build momentum through leading discovery rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
 
 In complex projects, a data engineer stays organised and guides the delivery team by formulating a plan. This plan is expected from an experienced engineer because:
 

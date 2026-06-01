@@ -175,7 +175,7 @@ class DiagramRenderer:
         stem = f"diagram-{self.index:03d}"
         svg_path = EPUB_ASSETS_DIR / f"{stem}.svg"
         png_path = EPUB_ASSETS_DIR / f"{stem}.png"
-        svg_path.write_text(svg)
+        svg_path.write_text(svg_for_thumbnail(svg))
 
         try:
             if png_path.exists():
@@ -202,6 +202,39 @@ class DiagramRenderer:
         except (OSError, subprocess.CalledProcessError):
             svg_path.unlink(missing_ok=True)
             return raw_html_block(svg)
+
+
+def svg_for_thumbnail(svg: str) -> str:
+    view_box_match = re.search(
+        r'viewBox="([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)"',
+        svg,
+    )
+    if not view_box_match:
+        return svg
+
+    min_x, min_y, width, height = (float(value) for value in view_box_match.groups())
+    if height <= width:
+        return svg
+
+    svg = re.sub(r'(<svg\b[^>]*?)\sstyle="[^"]*"', r"\1", svg, count=1, flags=re.IGNORECASE)
+    svg = re.sub(r"<svg\b", '<svg overflow="visible"', svg, count=1, flags=re.IGNORECASE)
+
+    square = format_svg_number(height)
+    view_box_match = re.search(
+        r'viewBox="([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)"',
+        svg,
+    )
+    view_box = f'viewBox="{format_svg_number(min_x)} {format_svg_number(min_y)} {square} {square}"'
+    svg = svg[: view_box_match.start()] + view_box + svg[view_box_match.end() :]
+    if re.search(r'\bwidth="[+-]?\d+(?:\.\d+)?"', svg):
+        svg = re.sub(r'\bwidth="[+-]?\d+(?:\.\d+)?"', f'width="{square}"', svg, count=1)
+    return svg
+
+
+def format_svg_number(value: float) -> str:
+    if value.is_integer():
+        return str(int(value))
+    return f"{value:g}"
 
 
 def png_chunks(data: bytes) -> list[tuple[bytes, bytes]]:
