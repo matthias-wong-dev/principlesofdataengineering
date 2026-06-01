@@ -1,257 +1,863 @@
 ---
-title: Responding to change
+title: "Incremental load: responding to change"
 url: /docs/efficient-stable-pipeline/responding-to-change/
-description: Shows how downstream tables and models should respond when upstream data, logic, or structure changes over time.
-lede: Detecting change is only the first step; the pipeline must also respond intelligently.
+description: Explains how to translate upstream inserts, updates, and deletes into the correct target upserts and deletes.
+lede: Source changes must be translated through query logic before the target can respond correctly.
 weight: 6
-draft: true
+# draft: true
 ---
 
-The previous chapter Tracking changes focused on tracking changes in the source. The chapter builds on the previous and addresses the harder task of responding correctly to these changes. This is often known as incremental extract and load.
+## Change translation
 
-Accurately responding to change can be error-prone. This is because inserts, updates, and deletes upstream do not translate directly into the corresponding changes downstream. The following examples illustrate the possible complexities:
+[Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/) tells the pipeline what changed upstream. It does not tell the pipeline what should change downstream.
 
-- Inserts can trigger deletes. The Bank.CustomersToFollowUp is a computed table of customers who have not made recent deposits and require follow-up by the service team. This table takes input from the Bank.Transactions table. In this case, an insert into Bank.Transactions, such as a new deposit, would trigger a delete in Bank.CustomersToFollowUp.
+That second step depends on query logic.
 
-- Deletes can trigger updates. The Bank.AccountSummary is a computed table of account-level aggregates, such as total number of holders and balance per account. It takes input from Bank.AccountHolder, which records all individuals associated with each account. If a joint holder is removed, resulting in a delete from Bank.AccountHolder, this changes the holder count and may trigger an update in Bank.AccountSummary.
+The central problem is this:
 
-- Updates can trigger inserts. The Bank.GoldCustomer is a computed table of customers whose account balance exceeds a defined threshold. It takes input from the Bank.AccountBalance table. In this case, updating a row in
+> Source inserts, updates, and deletes do not necessarily become target inserts, updates, and deletes.
 
-Bank.AccountBalance to increase the balance may cause a customer to newly qualify for gold status, triggering an insert into Bank.GoldCustomer.
+**Responding to change** is the discipline of translating upstream source changes into the smallest correct set of target actions.
 
-These examples are highly artificial. However, it is easy to imagine the possibilities under general circumstances:
+A systematic approach focuses on the primary keys. Responding to change starts by calculating the *target keys* whose result may have changed, then re-running the normal query only for those keys.
 
-- The presence of anti-joins (e.g. not exists) means that inserts upstream can trigger deletes downstream.
+A **driver set** is the set of primary keys, or primary key components, that may need action because upstream source rows changed.
 
-- The presence of aggregation or windowing (e.g. group by) means that deletes upstream can trigger updates downstream.
+There are two main kinds of driver set.
 
-- The presence of filters on derived expressions (e.g. having) means that updates upstream can trigger inserts downstream.
+| Driver set | Meaning |
+|---|---|
+| Upsert driver | Keys whose rows should be recalculated and then inserted or updated in the target. |
+| Delete driver | Keys whose rows should be removed from the target. |
 
-The following is an illustrative list of correct ways to respond to upstream changes, and a pattern for applying this response to incrementally loading a table.
+## Source changes are not target actions
+
+The relationship between source change and target action is not straightforward.
+
+Consider the following examples.
+
+| Upstream change | Possible downstream action | Example reason |
+|---|---|---|
+| Insert | Delete | A new row causes a record to no longer qualify under an anti-join. |
+| Delete | Update | Removing a row changes an aggregate. |
+| Update | Insert | A changed value now passes a filter threshold. |
+
+For example, suppose `Bank.CustomersToFollowUp` contains customers who have not made recent deposits and need service-team follow-up. This table uses `Bank.Transaction` as an input. If a new deposit is inserted into `Bank.Transaction`, that customer may no longer require follow-up. A source insert has triggered a target delete.
+
+Suppose `Bank.AccountSummary` contains account-level aggregates, such as total number of holders and balance per account. If a joint holder is deleted from `Bank.AccountHolder`, the holder count changes. A source delete has triggered a target update.
+
+Suppose `Bank.GoldCustomer` contains customers whose account balance exceeds a threshold. If a row in `Bank.AccountBalance` is updated so that the customer now exceeds the threshold, the customer may newly qualify. A source update has triggered a target insert.
+
+These examples are simple, but the general lesson is that:
+
+> The target response is determined by the query.
 
 ## Analysing the query
 
-Suppose there are two tables X and Y, and these are used as inputs to a data pipeline.
+Suppose two source tables, `X` and `Y`, are used to produce a target table `T`.
 
-The set up is as follows:
+The setup is:
 
-- X has columns [Header ID], [Value], [Status], where [Header ID] is primary key.
+- `X` has columns `[Header ID]`, `[Value]`, and `[Status]`, where `[Header ID]` is the primary key.
+- `Y` has columns `[Header ID]`, `[Line number]`, `[Value]`, and `[Status]`, where `[Header ID]` and `[Line number]` are the primary key.
+- `Y[Header ID]` is a foreign key to `X[Header ID]`.
 
-- Y has columns [Header ID], [Line number], [Value], [Status] , where [Header ID] and [Line number] is primary key.
+There may be inserts, updates, and deletes on both `X` and `Y`.
 
-And Y[Header ID] is a foreign key to X[Header ID] and joins on this column.
+Inserts and updates are considered together as upserts. The possible source changes are:
 
-There could be inserts, updates and deletes on X, as well as on Y. Thus, there are six possible input changes each time. In practice, inserts and updates and can often be considered as a single upsert. Thus, the inputs are:
+- upserts from `X`;
+- deletes from `X`;
+- upserts from `Y`;
+- deletes from `Y`.
 
-- upserts from X
+The goal is to determine which rows in `T` need to be recalculated or removed.
 
-- deletes from X
+The way to calculate these depends on the shape of the query.
 
-- upserts from Y
+### Common query shapes
 
-- deletes from Y
+The following table summarises several common query shapes and how changes may propagate.
 
-Suppose the target table is T. The goal is to determine which rows in the target table need to be inserted, updated, or deleted. This is done by computing a driver set of primary keys that might be affected by changes in source tables (X and Y). Inserts and updates can be considered as one. Thus, the goal is to calculate:
+| Scenario | Target primary key | Approach | Keys to upsert in `T` | Keys to delete from `T` |
+|---|---|---|---|---|
+| Straight select of `X` | `[Header ID]` | Source rows map directly to target rows. | Headers from `X` that were inserted or updated. | Headers from `X` that were deleted. |
+| Filter of `X` on `[Status]` | `[Header ID]` | Filter condition means updates can add or remove rows. | Headers from `X` that were inserted or updated and now pass the filter. | Headers from `X` that were deleted, or updated and no longer pass the filter. |
+| `X` inner join `Y` | `[Header ID]`, `[Line number]` | Join means changes on either side can add or remove joined pairs. | Pairs for `Y` rows inserted or updated, plus pairs for changed `X` headers with matching `Y` rows. | Pairs for `Y` rows deleted, plus all pairs for headers deleted from `X`. |
+| `X` inner join `Y`, grouped by `[Header ID]` | `[Header ID]` | Deleting a `Y` row can change the aggregate or remove the header. | Headers from `X` or `Y` whose values may have changed, including deletes from `Y` that change the aggregate. | Headers deleted from `X`, or headers that now have zero `Y` rows. |
+| `X` left join `Y` with synthetic line `0` | `[Header ID]`, `[Line number]` | Synthetic line `0` appears only when no `Y` rows exist. | Pairs for `Y` rows inserted or updated; `(Header ID, 0)` for headers with no `Y` rows; pairs for new `X` headers. | Pairs for `Y` rows deleted; remove `(Header ID, 0)` when `Y` rows appear; remove all pairs for headers deleted from `X`. |
+| `Y` left join `X` | `[Header ID]`, `[Line number]` | Target follows `Y` lines; `X` changes matter only if `Y` lines exist. | Pairs from `Y` inserted or updated, plus pairs under headers in `X` that changed. | Pairs from `Y` that were deleted. |
+| `X` left join `Y`, grouped by `[Header ID]` | `[Header ID]` | `X` controls row presence; `Y` changes aggregates. | Headers in `X` inserted, plus headers whose values changed due to changes in `X` or `Y`, including deletes from `Y`. | Headers deleted from `X`. |
+| Union of `[Header ID]` | `[Header ID]` | Header exists if present in either `X` or `Y`. | Headers inserted or updated in `X` or `Y`; headers projected from one side but still existing on the other. | Headers deleted from both `X` and `Y`. |
+| `X` left anti-join `Y` | `[Header ID]` | Row appears only when `X` exists and `Y` does not. | Headers inserted or updated in `X` with no `Y` rows; headers where `Y` rows were deleted and now qualify. | Headers deleted from `X`; headers that gained a `Y` row. |
 
-- primary keys to upsert on T
+The table is not meant to memorise every case. Its purpose is to show that target response depends on query shape.
 
-- primary keys to deletes on T
+With more source tables, the analysis can become complicated quickly. A query with ten inputs may have many possible source changes, and each source change may affect the target differently.
 
-The way to calculate these depends on the nature of the query. Some possible scenarios include:
+### Robustness
 
-1. A straight select of X
+For robustness, upsert drivers may be broader than strictly necessary. Delete drivers should be exact.
 
-2. A filter of X on status
+This asymmetry exists because load mechanics apply upserts only for rows that have genuinely changed. If the upsert driver is too broad, the pipeline may recalculate extra rows, but the staging table is still compared with the target and only genuine inserts or updates are applied.
 
-3. X inner join Y
+A broad upsert driver is therefore usually safe, provided it remains performant. For example, it may be acceptable to construct the driver set using part of a primary key rather than the full primary key, causing the load to recalculate a slightly wider set of rows.
 
-4. X inner join Y group by [Header ID] to sum over Y[value]
+Deletes are different.
 
-5. X left join Y coalesce on [Line number] to 0 where Y[Header ID] does not exist
+A delete driver does not ask the pipeline to recalculate a row. It tells the pipeline that a row should be removed from the target. If the delete driver contains extra keys, correct rows may disappear.
 
-6. Y left join X
+A common mistake is to over-delete with the intention of reinserting extra records. This can be tempting because a delete-and-reinsert pattern can be easier to calculate than a finely targeted delete-and-upsert pattern. However, over-deleting is dangerous. If the source system has a bulk update on a column that has no impact on the final output, the entire table may be deleted and reinserted. This can create a server bottleneck and cause downstream tables to treat unchanged rows as changed.
 
-7. X left join Y group by [Header ID] to sum over Y[value]
+The rule is:
 
-8. X union Y
+> Upsert drivers may be conservative and include some extra keys. Delete drivers should contain only rows that no longer satisfy the target query’s presence rule.
 
-9. X left anti-join Y
+## Worked examples
 
-All of these would require a different treatment. These are summarised in the table:
+The following examples show how source changes are translated through query logic.
 
-| Scenario | Primary key | Approach | Primary keys to upsert in T | Primary keys to delete in T |
-| --- | --- | --- | --- | --- |
-| 1. Straight select of X | [Header ID] | Simple case: X changes map directly to T. | Headers from X that were inserted or updated | Headers from X that were deleted |
-| 2. Filter of X on status | [Header ID] | Filter condition means updates can add or remove rows. | Headers from X that were inserted or updated and now pass the filter | Headers from X that were deleted, or updated and no longer pass the filter |
-| 3. X inner join Y | ([Header ID], [Line number]) | Join means changes on either side can add or remove pairs. | Pairs for Y rows inserted/updated, plus pairs for X headers inserted/updated with matching Y rows | Pairs for Y rows deleted, plus all pairs for headers deleted from X |
-| 4. X inner join Y with group by [Header ID] | [Header ID] | Deleting a Y row can change the aggregate or remove the header. | Headers from X or Y that changed and now have Y rows; include changes in Y, deletes in Y can also change the aggregated value | Headers deleted from X, or headers that now have zero Y rows |
-| 5. X left join Y with synthetic line 0 | ([Header ID], [Line number]) | Synthetic line 0 appears only when no Y rows exist. | Pairs for Y rows inserted/updated; plus (Header ID, 0) for headers with no Y rows; plus pairs for new X headers | Pairs for Y rows deleted; remove (Header ID, 0) when Y rows exist; remove all pairs for headers deleted from X |
-| 6. Y left join X | ([Header ID], [Line number]) | T follows Y’s lines; X changes matter only if Y lines exist. | Pairs from Y inserted/updated; plus pairs under headers in X that changed | Pairs from Y that were deleted |
-| 7. X left join Y with group by [Header ID] | [Header ID] | X controls row presence; Y only changes the aggregates. | Headers in X inserted; headers where values changed due to X or Y changes, including deletes from Y | Headers deleted from X |
-| 8. Union of [Header ID] | [Header ID] | Header exists if present in either X or Y. | Headers inserted/updated in X or Y; headers projected from one side but still exist on the other | Headers deleted from both X and Y |
-| 9. X left anti-join Y | [Header ID] | Row appears only when X exists and Y does not. | Headers inserted/updated in X with no Y rows; headers where Y rows were deleted and now qualify | Headers deleted from X; headers that gained a Y row |
+### Worked example 1—Filter
 
-These show an array of considerations for two tables. If there are more tables, even up to 10, the analysis can become complicated.
+Suppose the target table contains only active headers.
 
-Consider a query that draws from several tables, such as:
+```sql
+select
+    [Header ID],
+    [Value],
+    [Status]
+from X
+where [Status] = 'Active';
+```
 
-The first step is to determine conditions for upsert in the target.
+**Before source change: `X`**
 
-For each source table, evaluate how changes in that table may influence the result of the query. In general:
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H101 | 20 | Inactive |
+| H102 | 30 | Active |
 
-- An upsert in a source table typically results in an upsert in the target.
+**Before target load: `T`**
 
-Any insert or update in A, B, or C may alter projected values and therefore requires re-computation.
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H102 | 30 | Active |
 
-- A delete in a source table may also result in an upsert in the target.
+Now suppose two source rows are updated.
 
-This occurs when the query includes:
+**Source changes in `X`**
 
-- Left joins, where the absence of a row changes a value to a default rather than removing the target row.
-- Aggregations, where the removal of a contributing row modifies a computed measure.
+| Header ID | Old status | New status | Source change |
+|---|---|---|---|
+| H101 | Inactive | Active | Update |
+| H102 | Active | Inactive | Update |
 
-Thus, for each table, the question is:
+The source action is the same in both cases: an update.
 
-“Could an insert, update, or delete in this table change the values produced by the query?”
+The target action is different.
 
-If so, the corresponding key should be included in the driver set for upserts.
+`H101` now passes the filter, so it belongs in the upsert driver. It should be inserted into `T`.
 
-The next step is to determine conditions for deletes from the target.
+`H102` no longer passes the filter, so it belongs in the delete driver. It should be removed from `T`.
 
-In most cases, this occurs only when the tables that governs row presence loses the corresponding row. For example:
+**Upsert driver**
 
-- If the query begins with A left join B left join C ..., then deleting a row from A removes the target row. Deleting a row from B or C generally does not remove the target row; it only changes values.
+| Header ID | Reason |
+|---|---|
+| H101 | Updated row now passes the filter. |
 
-- If the query begins with A inner join B left join C, then deleting a row from A or B removes the target row.
+**Delete driver**
 
-But this can also happen through updates or inserts:
+| Header ID | Reason |
+|---|---|
+| H102 | Updated row no longer passes the filter. |
 
-- In the case of A left anti-join B, an insert to A can cause a row to delete.
+**After incremental load: `T`**
 
-- In the case of A filtered on a row value, an update to the value can cause a delete.
+| Header ID | Value | Status |
+|---|---:|---|
+| H100 | 10 | Active |
+| H101 | 20 | Active |
 
-In summary, upserts arise from any change that affects projected values. Deletes occur only when the base row is removed. Filtering predicates and grouping clauses may cause deletes in a source table to behave as upserts in the target, as they alter aggregates or conditions.
+This example shows that a source update can become either a target upsert or a target delete. The filter controls row presence.
 
-The same reasoning applies to more complex constructs such as unions or set operations, as these are ultimately composed of similar units.
+### Worked example 2—Aggregation
 
-Working through these scenarios can be error prone. Latest innovations in generative AI can provide valuable assistance in this analysis. For example, the table of solutions generated for the 9 scenarios above was generated by GPT-5 using only column 1.
+Suppose the target table contains the total line value for each header.
+
+```sql
+select
+    [Header ID],
+    sum([Value]) as [Total value]
+from Y
+group by [Header ID];
+```
+
+**Before source change: `Y`**
+
+| Header ID | Line number | Value |
+|---|---:|---:|
+| H100 | 1 | 10 |
+| H100 | 2 | 15 |
+| H101 | 1 | 20 |
+
+**Before target load: `T`**
+
+| Header ID | Total value |
+|---|---:|
+| H100 | 25 |
+| H101 | 20 |
+
+Now suppose one source row is deleted.
+
+**Source changes in `Y`**
+
+| Header ID | Line number | Value | Source change |
+|---|---:|---:|---|
+| H100 | 2 | 15 | Delete |
+
+The source action is a delete.
+
+But the target row for `H100` should not be deleted. The header still has another line. Instead, the aggregate must be recalculated.
+
+`H100` belongs in the upsert driver because its total value may have changed.
+
+**Upsert driver**
+
+| Header ID | Reason |
+|---|---|
+| H100 | Deleted line changes the aggregate. |
+
+**Delete driver**
+
+No rows.
+
+**After incremental load: `T`**
+
+| Header ID | Total value |
+|---|---:|
+| H100 | 10 |
+| H101 | 20 |
+
+This example shows that a source delete can become a target update. Aggregations turn row-level changes into value changes at a higher grain.
+
+### Worked example 3—Anti-join
+
+Suppose the target table contains headers in `X` that do not have any matching rows in `Y`.
+
+```sql
+select
+    x.[Header ID],
+    x.[Value]
+from X as x
+where not exists
+(
+    select 1
+    from Y as y
+    where y.[Header ID] = x.[Header ID]
+);
+```
+
+**Before source change: `X`**
+
+| Header ID | Value |
+|---|---:|
+| H100 | 10 |
+| H101 | 20 |
+| H102 | 30 |
+
+**Before source change: `Y`**
+
+| Header ID | Line number | Value |
+|---|---:|---:|
+| H100 | 1 | 5 |
+| H102 | 1 | 8 |
+
+**Before target load: `T`**
+
+| Header ID | Value |
+|---|---:|
+| H101 | 20 |
+
+`H101` appears in `T` because it exists in `X` but has no matching row in `Y`.
+
+Now suppose a new row is inserted into `Y`.
+
+**Source changes in `Y`**
+
+| Header ID | Line number | Value | Source change |
+|---|---:|---:|---|
+| H101 | 1 | 12 | Insert |
+
+The source action is an insert.
+
+But because the target is an anti-join, this insert causes `H101` to stop qualifying. The target action is a delete.
+
+**Upsert driver**
+
+No rows.
+
+**Delete driver**
+
+| Header ID | Reason |
+|---|---|
+| H101 | Inserted `Y` row means the header no longer satisfies the anti-join. |
+
+**After incremental load: `T`**
+
+No rows.
+
+This example shows that a source insert can become a target delete. Anti-joins reverse the usual intuition because the target row exists only while a matching source row is absent.
 
 ## Applying the change
 
-Analysing the query with respect to changes from the source tables informs an incremental extract. Recall from Load mechanics that the difference between incremental extract and full extract are:
+Once the query has been analysed, the transformation can be converted from a full load to an incremental load.
+
+Recall from [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) that the differences between incremental extract and full extract are:
 
 - The staging table for the load has only a minimal set of records that is much smaller than the full set, but still covers all the records that would need to be upserted in the current batch. This is what makes the load fast.
 
-- Deletes cannot be done automatically by comparing the full set of primary keys between the staging and the target. Instead, it needs to be customised for the query by analysing the impact of changes in source.
+- Deletes cannot be done automatically by comparing the full set of primary keys between the staging and the target. Instead, they need to be customised for the query by analysing the impact of changes in source.
 
 The detailed implementation of an incremental extract follows a consistent pattern.
 
-### Write query as normal
+### Step 1—Write the full query
 
-Begin with the full query that expresses the business logic. This is the reference point for all subsequent steps.
+Begin with the full query that expresses the business logic.
 
-### Fetch the bookmark
+For example, suppose the full target query is an inner join between `X` and `Y`. They are used to load `T`.
 
-At the start of the load, retrieve the bookmark that records the last successful refresh.
+```sql
+select
+    X.*,
+    Y.*
+from       X
+inner join Y on Y.[PK] = X.[PK];
+```
 
-This value defines the boundary for change detection. The bookmark for all tables loaded by the pipeline should be logged to a central location and easily retrieved.
+This query is the definition of the target table. It should be understandable and testable as a full load before it is made incremental.
 
-### Create minimal staging table
+### Step 2—Fetch the refresh bookmark
 
-Using the analysis of the query, create a temporary table of keys to upsert to the target.
+At the start of the load, retrieve the refresh bookmark that records the target table’s last successful processing boundary.
 
-In these examples, the driver table has the full key. In practice, it may be a primary key part in the case of multi-columns primary keys.
+This bookmark defines the boundary for upstream change detection.
 
-Attach the driver set as an inner join to the original query. If performance requires, add a clustered index to the driver table.
+```sql
+declare @refresh_bookmark_datetime datetime2(7);
 
-This is now a minimal staging table for incremental load.
+select @refresh_bookmark_datetime =
+(
+    select [Bookmark datetime]
+    from Pipeline.RefreshBookmark
+    where [Table name] = 'T'
+);
+```
 
-### Create the delete set
+### Step 3—Create the upsert driver
 
-Using the analysis of the query, create a temporary table of keys to delete from the target. This can be used to delete records that should no longer be retained by logic of the query.
+Using the query analysis, create a temporary table of target keys to upsert.
 
-Retrieving the records that are deleted would vary depending on how they are tracked.
+In this example, changes from either `X` or `Y` may affect rows in `T`, so the upsert driver takes keys from both source tables.
 
-Consider the case where overwritten or deleted records are moved to a history table.
+```sql
+drop table if exists #keys_to_upsert;
 
-Then the examples would be:
+-- Upserts from X.
+select
+    X.[PK]
+into #keys_to_upsert
+from X
+where X.[Row update datetime] > @refresh_bookmark_datetime
 
-This step works even if the source rows were inserted and deleted in between the load of the target table, for example, if the target table failed to load in the interim.
+union
 
-Inexperienced engineers can make the mistake of over-deleting with the idea of re-inserting extra records. This can be tempting because a delete + insert can be easier to calculate than a finely targeted delete + upsert. However, this approach is harmful because it is a source of potential instability. In unpredictable circumstances, this may trigger the whole table to delete. Instead, deletes should be perfect and remove only rows that no longer satisfy the query’s presence rule.
+-- Upserts from Y.
+select
+    Y.[PK]
+from Y
+where Y.[Row update datetime] > @refresh_bookmark_datetime;
+```
 
-The full script follows.
+In these examples, the driver table has the full target key. In practice, it may contain only part of a multi-column primary key, depending on the grain of the target table.
 
-This workflow offers several advantages.
+If performance requires, add an index to the driver table before joining it to the full query.
 
-Uniformity. The same query logic underpins both full loads and incremental loads. The difference lies only in the addition of a driver set join.
+```sql
+create clustered index cix_keys_to_upsert
+on #keys_to_upsert ([PK]);
+```
 
-Idempotency. The process works regardless of how many times it runs within an interval. If a load fails and is retried, the bookmark ensures correctness. If the load runs more frequently than usual, the outcome remains consistent.
+The upsert driver is then joined to the full query.
 
-Graceful fallback. If upstream changes touch many rows, say due to a system update, the driver set expands and the incremental load behaves like a full load. The fully load staging table would be compared to the target and only genuinely updated records are applied. There is no explosion of deletes that would cause a blow out in operations.
+```sql
+drop table if exists #T_staging;
 
-## Best practice workflow
+select
+    X.*,
+    Y.*
+into #T_staging
+from       X
+inner join Y                on Y.[PK] = X.[PK]
+inner join #keys_to_upsert  as U on U.[PK] = X.[PK]; -- downfilter original query for smaller staging
+```
 
-Given the complexity of responding to change, this section outlines a step-by-step recipe for developing and validating pipelines that respond to upstream inserts, updates, and deletes. The workflow balances technical correctness with performance assurance and safe deployment.
+This produces a minimal staging table. It contains only rows whose target values may have changed, but the row values still come from the normal business query.
 
-### Start with a unit test
+In other query shapes, deletes may also belong in the upsert driver. For example, in an aggregation, deleting a contributing row changes the aggregate value and therefore requires recalculation.
 
-- Compare row counts between the target table and the expected query.
+### Step 4—Create the delete driver
 
-- Use a datetime filter for performance, but ensure it’s independent of the extract datetime.
+Using the query analysis, create a temporary table of target keys to delete.
 
-### Simulate data needing update
+For an inner join between `X` and `Y`, a target row should disappear if the corresponding key no longer exists on either side of the join.
 
-- Load the table in full, then wait for source data to change to simulate an incremental load.
+If deleted rows are preserved in history tables, the delete driver can be calculated from those histories.
 
-### Build the upsert driver
+```sql
+drop table if exists #keys_to_delete;
 
-- As each source table is added, re-run the driver query to check performance.
+-- Deletes from X.
+select
+    X_History.[PK]
+into #keys_to_delete
+from      X_History
+left join X         on X.[PK] = X_History.[PK]
+where X_History.[Row delete datetime] > @refresh_bookmark_datetime -- recently deleted rows
+  and X.[PK] is null;                                             -- truly deleted
 
-- Apply indexes if performance degrades.
+union
 
-### Test the query filter
+-- Deletes from Y.
+select
+    Y_History.[PK]
+from      Y_History
+left join Y         on Y.[PK] = Y_History.[PK]
+where Y_History.[Row delete datetime] > @refresh_bookmark_datetime -- recently deleted rows
+  and Y.[PK] is null;                                             -- truly deleted
+```
 
-- Ensure the inner join between the driver and the original query is performant.
+The delete driver should contain only target keys that no longer satisfy the target query’s presence rule.
 
-### Calculate deletes
+Once the delete driver has been calculated, deleting from the target is straightforward.
 
-- Ensure the delete driver query runs quickly.
+```sql
+delete T
+from       T
+inner join #keys_to_delete as D on D.[PK] = T.[PK];
+```
 
-### Simulate deletes
+### Step 5—Apply load mechanics
 
-- Rather than actually deleting, use a select to simulate deletes during development to avoid accidental data loss.
+After the minimal staging table and delete driver have been created, the normal load mechanics can apply.
 
-### Apply changes and validate
+The pipeline can:
 
-Uniqueness, existence, and stability violations
+- compare staging rows with the target to identify genuine upserts;
+- check stability thresholds;
+- reject unsafe rows;
+- apply updates and inserts;
+- apply deletes;
+- preserve history;
+- record load statistics and bookmarks.
 
-- Apply upserts and deletes.
+This means full and incremental loads share the same business query and load mechanics. The difference is that incremental loads add driver sets to reduce the work.
 
-- Compare the result with a fully loaded copy of the table.
+### Full incremental extract pattern
 
-- The unit test should pass.
+Putting the steps together, the full pattern is:
 
-### Zero-load benchmark
+```sql
+-- 1. Fetch the refresh bookmark, which is the point to resume.
+declare @refresh_bookmark_datetime datetime2(7);
 
-- After loading, re-run the upsert and delete drivers.
+select @refresh_bookmark_datetime =
+(
+    select [Bookmark datetime]
+    from Pipeline.RefreshBookmark
+    where [Table name] = 'T'
+);
 
-- They should return no rows and run in near-zero time.
 
-- The time it takes to do this is the fastest the query can ever run.
+-- 2. Determine the upsert driver table.
+drop table if exists #keys_to_upsert;
 
-### Run incrementally over time
+-- Upserts from X.
+select
+    X.[PK]
+into #keys_to_upsert
+from X
+where X.[Row update datetime] > @refresh_bookmark_datetime
 
-- Continue loading incrementally over multiple days.
+union
 
-- The unit test should continue to pass.
+-- Upserts from Y.
+select
+    Y.[PK]
+from Y
+where Y.[Row update datetime] > @refresh_bookmark_datetime;
+
+
+-- 3. Create the minimal staging table by downfiltering the full query.
+drop table if exists #T_staging;
+
+select
+    X.*,
+    Y.*
+into #T_staging
+from       X
+inner join Y               on Y.[PK] = X.[PK]
+inner join #keys_to_upsert as U on U.[PK] = X.[PK]; -- downfilter original query for smaller staging
+
+
+-- 4. Determine the delete driver table.
+drop table if exists #keys_to_delete;
+
+-- Deletes from X.
+select
+    X_History.[PK]
+into #keys_to_delete
+from      X_History
+left join X         on X.[PK] = X_History.[PK]
+where X_History.[Row delete datetime] > @refresh_bookmark_datetime -- recently deleted rows
+  and X.[PK] is null;                                             -- truly deleted
+
+union
+
+-- Deletes from Y.
+select
+    Y_History.[PK]
+from      Y_History
+left join Y         on Y.[PK] = Y_History.[PK]
+where Y_History.[Row delete datetime] > @refresh_bookmark_datetime -- recently deleted rows
+  and Y.[PK] is null;                                             -- truly deleted
+
+
+-- 5. Apply the deletes.
+delete T
+from       T
+inner join #keys_to_delete as D on D.[PK] = T.[PK];
+
+-- 6. Continue upsert using standard load mechanics...
+```
+
+This script illustrates the complete pattern:
+
+1. fetch the target refresh bookmark;
+2. calculate the upsert driver;
+3. downfilter the full query into a minimal staging table;
+4. calculate the delete driver;
+5. apply the target deletes.
+
+Visually the procedure looks like:
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="760" height="980"
+     viewBox="0 0 760 980"
+     style="display:block;width:100%;max-width:38rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Vertical incremental load SQL pattern from bookmark to upsert driver, staging, delete driver, deletes, and load mechanics">
+
+  <defs>
+    <marker id="arrowhead-incremental-pattern" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+
+    <style>
+      .box {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 2;
+        rx: 14;
+      }
+
+      .label {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .small {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 13px;
+        fill: #333333;
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13px;
+        fill: #333333;
+      }
+
+      .arrow {
+        stroke: #222222;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-incremental-pattern);
+      }
+
+      .dash {
+        stroke: #222222;
+        stroke-width: 1.8;
+        stroke-dasharray: 6 5;
+        fill: none;
+        marker-end: url(#arrowhead-incremental-pattern);
+      }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="60" y="44" class="label">Full incremental extract pattern</text>
+  <text x="60" y="68" class="small">A vertical view of the SQL block: each artefact is created in sequence, then used by load mechanics.</text>
+
+  <!-- Step 1 -->
+  <rect x="170" y="105" width="420" height="86" class="box"/>
+  <text x="380" y="138" text-anchor="middle" class="label">1. Fetch refresh bookmark</text>
+  <text x="380" y="164" text-anchor="middle" class="mono">@refresh_bookmark_datetime</text>
+  <text x="380" y="182" text-anchor="middle" class="small">target processing boundary for T</text>
+
+  <!-- Arrow 1 -->
+  <path d="M380 191 L380 235" class="arrow"/>
+
+  <!-- Step 2 -->
+  <rect x="170" y="235" width="420" height="96" class="box"/>
+  <text x="380" y="268" text-anchor="middle" class="label">2. Determine upsert driver</text>
+  <text x="380" y="294" text-anchor="middle" class="mono">#keys_to_upsert</text>
+  <text x="380" y="314" text-anchor="middle" class="small">keys from X and Y changed after the bookmark</text>
+
+  <!-- Source notes left -->
+  <text x="70" y="272" text-anchor="start" class="small">from X</text>
+  <text x="70" y="294" text-anchor="start" class="small">from Y</text>
+  <path d="M125 280 C145 280, 150 280, 170 280" class="dash"/>
+  <path d="M125 302 C145 302, 150 302, 170 302" class="dash"/>
+
+  <!-- Arrow 2 -->
+  <path d="M380 331 L380 375" class="arrow"/>
+
+  <!-- Step 3 -->
+  <rect x="170" y="375" width="420" height="116" class="box"/>
+  <text x="380" y="408" text-anchor="middle" class="label">3. Create minimal staging table</text>
+  <text x="380" y="434" text-anchor="middle" class="mono">#T_staging</text>
+  <text x="380" y="456" text-anchor="middle" class="small">run the normal full query</text>
+  <text x="380" y="475" text-anchor="middle" class="small">inner join to #keys_to_upsert</text>
+
+  <!-- Query annotation right -->
+  <text x="615" y="421" class="small">full query</text>
+  <text x="615" y="443" class="small">inner join to upsert driver</text>
+  <path d="M590 438 C610 438, 610 438, 590 438" class="dash"/>
+
+  <!-- Arrow 3 split -->
+  <path d="M380 491 L380 535" class="arrow"/>
+
+  <!-- Step 4 -->
+  <rect x="170" y="535" width="420" height="112" class="box"/>
+  <text x="380" y="568" text-anchor="middle" class="label">4. Determine delete driver</text>
+  <text x="380" y="594" text-anchor="middle" class="mono">#keys_to_delete</text>
+  <text x="380" y="616" text-anchor="middle" class="small">keys deleted from X or Y history</text>
+  <text x="380" y="635" text-anchor="middle" class="small">and no longer present in the current source</text>
+
+  <!-- History notes left -->
+  <text x="60" y="586" text-anchor="start" class="small">from X_History</text>
+  <text x="60" y="608" text-anchor="start" class="small">from Y_History</text>
+  <path d="M140 592 C150 592, 155 592, 170 592" class="dash"/>
+  <path d="M140 614 C150 614, 155 614, 170 614" class="dash"/>
+
+  <!-- Arrow 4 -->
+  <path d="M380 647 L380 691" class="arrow"/>
+
+  <!-- Step 5 -->
+  <rect x="170" y="691" width="420" height="86" class="box"/>
+  <text x="380" y="724" text-anchor="middle" class="label">5. Apply deletes</text>
+  <text x="380" y="750" text-anchor="middle" class="mono">delete T using #keys_to_delete</text>
+  <text x="380" y="768" text-anchor="middle" class="small">remove rows whose presence is no longer valid</text>
+
+  <!-- Arrow 5 -->
+  <path d="M380 777 L380 821" class="arrow"/>
+
+  <!-- Step 6 -->
+  <rect x="170" y="821" width="420" height="98" class="box"/>
+  <text x="380" y="854" text-anchor="middle" class="label">6. Apply upserts using load mechanics</text>
+  <text x="380" y="880" text-anchor="middle" class="mono">#T_staging → T</text>
+  <text x="380" y="900" text-anchor="middle" class="small">compare, insert, update, preserve history, log bookmark</text>
+
+  <!-- Target marker -->
+  <rect x="610" y="718" width="86" height="128" class="box"/>
+  <text x="653" y="774" text-anchor="middle" class="label">T</text>
+  <text x="653" y="798" text-anchor="middle" class="small">target</text>
+  <path d="M590 734 C600 734, 600 734, 610 734" class="arrow"/>
+  <path d="M590 870 C612 870, 620 846, 638 846" class="arrow"/>
+
+  <!-- Bottom doctrine -->
+  <text x="60" y="950" class="small">Upsert path may be conservative. Delete path must be exact.</text>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:38rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. The incremental extract pattern follows the SQL script from top to bottom. The refresh bookmark defines the change boundary. The upsert driver creates a minimal staging table by downfiltering the normal query. The delete driver identifies rows to remove from <code>T</code>. Load mechanics then applies exact deletes and genuine upserts.
+</div>
+
+
+## Why this pattern works
+
+This workflow has several advantages.
+
+### Uniformity
+
+The same query logic underpins both full loads and incremental loads.
+
+The difference lies in the driver set. A full load runs the query for all target keys. An incremental load runs the same query for only the keys that may have changed.
+
+This reduces the risk that the incremental load becomes a different definition from the full load.
+
+### Idempotency
+
+The process works even if it runs more than once over the same interval.
+
+If a load fails and is retried, the refresh bookmark ensures that the pipeline considers the same source change window again.
+
+If the load runs more frequently than usual, the outcome remains consistent. There may simply be fewer source changes to respond to.
+
+### Graceful fallback
+
+If upstream changes touch many rows, the driver set expands, but the final result set may have minimal changes because the touched column is not selected for the target table.
+
+Using this approach, the incremental load will behave like a full load. This is acceptable. The staging table is still compared to the target, so only genuinely changed rows should be applied.
+
+## Best-practice workflow
+
+Given the complexity of responding to change, incremental logic should be developed as a controlled workflow rather than assembled all at once.
+
+The goal is to prove that the incremental load produces the same result as the full query, while doing less work.
+
+The following is a 9 steps pattern.
+
+### Step 1—Create a full-load comparison test
+
+Start by creating a test that compares the incrementally maintained target table with the expected result of the full query.
+
+This may include:
+
+- row counts;
+- primary key comparison;
+- sample selection.
+
+The test establishes the standard of correctness. A correct incremental load should produce the same final target as a full load.
+
+A datetime filter can be used for performance during development, but it should be independent of the extract datetime being tested.
+
+### Step 2—Create a realistic change window
+
+Load the table in full, then wait for source data to change or create controlled test changes.
+
+This gives the developer a realistic incremental window. The aim is to test the logic against actual source changes, not merely against an abstract query.
+
+### Step 3—Build the upsert driver
+
+Build the upsert driver for one source table at a time.
+
+As each source table is added, re-run the driver query and check both correctness and performance. Add indexes if performance degrades.
+
+The upsert driver should include every key whose target values may need recalculation. It may be slightly broader than necessary, provided it remains performant.
+
+### Step 4—Test the minimal staging table
+
+Join the upsert driver to the full query.
+
+This creates the minimal staging table. It should contain only the rows that may need to be inserted or updated, while preserving the same business logic as the full query.
+
+Check that the staging table is both correct and performant.
+
+### Step 5—Build the delete driver
+
+Build the delete driver separately from the upsert driver.
+
+The delete driver should contain only rows that no longer satisfy the target query’s presence rule.
+
+Special attention should be paid to performance because finding deletes often requires complex scans.
+
+### Step 6—Simulate deletes before applying them
+
+During development, simulate deletes with a `select` rather than immediately applying them.
+
+
+The result set should be examined and compared with the correct result.
+
+Simulating the delete reduces the risk of deleting data while the delete logic is being tested, causing rework to load the data again.
+
+
+### Step 7—Apply changes through load mechanics
+
+Apply the upserts and deletes through normal load mechanics.
+
+The load should:
+
+- compare staging rows with the target;
+- apply only genuine inserts and updates;
+- apply exact deletes;
+- preserve history;
+- record load statistics and bookmarks.
+
+Then compare the incrementally maintained target with a fully loaded copy of the same target. The two should match.
+
+### Step 8—Run a zero-load benchmark
+
+After a successful load, rerun the upsert and delete drivers.
+
+They should return no rows, or near zero rows, and should run quickly.
+
+This is the fastest the incremental load can ever be. It is also a useful baseline for detecting unnecessary work.
+
+### Step 9—Run incrementally over time
+
+Continue loading incrementally over multiple days.
+
+The full-load comparison test should continue to pass. If it fails, the incremental response logic is likely missing a source change condition, over-deleting, or failing to handle a query shape correctly.
+
+## Using AI as a reviewer
+
+Analysing source-change propagation through a complex query can be error-prone.
+
+This is a useful place to use generative AI as a reviewer. A model can propose how source inserts, updates, and deletes may propagate through joins, filters, aggregations, anti-joins, and set operations.
+
+A useful prompt is to provide the query shape, source keys, target key, and the possible source changes, then ask for:
+
+- target keys to upsert;
+- target keys to delete;
+- reasons for each driver.
+
+The output should then be tested against the full-load result.
 
 ## Conclusion
 
-A transformation query can be seen as a formula that takes inputs and produces output. Information efficiency is achieved when changes in the input are accurately tracked and correctly translated into changes in the output. The difficulty of doing this depends not on the volume of data, but on the shape of the query. Anti-joins, aggregations, filters, and window functions all introduce complexity in determining which rows to upsert and which to delete. This determination should be made by analysing the query through the lens of relational algebra. Modern tools, including generative AI, can assist in this analysis by surfacing the logical structure of the query and identifying the propagation of change.
+Tracking changes identifies which source rows changed. Responding to change determines what those source changes mean for the target.
 
-Once the analysis is complete, the transformation can be converted from full to incremental using a standardised approach. This is to fetch the refresh bookmark of the target, compute the upsert driver table, downfilter the original query, and compute the delete driver table. Care must be taken not to over-delete and reinsert. Deletes should perfectly represent only the rows that should no longer be part of the target as of query.
+The difficulty of incremental loading depends not only on data volume, but on query shape. Filters, joins, aggregations, anti-joins, window functions, and set operations all affect whether source changes become target upserts or deletes.
 
-When coupled with the use of refresh bookmarks and the techniques described in Tracking changes, this approach yields an efficient and resilient pipeline. Given the intricacies involved, careful implementation and testing is essential. A unit test is critical to catch errors during development, and silent failures in production.
+The standard pattern is to fetch the refresh bookmark, compute the upsert driver, create a minimal staging table from the normal query, compute the delete driver, and then apply normal load mechanics.
 
-Performance evaluation should be done step by step, with each component tested in isolation. The zero-load scenario provides a baseline benchmark for performance and correctness. This disciplined workflow ensures that the pipeline responds to change with both accuracy and speed.
+The complexity comes from analysing the query. Generative AI is helpful for this part.
+
+Together, the two steps—tracking changes and responding to change—apply the principle of proportionate change.
+
+> [!NOTE]
+> **Key ideas**
+>
+> Tracking change identifies which source rows have changed. Responding to change determines what those source changes mean after they pass through the target query.
+>
+> Source actions do not map directly to target actions. A source insert can cause a target delete, a source delete can cause a target update, and a source update can cause a target insert.
+>
+> The query is the translation layer between source change and target action.
+>
+> A driver set contains the keys that may need action because upstream source rows changed.
+>
+> Upsert drivers identify rows to recalculate. They may be conservative, provided they remain performant.
+>
+> Delete drivers identify rows that no longer satisfy the target query’s presence rule. They must be exact.
+>
+> The goal of an incremental load is to apply proportionate computational change.
