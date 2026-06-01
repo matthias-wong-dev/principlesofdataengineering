@@ -97,6 +97,175 @@ Finally, if the incoming books can be sorted by year, and only some years have n
 
 Each step is increasingly sophisticated, and corresponds to a deeper level of gain from partitioning Power BI tables.
 
+This is visualised below:
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="980" height="760"
+     viewBox="0 0 980 760"
+     style="display:block;width:100%;max-width:44rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Book analogy for Power BI partition refresh showing incoming books split by publishing year, old books not processed, and only changed partitions refreshed">
+
+  <defs>
+    <marker id="arrowhead-book-partitions" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+
+    <style>
+      .box {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 2;
+      }
+
+      .lightbox {
+        fill: #ffffff;
+        stroke: #999999;
+        stroke-width: 1.5;
+      }
+
+      .label {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .small {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 13px;
+        fill: #333333;
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        fill: #333333;
+      }
+
+      .arrow {
+        stroke: #222222;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-book-partitions);
+      }
+
+      .bracket {
+        stroke: #222222;
+        stroke-width: 2;
+        fill: none;
+      }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="60" y="44" class="label">Partition refresh as boxes of books</text>
+  <text x="60" y="68" class="small">Incoming books are grouped by publishing date, then mapped to stored boxes by year.</text>
+
+  <!-- Left headings -->
+  <text x="105" y="112" class="label">Incoming books</text>
+  <text x="105" y="134" class="small">grouped by publishing year</text>
+
+  <!-- Benefit 2 label above incoming box -->
+  <text x="105" y="175" class="label">Benefit 2: old books not processed</text>
+  <text x="105" y="197" class="small">Very old segments can sit outside the rolling window.</text>
+  <text x="105" y="217" class="small">They no longer need to be refreshed.</text>
+
+  <!-- Left incoming vertical box shifted down -->
+  <rect x="90" y="250" width="260" height="430" rx="14" class="box"/>
+
+  <!-- Year segments in incoming -->
+  <!-- Old segment -->
+  <rect x="110" y="270" width="220" height="74" rx="8" class="lightbox"/>
+  <text x="130" y="293" class="label">2021 books</text>
+  <text x="130" y="315" class="small">very old segment</text>
+  <text x="130" y="334" class="mono">latest update: 2026-04-20</text>
+
+  <!-- 2022 -->
+  <rect x="110" y="358" width="220" height="74" rx="8" class="lightbox"/>
+  <text x="130" y="381" class="label">2022 books</text>
+  <text x="130" y="402" class="small">current rolling window</text>
+  <text x="130" y="421" class="mono">latest update: 2026-05-03</text>
+
+  <!-- 2023 changed -->
+  <rect x="110" y="446" width="220" height="74" rx="8" class="box"/>
+  <text x="130" y="469" class="label">2023 books</text>
+  <text x="130" y="490" class="small">current rolling window</text>
+  <text x="130" y="509" class="mono">latest update: 2026-05-09</text>
+
+  <!-- 2024 -->
+  <rect x="110" y="534" width="220" height="74" rx="8" class="lightbox"/>
+  <text x="130" y="557" class="label">2024 books</text>
+  <text x="130" y="578" class="small">current rolling window</text>
+  <text x="130" y="597" class="mono">latest update: 2026-05-04</text>
+
+  <!-- 2025 -->
+  <rect x="110" y="622" width="220" height="38" rx="8" class="lightbox"/>
+  <text x="130" y="646" class="label">2025 books</text>
+
+  <!-- Bracket showing old segment excluded -->
+  <path d="M75 270 L55 270 L55 344 L75 344" class="bracket"/>
+  <text x="22" y="311" text-anchor="middle" class="small">outside</text>
+  <text x="22" y="329" text-anchor="middle" class="small">window</text>
+
+  <!-- Right partition boxes -->
+  <text x="610" y="112" class="label">Received book boxes</text>
+  <text x="610" y="134" class="small">stored partitions with refresh bookmarks</text>
+
+  <!-- Benefit 1 label -->
+  <text x="610" y="175" class="label">Benefit 1: divide and conquer</text>
+  <text x="610" y="197" class="small">Each box can be loaded independently.</text>
+
+  <!-- 2022 box -->
+  <rect x="610" y="255" width="260" height="88" rx="14" class="lightbox"/>
+  <text x="635" y="286" class="label">2022 box</text>
+  <text x="635" y="310" class="mono">bookmark: 2026-05-03</text>
+  <text x="635" y="330" class="small">unchanged—do not refresh</text>
+
+  <!-- 2023 box changed -->
+  <rect x="610" y="400" width="260" height="108" rx="14" class="box"/>
+  <text x="635" y="431" class="label">2023 box</text>
+  <text x="635" y="455" class="mono">bookmark: 2026-05-02</text>
+  <text x="635" y="475" class="mono">incoming:  2026-05-09</text>
+  <text x="635" y="493" class="small">changed—refresh this box</text>
+
+  <!-- 2024 box -->
+  <rect x="610" y="540" width="260" height="88" rx="14" class="lightbox"/>
+  <text x="635" y="571" class="label">2024 box</text>
+  <text x="635" y="595" class="mono">bookmark: 2026-05-04</text>
+  <text x="635" y="615" class="small">unchanged—do not refresh</text>
+
+  <!-- Benefit 3 label -->
+  <text x="610" y="700" class="label">Benefit 3: refresh only changed boxes</text>
+  <text x="610" y="722" class="small">Refresh partitions where polling value differs from its bookmark.</text>
+
+  <!-- Bracketed mapping arrows -->
+  <path d="M365 395 C455 395, 520 299, 610 299" class="arrow"/>
+  <path d="M365 483 C455 483, 520 449, 610 449" class="arrow"/>
+  <path d="M365 571 C455 571, 520 584, 610 584" class="arrow"/>
+
+  <!-- Left bracket for mapping -->
+  <path d="M370 360 C390 360, 390 395, 370 395" class="bracket"/>
+  <path d="M370 448 C390 448, 390 483, 370 483" class="bracket"/>
+  <path d="M370 536 C390 536, 390 571, 370 571" class="bracket"/>
+
+  <text x="405" y="438" class="small">segments map</text>
+  <text x="405" y="456" class="small">to year boxes</text>
+
+  <!-- Check marks / comparison labels -->
+  <text x="885" y="305" class="label">=</text>
+  <text x="885" y="456" class="label">≠</text>
+  <text x="885" y="591" class="label">=</text>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:44rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. Partitioning is like sorting incoming books into boxes by publishing year. Partitioning enables divide-and-conquer loading. A rolling window means very old books are no longer processed. Incremental refresh compares each incoming segment’s latest update datetime with the stored bookmark on the matching box, then refreshes only the box whose value changed.
+</div>
+
 ### Parallel partition refresh
 
 A partition key is a business date or datetime column that divides the data into intervals such as daily, monthly, or yearly. Power BI can load these partitions in parallel.
