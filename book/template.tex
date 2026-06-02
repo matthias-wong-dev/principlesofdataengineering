@@ -27,6 +27,7 @@
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
 \providecommand{\pandocbounded}[1]{%
+  \Needspace{0.72\textheight}%
   \begin{adjustbox}{max width=\linewidth,max totalheight=0.62\textheight,center}
   #1%
   \end{adjustbox}%
@@ -41,6 +42,7 @@
 \usepackage{etoolbox}
 \usepackage{enumitem}
 \usepackage{amssymb}
+\usepackage{needspace}
 \usepackage{fvextra}
 \usepackage{mdframed}
 
@@ -61,6 +63,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.7em}
 \setlist{itemsep=0.25em, topsep=0.4em}
+\raggedbottom
 
 \definecolor{pbiHeader}{HTML}{EAF2F8}
 \definecolor{pbiStripe}{HTML}{F7FAFC}
@@ -73,9 +76,12 @@
 \setlength{\arrayrulewidth}{0.35pt}
 \renewcommand{\arraystretch}{1.18}
 \setlength{\tabcolsep}{5pt}
-\renewcommand{\toprule}{\arrayrulecolor{pbiGrid}\hline}
-\renewcommand{\midrule}{\hline}
-\renewcommand{\bottomrule}{\hline}
+\let\podeToprule\toprule
+\let\podeMidrule\midrule
+\let\podeBottomrule\bottomrule
+\renewcommand{\toprule}{\arrayrulecolor{pbiGrid}\podeToprule}
+\renewcommand{\midrule}{\arrayrulecolor{pbiGrid}\podeMidrule}
+\renewcommand{\bottomrule}{\arrayrulecolor{pbiGrid}\podeBottomrule}
 \AtBeginEnvironment{longtable}{%
   \small
   \setlength{\LTpre}{0.45em}

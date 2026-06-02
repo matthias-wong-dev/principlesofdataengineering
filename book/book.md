@@ -3,7 +3,7 @@ title: "Principles of Data Engineering"
 author: "Matthias Wong"
 documentclass: book
 classoption:
-  - openright
+  - openany
   - 10pt
 geometry: paperwidth=7in,paperheight=10in,inner=0.7in,outer=0.55in,top=0.65in,bottom=0.75in
 fontsize: 10pt
@@ -30,23 +30,23 @@ links-as-notes: false
 
 \end{center}
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 
 \vspace*{0.35\textheight}
 
-\noindent The book is available on \href{https://principlesofdataengineering.org}{principlesofdataengineering.org}.
+\noindent The book is available on \href{https://principlesofdataengineering.org/?utm_source=pde_book}{principlesofdataengineering.org}.
 
 \vspace{1em}
 
 \noindent Downloadable PDF and EPUB editions are available for offline reading. The online version is canonical and may be updated over time.
 
-\cleardoublepage
+\newpage
 
 \tableofcontents
 
-\cleardoublepage
+\newpage
 
 \mainmatter
 
@@ -66,9 +66,9 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 
 Matthias holds a PhD in Computational Mathematics.
 
-For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me).
+For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me/?utm_source=pde_book).
 
-\cleardoublepage
+\newpage
 
 # The book {#docs-about-the-book}
 
@@ -88,7 +88,7 @@ Special thanks to E.D. and M.T. for their contribution and support throughout th
 
 *Principles of Data Engineering* was written in the Department of Agriculture, Fisheries and Forestry, and released under Freedom of Information.
 
-The site [principlesofdataengineering.org](https://principlesofdataengineering.org) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
+The site [principlesofdataengineering.org](https://principlesofdataengineering.org/?utm_source=pde_book) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
 
 ## Attribution
 
@@ -99,7 +99,7 @@ The book *Principles of Data Engineering* includes adapted and additional materi
 © Department of Agriculture, Fisheries and Forestry 2026
 Adaptation and additional material © Matthias Wong 2026
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -109,7 +109,7 @@ Adaptation and additional material © Matthias Wong 2026
 \begin{center}
 {\Huge\bfseries Foundations}
 \end{center}
-\cleardoublepage
+\newpage
 
 # What is data engineering? {#docs-foundations-what-is-data-engineering}
 
@@ -185,7 +185,7 @@ The search for business insights is both demanding in complexity and fluid in na
 >
 > The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim define the fluid nature of data engineering.
 
-\cleardoublepage
+\newpage
 
 # What is data? {#docs-foundations-what-is-data}
 
@@ -241,7 +241,7 @@ We will return frequently to the concepts illustrated in Figure 1 throughout thi
 >
 > Data engineering reshapes the data world into forms the business world can use.
 
-\cleardoublepage
+\newpage
 
 # Data and organisations {#docs-foundations-data-and-organisations}
 
@@ -291,7 +291,7 @@ The agency cycle therefore shows why no part of data work is neutral. The busine
 >
 > Organisations do not simply use data; data is also where meaning is negotiated.
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -301,7 +301,7 @@ The agency cycle therefore shows why no part of data work is neutral. The busine
 \begin{center}
 {\Huge\bfseries Creating information}
 \end{center}
-\cleardoublepage
+\newpage
 
 # Expressiveness and fragment modelling {#docs-creating-information-expressiveness-and-fragment-modelling}
 
@@ -391,7 +391,7 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 >
 > In a well-designed pipeline, tables can be understood as functions that transform fragments of data into reusable information.
 
-\cleardoublepage
+\newpage
 
 # Mapping the data world {#docs-creating-information-mapping-the-data-world}
 
@@ -500,7 +500,7 @@ These are the subjects of the next two chapters: [Entity processing](#docs-creat
 >
 > Mutable entities lead to entity tracking.
 
-\cleardoublepage
+\newpage
 
 # Entity processing {#docs-creating-information-entity-processing}
 
@@ -743,7 +743,7 @@ The same temptation applies to all three passes. Convenience at the beginning cr
 >
 > The reduce pass returns detailed fragments to the grain required by business intent.
 
-\cleardoublepage
+\newpage
 
 # Entity tracking {#docs-creating-information-entity-tracking}
 
@@ -986,7 +986,7 @@ Computational performance can also become a bottleneck, especially in end-of-per
 >
 > The central difficulty of entity tracking is representing change without losing identity.
 
-\cleardoublepage
+\newpage
 
 # Reference data {#docs-creating-information-reference-data}
 
@@ -1209,7 +1209,7 @@ Above all, it is a discipline of separation, not a mechanical implementation rec
 >
 > Changes to shared references can amplify across the warehouse; delay the dependency until presentation when possible.
 
-\cleardoublepage
+\newpage
 
 # Conforming systems {#docs-creating-information-conforming-systems}
 
@@ -1539,7 +1539,7 @@ When the answer to either question is no, then vertical integration is likely to
 >
 > The central danger of integration is collapsing meaning for technical convenience.
 
-\cleardoublepage
+\newpage
 
 # Storytelling {#docs-creating-information-storytelling}
 
@@ -1923,7 +1923,7 @@ This involves decisions and compromise: details to discard, or journeys to empha
 >
 > Visual checks are an essential part of developing storytelling dimensions.
 
-\cleardoublepage
+\newpage
 
 # Meaningful fragments {#docs-creating-information-meaningful-fragments}
 
@@ -2270,7 +2270,7 @@ This is one of the hallmarks of mature data engineering: the ability to see a da
 >
 > Mature data engineering depends on seeing the data product as a set of minimal informational components.
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -2280,7 +2280,7 @@ This is one of the hallmarks of mature data engineering: the ability to see a da
 \begin{center}
 {\Huge\bfseries Presenting insights}
 \end{center}
-\cleardoublepage
+\newpage
 
 # The craft of dimensional modelling {#docs-presenting-insights-the-craft-of-dimensional-modelling}
 
@@ -2328,7 +2328,7 @@ Three guiding questions organise the chapters in this section:
 - What does a good dimensional model look and feel like?
 - What modelling tools are available to anticipate a range of user behaviours?
 
-\cleardoublepage
+\newpage
 
 # Anticipating questions {#docs-presenting-insights-anticipating-questions}
 
@@ -2620,7 +2620,7 @@ This is how the data engineer anticipates questions.
 >
 > The chronological bus shows which questions the model can and cannot answer.
 
-\cleardoublepage
+\newpage
 
 # A good dimensional model {#docs-presenting-insights-a-good-dimensional-model}
 
@@ -2838,7 +2838,7 @@ The Zen of Python is a useful guide to designing a dimensional model. Its emphas
 >
 > A strong model makes answers appear naturally because the data engineer has already made the hard design decisions.
 
-\cleardoublepage
+\newpage
 
 # Dimensional modelling for UX {#docs-presenting-insights-dimensional-modelling-for-ux}
 
@@ -3386,7 +3386,7 @@ That is the heart of dimensional modelling in an interactive model.
 >
 > A good dimensional model lets users interact with business activity reliably without guessing how the model works.
 
-\cleardoublepage
+\newpage
 
 # Filtering behaviour {#docs-presenting-insights-filtering-behaviour}
 
@@ -4307,7 +4307,7 @@ Power BI supports this through the five filtering mechanisms described at the st
 >
 > Good filtering design anticipates how users will interact with the model and makes sensible behaviour occur naturally.
 
-\cleardoublepage
+\newpage
 
 # Designing measures {#docs-presenting-insights-designing-measures}
 
@@ -4997,7 +4997,7 @@ They should be used deliberately. If many measures require complex relationship 
 >
 > If measure logic becomes difficult to explain, the data engineer should consider whether the model or pipeline should be improved.
 
-\cleardoublepage
+\newpage
 
 # Measure of measures {#docs-presenting-insights-measure-of-measures}
 
@@ -5345,7 +5345,7 @@ Without anchor in business meaning, dynamic measure selection can easily become 
 >
 > Aggregating across measures must be defined deliberately. Blank results are often a useful safeguard against accidental nonsense.
 
-\cleardoublepage
+\newpage
 
 # Interactive row level security {#docs-presenting-insights-interactive-row-level-security}
 
@@ -5620,7 +5620,7 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 >
 > Both anonymous and pseudonymous approaches preserve unit-record interactivity, but both carry inference risk.
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -5630,7 +5630,7 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 \begin{center}
 {\Huge\bfseries Quality \& reliability}
 \end{center}
-\cleardoublepage
+\newpage
 
 # The foundations of trust {#docs-quality-reliability-the-foundations-of-trust}
 
@@ -5693,7 +5693,7 @@ Because of these changes, a trustworthy data product cannot depend on everything
 >
 > Reliability keeps users from guessing whether the data worked.
 
-\cleardoublepage
+\newpage
 
 # Quality metadata {#docs-quality-reliability-quality-metadata}
 
@@ -5867,7 +5867,7 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 >
 > Metadata should be stored and treated as data.
 
-\cleardoublepage
+\newpage
 
 # Three approaches to data quality {#docs-quality-reliability-three-approaches-to-data-quality}
 
@@ -6727,7 +6727,7 @@ Useful drift statistics may include:
 >
 > All three approaches depend on monitoring the assumptions that make the intervention safe.
 
-\cleardoublepage
+\newpage
 
 # Tests and assumptions {#docs-quality-reliability-tests-and-assumptions}
 
@@ -7198,7 +7198,7 @@ New engineers naturally spend more time choosing patterns and building their imp
 >
 > Monitored assumptions detect changes that make the logic unsafe.
 
-\cleardoublepage
+\newpage
 
 # Fault tolerance {#docs-quality-reliability-fault-tolerance}
 
@@ -7465,7 +7465,7 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 >
 > Not every error is fatal, but none should pass silently.
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -7475,7 +7475,7 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 \begin{center}
 {\Huge\bfseries Efficient \& stable pipeline}
 \end{center}
-\cleardoublepage
+\newpage
 
 # Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
 
@@ -7575,7 +7575,7 @@ The chapters in **Efficiency & stability** explore how to build pipelines that a
 >
 > Meaningful fragments help preserve correspondence by keeping change local, legible, and proportionate.
 
-\cleardoublepage
+\newpage
 
 # Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
 
@@ -7968,7 +7968,7 @@ Investment in automation or appropriate technology ensures that this logic can b
 >
 > Load logging records bookmarks, change statistics, and success or failure so the pipeline can explain what happened.
 
-\cleardoublepage
+\newpage
 
 # Load orchestration {#docs-efficient-stable-pipeline-load-orchestration}
 
@@ -8376,7 +8376,7 @@ This makes the load stack technology-agnostic. The coordination happens through 
 >
 > The same pattern supports partial loads, higher-frequency loads, and cross-technology orchestration.
 
-\cleardoublepage
+\newpage
 
 # Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
 
@@ -8694,7 +8694,7 @@ A healthy dependency is valuable, targeted, and stable. It propagates meaningful
 >
 > Views can avoid materialised reloads by propagating logic rather than persisted information, but they do not provide the same buffering, persistence, or row-level change tracking as loaded tables.
 
-\cleardoublepage
+\newpage
 
 # Incremental load: tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
 
@@ -9087,7 +9087,7 @@ In this way, the Filter step converts fragile or out-of-sync source change signa
 >
 > The Filter step converts source change signals into reliable pipeline change artefacts for downstream processing.
 
-\cleardoublepage
+\newpage
 
 # Incremental load: responding to change {#docs-efficient-stable-pipeline-responding-to-change}
 
@@ -9795,7 +9795,7 @@ Together, the two steps—tracking changes and responding to change—apply the 
 >
 > The goal of an incremental load is to apply proportionate computational change.
 
-\cleardoublepage
+\newpage
 
 # Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
 
@@ -10077,7 +10077,7 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 > Optimising Power BI load requires planning backward from the semantic model into the pipeline.
 ```
 
-\cleardoublepage
+\newpage
 
 \thispagestyle{empty}
 \phantomsection
@@ -10087,7 +10087,7 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 \begin{center}
 {\Huge\bfseries Judgement under ambiguity}
 \end{center}
-\cleardoublepage
+\newpage
 
 # The six principles of data engineering {#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering}
 
@@ -10164,7 +10164,7 @@ The final chapter is the essay [Hallmarks of quality](#docs-judgement-under-ambi
 >
 > These principles help the data engineer keep working until data has been shaped into information that can serve business intent.
 
-\cleardoublepage
+\newpage
 
 # Working with stakeholders {#docs-judgement-under-ambiguity-working-with-stakeholders}
 
@@ -10472,7 +10472,7 @@ The seven engagement principles capture hard-earned wisdom for facilitating thes
 >
 > These principles move the team beyond reacting to requirements and toward a solution that truly meets business intent.
 
-\cleardoublepage
+\newpage
 
 # Construction planning {#docs-judgement-under-ambiguity-construction-planning}
 
@@ -10731,7 +10731,7 @@ Success hinges increasingly on planning. The mark of an experienced data enginee
 >
 > The mark of an experienced data engineer is an effective plan.
 
-\cleardoublepage
+\newpage
 
 # When things go wrong {#docs-judgement-under-ambiguity-when-things-go-wrong}
 
@@ -10947,7 +10947,7 @@ Most importantly, the framework is not only for time-sensitive production failur
 >
 > The final effect is not merely the disappearance of the symptom. The work is complete when the business receives the information it needs to make the decision.
 
-\cleardoublepage
+\newpage
 
 # Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
 

@@ -9,7 +9,7 @@ links-as-notes: false
 css: book/epub.css
 ---
 
-The book is available on [principlesofdataengineering.org](https://principlesofdataengineering.org).
+The book is available on [principlesofdataengineering.org](https://principlesofdataengineering.org/?utm_source=pde_book).
 
 Downloadable PDF and EPUB editions are available for offline reading. The online version is canonical and may be updated over time.
 
@@ -29,7 +29,7 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 
 Matthias holds a PhD in Computational Mathematics.
 
-For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me).
+For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me/?utm_source=pde_book).
 
 # The book {#docs-about-the-book}
 
@@ -49,7 +49,7 @@ Special thanks to E.D. and M.T. for their contribution and support throughout th
 
 *Principles of Data Engineering* was written in the Department of Agriculture, Fisheries and Forestry, and released under Freedom of Information.
 
-The site [principlesofdataengineering.org](https://principlesofdataengineering.org) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
+The site [principlesofdataengineering.org](https://principlesofdataengineering.org/?utm_source=pde_book) is a web edition of that manuscript. It has been transcribed, edited, restructured, and supplemented for online publication by Matthias Wong.
 
 ## Attribution
 

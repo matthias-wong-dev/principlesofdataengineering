@@ -8,6 +8,7 @@ import shutil
 import struct
 import subprocess
 import time
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import zlib
 from dataclasses import dataclass
 from pathlib import Path
@@ -30,7 +31,7 @@ DEFAULT_ARTIFACTS = {
 }
 EPUB_ASSETS_DIR = ROOT / "epub-assets"
 PDF_SAFE_REPLACEMENTS: dict[str, str] = {}
-BOOK_URL = "https://principlesofdataengineering.org"
+BOOK_URL = "https://principlesofdataengineering.org/?utm_source=pde_book"
 BOOK_DOMAIN = "principlesofdataengineering.org"
 AVAILABILITY_NOTE = (
     f"The book is available on [{BOOK_DOMAIN}]({BOOK_URL}).\n\n"
@@ -63,6 +64,9 @@ HUGO_RELREF_RE = re.compile(
 )
 HUGO_SHORTCODE_INLINE_RE = re.compile(r"{{\s*[<%]\s*/?[\w-]+.*?[>%]\s*}}")
 MARKDOWN_SITE_LINK_RE = re.compile(r"(\[[^\]]+\]\()(/docs/[^)#\s]+)(#[^)]+)?(\))")
+TRACKED_URL_RE = re.compile(
+    r"https://(?:www\.)?(?:matthiaswong\.me|principlesofdataengineering\.org)(?:/[^\s)\"'<]*)?"
+)
 FENCED_CODE_RE = re.compile(
     r"(^```[ \t]*([A-Za-z0-9_-]+)?[^\n]*\n)(.*?)(^```[ \t]*$)",
     re.DOTALL | re.MULTILINE,
@@ -669,6 +673,18 @@ def rewrite_internal_links(text: str, link_map: dict[str, str]) -> str:
     return MARKDOWN_SITE_LINK_RE.sub(replace_link, text)
 
 
+def add_tracking_to_external_links(text: str) -> str:
+    def replace_url(match: re.Match[str]) -> str:
+        url = match.group(0)
+        split = urlsplit(url)
+        query = parse_qsl(split.query, keep_blank_values=True)
+        if not any(key == "utm_source" for key, _ in query):
+            query.append(("utm_source", "pde_book"))
+        return urlunsplit((split.scheme, split.netloc, split.path or "/", urlencode(query), split.fragment))
+
+    return TRACKED_URL_RE.sub(replace_url, text)
+
+
 def clean_body(
     page: Page,
     target: str,
@@ -681,6 +697,7 @@ def clean_body(
         text = wrap_svg_blocks_for_epub(text, diagrams)
     if target in {"epub", "pdf", "kdp"}:
         text = rewrite_internal_links(text, link_map)
+        text = add_tracking_to_external_links(text)
         text = highlight_code_blocks(text, target)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
@@ -739,7 +756,7 @@ def render_section_break(page: Page, target: str) -> str:
             r"\begin{center}",
             f"{{\\Huge\\bfseries {title}}}",
             r"\end{center}",
-            r"\cleardoublepage",
+            r"\newpage",
         ]
     )
 
@@ -772,7 +789,7 @@ def render_print_front_matter() -> str:
             f'author: "{AUTHOR}"',
             'documentclass: book',
             'classoption:',
-            "  - openright",
+            "  - openany",
             "  - 10pt",
             "geometry: paperwidth=7in,paperheight=10in,inner=0.7in,outer=0.55in,top=0.65in,bottom=0.75in",
             "fontsize: 10pt",
@@ -799,7 +816,7 @@ def render_print_front_matter() -> str:
             "",
             "\\end{center}",
             "",
-            "\\cleardoublepage",
+            "\\newpage",
             "",
             "\\thispagestyle{empty}",
             "",
@@ -813,11 +830,11 @@ def render_print_front_matter() -> str:
             "\\noindent Downloadable PDF and EPUB editions are available for offline reading. "
             "The online version is canonical and may be updated over time.",
             "",
-            "\\cleardoublepage",
+            "\\newpage",
             "",
             "\\tableofcontents",
             "",
-            "\\cleardoublepage",
+            "\\newpage",
             "",
             "\\mainmatter",
         ]
@@ -868,7 +885,7 @@ def build_book(target: str) -> str:
         for child in children:
             chunks.append(render_chapter(child, target, link_map, diagrams))
             if target in {"pdf", "kdp"}:
-                chunks.append(r"\cleardoublepage")
+                chunks.append(r"\newpage")
 
     while chunks and chunks[-1] in {r"\newpage", r"\cleardoublepage"}:
         chunks.pop()
