@@ -28,7 +28,7 @@ The book is organised around six principles:
 2. **Meaningful fragments**—compose information from reusable, purposeful parts.
 3. **Anticipate errors**—design for the failures real systems produce.
 4. **Proportionate change**—keep computation aligned with informational change.
-5. **Build momentum**—turn ambiguous business intent into ordered progress.
+5. **Illuminate ambiguity**—turn ambiguous business intent into ordered progress.
 6. **Diagnose root causes**—act on the conditions that make problems recur.
 
 The approach taught in this book is **fragment modelling**: the discipline of building expressive, reusable blocks of information from imperfect operational data.

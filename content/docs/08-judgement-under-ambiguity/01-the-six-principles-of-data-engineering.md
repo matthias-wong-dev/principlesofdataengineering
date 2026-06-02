@@ -1,56 +1,80 @@
 ---
 title: The six principles of data engineering
 url: /docs/judgement-under-ambiguity/the-six-principles-of-data-engineering/
-description: "Six principles for data engineering beyond shallow curation: expressive entities, meaningful fragments, anticipate errors, proportionate change, build momentum, and root cause."
-lede: Good data engineering is guided by principles, not just techniques.
+description: "Introduces the six principles of data engineering as disciplines for resisting shallow curation and exercising judgement under ambiguity."
+lede: The epitome of data engineering is judgement under ambiguity.
 weight: 1
-draft: true
+# draft: true
 ---
 
-The earlier sections outlined patterns and practices for data engineering scenarios.
+## Judgement under ambiguity
 
-They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
+In the chapter [What is data engineering?](/docs/foundations/what-is-data-engineering/), we began with the aim of data engineering, its task, and its challenges.
 
-This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and are summarised in six principles.
+The aim of data engineering is insight.
 
-## The problem with shallow curation
+The task is to reshape data in light of intent.
 
-The most common, but incorrect, approach for new data engineers is shallow curation.
+The challenge is the fluid nature of data engineering:
 
-The typical steps are:
+- Easy substitutes—business areas have access to quick alternatives to insight that avoid the hard work of data engineering.
+- Open-endedness—business areas may pursue new or different questions as they see more data.
+- Ambiguity of aim—business areas may not be clear about how they want to use data, or different areas may have different aims.
 
-1. Take the source system and map to the target environment, adjusting for names and data types.
+But throughout this book, we have seen that the business is not the problem.
 
-2. Receive a list of business requirements for reporting from stakeholders.
+> The data engineer’s greatest enemy is not the stakeholder asking for shortcuts, but the engineer’s own willingness to provide them.
 
-3. Using the source data, apply transformation rules to meet stated requirements, load them into a few big tables for Power BI. A more experienced data engineer may organise these as facts and dimensions.
+The business will often ask for the fastest and easiest outcome. This is to be expected. It is the data engineer who must decide how to respond.
 
-This mindset has many drawbacks. Firstly, it leads to garbage-in, garbage-out. Source applications are not designed for analytical intent and never has the information content to meet business needs. Requirements stated upfront are rarely adequate to be a reliable guide to address this gap. Moreover, this approach focuses on the questions at hand rather than all the questions about the business. Finally, going straight from source to reporting tables means there are no building blocks for use in different scenarios. Using the information for a different scenario, such as ML feature engineering, requires rebuilding logic that embedded in dimensional models.
+Many data engineers, new or experienced, respond through what we may call *shallow curation*:
 
-In other words, shallow curation is too easily satisfied. It does not sufficiently push the data as found to meet the demands of business intent. Neither does it break down complexity in building towards advanced levels of achievement. Consequently, the difference is not between merely “good versus poor” quality, but between what is “possible versus impossible” for a team to achieve with this mindset.
+1. take the source system and map it into the target environment, adjusting names and data types;
+2. receive a list of business requirements for reporting from stakeholders;
+3. use the source data to apply transformation rules that meet those stated requirements, then load the results into a few large tables for Power BI visualisation.
 
-The problem with shallow curation is that there are some outputs. After all, the data engineer has faithfully reproduced data from the source system for users to gain access. Such an engineer may even feel satisfied for doing an excellent job when reality is far from the potential value. If business users are dissatisfied when business objectives are not fully met, it is possible to blame poor data quality at source or on the unclear business rules. The danger of shallow curation is that, like all mindsets that starts by reducing standards, it settles for less, and by settling for less, creates a blind spot for the engineer who cannot see the failure to reach excellence.
+In this way, a data engineer can reproduce source data in a cleaner environment, build reporting tables, refresh dashboards, and fix visible errors while still avoiding the deeper work.
 
-## Six principles
+The result may look technically correct. It may even be appreciated. But it remains a substitute for real data engineering.
 
-A surer basis for data engineering can be summarised in six principles:
+Real data engineering refuses easy answers that simplify the genuine complexity of business and data reality. It requires accepting, and operating within, the fluid nature of data engineering.
 
-- Instead of garbage-in-garbage-out with raw data, add value through expressive entities.
+This means the mark of the best data engineer is **sustained judgement under ambiguity**.
 
-- Instead of building giant tables, create meaningful fragments.
+## The six principles
 
-- Instead of stopping with what works now, anticipate errors that may occur.
+The principles of data engineering can be seen in this light. We introduced four in the preceding sections. This final section introduces the last two.
 
-- Instead of wholesale response, maintain proportionate change.
+The six principles are:
 
-- Instead of reacting to requirements, build momentum through leading discovery.
+- Instead of garbage-in-garbage-out with raw data, add value through **expressive entities**.
+- Instead of building giant tables, create **meaningful fragments**.
+- Instead of stopping with what works now, **anticipate errors** that may occur.
+- Instead of wholesale response, maintain **proportionate change**.
+- Instead of waiting for clarity, **illuminate ambiguity**.
+- Instead of stopping at the symptoms, diagnose the **root cause**.
 
-- Instead of stopping at the symptoms, diagnose the root cause.
+Instead of applying quick fixes to what is visibly wrong, the expert data engineer asks what must be right for business intent—now and into the future.
 
-That is, instead of finding quick fixes to what is wrong, the expert data engineer focuses on what needs to be right for business intent—now and into the future. These can be remembered through six phrases: expressive entities, meaningful fragments, anticipate errors, proportionate change, build momentum, root cause.
+The six principles are disciplines that guard against the temptation of easy substitutes. They help the data engineer keep working until data has been shaped into information that can serve business intent.
 
-It is not a matter of “fast workaround” versus “slow and proper.” It is the difference between what gets tangled up in a mess versus what will not. In the long term, the six principles create fast and flexible paths to success.
+It is not a matter of fast workaround versus slow and proper. It is the difference between what gets tangled up in a mess and what remains usable under change.
 
-The earlier sections covered four of the principles–expressive entities, meaningful fragments, anticipating errors, and proportionate change. The remaining chapters introduce the final principles–build momentum and root cause.
+The chapters [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/) and [Construction planning](/docs/judgement-under-ambiguity/construction-planning/) apply the principle **illuminate ambiguity**. The chapter [Sound judgement](/docs/judgement-under-ambiguity/sound-judgement/) applies the principle **root cause**.
 
-The section ends with the chapter Hallmarks of quality. This essay was written years before this text and reproduced with minimal edits. The essay guided the years of work now summarised in this book.
+The final chapter is the essay [Hallmarks of quality](/docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/). This essay was written years before this text and is reproduced with minimal edits. It guided the years of work that preceded this book. Although it is written in a different register and uses different terms, it can be read as a summary of the book.
+
+> [!NOTE]
+> **Key ideas**
+>
+> The epitome of data engineering is judgement under ambiguity.
+>
+> The data engineer’s greatest enemy is not the stakeholder asking for shortcuts, but the engineer’s own willingness to provide them.
+>
+> Shallow curation reproduces source data in a cleaner environment, applies stated requirements, and produces reporting tables without doing the deeper work of shaping data toward business intent.
+>
+> The six principles guard against the temptation of easy substitutes.
+>
+> The six principles are **expressive entities**, **meaningful fragments**, **anticipate errors**, **proportionate change**, **illuminate ambiguity**, and **root cause**.
+>
+> These principles help the data engineer keep working until data has been shaped into information that can serve business intent.
