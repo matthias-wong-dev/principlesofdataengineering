@@ -508,7 +508,7 @@ If the source table was created by the pipeline, its row change datetimes are re
 - `[Row update datetime]`
 - `[Row delete datetime]`
 
-Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark.
+Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark. This is possible if a source table is landed into the warehouse through change data capture or other replication technologies, with datetimes automatically created on transaction. 
 
 **Example pipeline-managed source table: `Filtered.Event`**
 
