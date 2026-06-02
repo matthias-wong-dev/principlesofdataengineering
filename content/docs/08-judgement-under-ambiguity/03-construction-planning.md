@@ -22,7 +22,7 @@ and
 
 A data engineer is responsible for shaping movement through uncertain work. This is the purpose of the **construction plan**. A construction plan gives uncertain work enough order to proceed and enough flexibility to adapt.
 
-A strong construction plan avoids both failures. It gives the team a sequenced path of delivery without pretending the whole project is known in advance.
+A strong construction plan avoids both failures of meandering and paralysis. It gives the team a sequenced path of delivery without pretending the whole project is known in advance.
 
 In complex projects, this plan is expected from an experienced engineer because:
 
@@ -66,7 +66,7 @@ Flexibility means structuring the plan so that key business priorities can shift
 
 New features excite stakeholders and create momentum. However, the data engineer must balance visible features with invisible but equally important consolidation work.
 
-An effective plan achieves both by alternating between them. This rotation supports quality work by building consolidation into the schedule. It also gives stakeholders time to absorb one feature before moving on to the next. This matters because data insights are exploratory. Testing a new feature requires users to interact with the output, understand its implications, and check edge cases thoroughly.
+An effective plan achieves both by alternating between them. This rotation supports quality work by building consolidation into the schedule. It also gives stakeholders time to absorb one feature before moving on to the next. This is because data insights are exploratory. Testing a new feature requires users to interact with the output, understand its implications, and check edge cases thoroughly.
 
 ## Formulating an effective plan
 
@@ -187,7 +187,7 @@ The four stages are:
   <text x="95" y="430" class="construction-plan-small-v1">The plan becomes more specific as discovery continues.</text>
   <text x="95" y="452" class="construction-plan-small-v1">Only the next few releases need detailed planning.</text>
 
-  <rect x="575" y="398" width="320" height="72" rx="18" class="construction-plan-lightbox-v1"/>
+  <rect x="575" y="398" width="350" height="72" rx="18" class="construction-plan-lightbox-v1"/>
   <text x="605" y="428" class="construction-plan-label-v1">Construction plan</text>
   <text x="605" y="452" class="construction-plan-small-v1">ordered enough to move, flexible enough to revise</text>
 
@@ -219,7 +219,6 @@ To sharpen the focus on business objectives, the team should also answer:
 
 The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/).
 
-Recall that a linear process diagram lays out the major business processes in chronological order, without loops or branches. Its purpose is to give a clear, high-level view of the end-to-end flow. A cumulative information diagram lists business information as rows and business processes as columns, showing which process captures or inherits each piece of information. It helps identify what data is available at each stage and whether the model can answer business questions.
 
 ### Stage 2—Vision
 
@@ -237,7 +236,7 @@ Such vision statements are easy to craft and extend naturally from the discovery
 
 This is not a deep analysis of business intent but a reaction to user complaints. As such, it lacks the substance to serve as a foundation for the project.
 
-As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that users can build from the data. The wireframe is a playback of what the team has heard, and the beginning of a solution hypothesis. Its purpose is to build trust that the team has understood the need and to inspire the project to strive for the finish line. It is akin to an artistic model of a public building before construction. A good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
+As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that users can build from the data. The wireframe is a playback of what the team has heard, and the beginning of a [solution hypothesis](/docs/judgement-under-ambiguity/working-with-stakeholders/). Its purpose is to build trust that the team has understood the need and to inspire the project to strive for the finish line. It is akin to an artistic model of a public building before construction. A good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
 
 When the vision is framed this way, defining the project scope becomes straightforward.
 
@@ -299,7 +298,7 @@ This gradual layering of computation keeps complexity manageable and ensures eac
 
 #### Interleave Power BI exposure
 
-In a complex project with many attributes, it is bad practice to work on all the underlying tables and then all the Power BI tables and measures as one release.
+In a complex project with many attributes, it is risky to work on all the underlying tables and then all the Power BI tables and measures as one release.
 
 Instead, Power BI releases should be interleaved as information is curated in the pipeline. This means features are surfaced to users continuously, so they get exposure to business attributes as soon as they are added to the pipeline.
 
@@ -475,15 +474,13 @@ Figure 2. A construction plan is a delivery artefact. It gives the team a sequen
 
 A typical IT project is driven by stakeholder requirements. But stakeholder requirements cannot determine the whole plan, any more than a town planner can plan a town-build simply by collecting a list of requirements from citizens. On the contrary, the town planner is expected to contribute expertise in dialogue with the community.
 
-In practice, stakeholder requirements swing between two extremes: too vague to guide development, or too specific so that the forest is lost for the trees. Consequently, the delivery team should not react to the requirements and build the first thing that is asked. Such an approach is destined to lead to a tangled build if the requirements are too specific, or meandering if they are too vague.
+In practice, stakeholder requirements swing between two extremes: too vague to guide development, or too specific so that the forest is lost for the trees. The delivery team should not react to the requirements and build the first thing that is asked.
 
 Instead, the data engineer takes stakeholder input as part of a broader consideration for a data model that anticipates questions across end-to-end business processes.
 
 This can be done by reframing stakeholder requirements as objectives about core business processes. If the requirements are too specific, such as a long list of details like “I want to see count of sales by product type,” they can be brought up a level by categorising them as objectives on sales. If the requirements are too vague, such as “I just want to know about my business,” they can be made more concrete by articulating objectives on key processes such as sales, manufacturing, or shipping.
 
 In short, stakeholder requirements should be reframed to the level explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/). The delivery team has responsibility in guiding stakeholders comfortably on this journey, as described in [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/).
-
-## Conclusion
 
 ## Conclusion
 
@@ -500,7 +497,7 @@ An effective plan lays the groundwork for success. In a complex project that req
 
 This is no surprise. As developers mature, development becomes more mechanical and predictable. Familiarity with patterns makes implementation routine. The more experience builds, the more developers can foresee outcomes and issues in advance.
 
-Consequently, success hinges increasingly on planning. The mark of an experienced data engineer is not merely the ability to build, but the ability to shape the work through an effective plan.
+Success hinges increasingly on planning. The mark of an experienced data engineer is not merely the ability to build, but the ability to shape the work through an effective plan.
 
 
 > [!NOTE]
