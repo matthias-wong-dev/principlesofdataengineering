@@ -4,7 +4,7 @@ url: /docs/judgement-under-ambiguity/when-things-go-wrong/
 description: Presents a practical diagnostic framework for distinguishing symptoms, triggers, root causes, and final effects in data engineering work.
 lede: Sound judgement means acting at the level where problems stop recurring.
 weight: 4
-# draft: true
+draft: true
 ---
 
 Sound judgement is the defining capability of a mature data engineer.
