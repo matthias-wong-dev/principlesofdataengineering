@@ -4,7 +4,7 @@ url: /docs/judgement-under-ambiguity/the-six-principles-of-data-engineering/
 description: "Introduces the six principles of data engineering as disciplines for resisting shallow curation and exercising judgement under ambiguity."
 lede: The epitome of data engineering is judgement under ambiguity.
 weight: 1
-draft: true
+# draft: true
 ---
 
 ## Judgement under ambiguity
