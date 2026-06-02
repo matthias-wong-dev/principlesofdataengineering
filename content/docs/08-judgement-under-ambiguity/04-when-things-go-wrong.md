@@ -271,7 +271,7 @@ The business needs the warehouse to preserve the correct population of active re
 
 A better fix is to protect the deletion-detection step. The full scan should be staged first. The pipeline should check the expected batch count or source row count before applying deletion logic. Only when the extract is fully accounted for should the warehouse compare populations and mark deletes. If the scan is incomplete, the run should be quarantined, the prior population preserved, and the team alerted.
 
-This is a contrived and simplified example. Real failures are rarely so simple. However, it shows why troubleshooting must move beyond the visible symptom. The report was where the problem appeared. The source extract was the trigger. The root cause was unsafe deletion logic built on an unmonitored assumption. The final effect was a warehouse that could distinguish genuine deletion from incomplete capture.
+This is a contrived and simplified example. Real failures are rarely so simple. However, it shows why troubleshooting must move beyond the visible symptom. The report was where the problem appeared. The network change was the trigger. The root cause was unsafe deletion logic built on an unmonitored assumption. The final effect was a warehouse that could distinguish genuine deletion from incomplete capture.
 
 ## Conclusion
 
