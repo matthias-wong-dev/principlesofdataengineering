@@ -665,6 +665,8 @@ The seven engagement principles capture hard-earned wisdom for facilitating thes
 >
 > The delivery team should guide stakeholders through ambiguity until unclear needs become shared understanding.
 >
+>> The fifth principle of data engineering is **illuminate ambiguity**.
+>
 > The seven engagement principles are:
 >
 > 1. **Focus on trust**
