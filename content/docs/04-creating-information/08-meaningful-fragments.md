@@ -60,19 +60,6 @@ For example, milestone datetimes could be implemented as additional columns with
 
 In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
 
-
-## Symptoms of poor fragmentation
-
-When meaningful fragments are missing, the symptoms are usually visible:
-
-- the same logic appears repeatedly in `where` clauses, joins, reports, or measures;
-- tables become wider as constructed columns are bolted onto fact tables;
-- reference data is duplicated into transaction tables;
-- users need excessive joins, filters, and deduplication to answer basic questions;
-- complex transformations are hidden inside one large table;
-- small changes create large downstream effects.
-
-These symptoms indicate that the pipeline has not been decomposed into its minimal informational components, and made easy for access.
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg"
      width="980" height="700"
@@ -244,6 +231,21 @@ These symptoms indicate that the pipeline has not been decomposed into its minim
 <div style="max-width:44rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
 Figure 1. A giant table hides the entity of interest, mixes grains, and makes change detection harder. Meaningful fragments separate information into clear grains around the entity, so each fragment can be built, tested, reused, and updated deliberately.
 </div>
+
+
+## Symptoms of poor fragmentation
+
+When meaningful fragments are missing, the symptoms are usually visible:
+
+- the same logic appears repeatedly in `where` clauses, joins, reports, or measures;
+- tables become wider as constructed columns are bolted onto fact tables;
+- reference data is duplicated into transaction tables;
+- users need excessive joins, filters, and deduplication to answer basic questions;
+- complex transformations are hidden inside one large table;
+- small changes create large downstream effects.
+
+These symptoms indicate that the pipeline has not been decomposed into its minimal informational components, and made easy for access.
+
 
 ## Common fragment patterns
 
