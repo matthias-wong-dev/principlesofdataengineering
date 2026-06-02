@@ -70,6 +70,107 @@ Fuzzy logic is handled through iterative approximation.
 | Random validation | Does the pattern hold up when checked against unbiased samples? |
 | Monitoring for drift | Does the pattern continue to behave over time? |
 
+Figure 1 shows illustrate the data quality issues that arise from the projection of the business world to the data world, and the work of the data engineer to address the gap.
+
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="900" height="640"
+     viewBox="0 0 900 640"
+     style="display:block;width:100%;max-width:44rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Business reality is projected into recorded data with quality gaps, then shaped back toward business intent through data quality interventions">
+
+  <defs>
+    <marker id="arrowhead-data-quality-v2" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+
+    <style>
+      .dq-title-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 23px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .dq-label-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .dq-small-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 13px;
+        fill: #333333;
+      }
+
+      .dq-muted-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 12px;
+        fill: #555555;
+      }
+
+      .dq-shape-v2 {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 2;
+      }
+
+      .dq-arrow-v2 {
+        fill: none;
+        stroke: #222222;
+        stroke-width: 2.4;
+        marker-end: url(#arrowhead-data-quality-v2);
+      }
+    </style>
+  </defs>
+
+  <!-- Business world -->
+  <ellipse cx="450" cy="105" rx="300" ry="58" class="dq-shape-v2"/>
+
+  <text x="450" y="98" text-anchor="middle" class="dq-title-v2">Business reality</text>
+  <text x="450" y="124" text-anchor="middle" class="dq-small-v2">events, entities, relationships, intent</text>
+
+  <!-- Data world -->
+  <ellipse cx="450" cy="535" rx="245" ry="52" class="dq-shape-v2"/>
+
+  <text x="450" y="530" text-anchor="middle" class="dq-title-v2">Recorded data</text>
+  <text x="450" y="555" text-anchor="middle" class="dq-small-v2">records, tables, files, captured fragments</text>
+
+  <!-- Downward projection arrow -->
+  <path d="M315 165 C285 245, 295 365, 370 480" class="dq-arrow-v2"/>
+  <text x="205" y="238" text-anchor="middle" class="dq-label-v2">projection</text>
+
+  <text x="105" y="285" class="dq-small-v2">misaligned to intent</text>
+  <text x="105" y="313" class="dq-small-v2">loss of entity link</text>
+  <text x="105" y="341" class="dq-small-v2">relationships not recorded</text>
+  <text x="105" y="369" class="dq-small-v2">loss of detail</text>
+  <text x="105" y="397" class="dq-small-v2">loss of accuracy</text>
+  <text x="105" y="425" class="dq-small-v2">loss of timing</text>
+  <text x="105" y="453" class="dq-small-v2">....</text>
+
+  <!-- Upward shaping arrow -->
+  <path d="M530 480 C615 365, 620 245, 585 165" class="dq-arrow-v2"/>
+  <text x="700" y="238" text-anchor="middle" class="dq-label-v2">shaping</text>
+
+  <text x="650" y="285" class="dq-small-v2">establishing primary keys</text>
+  <text x="650" y="313" class="dq-small-v2">recreating sequence numbers</text>
+  <text x="650" y="341" class="dq-small-v2">defining good and bad</text>
+  <text x="650" y="369" class="dq-small-v2">calculating milestones</text>
+  <text x="650" y="397" class="dq-small-v2">identifying primary records</text>
+  <text x="650" y="425" class="dq-small-v2">nearest temporal join</text>
+  <text x="650" y="455" class="dq-small-v2">...... </text>
+
+</svg>
+{{< /svg >}}
+
+<div style="text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. Business reality is projected into recorded data with loss, distortion, and misalignment. Data quality work shapes recorded data back toward business intent by defining the concepts, relationships, and assumptions needed for use.
+</div>
+
 One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
 
 This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
