@@ -60,7 +60,7 @@ The six principles are disciplines that guard against the temptation of easy sub
 
 It is not a matter of fast workaround versus slow and proper. It is the difference between what gets tangled up in a mess and what remains usable under change.
 
-The chapters [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/) and [Construction planning](/docs/judgement-under-ambiguity/construction-planning/) apply the principle **illuminate ambiguity**. The chapter [Sound judgement](/docs/judgement-under-ambiguity/sound-judgement/) applies the principle **root cause**.
+The chapters [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/) and [Construction planning](/docs/judgement-under-ambiguity/construction-planning/) apply the principle **illuminate ambiguity**. The chapter [When things go wrong](/docs/judgement-under-ambiguity/when-things-go-wrong/) applies the principle **root cause**.
 
 The final chapter is the essay [Hallmarks of quality](/docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/). This essay was written years before this text and is reproduced with minimal edits. It guided the years of work that preceded this book. Although it is written in a different register and uses different terms, it can be read as a summary of the book.
 

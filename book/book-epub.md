@@ -8767,7 +8767,7 @@ If the source table was created by the pipeline, its row change datetimes are re
 - `[Row update datetime]`
 - `[Row delete datetime]`
 
-Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark.
+Because these datetimes are created by the pipeline, they are in-sync with the refresh bookmark. This is possible if a source table is landed into the warehouse through change data capture or other replication technologies, with datetimes automatically created on transaction.
 
 **Example pipeline-managed source table: `Filtered.Event`**
 
@@ -9800,131 +9800,172 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 
 # The six principles of data engineering {#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering}
 
-*Good data engineering is guided by principles, not just techniques.*
+*The epitome of data engineering is judgement under ambiguity.*
 
-The earlier sections outlined patterns and practices for data engineering scenarios.
+## Judgement under ambiguity
 
-They focused on the treatment of information rather than technology. The technology-specific sections are on Power BI, and even then, we stayed away from syntax to focus on fundamentals.
+In the chapter [What is data engineering?](#docs-foundations-what-is-data-engineering), we began with the aim of data engineering, its task, and its challenges.
 
-This focus on information rather than technology is deliberate. It points data engineers to underlying principles rather than situational techniques. This last section, Judgement under ambiguity, is where patterns culminate and are summarised in six principles.
+The aim of data engineering is insight.
 
-## The problem with shallow curation
+The task is to reshape data in light of intent.
 
-The most common, but incorrect, approach for new data engineers is shallow curation.
+The challenge is the fluid nature of data engineering:
 
-The typical steps are:
+- Easy substitutes—business areas have access to quick alternatives to insight that avoid the hard work of data engineering.
+- Open-endedness—business areas may pursue new or different questions as they see more data.
+- Ambiguity of aim—business areas may not be clear about how they want to use data, or different areas may have different aims.
 
-1. Take the source system and map to the target environment, adjusting for names and data types.
+But throughout this book, we have seen that the business is not the problem.
 
-2. Receive a list of business requirements for reporting from stakeholders.
+> The data engineer’s greatest enemy is not the stakeholder asking for shortcuts, but the engineer’s own willingness to provide them.
 
-3. Using the source data, apply transformation rules to meet stated requirements, load them into a few big tables for Power BI. A more experienced data engineer may organise these as facts and dimensions.
+The business will often ask for the fastest and easiest outcome. This is to be expected. It is the data engineer who must decide how to respond.
 
-This mindset has many drawbacks. Firstly, it leads to garbage-in, garbage-out. Source applications are not designed for analytical intent and never has the information content to meet business needs. Requirements stated upfront are rarely adequate to be a reliable guide to address this gap. Moreover, this approach focuses on the questions at hand rather than all the questions about the business. Finally, going straight from source to reporting tables means there are no building blocks for use in different scenarios. Using the information for a different scenario, such as ML feature engineering, requires rebuilding logic that embedded in dimensional models.
+Many data engineers, new or experienced, respond through what we may call *shallow curation*:
 
-In other words, shallow curation is too easily satisfied. It does not sufficiently push the data as found to meet the demands of business intent. Neither does it break down complexity in building towards advanced levels of achievement. Consequently, the difference is not between merely “good versus poor” quality, but between what is “possible versus impossible” for a team to achieve with this mindset.
+1. take the source system and map it into the target environment, adjusting names and data types;
+2. receive a list of business requirements for reporting from stakeholders;
+3. use the source data to apply transformation rules that meet those stated requirements, then load the results into a few large tables for Power BI visualisation.
 
-The problem with shallow curation is that there are some outputs. After all, the data engineer has faithfully reproduced data from the source system for users to gain access. Such an engineer may even feel satisfied for doing an excellent job when reality is far from the potential value. If business users are dissatisfied when business objectives are not fully met, it is possible to blame poor data quality at source or on the unclear business rules. The danger of shallow curation is that, like all mindsets that starts by reducing standards, it settles for less, and by settling for less, creates a blind spot for the engineer who cannot see the failure to reach excellence.
+In this way, a data engineer can reproduce source data in a cleaner environment, build reporting tables, refresh dashboards, and fix visible errors while still avoiding the deeper work.
 
-## Six principles
+The result may look technically correct. It may even be appreciated. But it remains a substitute for real data engineering.
 
-A surer basis for data engineering can be summarised in six principles:
+Real data engineering refuses easy answers that simplify the genuine complexity of business and data reality. It requires accepting, and operating within, the fluid nature of data engineering.
 
-- Instead of garbage-in-garbage-out with raw data, add value through expressive entities.
+This means the mark of the best data engineer is **sustained judgement under ambiguity**.
 
-- Instead of building giant tables, create meaningful fragments.
+## The six principles
 
-- Instead of stopping with what works now, anticipate errors that may occur.
+The principles of data engineering can be seen in this light. We introduced four in the preceding sections. This final section introduces the last two.
 
-- Instead of wholesale response, maintain proportionate change.
+The six principles are:
 
-- Instead of reacting to requirements, build momentum through leading discovery.
+- Instead of garbage-in-garbage-out with raw data, add value through **expressive entities**.
+- Instead of building giant tables, create **meaningful fragments**.
+- Instead of stopping with what works now, **anticipate errors** that may occur.
+- Instead of wholesale response, maintain **proportionate change**.
+- Instead of waiting for clarity, **illuminate ambiguity**.
+- Instead of stopping at the symptoms, diagnose the **root cause**.
 
-- Instead of stopping at the symptoms, diagnose the root cause.
+Instead of applying quick fixes to what is visibly wrong, the expert data engineer asks what must be right for business intent—now and into the future.
 
-That is, instead of finding quick fixes to what is wrong, the expert data engineer focuses on what needs to be right for business intent—now and into the future. These can be remembered through six phrases: expressive entities, meaningful fragments, anticipate errors, proportionate change, build momentum, root cause.
+The six principles are disciplines that guard against the temptation of easy substitutes. They help the data engineer keep working until data has been shaped into information that can serve business intent.
 
-It is not a matter of “fast workaround” versus “slow and proper.” It is the difference between what gets tangled up in a mess versus what will not. In the long term, the six principles create fast and flexible paths to success.
+It is not a matter of fast workaround versus slow and proper. It is the difference between what gets tangled up in a mess and what remains usable under change.
 
-The earlier sections covered four of the principles–expressive entities, meaningful fragments, anticipating errors, and proportionate change. The remaining chapters introduce the final principles–build momentum and root cause.
+The chapters [Working with stakeholders](#docs-judgement-under-ambiguity-working-with-stakeholders) and [Construction planning](#docs-judgement-under-ambiguity-construction-planning) apply the principle **illuminate ambiguity**. The chapter [When things go wrong](#docs-judgement-under-ambiguity-when-things-go-wrong) applies the principle **root cause**.
 
-The section ends with the chapter Hallmarks of quality. This essay was written years before this text and reproduced with minimal edits. The essay guided the years of work now summarised in this book.
+The final chapter is the essay [Hallmarks of quality](#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality). This essay was written years before this text and is reproduced with minimal edits. It guided the years of work that preceded this book. Although it is written in a different register and uses different terms, it can be read as a summary of the book.
+
+> **Key ideas.**
+>
+> The epitome of data engineering is judgement under ambiguity.
+>
+> The data engineer’s greatest enemy is not the stakeholder asking for shortcuts, but the engineer’s own willingness to provide them.
+>
+> Shallow curation reproduces source data in a cleaner environment, applies stated requirements, and produces reporting tables without doing the deeper work of shaping data toward business intent.
+>
+> The six principles guard against the temptation of easy substitutes.
+>
+> The six principles are **expressive entities**, **meaningful fragments**, **anticipate errors**, **proportionate change**, **illuminate ambiguity**, and **root cause**.
+>
+> These principles help the data engineer keep working until data has been shaped into information that can serve business intent.
 
 # Working with stakeholders {#docs-judgement-under-ambiguity-working-with-stakeholders}
 
-*Successful data projects depend on guiding attention, not merely collecting requirements.*
+*Ambiguity is not a defect.*
 
-The most common cause of project failure is the inability of the delivery team to build momentum with stakeholders. When momentum stalls, two patterns can often be found.
+## Guiding stakeholders through ambiguity
 
-The first is when the delivery team asks stakeholders for a list of “reporting requirements,” but the stakeholders struggle to provide one. From their perspective, the richness of their business cannot be reduced to a simple checklist. When the team insists on detailed requirements, the process reaches a stalemate.
+Data projects often fail because teams treat requirements as something to collect rather than something to discover.
 
-The second pattern appears more promising at first. Stakeholders provide a clear list of requirements upfront—sales aggregated by date or region, non-compliance by product type, even precise business definitions. The delivery team implements these, and all seems well. Yet during testing, the product does not meet its purpose. It lacks core features, breaks on edge cases, or proves too complex to use.
+Stakeholders usually do not begin with a complete account of what should be built. They begin with business intent, operational pain, partial definitions, imagined solutions, and experience that is difficult to express. The delivery team begins in the same uncertainty.
 
-Both scenarios share the same flaw of reacting to requirements. Despite its obvious and repeated failure, this pattern persists. The reason for this persistence is because experts are often familiar with the intricacies of their own discipline but underestimate the challenges of others, expecting simplistic answers for everything else to be given in clear-cut form so they can proceed with their part.
+When this ambiguity remains hidden, projects usually fall into one of two patterns.
 
-The world is not so straightforward. The most difficult part of a data project is not technical complexity but in thinking deeply about the business and its relationship with the data world. Asking stakeholders to enumerate requirements is convenient for delivery teams because it shifts the responsibility for this deep thinking to stakeholders, leaving developers with the easier task of implementing clear technical rules.
+The first is stalemate. The delivery team asks stakeholders for a list of “reporting requirements,” but the stakeholders struggle to provide one. From their perspective, the richness of their business cannot be reduced to a simple checklist. When the team insists on detailed requirements before exploration, the process stalls.
 
-Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, the stakeholders uncover what they need to “see” from the data for them to achieve business outcomes. These discovered needs—not an initial list—are the real requirements. This shift turns a one-way process into a two-way dialogue where the delivery team plays a leading role by guiding collective attention.
+The second pattern appears more promising. Stakeholders provide a clear list of requirements upfront—sales aggregated by date or region, non-compliance by product type, even precise business definitions. The delivery team implements these, and all seems well. Yet during testing, the product does not meet its purpose. It lacks core features, breaks on edge cases, or proves too complex to use.
 
-The fifth principle of data engineering is therefore: instead of reacting to requirements, build momentum through leading discovery.
+Both scenarios share the same flaw. The team waits for clarity instead of helping to create it.
 
-## Guided attention
+This pattern persists because experts are often familiar with the intricacies of their own discipline but underestimate the challenges of others. They expect simplistic answers about everything outside their own craft to be given in clear-cut form so they can proceed with their part.
 
-During development, the delivery team and stakeholders explore the data together to meet business intent. The delivery team contributes expertise by guiding the stakeholders in how they should “see” the data in light of business intent—hence guided attention. This dialogue is an iteration between business and data, between questions and answers, between thinking and testing, and between business and technical expertise. The seven principles that follow provide a practical framework for making this a success:
+The world is not so straightforward. The most difficult part of a data project is not technical complexity alone, but thinking deeply about the business and its relationship with the data world. Asking stakeholders to enumerate requirements is convenient for delivery teams because it shifts the responsibility for this deep thinking to stakeholders, leaving developers with the easier task of implementing clear technical rules.
+
+Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, stakeholders uncover what they need to see from the data to achieve business outcomes. These discovered needs—not an initial list—are the real requirements.
+
+The fifth principle of data engineering is therefore: instead of waiting for clarity, **illuminate ambiguity**.
+
+In stakeholder work, this means guiding stakeholders through ambiguity until unclear needs become shared understanding.
+
+## Seven engagement principles
+
+During development, the delivery team and stakeholders explore the data together in light of business intent. The delivery team contributes expertise by guiding stakeholders through ambiguity: helping them clarify intent, recognise workflows, test definitions, examine edge cases, and see how source data does or does not support the business purpose.
+
+The seven engagement principles that follow provide a practical framework for guiding stakeholders:
 
 1. Focus on trust
-
 2. Lead by listening
-
 3. Own the business intent
-
 4. Anchor a vision
-
 5. Gather around the solution
-
 6. Design for workflows
-
 7. Spot the 20%
+
+![](book/epub-assets/diagram-013.png)
+
+*Figure 1. Guiding stakeholders through ambiguity is a disciplined movement from unclear need to shared clarity. Trust and listening make dialogue possible; intent and vision give it direction; solution sketches and workflows make it concrete; spotting the 20% protects the project from hidden complexity.*
 
 ### Focus on trust
 
-Many assume that the primary mode of requirements gathering is that of extracting information. In this view, the question becomes: “How effectively and accurately can I get the information from stakeholders to build a product?” This is the wrong focus. The first responsibility of a delivery team is to gain the stakeholder’s trust.
+Many assume that the primary mode of stakeholder engagement is extracting information. In this view, the question becomes: “How effectively and accurately can I get information from stakeholders to build a product?”
 
-The reasons for focus on growing trust are:
+This is the wrong focus.
 
-1. Trust is the context for information. Clearly articulating and refining requirements is arduous. Stakeholders will not be able to give the right information before they have first established a strong trust in the people asking for the information.
+The first responsibility of a delivery team is to gain the stakeholder’s trust.
 
-2. Relationship with others is the biggest factor for meaningful and enjoyable work.
+There are several reasons for this.
 
-Strong relationships with stakeholders are more likely to lead to enjoyable collaboration during the development phase, and subsequently the success of the team.
+1. Trust is the context for information. Clearly articulating and refining requirements is arduous. Stakeholders will not be able to give the right information before they have first established strong trust in the people asking for it.
 
-3. The focus on extracting information sees the stakeholders instrumentally as a vehicle for information. The focus on growing trust sees stakeholders as human beings as an end-to-themselves with whom we work.
+2. Relationship with others is the biggest factor for meaningful and enjoyable work. Strong relationships with stakeholders are more likely to lead to enjoyable collaboration during development and, subsequently, the success of the team.
+
+3. The focus on extracting information sees stakeholders instrumentally as vehicles for information. The focus on growing trust sees stakeholders as human beings with whom we work.
 
 4. Delivery teams have recurring partnerships with stakeholders that extend beyond a particular project. The focus on building trust takes the long-term view.
 
-Without trust, no data project can succeed. After each engagement, the question should not be “Do we know more about the requirements?” but “Do our stakeholders trust us more?”
+Without trust, no data project can succeed. After each engagement, the question should not be “Do we know more about the requirements?” but:
+
+> Do our stakeholders trust us more?
 
 The best ways to grow trust are transparency and active listening.
 
-- Transparency means clear communication of the construction plan and regular demonstrations of progress—weekly or twice-weekly. This is akin to a home buyer seeing the building take shape.
+- Transparency means clear communication of the [construction plan](#docs-judgement-under-ambiguity-construction-planning) and regular demonstrations of progress—weekly or twice-weekly. This is akin to a home buyer seeing the building take shape.
 
 - Active listening means thoughtful paraphrasing and summarising stakeholder input. When stakeholders hear their own language reflected, they feel understood and affirmed. This also happens when they are invited to check metadata, which gives them a tangible way to contribute.
 
-A common mistake is for delivery teams to assume that the purpose of speaking is to transfer information—if they already know what stakeholders are about to say, then they can skip to the next part. This is a mistake. Beneath the surface, the stakeholder is:
+A common habit is for delivery teams to assume that the purpose of speaking is to transfer information. If they already know what stakeholders are about to say, they think they can skip to the next part.
 
-1. Developing a feeling of being heard.
+This is a mistake.
 
-2. Clarifying their own thinking through articulation.
+Beneath the surface, the stakeholder is:
 
-3. Growing in data literacy through dialogue with technical experts.
+1. developing a feeling of being heard;
+2. clarifying their own thinking through articulation;
+3. growing in data literacy through dialogue with technical experts.
 
 All these build trust. By remembering that the first responsibility of the team is to gain trust, we resist the temptation to cut people off or jump in to correct them. Patience is paramount.
 
 ### Lead by listening
 
-In some types of partner dancing, there are two designated roles: Lead and Follow. The Lead initiates all the movements and the Follow completes the sequence with an elegant response. An analogous dynamic is needed with stakeholders. The delivery team should formulate its own statements as responding gracefully to a previous statement from stakeholders. These responses typically take one of the following forms:
+In some types of partner dancing, there are two designated roles: Lead and Follow. The Lead initiates movements and the Follow completes the sequence with an elegant response.
 
-- Clarifying question: “You said X, can you please clarify whether X means...?” or “You said your team needs X—can you help us understand how this fits into your goal?”
+An analogous dynamic is needed with stakeholders. The delivery team should formulate its own statements as responses to previous statements from stakeholders. These responses typically take one of the following forms:
+
+- Clarifying question: “You said X. Can you clarify whether X means...?” or “You said your team needs X—can you help us understand how this fits into your goal?”
 
 - Playback: “There’s a lot in what you just said—can I paraphrase to check I’m on the right track?” or “I’ve summarised your explanation into workflows—can I share them for confirmation?”
 
@@ -9932,13 +9973,12 @@ In some types of partner dancing, there are two designated roles: Lead and Follo
 
 - Amendment: “You gave feedback on our hypothesis—here’s a refinement. What do you think?”
 
-By responding to stakeholder initiatives, the delivery team is, in reality, leading. This is achieved by listening closely to what has been said and naturally guiding the stakeholder’s attention through a technical problem. This approach ensures:
+By responding to stakeholder initiatives, the delivery team is, in reality, leading. This is achieved by listening closely to what has been said and naturally guiding stakeholders through the problem. This approach ensures:
 
-- Stakeholders are heard, feel heard, and are seen to be heard.
+- stakeholders are heard, feel heard, and are seen to be heard;
+- the conversation remains structured, logical, and focused on business objectives.
 
-- The conversation remains structured, logical, and focused on business objectives.
-
-There will be times when the team needs to correct an error, redirect focus, or counter unconscious bias. This principle still applies. A common scenario is when stakeholders describe solutions before the problem is fully explored—for example, asking for a detailed data dump dashboard when analysis suggests a summarised view is better.
+There will be times when the team needs to correct an error, redirect focus, or counter unconscious bias. This principle still applies. A common scenario is when stakeholders describe solutions before the problem is fully explored—for example, asking for a detailed data dump dashboard when analysis suggests a summarised view would better serve the intent.
 
 Saying “Let’s focus on requirements instead of jumping to the solution” sounds natural but often feels dismissive. For stakeholders, the solution is the requirement.
 
@@ -9946,79 +9986,73 @@ Regardless of content, stakeholders are trying to communicate something importan
 
 This should always be affirmed. Even if the content is incorrect, the underlying intent is valuable. Respond by continuing with their initiative rather than breaking off. For example:
 
-- Explore the intent: “You said your goal is to detect potential non-compliance— how does the data dump help?”
+- Explore the intent: “You said your goal is to detect potential non-compliance. How does the data dump help?”
 
-- Explore the utility: “You want a detailed data dump—can you give an example of a workflow where this is used?”
+- Explore the utility: “You want a detailed data dump. Can you give an example of a workflow where this is used?”
 
 - Re-orient: “Thanks for raising the data dump idea. You previously said your goal is detecting non-compliance. Can we explore scenarios where that happens, then revisit the data dump in that context?”
 
-These approaches respect intent and apply the first principle: focus on trust. It also applies the fifth principle: gather around the solution.
+These approaches respect intent and apply the first engagement principle: **focus on trust**. They also apply the fifth engagement principle: **gather around the solution**.
 
-This principle should never be used as a shield for blame (“I just did what you told me to do”).
+This principle should never be used as a shield for blame—"I just did what you told me to do."
 
 ### Own the business intent
 
-The task of data engineering is to align data to business intent. It is an experimental process that demands the data engineer see the stakeholder’s perspective “first-hand.” Without this, the team will never truly see what the stakeholder sees, and the potential of the solution will remain unrealised. This act of viewing the data through the stakeholder’s lens is owning the business intent.
+The task of data engineering is to align data to business intent. It is an experimental process that demands the data engineer see the stakeholder’s perspective first-hand. Without this, the team will never truly see what the stakeholder sees, and the potential of the solution will remain unrealised.
+
+This act of viewing the data through the stakeholder’s lens is owning the business intent.
 
 The data engineer who owns the business intent must be committed to in-depth business analysis.
 
-This document is not a guide to business analysis, except to note that business processes often conform to recurring patterns. Mastering these patterns helps the team achieve high-quality analysis quickly, even for complex scenarios. The team can do this by consistently asking stakeholders five key questions:
+This chapter is not a guide to business analysis, except to note that business processes often conform to recurring patterns. Mastering these patterns helps the team achieve high-quality analysis quickly, even for complex scenarios. The team can do this by consistently asking stakeholders five key questions:
 
 - Intent: What is the business intent?
-
 - Measure: How does the business measure the achievement of this intent, either directly or indirectly?
-
 - Sensor: What instruments does the business have for knowing whether things are going well or not?
-
 - Controls: What levers does the business have to influence this measure?
+- Drivers: What external events outside the business’s control may influence this measure?
 
-- Drivers: What external events outside of does the business’s control may influence this measure?
+Business analysis needs to permeate the project from start to finish. For example, concepts such as “good vs bad” entities or milestones for measuring processes are rarely defined in source systems. It is unrealistic to expect stakeholders to define these upfront before seeing the data. Instead, these definitions evolve through exploration and require input from technical expertise and experience with similar problems. This, once again, demands that the team see the business problem first-hand.
 
-Business analysis needs to permeate the project from start to finish. For example, concepts such as “good vs bad” entities or milestones for measuring processes are rarely defined in source systems. It is unrealistic to expect stakeholders to define these upfront before seeing the data. Instead, these definitions evolve through exploration and require input by technical expertise and experience with similar problems. This, once again, demands that the team see the business problem first-hand.
+Owning the business intent is an extension of the first engagement principle: **focus on trust**. Nothing gains trust with stakeholders as quickly as a team that can speak the details of the business fluently. From this perspective, business analysis is a delivery team’s way of active listening.
 
-Owning the business intent is an extension of the first principle of trust. Nothing gains trust with stakeholders as quickly as a team who can fluently speak the details of a business language. From this perspective, business analysis is a delivery team’s way of active listening.
+Whether a team owns the business intent will define its passion, drive, business knowledge, and creativity. These qualities will determine whether its output is a mediocre reflection of the current state or a solution that pushes the business forward.
 
-Whether a team owns the business intent will define its passion, drive, business knowledge, and creativity. These qualities will determine whether its output is a mediocre reflection of the current state or a solution that pushes the business forward to excellence.
-
-### Anchor the vision
+### Anchor a vision
 
 The natural extension of owning the business intent is a vision for the business. A vision is a view of the value the team aspires to achieve. It is both ambitious and concrete.
 
-Whilst having a vision is important for any project, it is particularly critical in exploratory data projects for the following reasons:
+While having a vision is important for any project, it is particularly critical in exploratory data projects for the following reasons:
 
 - Improves the probability of arrival. Complex data projects are often ambiguous and uncertain. Teams that articulate and revisit a vision are more likely to reach the intended outcome.
+- Sustains engagement. Long projects involve hard work, such as resolving edge cases. A clear vision inspires a sense of meaning that helps maintain engagement.
+- Keeps debates in perspective. Under constraints, debates are inevitable and can become flashpoints of tension. A vision keeps these debates in perspective. Teams often relax around specific problems when they see those problems as only one part of the whole.
 
-- Sustains engagement. Long projects involve hard work, such as resolving edge cases. A clear vision inspires a sense of meaning to maintain engagement.
+- Structures discussion. Data projects are open-ended and can easily drift. Anchoring the project in a vision, and deriving each step from that vision, keeps the team on track.
 
-- Keeps debates in perspective. Under constraints, debates are inevitable and can become flashpoints of tension. A vision keeps these debates in perspective.
-
-Teams often relax around specific problems when they see those problems as only one part of the whole.
-
-- Structures discussion. Data projects are open-ended and can easily drift.
-
-Anchoring the project in a vision, and deriving each step from that vision, keeps the team on track.
-
-Using the vision to structure discussions begins with agreement on the overall intent of the business. The project objective is situated within the business objective, which is itself a part of the broader organisation’s objectives. The discussion on each delivery feature should be anchored to this hierarchy, with constant reference back to the higher-level intent. When the conversation becomes lost, the team moves up one level and reorients.
+Using the vision to structure discussions begins with agreement on the overall intent of the business. The project objective is situated within the business objective, which is itself part of the broader organisation’s objectives. The discussion on each delivery feature should be anchored to this hierarchy, with constant reference back to the higher-level intent. When the conversation becomes lost, the team moves up one level and reorients.
 
 Example dialogue:
 
-Team & stakeholder: Introductions Stakeholder: Jumps into details about needing a dashboard Team: “Can you start by telling us the purpose of your business, your role, and what success means to you?”
-
-Stakeholder: Provides some context, still detailed Team: “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
-
-Stakeholder: “Yes, but also…”
-
-Team: “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
-
-Stakeholder: “Yes…”
-
-Team: “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
+> **Stakeholder:** “We need a dashboard.”
+>
+> **Team:** “Can you start by telling us the purpose of your business, your role, and what success means to you?”
+>
+> **Stakeholder:** “Our goal is to improve customer experience. My team monitors service quality.”
+>
+> **Team:** “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
+>
+> **Stakeholder:** “Yes, but also recurring issues.”
+>
+> **Team:** “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
+>
+> **Stakeholder:** “Yes.”
+>
+> **Team:** “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
 
 This pattern—bringing stakeholders up to the highest level and then unpacking details step by step—requires fast thinking and familiarity with the organisation’s goals. It is harder than it appears, but essential for clarity.
 
-When priorities conflict, reference to the higher-level intent provides common ground.
-
-Agreement is easier at higher levels and can be used to resolve issues. This approach works only when the conversation has been structured from the vision downward.
+When priorities conflict, reference to the higher-level intent provides common ground. Agreement is easier at higher levels and can be used to resolve issues. This approach works only when the conversation has been structured from the vision downward.
 
 Unlike a building project, which relies on well-defined specifications of the target building and strict timelines to track progress, data projects are exploratory and open-ended. In this setting, a clear vision, rather than detailed specifications, plays the role of guiding the team. It serves as a north star and compass that sustains quality and momentum across a long project. For this reason, team leaders should insist on vision, quality, and momentum rather than rigid deadlines.
 
@@ -10026,59 +10060,65 @@ Unlike a building project, which relies on well-defined specifications of the ta
 
 Data projects often waste time through too much talking and not enough doing.
 
-Instead, the best way to collaborate is to gather around a solution—start with a pen-and-paper solution hypothesis and refine it through discussion and experimentation.
+The best way to collaborate is to gather around a solution—start with a pen-and-paper solution hypothesis and refine it through discussion and experimentation.
 
 The project should develop hypotheses as early as possible, even by the second engagement. Early development matters because:
 
 - A convincing solution is the only proof the team has understood the requirements.
-
 - Hypotheses provide a concrete point for clarifying stakeholder thinking.
-
 - Refinement creates excitement as all parties see an early vision come to life.
 
-A solution hypothesis is the most important part of requirements gathering because it is the only real proof the team has done the work. In an analogy of commissioning a building, it is futile if the builder only has a list of requirements (four rooms, lots of sunlight). The builder wins the contract by providing an architectural sketch—nothing less will do. No buyer would pay a mortgage deposit for a building without a sketch.
+A solution hypothesis is the most important artefact in discovery because it is the clearest proof that the team has understood the need.
+
+In an analogy of commissioning a building, it is futile if the builder only has a list of requirements: four rooms, lots of sunlight, and enough storage. The builder wins confidence by providing an architectural sketch—nothing less will do. No buyer would pay a mortgage deposit for a building without a sketch.
 
 Why expect stakeholders to work with a team without showing a solution hypothesis?
 
-When projects meander, it is often because direction is unclear. The best advice for such situations: “When the project is stuck, draw a picture of the solution.”
+When projects meander, it is often because direction is unclear. The best advice for such situations is simple:
 
-The best way to refine the solution hypothesis is through an open workbench format. In an open workbench, the delivery team and stakeholders meet twice a week to explore the data model, experiment with new features, test definitions, and provide feedback for the next iteration. Stakeholders may come from different business areas, making the data model a centre for converging perspectives.
+> When the project is stuck, draw a picture of the solution.
+
+The best way to refine the solution hypothesis is through an open workbench format. In an open workbench, the delivery team and stakeholders meet regularly to explore the data model, experiment with new features, test definitions, and provide feedback for the next iteration. Stakeholders may come from different business areas, making the data model a centre for converging perspectives.
+
+![](book/epub-assets/diagram-014.png)
+
+*Figure 2. The open workbench brings stakeholder intent, business workflows, source data, and solution sketches into the same conversation. Vision anchors the work from above; trust supports it from below. Between them, the team listens, sketches, tests, and refines until the solution becomes recognisable to the business.*
 
 This format requires developers to be confident hosting discussions and responding to impromptu questions from stakeholders. The entire team should support them in doing so. When done well, the open workbench has a transformative effect: it builds trust through transparency and enables genuine dialogue.
 
-Teams sometimes say, “Let’s not jump into solution mode.” This statement is not acceptable with stakeholders. For them, the solution is the requirement. When asked to describe requirements, most stakeholders are painting a mental picture of the solution. Even if it is a bad solution, it still describes what they imagine they are working toward. The team should playback the intent or seek clarification.
+Teams sometimes say, “Let’s not jump into solution mode.” This statement is not acceptable with stakeholders. For them, the solution is the requirement. When asked to describe requirements, most stakeholders are painting a mental picture of the solution. Even if it is a bad solution, it still describes what they imagine they are working toward. The team should play back the intent or seek clarification.
 
-The error is to draw a hard line between requirements and solution. This is a distinction developers make, not stakeholders. The real distinction is between the why (intent) and the what (solution). Stakeholders will often mix both. It is the team’s job to discern one from the other.
+The error is to draw a hard line between requirements and solution. This is a distinction developers make, not stakeholders. The real distinction is between the why, which is intent, and the what, which is solution. Stakeholders will often mix both. It is the team’s job to discern one from the other.
 
 This cannot be stressed enough: to stakeholders, the solution is the requirement—not something separate from it. In a data project, it is never too early to gather around the solution.
 
-Gathering around the solution is the ultimate way the delivery team guides stakeholders toward clarity. It helps them see how reshaped data interacts with business intent, turning abstract requirements into something tangible. Through iterative refinement—testing, visualising, and adjusting—the solution evolves until it displays fidelity with business reality. In doing so, attention is guided deliberately, ensuring that every discussion converges on what matters most: a solution that stakeholders can recognise, trust, and act upon.
+Gathering around the solution is the ultimate way the delivery team guides stakeholders toward clarity. It helps them see how reshaped data interacts with business intent, turning abstract requirements into something tangible. Through iterative refinement—testing, visualising, and adjusting—the solution evolves until it displays fidelity with business reality.
 
 ### Design for workflows
 
-It is common for data projects to deliver reports that are rarely used. Stakeholders may specify many requirements— “I want to see count of X per country”—and show excitement during development and testing. Yet after deployment, usage often drops quickly.
+It is common for data projects to deliver reports that are rarely used. Stakeholders may specify many requirements—“I want to see count of X per country”—and show excitement during development and testing. Yet after deployment, usage often drops quickly.
 
-This happens when solutions are not anchored in real workflows. Anchoring a solution with workflows ensure that it will have usage when deployed.
+This happens when solutions are not anchored in real workflows. Anchoring a solution in workflows ensures that it has a place in real use.
 
-Every workflow has at least two elements: an intent and a trigger. As an example of a business working at the helpdesk, see Figure 1.
+Every workflow has at least two elements: an intent and a trigger.
 
-Figure 1. Example of a workflow.
+For example, a helpdesk workflow might look like this.
 
-A trigger can be a specific event (e.g., receiving an email from a customer) or a schedule (e.g., publishing a quarterly report).
+![](book/epub-assets/diagram-015.png)
+
+*Figure 3. A workflow begins with a trigger and is organised around an intent. The data product is useful because it supports the action between them.*
+
+A trigger can be a specific event, such as receiving an email from a customer, or a schedule, such as publishing a quarterly report.
 
 Contextualising requirements in workflows offers key advantages:
 
 1. Ensures the product delivers value because it meets the intent of an established workflow.
-
 2. Ensures the product will be used because real-world triggers exist for its use.
-
-3. Integrates the product seamlessly into the user’s daily role.
-
+3. Integrates the product into the user’s daily role.
 4. Helps stakeholders recognise when a requirement is not important and can be dropped.
-
 5. Provides a natural way to rationalise requirements—for example, one report page per workflow.
 
-Designing for workflows is a simple tool to ensure that project teams are grounded in real world problems.
+Designing for workflows is a simple tool to ensure that project teams are grounded in real-world problems.
 
 ### Spot the 20%
 
@@ -10086,59 +10126,85 @@ The 80/20 rule says 80% of results come from 20% of effort. Its flip side is tha
 
 The 20/80 trap is dangerous because:
 
-1. Foundational elements are missed until production.
-
-2. Expectations are mismanaged when stakeholders think the work is complete.
-
-3. Technical debt piles up when essentials are discovered late.
+1. foundational elements are missed until production;
+2. expectations are mismanaged when stakeholders think the work is complete;
+3. technical debt piles up when essentials are discovered late.
 
 Teams avoid the trap by:
 
-1. Grounding requirements in thorough business analysis to uncover hidden assumptions.
+1. grounding requirements in thorough business analysis to uncover hidden assumptions;
+2. focusing equally on what works and what does not—the parts that work are often forgotten;
+3. asking not only “What should this do?” but “What could go wrong?”;
+4. balancing common cases and edge cases without bias;
+5. developing in sound engineering order, not simply in the order stakeholders want to see.
 
-2. Focusing equally on what works and what doesn’t—the parts that work are often forgotten.
-
-3. Asking not only “What should this do?” but “What could go wrong?”
-
-4. Balancing common cases and edge cases without bias.
-
-5. Developing in sound engineering order, not simply in the order stakeholders want to see.
-
-As an analogy, home buyers focus on visible features—“How many rooms?” or “Is there good ventilation?”—based on obvious needs and past pain. A good builder starts with the foundation. Likewise, a good data team begins with the start of the business process and systematically work through the business processes in order, rather than jumping to flashy features.
+As an analogy, home buyers focus on visible features—“How many rooms?” or “Is there good ventilation?”—based on obvious needs and past pain. A good builder starts with the foundation. Likewise, a good data team begins with the start of the business process and systematically works through the business processes in order, rather than jumping to flashy features.
 
 Because of this, the team will often run counter to stakeholder instincts. This is healthy.
 
 In effect, the team acts as:
 
-- A counterweight to natural biases that overlook fundamentals.
-
-- A safeguard against missed edge cases that matter.
+- a counterweight to natural biases that overlook fundamentals;
+- a safeguard against missed edge cases that matter.
 
 Foreseeing hidden elements is hard. It takes strong business knowledge, technical experience, and high engagement skills to counter bias. Only the best teams do it well.
 
 ## Conclusion
 
-The hardest part of any data project is thinking deeply about the business and how it relates to data. This can only be achieved when stakeholders and the delivery team explore the data together—thinking together through a dialogue focused on the solution. In this dialogue, the relationship is not symmetrical. Stakeholders, often new to data, do not know what to look for. This is why the experienced delivery team plays an important role in guiding the dialogue’s attention to relevant observations.
+The hardest part of any data project is thinking deeply about the business and how it relates to data. This can only be achieved when stakeholders and the delivery team explore the data together—thinking together through a dialogue focused on the solution.
 
-The seven principles of engagement capture hard-earned wisdom for facilitating these dialogues. They run counter to ingrained habits that focus on visible details while ignoring complexity. They are treasures for any delivery team.
+In this dialogue, the relationship is not symmetrical. Stakeholders understand the business, but they are often new to data and do not know what to look for. This is why the experienced delivery team plays an important role in guiding stakeholders through ambiguity.
 
-The principles change the team’s view of engagement from receiving requirements and getting product sign-off to that of building trust with stakeholders. Trust is the guiding principle. Fluently speaking the business language establishes trust early in the project, gathering the solution and continuing to demonstrate progress on the business vision carries trust to the end.
+The seven engagement principles capture hard-earned wisdom for facilitating these dialogues. They run counter to ingrained habits that focus on visible details while ignoring complexity.
 
-These principles move the team beyond reacting to requirements. Applied well, they enable the team to guide stakeholders through complexity and build momentum toward a solution that truly meets business intent.
+> **Key ideas.**
+>
+> Ambiguity is not a defect in stakeholder work.
+>
+> Requirements are discovered through dialogue, not merely collected upfront.
+>
+> The delivery team should guide stakeholders through ambiguity until unclear needs become shared understanding.
+>
+> The seven engagement principles are:
+>
+> 1. **Focus on trust**
+> 2. **Lead by listening**
+> 3. **Own the business intent**
+> 4. **Anchor a vision**
+> 5. **Gather around the solution**
+> 6. **Design for workflows**
+> 7. **Spot the 20%**
+>
+> These principles move the team beyond reacting to requirements and toward a solution that truly meets business intent.
 
 # Construction planning {#docs-judgement-under-ambiguity-construction-planning}
 
-*A strong construction plan creates momentum by giving delivery an orderly shape.*
+*A strong construction plan gives ambiguous work a flexible order.*
 
-The fifth principle of data engineering is to build momentum through leading discovery rather than reacting to requirements. This can be challenging in projects that are lengthy and overwhelmingly complex. In such cases, the engineer often feels at a loss for where to begin. Because the data engineer sits on the critical path of data projects, this uncertainty directly impacts project momentum. Conversely, a data engineer who delivers outputs in an orderly and predictable way propels the project forward— participants align on the goal and instinctively sense that the team is taking concrete steps toward achieving it.
+## Shaping movement
 
-In complex projects, a data engineer stays organised and guides the delivery team by formulating a plan. This plan is expected from an experienced engineer because:
+Complex data projects are rarely clear at the beginning. The business intent may still be forming. The source data may not behave as expected. Dependencies may be unclear. Stakeholders may discover new priorities as soon as they see the first useful output.
+
+A weak team responds to this uncertainty in one of two ways. It either meanders, waiting for clarity before moving, or it overcorrects by imposing a rigid plan that cannot survive discovery.
+
+However:
+> Ambiguity does not justify meandering.
+
+and
+
+> Order does not require rigidity.
+
+A data engineer is responsible for shaping movement through uncertain work. This is the purpose of the **construction plan**. A construction plan gives uncertain work enough order to proceed and enough flexibility to adapt.
+
+A strong construction plan avoids both failures of meandering and paralysis. It gives the team a sequenced path of delivery without pretending the whole project is known in advance.
+
+In complex projects, this plan is expected from an experienced engineer because:
 
 1. No project waits in silence. The engineer cannot disappear for a month to apply ideal patterns and return later. Unless the engineer provides the team and sponsors with confidence about the weeks or months ahead, there will be no engineering work at all.
 
 2. Logical sequencing matters in a build. Doing tasks in a sensible order helps the engineer move forward with confidence, avoids code entanglement, and reduces mistakes.
 
-3. Only the engineer knows the effort required. The data engineer alone understands how long quality work takes and has the sole responsibility to advocate for that time.
+3. Only the engineer knows the effort required. The data engineer alone understands how long quality work takes and has the responsibility to advocate for that time.
 
 If the engineer does not actively formulate a plan, there will be no plan—leading the project to meander. Or someone else will create the plan for the engineer—leading the project to rush. In either case, the project suffers.
 
@@ -10146,48 +10212,58 @@ Projects can succeed or fail depending on the data engineer’s plan. It is one 
 
 ## An effective plan
 
-A construction plan lays out, in sequence, the components the data engineer will build and provides a forecast for how long each part will take. This plan gives users a clear expectation of what features will arrive and when. In addition, a construction plan includes non-feature components such as unit tests, technical debt clean-up, and performance tuning. The plan defines the project’s momentum.
+A construction plan lays out, in sequence, the components the data engineer will build and gives the team a forecast of what will arrive when. It includes user-facing features as well as non-feature work such as unit tests, technical debt clean-up, metadata, and performance tuning.
 
-A plan is effective if it provides the project with confidence and momentum. For this purpose, the focus is on sequence rather than precise timings. While it is important not to blow out project timelines, the sequence is more critical than exact estimates because delivering one feature after another is strongly associated with user satisfaction and project momentum.
+A plan is effective if it gives the project confidence and momentum. For this purpose, sequence matters more than precise dates. Timelines should not blow out, but the deeper issue is whether the team can keep delivering one sensible step after another.
 
-An effective plan is akin to a travel itinerary for exploring a new country. An itinerary is not effective merely by meeting a predefined schedule; it is effective when it moves forward logically, providing a quality experience without wasting time.
+An effective plan is like a travel itinerary for exploring a new country. An itinerary is not effective merely because it meets a predefined schedule. It is effective when it moves forward logically, gives the traveller a quality experience, and avoids wasting time.
 
 A data engineer can craft an effective plan by aiming for three characteristics:
 
-- Ambitious yet grounded
+- ambitious yet grounded;
+- orderly yet flexible;
+- rotating new features with backend consolidation.
 
-- Orderly yet flexible
+### Ambitious yet grounded
 
-- Rotating new features with backend consolidation
+Being ambitious means having a view of the full business process and designing a model that can address future questions, rather than limiting the scope to requirements raised by current stakeholders.
 
-Being ambitious means having a view to tackle the full business processes and designing a model that addresses all questions, rather than limiting the scope to specific requirements raised by current stakeholders. Being grounded means supporting this vision with well-informed business analysis so that the plan is neither vague nor impossible, and ensuring that necessary information is available for reliable time estimates.
+Being grounded means supporting this ambition with well-informed business analysis so that the plan is neither vague nor impossible. The engineer should know enough about the business, data, dependencies, and risks to make a reasonable judgement about the path ahead.
 
-An orderly yet flexible plan is akin to a travel itinerary that is physically sensible (not looping back across half the country) but still organised into reasonable segments that can be shifted. For a data engineer, being orderly means isolating releases into promotes code clarity, avoid code entanglement, and minimises rework. Flexibility means structuring the plan so that key business priorities can shift forward or backward as a block without massively disrupting the schedule. This requires grouping deliverables into logical blocks centred on core business processes, rather than maintaining a long miscellaneous list of business questions.
+### Orderly yet flexible
 
-New features excite stakeholders and propel project momentum. However, the data engineer must balance these visible features with invisible but equally important consolidation work. An effective plan achieves both by alternating between them. This rotation not only supports quality work by building consolidation into the schedule but also gives stakeholders time to absorb one feature before moving on to the next. This immersion is necessary because data insights are exploratory in nature. Testing a new feature requires users to interact with the output, grasp its implications, and check edge cases thoroughly.
+An orderly yet flexible plan is like a travel itinerary that is physically sensible but still able to shift. For a data engineer, being orderly means isolating releases in a way that promotes code clarity, avoids code entanglement, and minimises rework.
+
+Flexibility means structuring the plan so that key business priorities can shift forward or backward as a block without disrupting the whole schedule. This requires grouping deliverables around core business processes, rather than maintaining a miscellaneous list of disconnected business questions.
+
+### Rotate features with consolidation
+
+New features excite stakeholders and create momentum. However, the data engineer must balance visible features with invisible but equally important consolidation work.
+
+An effective plan achieves both by alternating between them. This rotation supports quality work by building consolidation into the schedule. It also gives stakeholders time to absorb one feature before moving on to the next. This is because data insights are exploratory. Testing a new feature requires users to interact with the output, understand its implications, and check edge cases thoroughly.
 
 ## Formulating an effective plan
 
-A data engineer can craft an effective plan in four stages. Each stage involves increasing commitment to specific outcomes. A simple project may require only the first stage, while a complex project may demand a detailed plan at the fourth stage. The four stages are:
+A data engineer can craft an effective plan in four stages. Each stage involves increasing commitment to specific outcomes. A simple project may require only the first stage, while a complex project may require a detailed plan at the fourth stage.
+
+The four stages are:
 
 1. Discovery
-
 2. Vision
-
 3. Scope
-
 4. Build
 
-### Stage 1 – Discovery
+![](book/epub-assets/diagram-016.png)
+
+*Figure 1. Construction planning moves from discovery to vision, scope, and build. The plan becomes more specific as commitment increases, but remains flexible enough to adapt as discovery continues.*
+
+### Stage 1—Discovery
 
 Formulating a plan begins with discovering facts about the business. The purpose of discovery is to answer key questions. At the highest level, these include:
 
 - What are the major business processes in the end-to-end business lifecycle?
-
 - What information is captured by each process, and where is it stored?
-
 - What is the stakeholders’ interest in each process?
-
 - What reporting artefacts already exist, and how are they currently used in workflows?
 
 The team answers these questions by reviewing artefacts relevant to the business processes and interviewing stakeholders.
@@ -10195,259 +10271,281 @@ The team answers these questions by reviewing artefacts relevant to the business
 To sharpen the focus on business objectives, the team should also answer:
 
 - Intent: What is the business intent?
-
 - Measure: How does the business measure the achievement of this intent, either directly or indirectly?
-
 - Sensor: What instruments does the business have for knowing whether things are going well or not?
-
 - Controls: What levers does the business have to influence this measure?
+- Drivers: What external events outside the business’s control may influence this measure?
 
-- Drivers: What external events outside of does the business’s control may influence this measure?
+The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/).
 
-The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter Anticipating Questions.
+### Stage 2—Vision
 
-Recall that a linear process diagram is a simple diagram that lays out the major business processes in chronological order, without loops or branches. Its purpose is to give a clear, high-level view of the end-to-end flow, making it easy to see where each process fits in the overall lifecycle. A cumulative information diagram is a table that lists business information as rows and business processes as columns, showing which process captures or inherits each piece of information. This diagram helps identify what data is available at each stage and ensures completeness for answering business questions.
-
-### Stage 2 – Vision
-
-The vision for all data engineering projects is the same: advance business intent by obtaining insights across all underlying business processes. This vision is adapted to each project using findings from the discovery phase, especially the linear process diagrams.
+A vision translates discovery into a statement of what the data product is trying to make visible. It should cover the business process at the right level: broad enough to guide future questions, but concrete enough to shape delivery.
 
 For example, if the core business processes for an organisation are manufacturing, quality control, sales, shipping, and customer feedback, the vision statement could be:
 
-“Understand the factors that drive sales profit and customer satisfaction through an integrated data source of complete business processes—from manufacturing, quality control, sales, shipping, to customer feedback. Obtaining timely and accurate insights into measures such as manufacturing turnaround, early detection of quality issues, changes in sales trend, efficiencies in shipping and latest customer sentiment.”
+> Understand the factors that drive sales profit and customer satisfaction through an integrated data source covering manufacturing, quality control, sales, shipping, and customer feedback, so the business can monitor manufacturing turnaround, detect quality issues early, understand sales trends, improve shipping efficiency, and respond to customer sentiment.
 
 This vision statement is ambitious yet grounded. It resonates with business stakeholders, inspires confidence, and establishes trust by demonstrating that the project team understands the business. Being neither too vague nor too specific, the vision frames the project at the right level for prioritisation and dialogue.
 
 Such vision statements are easy to craft and extend naturally from the discovery questions. Yet many teams produce poor alternatives that lead projects to failure. For example, it is common to see vision statements such as:
 
-“Reduce pain points of manual processes and create near real-time dashboard of the operation.”
+> Reduce pain points of manual processes and create near real-time dashboard of the operation.
 
-These statements are not a deep analysis of business intent but a reaction to user complaints. As such, they lack the substance to serve as a foundation for the project.
+This is not a deep analysis of business intent but a reaction to user complaints. As such, it lacks the substance to serve as a foundation for the project.
 
-As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that user can build off the data. The wireframe is a play-back what the team has heard, and the beginning of a solution hypothesis. Its purpose is to build trust that the team has understood the needs and inspire the project to strive for the finish line. It is akin to an artistic model of a public building prior to build—a good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
+As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that users can build from the data. The wireframe is a playback of what the team has heard, and the beginning of a [solution hypothesis](#docs-judgement-under-ambiguity-working-with-stakeholders). Its purpose is to build trust that the team has understood the need and to inspire the project to strive for the finish line. It is akin to an artistic model of a public building before construction. A good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
 
-When the vision is framed as above, defining the project scope becomes straightforward.
+When the vision is framed this way, defining the project scope becomes straightforward.
 
-### Stage 3 – Scope
+### Stage 3—Scope
 
-The vision is an ambition to cover the business processes end to end. It is a visionary statement of the linear process diagram.
+The vision is an ambition to cover the business processes end to end. It is a statement of the linear process diagram.
 
-The full vision may be too large to tackle in one project. The scope defines a subset of business processes to focus on. For example, rather than covering manufacturing through to customer feedback, the project scope may concentrate on the first two— manufacturing and quality control—or on priorities such as sales and shipping. Dividing the vision this way allows the creation of project phases: the first phase focuses on two business processes, the second on the next two, and so on.
+The full vision may be too large to tackle in one project. The scope defines a subset of business processes to focus on. For example, rather than covering manufacturing through to customer feedback, the project scope may concentrate on manufacturing and quality control, or on priorities such as sales and shipping. Dividing the vision this way allows the creation of project phases: the first phase focuses on two business processes, the second on the next two, and so on.
 
-The selection of business processes should consider three factors:
+The selection of business processes should consider three factors.
 
 1. Availability of source data. If the information captured by a business process resides in systems that are difficult to access, it may need to be deferred to later phases.
 
-2. Order of the business lifecycle. Where possible, work in the natural sequence—manufacturing, then quality control, then sales, and so forth.
-
-Information accumulates along the lifecycle, and working in the same order creates building blocks for the next stage.
+2. Order of the business lifecycle. Where possible, work in the natural sequence: manufacturing, then quality control, then sales, and so forth. Information accumulates along the lifecycle, and working in the same order creates building blocks for the next stage.
 
 3. Business priorities. These often pull toward the tail end of the lifecycle, where most activity occurs. The data engineer must judge based on dependencies. For example, starting with sales without manufacturing may be acceptable, but starting with shipping without sales orders is not—no matter how much users want insights on shipping delays.
 
 The cumulative information diagram, which tracks the flow of information and its storage, is useful for informing scope decisions.
 
-The scope must include a time estimate for project completion. This requires input from an experienced engineer who can make a judgment based on discovery findings.
+The scope must include a time estimate for project completion. This requires input from an experienced engineer who can make a judgement based on discovery findings.
 
 Like the vision statement, the scope is a straightforward application of the linear process diagram.
 
-A common error is to scope by system. For example, rather than working through the business process one by one, the team works through integrating systems one by one.
+A common error is to scope by system. For example, rather than working through the business process one by one, the team works through integrating systems one by one. This is the wrong perspective. One reason is that it easily leads to an unusable product because the system does not contain the minimal set of information needed to describe a business process.
 
-This is the wrong perspective. One reason, amongst many, is that it easily leads to a situation where the project creates an unusable product because the system does not have the minimal set of information to describe one business process.
-
-### Stage 4 – Build
+### Stage 4—Build
 
 The final stage is the construction plan. This is the practical roadmap for delivery that translates scope into actionable steps and sets out how the project will progress.
 
 A construction plan is akin to a six-month travel itinerary in a large country. The country is the organisation, and the towns are the major business processes. Features are the specific sites within a town. Building blocks are times of being en route, such as taking a long bus, while technical consolidation is the time of rest in the journey.
 
-This travel itinerary is exploratory in nature, so it needs flexibility, but it also needs order so that the physical route makes sense and there is a continuous flow of experiences alternating with rest. This cannot be achieved if the itinerary is too vague: “Let’s see the country.” Nor can it be too detailed: “Here’s a long, ad hoc list of things we want to do all across the country in the next six months.” Instead, an orderly yet flexible itinerary sketches out the major towns and important sites, while the details of visiting a town only need to be fleshed out when getting close.
+This travel itinerary is exploratory in nature, so it needs flexibility. But it also needs order so that the physical route makes sense and there is a continuous flow of experiences alternating with rest. This cannot be achieved if the itinerary is too vague: “Let’s see the country.” Nor can it be too detailed: “Here’s a long, ad hoc list of things we want to do all across the country in the next six months.” Instead, an orderly yet flexible itinerary sketches out the major towns and important sites, while the details of visiting a town only need to be fleshed out when getting close.
 
 If the itinerary is well organised, it can be changed mid-way, such as swapping the order of towns or sites, with minimal disruption to the overall journey.
 
-An engineer guiding stakeholders through a data project is akin to a tour guide crafting a travel itinerary for a traveller experiencing a country. The analogous concepts apply.
+The same logic applies to construction planning.
 
-The two primary considerations are: how the delivery is divided into releases, and the sequencing of those releases.
+#### Sequence by business process
 
-At the highest level, build should proceed in the sequence of business processes. For example, if the scope includes manufacturing, quality control, sales, and shipping, then the build releases should follow this order, process by process. This contrasts with tackling a mix of manufacturing and sales, or sales and shipping, in one release. If the data engineer finds this cannot be done, then the abstraction of business processes may need to be revisited. For example, if the data for sales and shipping are so entangled that they cannot be separated for build, then it is arguable that sales and shipping in the organisation are better seen as one process.
+At the highest level, build should proceed in the sequence of business processes. For example, if the scope includes manufacturing, quality control, sales, and shipping, then the build releases should follow this order, process by process. This contrasts with tackling a mix of manufacturing and sales, or sales and shipping, in one release.
 
-If possible, proceed in the same order as the business process. For example, avoid jumping to shipping and then doubling back to sales. However, if reverse order is necessary due to business priorities, then organising the build along the boundary of business processes can still avoid creating a mess.
+If the data engineer finds this cannot be done, then the abstraction of business processes may need to be revisited. For example, if the data for sales and shipping is so entangled that they cannot be separated for build, then sales and shipping may be better understood as one process.
 
-The releases should be further broken down within a business process. For example, a complex project may expect to build 50 tables in total; this may be divided into releases of 3 to 8 tables at a time. The more challenging the project, the smaller the release size.
+If possible, proceed in the same order as the business process. Avoid jumping to shipping and then doubling back to sales. However, if reverse order is necessary due to business priorities, then organising the build along the boundary of business processes can still avoid creating a mess.
 
-Each release should be centred on a group of business information to expose. For example, if the scope is manufacturing, one release may focus on basic attributes such as product types, production status, and production date; another release on manufacturing details such as material inputs and outputs; and another release on aggregated information such as time to manufacture. In grouping releases, priorities should be given to being as logical as possible from a business point of view.
+#### Break work into small releases
 
-Once defined, the construction plan must build in order of the pipeline by following table dependencies. This means a gradual increase in computation complexity. For example, the first release focuses on basic attributes with little transformation, the second release adds more complex computation, and a third release aggregates information from prior tables. This is the natural progression for a data engineer following the filter -> compute -> reduce steps explained in Creating information. This gradual layering of computation keeps complexity manageable and ensures each part is tested systematically along the way.
+The releases should be broken down within a business process. For example, a complex project may expect to build 50 tables in total. This may be divided into releases of 3 to 8 tables at a time. The more challenging the project, the smaller the release size.
 
-In a complex project with many attributes, it is bad practice to work on all the underlying tables and then all the Power BI tables and measures as one release.
+Each release should be centred on a group of business information to expose. For example, if the scope is manufacturing, one release may focus on basic attributes such as product types, production status, and production date; another on manufacturing details such as material inputs and outputs; and another on aggregated information such as time to manufacture. In grouping releases, priority should be given to what is logical from a business point of view.
 
-Instead, Power BI releases should be interleaved as information is curated in the pipeline. This means that features are surfaced to users continuously, so they get exposure to business attributes as soon as they are added to the pipeline.
+#### Build in pipeline order
 
-Releases should be tightly coupled with unit tests, fault tolerance, and metadata.
+Once defined, the construction plan must build in order of the pipeline by following table dependencies. This means a gradual increase in computation complexity.
 
-Whenever a feature is released, unit tests and metadata should come with the release, rather than as a bulk afterthought.
+For example, the first release may focus on basic attributes with little transformation. The second release may add more complex computation. A third release may aggregate information from prior tables. This is the natural progression for a data engineer following the filter → compute → reduce steps explained in [Creating information](/docs/modelling-reality/creating-information/).
 
-Releases should be kept short in time—approximately two weeks, or three weeks at most. They need to be small enough for thorough code review.
+This gradual layering of computation keeps complexity manageable and ensures each part is tested systematically along the way.
+
+#### Interleave Power BI exposure
+
+In a complex project with many attributes, it is risky to work on all the underlying tables and then all the Power BI tables and measures as one release.
+
+Instead, Power BI releases should be interleaved as information is curated in the pipeline. This means features are surfaced to users continuously, so they get exposure to business attributes as soon as they are added to the pipeline.
+
+User features are typically exposed through the self-service Power BI model.
+
+#### Rotate features with consolidation
+
+Releases should be tightly coupled with unit tests, fault tolerance, and metadata. Whenever a feature is released, unit tests and metadata should come with the release, rather than being handled as a bulk afterthought.
+
+Releases should also be kept short in time—approximately two weeks, or three weeks at most. They need to be small enough for thorough code review.
 
 In a construction plan, not all releases will be user features. There is also important backend work such as building blocks or performance tuning. It is important to earmark the feature releases because they are the key driver of project momentum. Users should know when features are coming and receive them continuously in small chunks.
 
-User features are typically exposed to users in the self-service Power BI model.
+User features should rotate with backend work. This keeps up project momentum, allows data engineers to spend time on quality consolidation, and gives users space to test features between releases.
 
-User features should rotate with backend work. Not only does this keep up project momentum, it allows data engineers to spend time on quality consolidation and gives users space to fully immerse in testing features between releases.
+#### Plan the near future in detail
 
-By anchoring the construction plan on the user features, and keeping in mind how releases build up into a user feature, it becomes easier to reshuffle development as priorities change without ending up in a tangled mess.
+By anchoring the construction plan on user features, and keeping in mind how releases build up into user features, it becomes easier to reshuffle development as priorities change without ending up in a tangled mess.
 
-Finally, it is not necessary to forecast the plan in full detail for the entire project. This rigidity is not fit for the exploratory nature of data analytics. At any given moment, only the next four or so releases need to be planned in detail, while features further out do not need detailed planning. For example, when working on manufacturing, the data engineer should know the plan for the next few releases to complete the work on manufacturing, while the further processes such as sales and shipping only need to be noted.
+It is not necessary to forecast the plan in full detail for the entire project. This rigidity is not fit for the exploratory nature of data analytics. At any given moment, only the next few releases need to be planned in detail, while features further out do not need detailed planning.
+
+For example, when working on manufacturing, the data engineer should know the plan for the next few releases to complete the work on manufacturing, while further processes such as sales and shipping may only need to be noted.
 
 A construction plan designed in this manner is, like a good travel itinerary, both orderly and flexible.
 
 The following is an example of a construction plan for manufacture and quality control.
 
-| Release | Information focus | Description | Artefacts |
-| --- | --- | --- | --- |
-| 1 | Manufacture core tables | Basic tables from source system to describe the manufacture process, with metadata and minor clean-up | Cake.Manufacture; Cake.RefManufactureSite; Cake.RefManufactureStatus; Cake.ManufactureStep; Cake.RefProductType |
-| 2 | Manufacture SLA tables | Define milestone points in the manufacture process, and compute time between milestones and total time-to-manufacture by aggregating over Cake.ManufactureStep, compare the results against SLA for different product types | Cake.ManufactureBatchMilestone; Cake.RefManufactureProductSla |
-| 3 | Quality control core tables | Basic tables from source system to describe the quality control, with metadata and minor clean-up | Cake.SampleTesting; Cake.RefQualityControlCriteria; Cake.RefQualityControlResult |
-| 4 | Quality control summary | Aggregate results from different quality control criteria testing, to compute an overall result for a batch, with the concepts of failure severity | Cake.ManufactureBatchOutcome; Cake.RefBatchOutcome |
-| 5 | Power BI model for exposure | Create the views that define the fact and dimension tables for a Power BI report, and expose them in a Power BI model with corresponding measures, including metadata | Driver views for facts & dimensions: PBI_VIEW.Manufacture; PBI_VIEW.QualityControl; PBI_VIEW.ReportingCalendar; PBI_VIEW.BatchOutcome; PBI_VIEW.ProductType etc. Corresponding Power BI tables: Manufacture, Quality control, Reporting calendar, Product type etc. Measures. |
+![](book/epub-assets/diagram-017.png)
 
-## Stakeholder requirements
+*Figure 2. A construction plan is a delivery artefact. It gives the team a sequenced view of releases, information focus, descriptions, and artefacts without requiring the whole project to be specified in full detail.*
 
-A typical IT project is driven by stakeholder requirements. But stakeholder requirements cannot determine the whole plan, any more than a town planner can plan a town-build simply by collecting a list of requirements from citizens. On the contrary, the town planner is expected to contribute expertise in dialogue with community.
+## Reframing stakeholder requirements
 
-In practice, stakeholder requirements swing between two extremes—too vague to guide development, or too specific so that the forest is lost for the trees. Consequently, the delivery team should not react to the requirements and build the first thing that is asked. Such an approach is destined to lead to a tangled build if the requirements are too specific, or meandering if they are too vague.
+A typical IT project is driven by stakeholder requirements. But stakeholder requirements cannot determine the whole plan, any more than a town planner can plan a town-build simply by collecting a list of requirements from citizens. On the contrary, the town planner is expected to contribute expertise in dialogue with the community.
+
+In practice, stakeholder requirements swing between two extremes: too vague to guide development, or too specific so that the forest is lost for the trees. The delivery team should not react to the requirements and build the first thing that is asked.
 
 Instead, the data engineer takes stakeholder input as part of a broader consideration for a data model that anticipates questions across end-to-end business processes.
 
 This can be done by reframing stakeholder requirements as objectives about core business processes. If the requirements are too specific, such as a long list of details like “I want to see count of sales by product type,” they can be brought up a level by categorising them as objectives on sales. If the requirements are too vague, such as “I just want to know about my business,” they can be made more concrete by articulating objectives on key processes such as sales, manufacturing, or shipping.
 
-In short, stakeholder requirements should be reframed to the level explained in the chapter Anticipating questions. The delivery team has responsibility in guiding the stakeholders comfortably on this journey as described in Working with stakeholders.
+In short, stakeholder requirements should be reframed to the level explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/). The delivery team has responsibility in guiding stakeholders comfortably on this journey, as described in [Working with stakeholders](#docs-judgement-under-ambiguity-working-with-stakeholders).
 
 ## Conclusion
 
-In traditional IT projects, data engineers are often seen as “doers” who implement specified rules. This is far from their full potential. Being closest to the data, they actively shape how the organisation understands its business by reorganising information at a fundamental level. Data engineers are true influencers.
+In traditional IT projects, data engineers are often treated as doers who implement specified rules. This is far from their full potential. Being closest to the data, they [actively shape how the organisation understands its business](#docs-foundations-data-and-organisations) by reorganising information at a fundamental level. The plan is one expression of that responsibility.
 
-This chapter continues the theme of a data engineer’s influence. In a high-intensity project, the data engineer—working with other team members—formulates a plan that not only addresses business requirements but reshapes them, using this plan to build project momentum. The data engineer is doing the build, and only the data engineer can craft the plan.
-
-The way to create an effective plan is to use the tools explained in Anticipating Questions: linear process diagrams and cumulative information diagrams. These tools break down organisational complexity into a level that is useful for all parties and especially conducive to the data engineer shaping data under these frames. In this sense, the linear process diagram becomes a common ground between business stakeholders and the delivery team for planning and prioritisation.
+The data engineer—working with the delivery team—does not merely receive requirements and estimate tasks. The engineer helps turn uncertain business intent into a sequenced path of delivery. This path must be orderly enough to build confidence and flexible enough to adapt as discovery continues.
 
 An effective plan lays the groundwork for success. In a complex project that requires a defined scope, a rough estimate is that:
 
 - 50% of success is determined by the scope
-
 - 35% by the construction planning
-
 - 15% by the actual development work
 
 This is no surprise. As developers mature, development becomes more mechanical and predictable. Familiarity with patterns makes implementation routine. The more experience builds, the more developers can foresee outcomes and issues in advance.
 
-Consequently, success hinges increasingly on planning. This is why the mark of an experienced data engineer is an effective plan.
+Success hinges increasingly on planning. The mark of an experienced data engineer is not merely the ability to build, but the ability to shape the work through an effective plan.
 
-# Sound judgement {#docs-judgement-under-ambiguity-sound-judgement}
+> **Key ideas.**
+>
+> Ambiguity does not justify meandering.
+>
+> Order does not require rigidity.
+>
+> A data engineer is responsible for shaping movement through uncertain work.
+>
+> A construction plan gives uncertain work enough order to proceed and enough flexibility to adapt.
+>
+> An effective plan is ambitious yet grounded, orderly yet flexible, and rotates new features with backend consolidation.
+>
+> A construction plan is formed through discovery, vision, scope, and build.
+>
+> Stakeholder requirements should be reframed as objectives about core business processes.
+>
+> The mark of an experienced data engineer is an effective plan.
+
+# When things go wrong {#docs-judgement-under-ambiguity-when-things-go-wrong}
 
 *Sound judgement means acting at the level where problems stop recurring.*
 
-Sound judgement is the defining capability of a mature data engineer.
+## Acting at the right level
 
-It is tempting to think of data engineering as a sequence of technical tasks: building pipelines, fixing errors, optimising performance, and integrating systems. In practice, these tasks are secondary. What distinguishes effective engineers is not how quickly they act, but where they act.
+Problems in data engineering are often fixed at the wrong level.
 
-Sound judgement is the ability to recognise at what level a problem should be addressed — whether a situation calls for surface correction, structural repair, or a reconsideration of what “good” even means. It is exercised continuously, not only when something is visibly broken.
+A broken report may be corrected without fixing the model. A failed load may be rerun without fixing the dependency. A confusing metric may be renamed without fixing the grain. In each case, the visible problem disappears, but the condition that produced it remains.
 
-For this reason, troubleshooting is not a special activity reserved for failures. It is the most explicit expression of a posture that pervades the entire discipline. The same judgement used to diagnose a broken pipeline is used when deciding how to model an entity, where to aggregate information, or whether a system should be conformed at all.
+Sound judgement is the ability to recognise the level at which a problem should be addressed.
 
-This chapter presents a simple diagnostic framework that makes sound judgement explicit. This framework defines the sixth and final principle of data engineering—instead of treating symptoms, diagnose root cause.
+The mature data engineer is not satisfied when the visible error has gone away. The question is not only:
 
-## A diagnostic framework for sound judgement
+> What went wrong?
 
-Sound judgement can be practised deliberately by distinguishing four stages that are often confused:
+The deeper questions are:
 
-| Stage | Diagnostic question |
-| --- | --- |
-| Symptom | What is observably wrong? |
-| Trigger | What event caused the symptom to surface? |
-| Root cause | What structural violation allows this to recur? |
-| Final effect | What outcome must hold for the system to be genuinely fixed? |
+> Why was this possible?
+>
+> What must hold for the system to be genuinely fixed?
 
-This framework does not prescribe solutions. Its purpose is to discipline attention. It prevents engineers from reacting to what is loud instead of addressing what is consequential.
+The sixth and final principle of data engineering is therefore: instead of treating symptoms, diagnose the **root cause**.
 
-### A simple example
+## Four diagnostic levels
 
-Consider someone learning piano.
+A data engineer can practise sound judgement by distinguishing four diagnostic levels that are often confused.
 
-- Symptom: the playing sounds offbeat.
+| Level | Diagnostic question | Role |
+| --- | --- | --- |
+| Symptom | What is observably wrong? | Reveals that attention is needed. |
+| Trigger | What event exposed the symptom? | Locates the point of exposure. |
+| Root cause | What structural condition allows this to recur? | Identifies the level where correction is needed. |
+| Final effect | What must hold for the system to be genuinely fixed? | Defines what successful repair means. |
 
-- Trigger: the finger is lifted too late before the next note.
+This framework does not prescribe a solution. It disciplines attention. It prevents the engineer from reacting to what is loud instead of addressing what is consequential.
 
-- Root cause: the learner relies on playing by ear rather than learning the mechanics of timing and articulation.
+![](book/epub-assets/diagram-018.png)
 
-- Final effect: the piece is played according to the intended rhythm, not merely
+*Figure 1. Sound judgement distinguishes symptoms, triggers, root causes, and final effects. The visible problem matters, but the deeper task is to understand why recurrence is possible and what must hold for the system to be genuinely fixed.*
 
-“close enough” to how it should sound.
+### Example: active customers
 
-Two observations matter.
+Suppose a report shows too many active customers.
 
-First, the trigger is not the root cause. The trigger explains how the symptom occurs, not why it persists.
+- Symptom: the active customer count is too high.
 
-Second, the final effect is not the absence of mistakes. It is the presence of the intended outcome.
+- Trigger: a new customer status was added in the source system.
 
-Sound judgement lies in acting at the level that prevents recurrence, not merely silences error.
+- Root cause: the model relies on a hard-coded list of inactive statuses instead of a maintained status classification.
 
-### Step 1: Symptoms — seeing clearly before acting
+- Final effect: active customers are classified according to a maintained business definition that remains correct when source statuses change.
 
-The first act of sound judgement is to systematically canvas the symptoms, rather than reacting to the first issue reported.
+The trigger explains why the issue surfaced now. It does not explain why the system was fragile.
 
-Stakeholders describe what they see. They do not describe the full boundary of failure.
+The final effect is not simply that today’s number is corrected. The final effect is that the model classifies active customers correctly under the intended business definition.
 
-Beginning work from a single reported symptom allows the reporting channel to define the problem — and that definition is almost always incomplete.
+## Symptoms—seeing the boundary of failure
 
-At this stage, interpretation is a liability. The task is mechanical observation.
+The first act of sound judgement is to canvas the symptoms.
 
-In medicine, uncertainty is met with vital checks. In data systems, the equivalent is to examine surface health before forming explanations.
+Stakeholders describe what they see. They do not describe the full boundary of failure. Beginning work from a single reported symptom allows the reporting channel to define the problem, and that definition is almost always incomplete.
+
+At this stage, interpretation is a risk. The task is to observe before explaining.
 
 Typical symptom canvassing includes:
 
-- If one report is broken, are others broken?
+- If one report is broken, are other reports broken?
 
 - If one metric is wrong, are related metrics wrong?
 
 - If a domain disappears, did the underlying rows disappear or only their classification?
 
-- Did row counts change? Did distributions shift? Did null rates spike?
+- Did row counts change?
 
-- Did upstream pipelines succeed? Did downstream consumers fail?
+- Did distributions shift?
 
-Jumping ahead at this stage is a failure of judgement. Engineers tend to do so for two reasons:
+- Did null rates spike?
 
-- pattern-matching based on past experience
+- Did upstream pipelines succeed?
 
-- taking the reported symptom as a complete description
+- Did downstream consumers fail?
+
+Jumping ahead at this stage is a failure of judgement. Engineers tend to do so for two reasons: pattern-matching based on past experience, and taking the reported symptom as a complete description.
 
 Both lead to work that is precise but misdirected.
 
 Sound judgement at this stage consists in restraint. Seeing clearly comes before acting decisively.
 
-### Step 2: Triggers — locating the point of exposure
+## Triggers—locating the point of exposure
 
-The second act of sound judgement is to identify the trigger — the event that caused the symptom to surface.
+The second act of sound judgement is to identify the trigger: the event that caused the symptom to surface.
 
 Triggers are time-bound and concrete. They narrow the search space and provide orientation.
 
 Common triggers in data engineering include:
 
-- schema changes in source systems
+- schema changes in source systems;
 
-- new or invalid records entering a load
+- new or invalid records entering a load;
 
-- code changes or refactors
+- code changes or refactors;
 
-- infrastructure or platform migrations
+- infrastructure or platform migrations;
 
-- permission or security changes
+- permission or security changes;
 
-- changes in load ordering or scheduling
+- changes in load ordering or scheduling.
 
-Triggers are useful because they are often discoverable, and because they sometimes allow temporary containment: rollbacks, bypasses, or delayed execution.
+Triggers are useful because they are often discoverable. They may also allow temporary containment: rolling back a change, bypassing a load, delaying execution, or applying a short-term patch.
 
-However, sound judgement requires a strict distinction:
+However, sound judgement requires a strict distinction.
 
 A trigger explains when a symptom appeared.
 
@@ -10455,319 +10553,258 @@ A root cause explains why it can reappear.
 
 Treating the trigger as the cause leads to fragile systems that fail again under different conditions.
 
-### Step 3: Root causes — acting at the level that matters
+## Root causes—finding why recurrence is possible
 
 The third act of sound judgement is to diagnose the root cause.
 
-Root causes explain recurrence. They are structural violations that allow different triggers to produce the same class of symptom.
+Root causes explain recurrence. They are structural conditions that allow different triggers to produce the same class of symptom.
 
-Root cause diagnosis may be:
+Root cause diagnosis may be theoretical or experimental.
 
-- Theoretical: reading the system and identifying what must be true for the failure to occur
+It is theoretical when the engineer reads the system and identifies what must be true for the failure to occur.
 
-- Experimental: isolating variables through controlled tests
+It is experimental when the engineer isolates variables through controlled tests.
 
-Both require skill. Theoretical diagnosis depends on structural understanding.
-
-Experimental diagnosis depends on technical competence and disciplined inquiry.
+Both require skill. Theoretical diagnosis depends on structural understanding. Experimental diagnosis depends on technical competence and disciplined inquiry.
 
 A useful rule is:
 
-Root causes violate core principles that define the ideal system.
-
-Triggers merely activate those violations.
+> Root causes violate the principles that define the ideal system. Triggers merely activate those violations.
 
 In data engineering, recurring root causes include:
 
-- incorrect or ambiguous grain
+- incorrect or ambiguous grain;
 
-- missing, unstable, or misused keys
+- missing, unstable, or misused keys;
 
-- semantic mismatches hidden behind identical column names
+- semantic mismatches hidden behind identical column names;
 
-- wide tables that collapse unrelated concepts
+- wide tables that collapse unrelated concepts;
 
-- implicit dependencies on ordering, timing, or existence
+- implicit dependencies on ordering, timing, or existence;
 
-- weak business processes that produce unreliable identity
+- weak business processes that produce unreliable identity;
 
-- compounded logic that mixes extraction, transformation, and aggregation
+- compounded logic that mixes extraction, transformation, and aggregation.
 
-Two engineers may observe the same symptom and trigger. One applies a patch. The other reshapes the system. The difference is not effort, but judgement.
+Two engineers may observe the same symptom and the same trigger. One applies a patch. The other reshapes the system. The difference is not effort, but judgement.
 
 Sound judgement is the willingness to act where the system is wrong, not merely where it is noisy.
 
-### Step 4: Final effect — knowing when you are done
+## Final effects—knowing what fixed means
 
-Between diagnosing root cause and completing work lies the act of applying a fix. Fixes vary: containment, refactoring, redesign, or process change.
+Between diagnosing root cause and completing work lies the act of applying a fix. Fixes vary. A fix may be containment, refactoring, redesign, additional monitoring, reference data, process change, or a new modelling decision.
 
 Regardless of the fix, the final act of sound judgement is to check the final effect.
 
 This includes:
 
-- visual validation: not “does the code run”, but “are the outputs correct”
+- visual validation—not merely “does the code run?” but “are the outputs correct?”;
 
-- environment validation: behaviour across development, pre-production, and production
+- environment validation—does the behaviour hold across development, pre-production, and production?;
 
-- end-to-end validation: whether the information now supports the intended decision
+- end-to-end validation—does the information now support the intended decision?
 
 A critical rule applies:
 
-The final effect is not the absence of the symptom.
+> The final effect is not the absence of the symptom.
 
-Error suppression creates silence, not correctness. Silence is often mistaken for success, until the failure reappears elsewhere.
+Error suppression creates silence, not correctness. Silence is often mistaken for success until the failure reappears elsewhere.
 
-Knowing the final effect is difficult because it requires seeing what “good” should be.
+Knowing the final effect is difficult because it requires seeing what good should be. Engineers often fail to recognise slow systems because they do not know what fast systems look like. They fail to recognise weak models because they do not know what expressive models look like.
 
-Engineers often fail to recognise slow systems because they do not know what fast systems look like. They fail to recognise weak models because they do not know what expressive models look like.
+In data engineering, the final effect is always tied to business intent.
 
-In data engineering, the final effect is always the same:
+The business must receive the information it needs to make the decision.
 
-The business receives the information it needs to make the decision.
-
-Pipeline success, test success, and error absence are necessary — but they are not the end.
+Pipeline success, test success, and error absence are necessary, but they are not the end.
 
 ## Sound judgement throughout data engineering
 
-Sound judgement is not exercised only when something breaks. It is present throughout the discipline of a data engineer:
+Sound judgement is not exercised only when something breaks. It is present throughout the discipline of a data engineer.
 
-- Expressiveness: o Symptom-level response: rename columns or add documentation when reports confuse users. o Root-cause response: reshape the model so business meaning is explicit in its structure.
+| Area | Symptom-level response | Root-cause response |
+| --- | --- | --- |
+| Expressiveness | Rename columns or add documentation when reports confuse users. | Reshape the model so business meaning is explicit in its structure. |
+| Fragment modelling | Patch special cases into existing tables as complexity grows. | Extract independent fragments and isolate responsibilities. |
+| Reference data and conformance | Reconcile mismatched numbers in reports. | Introduce shared reference data and apply it consistently. |
+| Aggregation and grain | Simplify visuals or add filters when reports are slow or inconsistent. | Aggregate correctly in the pipeline at a grain aligned with decisions. |
 
-- Fragment modelling: o Symptom-level response: patch special cases into existing tables as complexity grows. o Root-cause response: extract independent fragments and isolate responsibilities.
+In each case, nothing is obviously “broken.” Yet judgement is still required.
 
-- Reference data and conformance: o Symptom-level response: reconcile mismatched numbers in reports. o Root-cause response: introduce shared reference data and apply it consistently.
-
-- Aggregation and grain: o Symptom-level response: simplify visuals or add filters when reports are slow or inconsistent. o Root-cause response: aggregate correctly in the pipeline at a grain aligned with decisions.
-
-In each case, nothing is “broken” in an obvious sense. Yet judgement is still required.
+A model can be confusing without throwing an error. A table can be useful today while becoming impossible to maintain tomorrow. A dashboard can run quickly while answering the wrong question. A metric can reconcile locally while hiding a deeper semantic mismatch.
 
 Mature engineers recognise these situations early and act at the level that prevents future failure.
 
 ## Conclusion
 
-Sound judgement is the ability to act at the right level of abstraction, at the right time, for the right reason.
+Sound judgement is the discipline of acting at the right level.
 
-The diagnostic framework introduced here makes that judgement explicit:
+The diagnostic framework is simple:
 
-1. Canvas the symptoms
+1. Canvas the symptoms.
 
-2. Identify the trigger
+2. Identify the trigger.
 
-3. Diagnose the root cause
+3. Diagnose the root cause.
 
-4. Check the final effect
+4. Check the final effect.
 
-Common failures arise from:
+Common failures arise from acting on the first symptom, mistaking the trigger for the cause, or treating silence as success.
 
-- acting on symptoms without understanding scope
+The goal is not merely to remove the visible problem. It is to address the condition that allowed the problem to occur.
 
-- mistaking triggers for causes
+Instead of treating symptoms, diagnose the **root cause**.
 
-- equating silence with success
-
-The goal is not to avoid problems. It is to address them at the level where they stop recurring. Thus, instead of treating the symptom, diagnose the root cause.
-
-Sound judgement is not a talent. It is a discipline — and it is the thread that runs through all effective data engineering work.
-
-# Getting started as a data engineer {#docs-judgement-under-ambiguity-getting-started-as-a-data-engineer}
-
-*A strong start in data engineering depends more on habits and judgment than on flashy technique.*
-
-The full set of concepts and patterns can feel overwhelming for a new data engineer. It is not necessary to master everything upfront. In fact, a good data engineer is defined by much more than technical proficiency.
-
-Starting out as a data engineer is less about mastering every technique and more about developing the habits and perspective that sustain growth. The priority is to internalise the engineering principles until they become second nature.
-
-## Developing good habits
-
-New engineers often focus on reaching great technical feats. This is the wrong approach. Instead, all new engineers should aim for two goals—exposure and technical discipline.
-
-The greatest and most common danger for engineers is becoming narrow—focusing purely on engineering techniques rather than the business or wider architectural perspectives. Early exposure to diverse aspects of a data project and team is a healthy antidote.
-
-The second most common danger for engineers is focusing on flashy techniques. On the contrary, the best engineer is built on a foundation of consistent discipline in technical hygiene. That discipline is formed early through small problems.
-
-Exposure and technical discipline can be developed through the following habits:
-
-### Aim to be helpful, especially on small tasks
-
-A wide range of small tasks gives exposure to the scenarios an engineer deals with. The best tasks involve addressing unit-test failures or responding to low-urgency production errors. These build the mindset of anticipating errors through exposure to fixing them.
-
-### Talk to the team
-
-Constant and open conversation with team members contributes to exposure. Engineers on the frontline are often the first to see an issue. Consequently, the ability to raise risks and articulate uncertainties develops through working with a team. Learning from experienced team members is a core part of gaining exposure, though not all team members are good models. It is important to be aware of their track record. In any case, no engineer should work silently in isolation. A new engineer is able to develop good habits of communication before the habit of solo-working takes hold.
-
-### Talk to the business
-
-A new engineer benefits from learning the business problem “first-hand,” as if part of the business team. This is owning the business intent. Instead of focusing solely on code, early habits should include writing quality metadata and descriptions. Confidence in live demonstrations and hands-on experimentation with the business grows over time and requires comfort in acknowledging ignorance or mistakes.
-
-### Understand the architecture
-
-Developers often focus only on the development environment rather than the complete architecture. Yet multiple environments, CI/CD practices, and orchestration of loads all influence the engineer’s work. Thinking a few steps ahead—not just about development but also about deployment and monitoring— becomes an important habit.
-
-### Technical hygiene
-
-Technical hygiene begins with code management. This starts with elementary habits such as using Git version control as second nature. The most common error for new engineers is creating massive branches that release many features at once. Smaller, logically isolated releases build the capability to break down complex problems into simplified steps.
-
-### Check, don’t assume
-
-New engineers often make assumptions—about data, people, business, communication, or architecture. A habit of checking every step carefully is a prerequisite for tackling complex problems.
-
-### Estimate and refine
-
-Engineers often shy away from estimating effort and time-to-complete, developing an unhealthy habit of making excuses for why estimation is too difficult. Yet the ability to estimate accurately is one of the best indicators of technical competency. This will not come on day one. Developers commonly underestimate before work starts and overestimate once underway. A useful habit is making a rough guess of time-to-complete before starting any task and checking the estimate afterward.
-
-### Focus on the principles
-
-Data engineers must develop mastery of techniques necessary for quality engineering. Most new engineers learn better by doing rather than reading a book. However, understanding techniques through a theoretical framework from first principles remains important. Instead of being satisfied with ticking off a delivery feature, a new engineer benefits from reflecting on how the task links to the patterns in this book, especially the principles of data engineering.
-
-## Conclusion
-
-A new engineer benefits from balancing the mastery of techniques with confidence in the span of responsibility. A data engineer is more than a developer applying techniques to build a data model. The role involves engaging with the business, understanding its perspective, and alerting the team to issues that may not be visible.
-
-Being helpful remains the best attitude for a new engineer.
-
-Mastery of techniques is essential, though it develops over time. Progress comes from reflecting on these techniques consciously from first principles. This theoretical understanding forms the foundation for tackling more complex tasks.
-
-Progress for a new engineer can be measured by the ability to estimate effort. The ultimate sign of success is the capacity to formulate an effective construction plan.
-
-This does not require to-the-day accuracy in scheduling, but rather an orderly and flexible plan that provides clarity and builds momentum for a project team. Reasonable precision in estimates is sufficient for this purpose.
-
-The ability to formulate an effective construction plan is built on consistent technical discipline, and that discipline begins with the earliest practices of a new engineer.
-
-These habits are not optional—they serve as the foundation for everything else in this book.
+> **Key ideas.**
+>
+> Problems in data engineering are often fixed at the wrong level.
+>
+> A symptom is what is observably wrong.
+>
+> A trigger is the event that exposed the symptom.
+>
+> A root cause is the structural condition that allows the problem to recur.
+>
+> A final effect defines what must hold for the system to be genuinely fixed.
+>
+> The final effect is not the absence of the symptom.
+>
+> Sound judgement is the discipline of acting at the level where problems stop recurring.
 
 # Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
 
-*Quality is recognised through patterns of work that endure beyond the immediate feature.*
+*Quality is built into the work, not added after delivery.*
+
+> **Note.**
+>
+> This essay was written years before this book for the data science and engineering team at the Department of Agriculture, Fisheries and Forestry. It is reproduced mostly as it was originally written. Its terms do not always match the rest of the book, but it represents an accurate summary of its ideas.
 
 As developers, and broadly as a team with the goal of delivering products, we are under the constant temptation to build products that answer to the demands of the day.
 
-These demands are often driven by emotions we feel towards other people. They may be happiness of appreciations from a client or the fear of reprimand if we do not deliver on time.
+These demands are often driven by emotions we feel towards other people. They may be happiness at appreciation from a client, or fear of reprimand if we do not deliver on time.
 
-However, the instinctive reactions of personalities, and especially of personalities who barely understand our craft, are not reliable guides to quality. While these reactions may be justified—for example, if a project has been dragging on too long, then the people around us are right to be angry, they cannot be relied upon as the quality of work.
+However, the instinctive reactions of personalities, especially of personalities who barely understand our craft, are not reliable guides to quality. These reactions may be justified. For example, if a project has been dragging on too long, then the people around us may be right to be angry. But they cannot be relied upon as guides to the quality of work.
 
 Our work is of quality if it enables the organisation to make sound, positive decisions.
 
-Nevertheless, this is too abstract a goal for day-to-day work. Even other measures such as product usages or sentiment analysis of feedback are too distant to help developers make decisions in their daily work. We must seek other guides.
+Nevertheless, this is too abstract a goal for day-to-day work. Even other measures such as product usage or sentiment analysis of feedback are too distant to help developers make decisions in their daily work. We must seek other guides.
 
-Our purpose is to lay down hallmarks of quality that help a team to recognise and celebrate quality. They are nothing new but are time-honoured practices.
+Our purpose is to lay down hallmarks of quality that help a team recognise and celebrate quality. They are nothing new, but are time-honoured practices.
 
-As a developer, we must deliver the features, but also complete the following:
+As developers, we must deliver the features, but also complete the following:
 
 1. Expressive entities
-
 2. Well-written explanation
-
 3. Thoughtful unit-tests
-
 4. Monitor assumptions
-
 5. Anticipate errors
-
 6. Adhere to patterns
-
 7. Optimised code
 
-These are the hallmarks of quality. When done well, we have not only delivered a feature but delivered quality work. The work will be high value, long lasting, will win trust and importantly, give us pride in the work we do. Not everyone will carry out all aspects in every instance, but as a team, these are non-negotiables to quality.
+These are the hallmarks of quality. When done well, we have not only delivered a feature but delivered quality work. The work will be high value, long lasting, will win trust and, importantly, give us pride in the work we do. Not everyone will carry out all aspects in every instance, but as a team, these are non-negotiables to quality.
 
 ## Expressive entities
 
-When looking at data, it is easy to forget we are dealing with a real world. Yet the real world is what decision makers deal with. All models, whether they are simulation models or data models or machine learning models, are models of the world.
+When looking at data, it is easy to forget we are dealing with a real world. Yet the real world is what decision makers deal with. All models, whether they are simulation models, data models, or machine learning models, are models of the world.
 
 Correspondence to the world by the agent trying to influence it is therefore the final arbitrator of whether a data model is successful.
 
-Expressive entities refer to the idea that the tables and relationships we create in the data warehouse should not merely reflect the data as we found it but corresponds strongly to real world business processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is trying to approximate. If a competent layperson cannot easily relate the model to the real world, then the model is not expressive.
+Expressive entities refer to the idea that the tables and relationships we create in the data warehouse should not merely reflect the data as we found it, but correspond strongly to real-world business processes. It is expressive because the consumer or reviewer of the model can clearly recognise the world the model is trying to approximate. If a competent layperson cannot easily relate the model to the real world, then the model is not expressive.
 
-The process of creating expressive entities happen at a local level when we use table and column names that are business meaningful. At the level of a single model, we often say that we are “crafting” entities or tables. At the warehouse level across several models, we often say that we are conforming entities.
+The process of creating expressive entities happens at a local level when we use table and column names that are business meaningful. At the level of a single model, we often say that we are “crafting” entities or tables. At the warehouse level across several models, we often say that we are conforming entities.
 
 A data model is not a quality data model unless it is a useful representation of the world. A data model is, therefore, a worldview—more than a worldview, but not less. A developer without a strong worldview cannot create a sound data model.
 
-In a rapid development environment with the pressure to deliver, crafting and conforming entities are difficult tasks to achieve. They are hard because it is hard to think clearly about the world in a systematic way and then articulate it through data.
+In a rapid development environment with pressure to deliver, crafting and conforming entities are difficult tasks. They are hard because it is hard to think clearly about the world in a systematic way and then articulate it through data.
 
-There is a temptation to keep moving on to the next feature. Moreover, the benefits of crafting entities are long term and not easily understood by stakeholders. People understand testing and monitoring assumptions, but what does a “conceptual model” mean? However, the implication of inexpressive entities is that no one had spent time thinking about the world and the processes with which we try to influence it.
+There is a temptation to keep moving on to the next feature. Moreover, the benefits of crafting entities are long term and not easily understood by stakeholders. People understand testing and monitoring assumptions, but what does a “conceptual model” mean? However, the implication of inexpressive entities is that no one has spent time thinking about the world and the processes through which we try to influence it.
 
 A quality data model is only achievable by a developer who has thought seriously about the world, how data relates to it, and how to organise the world in a way that makes sense for decisions. The ability to create data entities that are accurate and expressive of the world is an infallible mark of quality.
 
 ## Well-written explanation
 
-Documentation is particularly important for data analysis (as opposed to say, a game programmer) because data is a projection of real-world processes and a data code is acting as an "interpreter" between data and the world. This interpretation has a plain English equivalent. Documentation is not simply "code comments" from one developer to another but is an articulation to oneself and to others how the output is reflecting reality. The writer C.S Lewis said, “If you cannot say something in common language, you either do not believe in it or you do not understand it.” If we cannot explain the logic behind our code in plain English, why should anyone believe we know what we are doing?
+Documentation is particularly important for data analysis, as opposed to, say, game programming, because data is a projection of real-world processes and data code acts as an interpreter between data and the world. This interpretation has a plain-English equivalent. Documentation is not simply “code comments” from one developer to another. It is an articulation to oneself and to others of how the output reflects reality.
 
-The primary purpose of a well-written explanation of our code is to articulate the logic back to ourselves. What are the entities we created? What do they really mean? What assumptions have we made? Writing a clear explanation is to step back from the code and do the work again from a different angle. Often, in articulating an explanation, one finds new ways of approaching the problem or discover assumptions that we missed.
+The writer C.S. Lewis said, “If you cannot say something in common language, you either do not believe in it or you do not understand it.” If we cannot explain the logic behind our code in plain English, why should anyone believe we know what we are doing?
 
-The secondary purpose of documentation is to win trust. To non-developers, our work is a black box. A well-written explanation is part of the transparency that are integral to trust. Business areas also have a clearer understanding of the quality work and effort put in development. These builds trust.
+The primary purpose of a well-written explanation of our code is to articulate the logic back to ourselves. What are the entities we created? What do they really mean? What assumptions have we made? Writing a clear explanation is to step back from the code and do the work again from a different angle. Often, in articulating an explanation, one finds new ways of approaching the problem or discovers assumptions that were missed.
 
-A developer does not need to writer documentation alone. It is the one task where other people can be intimately involved. Sharing and collaborating on documentation with subject matter experts are avenues to clarify concepts and listen to feedback.
+The secondary purpose of documentation is to win trust. To non-developers, our work is a black box. A well-written explanation is part of the transparency that is integral to trust. Business areas also gain a clearer understanding of the quality of work and effort put into development. This builds trust.
 
-It is interesting to see a shift of habit as developers mature. A new developer often write code with no documentation. Over time, the developer gains a habit to write documentation after completing code, then a habit to write documentation together with code. When mature, it is common for a developer to start with code documentation for complex scenarios (usually for the purpose for circulation). There is nothing surprising about this. The transition merely reflects the fact that the developer has mastered patterns in the work environment and is shifting focus from the mechanics of code-writing to the reality behind what the code is about.
+A developer does not need to write documentation alone. It is the one task where other people can be intimately involved. Sharing and collaborating on documentation with subject matter experts are avenues to clarify concepts and listen to feedback.
+
+It is interesting to see a shift of habit as developers mature. A new developer often writes code with no documentation. Over time, the developer gains the habit of writing documentation after completing code, then the habit of writing documentation together with code. When mature, it is common for a developer to start with code documentation for complex scenarios, usually for circulation. There is nothing surprising about this. The transition merely reflects the fact that the developer has mastered patterns in the work environment and is shifting focus from the mechanics of code-writing to the reality behind what the code is about.
 
 ## Thoughtful unit-tests
 
-At the minimum, writing proper unit-tests means that developer has solved the problem more than once and from different angles. This is enough to justify the writing of the test. Often in the writing of a test, the developer discovers a logical error or edge case that escaped attention during development.
+At the minimum, writing proper unit-tests means that a developer has solved the problem more than once and from different angles. This is enough to justify writing the test. Often, in writing a test, the developer discovers a logical error or edge case that escaped attention during development.
 
 In the long term, tests exist because the world is not static. What is true at the time of writing the code may not be true the day after. The data itself can change, or the code itself may change. Sometimes these changes can lead to significant errors that lead to incorrect decisions or harm trust.
 
-In isolated instances, one code element may have low probability of going wrong due to external changes. When running several hundred thousand lines of codes against several thousand entities, and a dozen developers are changing several hundred lines per week, the probabilities of error add up.
+In isolated instances, one code element may have a low probability of going wrong due to external changes. When running several hundred thousand lines of code against several thousand entities, and a dozen developers are changing several hundred lines per week, the probabilities of error add up.
 
-Tests are about quality and not quantity nor coverage. Poorly written tests can lead to false confidence.
+Tests are about quality, not quantity or coverage. Poorly written tests can lead to false confidence.
 
-Resist the temptation to delay a test. If instinct says a code should be tested, do not delay to the next week. It is astonishing how often the test of which we think “I probably should write this test, but I will do this a bit later” is the one that would have caught an error on the week’s product release.
+Resist the temptation to delay a test. If instinct says a code should be tested, do not delay it to the next week. It is astonishing how often the test of which we think, “I probably should write this test, but I will do this a bit later,” is the one that would have caught an error on the week’s product release.
 
 ## Assumptions are monitored
 
-All reasoning involves assumptions. Dealing with incomplete data especially requires assumptions. Assumptions is the X in the “If X, then Y.” Assumptions is the short-cut to Y. They allow one to defer insignificant problems to a future date.
+All reasoning involves assumptions. Dealing with incomplete data especially requires assumptions. Assumptions are the X in “If X, then Y.” Assumptions are the shortcut to Y. They allow one to defer insignificant problems to a future date.
 
-The world is not static. Assumptions valid at the time of writing the code may be invalid the next day. When assumptions fail, the consequence is always negative. This is because if the failure of the assumption has no impact, then the assumption is not necessary in the first place.
+The world is not static. Assumptions valid at the time of writing the code may be invalid the next day. When assumptions fail, the consequence is always negative. This is because if the failure of the assumption has no impact, then the assumption was not necessary in the first place.
 
-The failure of assumptions is often incremental rather than sudden. The world and its data usually drift from where we thought it would be rather than making a drastic break.
+The failure of assumptions is often incremental rather than sudden. The world and its data usually drift from where we thought it would be, rather than making a drastic break.
 
 This is particularly relevant with the rise of AI—models that work today will behave differently as the world changes.
 
 Whether they are sudden or gradual, we must monitor assumptions to mitigate the impact for the inevitable day when they fail. If we interpret fault-tolerance as the ability to go ahead despite errors, then assumptions monitoring is a form of macro fault-tolerance.
 
-Developers often assume uniqueness and existence of data. Without such assumptions, there can be no analysis. But what if the product table is not unique by [Product ID] tomorrow because the application had to add a [Product sub-type]? This is quite possible if the source table came from a non-relational system. If this happens, our logic will fall apart. On the other hand, we become paralysed by risks if we constantly assume source tables can change drastically. Therefore, automated treatment of common types of assumptions should be built into any mature processes.
+Developers often assume uniqueness and existence of data. Without such assumptions, there can be no analysis. But what if the product table is not unique by `[Product ID]` tomorrow because the application had to add a `[Product sub-type]`? This is quite possible if the source table came from a non-relational system. If this happens, our logic will fall apart. On the other hand, we become paralysed by risks if we constantly assume source tables can change drastically. Therefore, automated treatment of common types of assumptions should be built into any mature process.
 
-The key step to monitoring assumptions is to know when we are making one. More often, the issue is not that we are not monitoring the assumption, but that we are not conscious of making them. We assume the source tables will load in the daily ELT process. What if one of them does not load, or if they load but not in the order we expect? Another common type of assumption is to use hard-coded values in code.
+The key step to monitoring assumptions is to know when we are making one. More often, the issue is not that we are not monitoring the assumption, but that we are not conscious of making it. We assume the source tables will load in the daily ELT process. What if one of them does not load, or if they load but not in the order we expect? Another common type of assumption is the use of hard-coded values in code.
 
-Once assumptions have been identified, then it is a matter of being disciplined and monitoring them through an automated framework.
+Once assumptions have been identified, it is a matter of being disciplined and monitoring them through an automated framework.
 
 ## Anticipate errors
 
-Tests and assumptions fall under the general category of error handling. The question which concerns a seasoned developer is not whether the code runs today, but how it may fail tomorrow. Many can write code against the actual, but writing code against the possible is a whole new level. One can often identify a superior developer by an instinctive, second-nature, obsession about how the code may fail.
+Tests and assumptions fall under the general category of error handling. The question which concerns a seasoned developer is not whether the code runs today, but how it may fail tomorrow. Many can write code against the actual, but writing code against the possible is a whole new level. One can often identify a superior developer by an instinctive, second-nature obsession with how the code may fail.
 
-Even the most seemingly inconsequential actions can trigger an avalanche of unintended consequences. By learning from these errors and improving resilience of the process, these errors decrease. However, any large, structural change, are still likely to cause unintended effects. The first task of a developer then, is to expect errors to happen and to anticipate specific ones. A developer must assume that things will always go wrong.
+Even the most seemingly inconsequential actions can trigger an avalanche of unintended consequences. By learning from these errors and improving the resilience of the process, these errors decrease. However, any large structural change is still likely to cause unintended effects. The first task of a developer, then, is to expect errors to happen and to anticipate specific ones. A developer must assume that things will always go wrong.
 
-The primary purpose of error handling is to limit damage and prevent catastrophe of ripple effects. If we make it a rule to expect errors, the easiest response is to limit the damage through fault-tolerant code. This is the task of preventing or silencing errors.
+The primary purpose of error handling is to limit damage and prevent catastrophic ripple effects. If we make it a rule to expect errors, the easiest response is to limit the damage through fault-tolerant code. This is the task of preventing or silencing errors.
 
 The second purpose of error handling is to reveal silent errors. Not all errors cause panic. In fact, the most dangerous errors are silent ones. They can be silent by intention or by accident. In either case, a human should be alerted to apply a fix, or the code should be designed to recover automatically before damage propagates. This is the task of detecting or recovering gracefully from errors.
 
-The third purpose of error handling is for the team to grow continuously. Each error reveals a blind spot. When errors are handled properly, the team will be able to learn from the error and improve on processes. This may be implementing new automated checks or rethinking the algorithm from scratch. With each error the system becomes more mature and more resilient. This is the task of learning from errors. Learning from errors requires an open acknowledgement of failure and a willingness to share the lesson with others. This is why humility is important for developers.
+The third purpose of error handling is for the team to grow continuously. Each error reveals a blind spot. When errors are handled properly, the team will be able to learn from the error and improve processes. This may mean implementing new automated checks or rethinking the algorithm from scratch. With each error, the system becomes more mature and more resilient. This is the task of learning from errors. Learning from errors requires an open acknowledgement of failure and a willingness to share the lesson with others. This is why humility is important for developers.
 
-Error handling is hard because the developer needs to look beyond the now and anticipate any changes in the world. It is also challenging because error handling requires an end-to-end understanding of the data architecture. The ability to anticipate, prevent, silence, detect, recover gracefully, and learn from error is a hallmark of genius. This should apply both to technical situation (what happens to the join if the column is null?) and to business rules (does the logic given by the business make sense in all circumstances?).
+Error handling is hard because the developer needs to look beyond the now and anticipate changes in the world. It is also challenging because error handling requires an end-to-end understanding of the data architecture. The ability to anticipate, prevent, silence, detect, recover gracefully, and learn from error is a hallmark of genius. This should apply both to technical situations—what happens to the join if the column is null?—and to business rules—does the logic given by the business make sense in all circumstances?
 
 A delivery team that can continuously learn from errors is unstoppable. While error handling is challenging, a new developer can start by adopting the habit of expecting errors.
 
 ## Adherence to patterns
 
-There are slavish adherences to patterns that are counterproductive. However, patterns, whether they be coding styles, naming conventions, architecture, or the use of Git, are an indispensable part of a strong team. There are bad teams that follow patterns, but there are no good teams that do not have them.
+There are slavish adherences to patterns that are counterproductive. However, patterns, whether they are coding styles, naming conventions, architecture, or the use of Git, are an indispensable part of a strong team. There are bad teams that follow patterns, but there are no good teams that do not have them.
 
-The primary purpose of patterns is to pass on hard-earned wisdom acquired by the team. In a complex environment, there are solutions that are difficult to arrive at, or are counter-intuitive or are invisible to the untrained eye. This wisdom has been acquired by predecessors at great cost. It is not proper for developers to remain ignorant of their value due to laziness in observation or a naive confidence in the developer's own judgement.
+The primary purpose of patterns is to pass on hard-earned wisdom acquired by the team. In a complex environment, there are solutions that are difficult to arrive at, counter-intuitive, or invisible to the untrained eye. This wisdom has been acquired by predecessors at great cost. It is not proper for developers to remain ignorant of their value due to laziness in observation or a naive confidence in their own judgement.
 
-The second purpose of patterns is to create a consistent experience for end users. This consistent experience ranges from design language such as table names to more abstract experience such as joining a set of unfamiliar tables. This consistency of experience over a body of work is a felt quality that cannot be overstated. This hallmark of quality is achievable only by a team where every developer plays their part adhering to the whole.
+The second purpose of patterns is to create a consistent experience for end users. This consistent experience ranges from design language such as table names to more abstract experiences such as joining a set of unfamiliar tables. This consistency of experience over a body of work is a felt quality that cannot be overstated. This hallmark of quality is achievable only by a team where every developer plays their part in adhering to the whole.
 
-The third purpose of patterns is to support thinking by filtering out mental noise. Yes, CamelCase is no better than snake_case for table names. We could have used [Datetime created] as well as [Creation datetime] or indeed [Created datetime]. In isolation, whether text files have hard tabs, or 4-space, or 3-space soft tabs matter little. On the other hand, when the same standard decision is applied across the codebase, the pattern creates an important stability. In fact, when patterns are consistently applied, anomalies stand out—even anomalies which have nothing to do with the pattern. During review of code that is not written in accordance with a usual pattern, the reviewer is forced to carefully parse and interpret every line and every word.
+The third purpose of patterns is to support thinking by filtering out mental noise. Yes, CamelCase is no better than snake_case for table names. We could have used `[Datetime created]` as well as `[Creation datetime]` or indeed `[Created datetime]`. In isolation, whether text files have hard tabs, or 4-space, or 3-space soft tabs matters little. On the other hand, when the same standard decision is applied across the codebase, the pattern creates an important stability. In fact, when patterns are consistently applied, anomalies stand out—even anomalies which have nothing to do with the pattern. During review of code that is not written in accordance with a usual pattern, the reviewer is forced to carefully parse and interpret every line and every word.
 
 These mental noises reduce the probability of detecting an error. It is astonishing how, after the developer fixes some code indentation, previously unseen logical errors stand out.
 
-Judicious use of patterns in a team will advance quality by promoting solutions that survived the test of time. Patterns also accelerate delivery by removing developer uncertainty and simplifying decision making. On the other hand, an unthinking adherence to patterns through a “copy-and-paste” mindset can lead to overengineering or stifle innovation. To strike a balance between individual innovation and accumulated wisdom, team members should see themselves as participants in a conversation of innovation in which each team member can contribute with an attitude of “inquire, not debate.”
+Judicious use of patterns in a team will advance quality by promoting solutions that survived the test of time. Patterns also accelerate delivery by removing developer uncertainty and simplifying decision making. On the other hand, an unthinking adherence to patterns through a copy-and-paste mindset can lead to overengineering or stifle innovation. To strike a balance between individual innovation and accumulated wisdom, team members should see themselves as participants in a conversation of innovation in which each team member can contribute with an attitude of “inquire, not debate.”
 
 ## Optimised code
 
 Performant code carries out a task with as little server resource as possible. Elegant code promotes readability and simplicity. Taken together, we say the code has been optimised.
 
-The primary purpose of optimising code is to support long term maintainability. In a rapid development environment, a multitude of non-performant code can easily overwhelm the server. If code is not elegant, we increase the burden of changing the code. In isolated instances the problem may be insignificant. Over several hundred thousand lines of code, the problem compounds.
+The primary purpose of optimising code is to support long-term maintainability. In a rapid development environment, a multitude of non-performant code can easily overwhelm the server. If code is not elegant, we increase the burden of changing the code. In isolated instances, the problem may be insignificant. Over several hundred thousand lines of code, the problem compounds.
 
 A direct way to write performant code in a data warehouse is to use incremental extract logic. This is by no means easy. It can be difficult to do accurately when integrating several datasets. Incremental extract can influence overall design. For example, one may be selective about what tables to use in a single script to avoid a dependency that would ruin the potential to incrementally extract.
 
-The secondary purpose of optimising code is to think about the problem again. It is harder, and takes more thought, to write simple code than a complicated one. Often in making code elegant, the developer sees the concept in a different light. The process of a re-think can lead to conceptual breakthroughs.
+The secondary purpose of optimising code is to think about the problem again. It is harder, and takes more thought, to write simple code than complicated code. Often, in making code elegant, the developer sees the concept in a different light. The process of a re-think can lead to conceptual breakthroughs.
 
 Not all good developers can write optimised code, but bad developers can never write elegant, optimised code. Optimised code is one of the harder hallmarks to achieve. We can all improve with practice.
 
@@ -10779,28 +10816,28 @@ The hallmarks describe three aspects of data-based code: expressiveness, error h
 
 Creating expressive entities, well-written documentation.
 
-Expressiveness is grounded in the fact that data is not a real-world entity in and of itself but is a projection of real-world processes onto computer databases. Such projections are often fuzzy, imperfect, and contingent. When we create expressive entities, our goal is to reconstruct a clear and useful picture of the world from whence the data came.
+Expressiveness is grounded in the fact that data is not a real-world entity in and of itself but is a projection of real-world processes onto computer databases. Such projections are often fuzzy, imperfect, and contingent. When we create expressive entities, our goal is to reconstruct a clear and useful picture of the world from which the data came.
 
-Well-written documentation serves the same purpose by articulating in plain language how a data model relates to the real world. Analysts who continually take data at face value (each row in the Task table is a task right?), or mechanically applying statistical algorithms from a textbook is divorced from the reality behind the data.
+Well-written documentation serves the same purpose by articulating in plain language how a data model relates to the real world. Analysts who continually take data at face value—each row in the Task table is a task, right?—or mechanically apply statistical algorithms from a textbook are divorced from the reality behind the data.
 
 ### Error handling
 
 Anticipating errors, thoughtful unit-tests, monitoring assumptions.
 
-Error handling is to code what seat belts and safety breaks are to cars or monitoring and kill-switches are to a power plant. They are not "nice to haves" but are indispensable components to a complex computational environment. Unit tests and monitoring assumptions all help to mitigate against the inevitable day when an error occurs. A developer creating code without considering what may go wrong is akin to a builder who adds a floor to a building without strengthening the foundations—it will work, for now.
+Error handling is to code what seat belts and safety brakes are to cars, or monitoring and kill-switches are to a power plant. They are not nice-to-haves but indispensable components of a complex computational environment. Unit tests and monitoring assumptions all help to mitigate against the inevitable day when an error occurs. A developer creating code without considering what may go wrong is akin to a builder who adds a floor to a building without strengthening the foundations—it will work, for now.
 
 ### Elegant code
 
 Adherence to patterns, optimised code.
 
-Elegant code is key to sustainable growth. In a complex and fast-moving environment, we cannot afford spaghetti code nor free-for-all approaches to common problems.
+Elegant code is key to sustainable growth. In a complex and fast-moving environment, we cannot afford spaghetti code or free-for-all approaches to common problems.
 
-Performance-tuned code is obvious for the simple reason that the computational resources are finite.
+Performance-tuned code is obvious for the simple reason that computational resources are finite.
 
 ## Final words
 
 These hallmarks of quality are not revolutionary. They have been around since code development began. The issue is not that developers do not know about them but that they do not do them because of lack of discipline or pressures to deliver.
 
-There is the idea that doing work properly cost time and delay delivery. The retort is that doing work improperly cost more time. Writing good tests help capture errors earlier and reduces the time it takes to fix things up. Crafted entities vastly reduce the time to deliver complex features because the model becomes more powerful. Writing a clear explanation helps all get on-board, establishes trust and builds momentum. On the other hand, technical debt quickly comes back with a vengeance. At the level of a single development cycle, doing the work properly may increase development time by 20 to 40%. Over the course of several months, the dividends of quality work pay off and enable faster delivery than hasty development could ever achieve.
+There is the idea that doing work properly costs time and delays delivery. The retort is that doing work improperly costs more time. Writing good tests helps capture errors earlier and reduces the time it takes to fix things. Crafted entities vastly reduce the time required to deliver complex features because the model becomes more powerful. Writing a clear explanation helps everyone get on board, establishes trust and builds momentum. On the other hand, technical debt quickly comes back with a vengeance. At the level of a single development cycle, doing the work properly may increase development time by 20 to 40%. Over the course of several months, the dividends of quality work pay off and enable faster delivery than hasty development could ever achieve.
 
-The developer is constantly under the pressures of deadlines. However, if one does not have time to do the work well, the solution is not to do the work poorly. The best way to achieve the hallmarks is simply consider these as part of, and not something in addition to, the work itself. Once we make the mental leap, it becomes more natural to build these into the daily work and to the pace of projects.
+The developer is constantly under pressure from deadlines. However, if one does not have time to do the work well, the solution is not to do the work poorly. The best way to achieve the hallmarks is simply to consider these as part of the work itself, not something in addition to the work. Once we make the mental leap, it becomes more natural to build these into daily work and into the pace of projects.
