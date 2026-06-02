@@ -60,6 +60,7 @@ For example, milestone datetimes could be implemented as additional columns with
 
 In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
 
+
 ## Symptoms of poor fragmentation
 
 When meaningful fragments are missing, the symptoms are usually visible:
@@ -72,6 +73,177 @@ When meaningful fragments are missing, the symptoms are usually visible:
 - small changes create large downstream effects.
 
 These symptoms indicate that the pipeline has not been decomposed into its minimal informational components, and made easy for access.
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="980" height="700"
+     viewBox="0 0 980 700"
+     style="display:block;width:100%;max-width:44rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Figure 1 comparing one giant Sales.Everything table and meaningful analytical fragments around Sales">
+
+  <defs>
+    <marker id="arrowhead-meaningful-fragments-sales-v4" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
+
+    <style>
+      .mf-title-sales-v4 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 21px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .mf-label-sales-v4 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        fill: #111111;
+      }
+
+      .mf-small-sales-v4 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 13px;
+        fill: #333333;
+      }
+
+      .mf-mono-sales-v4 {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 11px;
+        fill: #333333;
+      }
+
+      .mf-box-sales-v4 {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 2;
+      }
+
+      .mf-lightbox-sales-v4 {
+        fill: #ffffff;
+        stroke: #999999;
+        stroke-width: 1.5;
+      }
+
+      .mf-line-sales-v4 {
+        stroke: #999999;
+        stroke-width: 1.1;
+      }
+
+      .mf-link-sales-v4 {
+        stroke: #222222;
+        stroke-width: 1.7;
+        fill: none;
+        marker-end: url(#arrowhead-meaningful-fragments-sales-v4);
+      }
+
+      .mf-arrow-sales-v4 {
+        stroke: #222222;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-meaningful-fragments-sales-v4);
+      }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="70" y="48" class="mf-title-sales-v4">From one giant table to meaningful fragments</text>
+  <text x="70" y="74" class="mf-small-sales-v4">A meaningful fragment isolates one informational purpose around an entity of interest.</text>
+
+  <!-- Left heading -->
+  <text x="90" y="122" class="mf-label-sales-v4">Shallow curation</text>
+  <text x="90" y="145" class="mf-small-sales-v4">Many purposes are collapsed into one wide table.</text>
+
+  <!-- Left big table -->
+  <rect x="90" y="175" width="330" height="360" rx="16" class="mf-box-sales-v4"/>
+  <text x="120" y="210" class="mf-label-sales-v4">Sales.Everything</text>
+  <line x1="120" y1="226" x2="390" y2="226" class="mf-line-sales-v4"/>
+
+  <text x="120" y="255" class="mf-mono-sales-v4">Sales ID</text>
+  <text x="120" y="276" class="mf-mono-sales-v4">Item ID</text>
+  <text x="120" y="297" class="mf-mono-sales-v4">Quantity</text>
+  <text x="120" y="318" class="mf-mono-sales-v4">Sale value</text>
+  <text x="120" y="339" class="mf-mono-sales-v4">Supplier cost</text>
+  <text x="120" y="360" class="mf-mono-sales-v4">Refund amount</text>
+  <text x="120" y="381" class="mf-mono-sales-v4">Margin</text>
+  <text x="120" y="402" class="mf-mono-sales-v4">Total margin</text>
+  <text x="120" y="423" class="mf-mono-sales-v4">Is profitable</text>
+  <text x="120" y="444" class="mf-mono-sales-v4">Placed date</text>
+  <text x="120" y="465" class="mf-mono-sales-v4">Shipped date</text>
+  <text x="120" y="486" class="mf-mono-sales-v4">Is meeting SLA</text>
+
+  <text x="120" y="525" class="mf-small-sales-v4">Mixed purpose · hidden rules · hard to reuse</text>
+
+  <!-- Middle arrow -->
+  <path d="M445 350 L530 350" class="mf-arrow-sales-v4"/>
+  <text x="452" y="330" class="mf-small-sales-v4">separate</text>
+  <text x="452" y="374" class="mf-small-sales-v4">meaningful</text>
+  <text x="452" y="394" class="mf-small-sales-v4">purposes</text>
+
+  <!-- Right heading -->
+  <text x="575" y="122" class="mf-label-sales-v4">Meaningful fragments</text>
+  <text x="575" y="145" class="mf-small-sales-v4">Fragments describe reusable analytical meanings.</text>
+
+  <!-- Top row: reference + entity of interest -->
+  <rect x="545" y="185" width="195" height="92" rx="14" class="mf-lightbox-sales-v4"/>
+  <text x="567" y="216" class="mf-label-sales-v4">ItemSupplierCost</text>
+  <text x="567" y="238" class="mf-small-sales-v4">reference data</text>
+  <line x1="567" y1="251" x2="715" y2="251" class="mf-line-sales-v4"/>
+  <text x="567" y="270" class="mf-mono-sales-v4">Item ID · Supplier cost</text>
+
+  <rect x="775" y="185" width="170" height="92" rx="16" class="mf-box-sales-v4"/>
+  <text x="800" y="216" class="mf-label-sales-v4">Sales</text>
+  <text x="800" y="238" class="mf-small-sales-v4">entity of interest</text>
+  <line x1="800" y1="251" x2="920" y2="251" class="mf-line-sales-v4"/>
+  <text x="800" y="270" class="mf-mono-sales-v4">Sales ID · date</text>
+
+  <!-- Detail fragment -->
+  <rect x="655" y="325" width="210" height="90" rx="14" class="mf-lightbox-sales-v4"/>
+  <text x="680" y="356" class="mf-label-sales-v4">SalesItem</text>
+  <line x1="680" y1="370" x2="835" y2="370" class="mf-line-sales-v4"/>
+  <text x="680" y="393" class="mf-mono-sales-v4">Item · quantity · value</text>
+
+  <!-- Parallel derived fragments -->
+  <rect x="520" y="470" width="185" height="82" rx="14" class="mf-lightbox-sales-v4"/>
+  <text x="542" y="500" class="mf-label-sales-v4">SalesItemMargin</text>
+  <line x1="542" y1="514" x2="680" y2="514" class="mf-line-sales-v4"/>
+  <text x="542" y="537" class="mf-mono-sales-v4">Value − cost</text>
+
+  <rect x="795" y="470" width="185" height="82" rx="14" class="mf-lightbox-sales-v4"/>
+  <text x="817" y="500" class="mf-label-sales-v4">SalesItemRefund</text>
+  <line x1="817" y1="514" x2="955" y2="514" class="mf-line-sales-v4"/>
+  <text x="817" y="537" class="mf-mono-sales-v4">Refunds against items</text>
+
+  <!-- Final aggregate -->
+  <rect x="665" y="595" width="250" height="82" rx="14" class="mf-box-sales-v4"/>
+  <text x="690" y="625" class="mf-label-sales-v4">SalesProfit</text>
+  <line x1="690" y1="639" x2="885" y2="639" class="mf-line-sales-v4"/>
+  <text x="690" y="662" class="mf-mono-sales-v4">Margin − refunds · profitable?</text>
+
+  <!-- Links -->
+  <!-- Reference and Sales feed SalesItem -->
+  <path d="M642 277 C650 305, 685 318, 720 325" class="mf-link-sales-v4"/>
+  <path d="M860 277 C850 305, 825 318, 800 325" class="mf-link-sales-v4"/>
+
+  <!-- SalesItem and ItemSupplierCost feed SalesItemMargin -->
+  <path d="M700 415 C675 438, 640 455, 612 470" class="mf-link-sales-v4"/>
+  <path d="M610 277 C590 348, 590 420, 612 470" class="mf-link-sales-v4"/>
+
+  <!-- Sales and SalesItem feed SalesItemRefund -->
+  <path d="M885 277 C925 350, 930 420, 888 470" class="mf-link-sales-v4"/>
+  <path d="M820 415 C845 438, 870 455, 888 470" class="mf-link-sales-v4"/>
+
+  <!-- Margin and refund feed SalesProfit -->
+  <path d="M612 552 C635 575, 690 588, 735 595" class="mf-link-sales-v4"/>
+  <path d="M888 552 C860 575, 825 588, 805 595" class="mf-link-sales-v4"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:44rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. A giant table hides the entity of interest, mixes grains, and makes change detection harder. Meaningful fragments separate information into clear grains around the entity, so each fragment can be built, tested, reused, and updated deliberately.
+</div>
 
 ## Common fragment patterns
 
