@@ -210,7 +210,9 @@ The difficulty of diagnosing root cause, however, is not merely technical. It is
 
 One engineer may think one event or condition is the root cause, while another engineer thinks it is only a trigger.
 
-One way to distinguish root cause from trigger is that root cause issues are those that **violate design principles**.
+One way to distinguish root cause from trigger is that:
+
+> Root cause issues are those that violate design principles.
 
 For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/).
 
@@ -299,6 +301,8 @@ Most importantly, the framework is not only for time-sensitive production failur
 >
 > The four steps of troubleshooting are: canvass the symptoms, identify the trigger, diagnose the root cause, and check the final effect.
 >
-> A symptom is what has visibly gone wrong. A trigger is the event that exposed it. A root cause is the underlying design or process issue that allowed it to happen.
+> A symptom is what has visibly gone wrong. A trigger is the event that exposed it.
+> 
+> A root cause issue is the condition that violates a design principle.
 >
 > The final effect is not merely the disappearance of the symptom. The work is complete when the business receives the information it needs to make the decision.
