@@ -1,231 +1,304 @@
 ---
-title: When things go wrong
+title: "When things go wrong"
 url: /docs/judgement-under-ambiguity/when-things-go-wrong/
-description: Presents a practical diagnostic framework for distinguishing symptoms, triggers, root causes, and final effects in data engineering work.
-lede: Sound judgement means acting at the level where problems stop recurring.
+description: Explains why data engineering is always troubleshooting and how mature engineers diagnose symptoms, triggers, root causes, and final effects.
+lede: All data engineering is troubleshooting.
 weight: 4
-draft: true
+# draft: true
 ---
 
-Sound judgement is the defining capability of a mature data engineer.
+## Things are already wrong
 
-It is tempting to think of data engineering as a sequence of technical tasks: building pipelines, fixing errors, optimising performance, and integrating systems. In practice, these tasks are secondary. What distinguishes effective engineers is not how quickly they act, but where they act.
+Other engineering disciplines, such as bridge-building, are primarily constructive. A crack in the bridge is an exception, not the rule.
 
-Sound judgement is the ability to recognise at what level a problem should be addressed — whether a situation calls for surface correction, structural repair, or a reconsideration of what “good” even means. It is exercised continuously, not only when something is visibly broken.
+Data engineering is fundamentally different.
 
-For this reason, troubleshooting is not a special activity reserved for failures. It is the most explicit expression of a posture that pervades the entire discipline. The same judgement used to diagnose a broken pipeline is used when deciding how to model an entity, where to aggregate information, or whether a system should be conformed at all.
+The central premise of data engineering is that:
 
-This chapter presents a simple diagnostic framework that makes sound judgement explicit. This framework defines the sixth and final principle of data engineering—instead of treating symptoms, diagnose root cause.
+> Data is a fragment of reality captured by process.
 
-## A diagnostic framework for sound judgement
+The data world is an imperfect projection of the business world, which the data engineer reshapes in light of intent.
 
-Sound judgement can be practised deliberately by distinguishing four stages that are often confused:
+This means that the discipline, while it has elements of creativity and construction, is reconstructive from the very beginning.
 
-| Stage | Diagnostic question |
-| --- | --- |
-| Symptom | What is observably wrong? |
-| Trigger | What event caused the symptom to surface? |
-| Root cause | What structural violation allows this to recur? |
-| Final effect | What outcome must hold for the system to be genuinely fixed? |
+In this sense, troubleshooting is not merely something that happens when the craft goes wrong. It is a concentrated form of the craft itself.
 
-This framework does not prescribe solutions. Its purpose is to discipline attention. It prevents engineers from reacting to what is loud instead of addressing what is consequential.
+What follows is a framework for troubleshooting failures. This explicit framework is necessary because production failures are real, and data engineers need a structured approach to stay calm and systematically resolve them.
 
-### A simple example
+But a production failure is only the clearest instance of a wider discipline. It is a moment when the engineer’s judgement is tested under pressure. In practice, all data engineering involves the same movement: seeing where and how the recorded data became misaligned with business intent, and then deciding where to intervene.
 
-Consider someone learning piano.
+The sixth and final principle of data engineering is this:
 
-- Symptom: the playing sounds offbeat.
+> Instead of stopping at the symptoms, diagnose the root cause.
 
-- Trigger: the finger is lifted too late before the next note.
+This applies to the whole book. Troubleshooting a production failure is simply a crystallised instance of the discipline.
 
-- Root cause: the learner relies on playing by ear rather than learning the mechanics of timing and articulation.
+## The four steps to troubleshooting
 
-- Final effect: the piece is played according to the intended rhythm, not merely
+When a data product fails, there is pressure to address it immediately using the quickest means possible.
 
-“close enough” to how it should sound.
+This often creates greater trouble. Large data pipelines are typically so complex that the first solution that comes to mind is often the wrong one, and applying it can create compounding issues.
 
-Two observations matter.
+Instead, the data engineer must stay calm and understand the situation. A practical diagnosis moves through four steps:
 
-First, the trigger is not the root cause. The trigger explains how the symptom occurs, not why it persists.
+1. Canvass the symptoms.
+2. Identify the trigger.
+3. Diagnose the root cause.
+4. Check the final effect.
 
-Second, the final effect is not the absence of mistakes. It is the presence of the intended outcome.
+Each step is about sustaining judgement under ambiguity.
 
-Sound judgement lies in acting at the level that prevents recurrence, not merely silences error.
+{{< svg >}}
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="980" height="340"
+     viewBox="0 0 980 340"
+     style="display:block;width:100%;max-width:44rem;height:auto;background:transparent"
+     role="img"
+     aria-label="Four-step troubleshooting framework moving from symptoms to trigger to root cause to final effect">
 
-### Step 1: Symptoms — seeing clearly before acting
+  <defs>
+    <marker id="arrowhead-troubleshooting-v2" markerWidth="10" markerHeight="8"
+            refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 z" fill="#222222"/>
+    </marker>
 
-The first act of sound judgement is to systematically canvas the symptoms, rather than reacting to the first issue reported.
+    <style>
+      .troubleshooting-title-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 21px;
+        font-weight: 700;
+        fill: #111111;
+      }
 
-Stakeholders describe what they see. They do not describe the full boundary of failure.
+      .troubleshooting-label-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        fill: #111111;
+      }
 
-Beginning work from a single reported symptom allows the reporting channel to define the problem — and that definition is almost always incomplete.
+      .troubleshooting-small-v2 {
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        font-size: 13px;
+        fill: #333333;
+      }
 
-At this stage, interpretation is a liability. The task is mechanical observation.
+      .troubleshooting-box-v2 {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 2;
+      }
 
-In medicine, uncertainty is met with vital checks. In data systems, the equivalent is to examine surface health before forming explanations.
+      .troubleshooting-lightbox-v2 {
+        fill: #ffffff;
+        stroke: #999999;
+        stroke-width: 1.5;
+      }
 
-Typical symptom canvassing includes:
+      .troubleshooting-arrow-v2 {
+        stroke: #222222;
+        stroke-width: 2;
+        fill: none;
+        marker-end: url(#arrowhead-troubleshooting-v2);
+      }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="70" y="52" class="troubleshooting-title-v2">The four steps of diagnosis</text>
+  <text x="70" y="78" class="troubleshooting-small-v2">Move from what is visible to the level where the problem is produced.</text>
+
+  <!-- Boxes -->
+  <rect x="45" y="145" width="185" height="120" rx="18" class="troubleshooting-lightbox-v2"/>
+  <text x="75" y="183" class="troubleshooting-label-v2">Canvass symptoms</text>
+  <text x="75" y="213" class="troubleshooting-small-v2">What is observably</text>
+  <text x="75" y="235" class="troubleshooting-small-v2">wrong?</text>
+
+  <rect x="265" y="145" width="185" height="120" rx="18" class="troubleshooting-lightbox-v2"/>
+  <text x="295" y="183" class="troubleshooting-label-v2">Identify trigger</text>
+  <text x="295" y="213" class="troubleshooting-small-v2">What exposed the</text>
+  <text x="295" y="235" class="troubleshooting-small-v2">problem now?</text>
+
+  <rect x="485" y="145" width="230" height="120" rx="18" class="troubleshooting-box-v2"/>
+  <text x="515" y="183" class="troubleshooting-label-v2">Diagnose root cause</text>
+  <text x="515" y="213" class="troubleshooting-small-v2">Why was this</text>
+  <text x="515" y="235" class="troubleshooting-small-v2">possible?</text>
+
+  <rect x="750" y="145" width="185" height="120" rx="18" class="troubleshooting-lightbox-v2"/>
+  <text x="780" y="183" class="troubleshooting-label-v2">Check final effect</text>
+  <text x="780" y="213" class="troubleshooting-small-v2">What must hold</text>
+  <text x="780" y="235" class="troubleshooting-small-v2">when fixed?</text>
+
+  <!-- Arrows -->
+  <path d="M230 205 L265 205" class="troubleshooting-arrow-v2"/>
+  <path d="M450 205 L485 205" class="troubleshooting-arrow-v2"/>
+  <path d="M715 205 L750 205" class="troubleshooting-arrow-v2"/>
+
+</svg>
+{{< /svg >}}
+
+<div style="max-width:44rem;text-align:center;font-size:0.95rem;color:#666;margin-top:0.5rem;">
+Figure 1. Diagnosis moves from the visible symptom to the trigger, then to the root cause, and finally to the intended effect.
+</div>
+
+### Step 1—Canvass the symptoms
+
+The first symptom, such as a stakeholder complaining about an unexpected number in a report, is a sign that something has gone wrong. However, this symptom cannot be taken at face value.
+
+When a patient reports chest pain, the doctor’s first response is not to accept the patient’s diagnosis. The doctor asks about other symptoms, such as shortness of breath, dizziness, fever, recent injury, medication, and medical history. The aim is to build a wider picture before deciding what the symptom means.
+
+The same applies to data engineering.
+
+The data engineer should canvass the issues that look like something has gone wrong, using experience to judge what may be relevant and what is probably unrelated.
+
+Examples may be:
 
 - If one report is broken, are others broken?
-
 - If one metric is wrong, are related metrics wrong?
+- Did the pipeline produce an abnormal number of deletes?
+- Were any records rejected during validation?
+- Did a table load time increase drastically?
+- Did any unit tests fail?
+- Did any assumption checks fail?
+- Are there anomalies upstream or downstream of the table with the reported error?
 
-- If a domain disappears, did the underlying rows disappear or only their classification?
+This is one reason why systematic logging in the warehouse and established tools for querying the logs are essential to a mature operation. Practised observability allows fast and accurate canvassing of symptoms.
 
-- Did row counts change? Did distributions shift? Did null rates spike?
+### Step 2—Identify the trigger
 
-- Did upstream pipelines succeed? Did downstream consumers fail?
+A patient reporting a symptom often implies a diagnosis by associating it with a recent event: “I started feeling chest pain after lifting heavy boxes,” or “I developed a fever after eating seafood.” The doctor does not ignore this history, but also does not accept it as the diagnosis. The recent event may be relevant, but it may only be the trigger that exposed an underlying condition.
 
-Jumping ahead at this stage is a failure of judgement. Engineers tend to do so for two reasons:
+In the same way, the data engineer’s next step, after canvassing the symptoms, is to identify the trigger.
 
-- pattern-matching based on past experience
-
-- taking the reported symptom as a complete description
-
-Both lead to work that is precise but misdirected.
-
-Sound judgement at this stage consists in restraint. Seeing clearly comes before acting decisively.
-
-### Step 2: Triggers — locating the point of exposure
-
-The second act of sound judgement is to identify the trigger — the event that caused the symptom to surface.
-
-Triggers are time-bound and concrete. They narrow the search space and provide orientation.
+The trigger is the event that allowed the symptom to surface.
 
 Common triggers in data engineering include:
 
-- schema changes in source systems
+- changes upstream, such as schema changes in source systems;
+- new or unexpected source values;
+- unusual records entering the pipeline;
+- recent code releases;
+- infrastructure or platform changes;
+- permission or security changes;
+- changes in load ordering or scheduling;
+- changes in business process or operational behaviour;
+- delayed, missing, or partial source loads.
 
-- new or invalid records entering a load
+If the symptom is reported by a stakeholder, identifying the trigger may involve asking questions. Useful questions include: “Why do you think the number is wrong?”, “What would you expect it to be?”, and “Do you have another source to compare with?”
 
-- code changes or refactors
+Identifying the trigger is useful for two reasons.
 
-- infrastructure or platform migrations
+First, the trigger often provides a hint for an urgent patch. If the trigger is a code release, rolling back the code may be the temporary fix.
 
-- permission or security changes
+Second, and more importantly, the trigger is a clue to finding the root cause. But just like a patient’s self-report, the important discipline is not to confuse the trigger with the root cause itself.
 
-- changes in load ordering or scheduling
+### Step 3—Diagnose the root cause
 
-Triggers are useful because they are often discoverable, and because they sometimes allow temporary containment: rollbacks, bypasses, or delayed execution.
+Once the patient has reported symptoms and given an account of recent history, the doctor often starts taking measurements: blood pressure, temperature, oxygen saturation, or a physical examination. Some cases may need blood tests, an X-ray, or other investigations.
 
-However, sound judgement requires a strict distinction:
+With these measurements, the doctor is diagnosing the root cause—what actually caused the symptoms to occur.
 
-A trigger explains when a symptom appeared.
+Root cause diagnosis is often difficult, especially under time pressure. The two main approaches are:
 
-A root cause explains why it can reappear.
+- Theoretical: reading the system, such as scripts, metadata, logs, and table dependencies, and identifying what must be true for the failure to occur. For example, if the row count became unexpectedly high and the load time increased significantly, the engineer may inspect the code and discover a table had been accidentally joined onto its own column.
 
-Treating the trigger as the cause leads to fragile systems that fail again under different conditions.
+- Experimental: isolating variables through controlled tests, such as making changes in a test environment and observing the result. For example, if the data engineer suspects a code release caused the issue, without being able to see which code, then reverting in a development environment and re-running may confirm the diagnosis.
 
-### Step 3: Root causes — acting at the level that matters
+Their application is situational. While experimental diagnosis can be safer, it is not always possible to conduct the experiment. It requires a scientific approach. Theoretical diagnosis is often faster, but it can be easy to misread complex code. Both require deep skill.
 
-The third act of sound judgement is to diagnose the root cause.
+The difficulty of diagnosing root cause, however, is not merely technical. It is also a matter of judgement.
 
-Root causes explain recurrence. They are structural violations that allow different triggers to produce the same class of symptom.
+One engineer may think one event or condition is the root cause, while another engineer thinks it is only a trigger.
 
-Root cause diagnosis may be:
+One way to distinguish root cause from trigger is that root cause issues are those that **violate design principles**.
 
-- Theoretical: reading the system and identifying what must be true for the failure to occur
+For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/).
 
-- Experimental: isolating variables through controlled tests
+In this view, the disagreement between engineers reflects a different understanding of the design principle that has been violated.
 
-Both require skill. Theoretical diagnosis depends on structural understanding.
+This also affects the final step.
 
-Experimental diagnosis depends on technical competence and disciplined inquiry.
+### Step 4—Check the final effect
 
-A useful rule is:
+The doctor finishes, not when the symptoms have disappeared, but when the patient is well.
 
-Root causes violate core principles that define the ideal system.
+The final effect is the only confirmation of the diagnosis. Importantly, the final effect is not the absence of the symptom.
 
-Triggers merely activate those violations.
+The equivalent is much harder for data engineers.
 
-In data engineering, recurring root causes include:
+Inexperienced data engineers sometimes silence the error. This is not addressing the root cause.
 
-- incorrect or ambiguous grain
+Another common mistake is to create the code fix in development, deploy it to production, assume the code is fixed, and move to the next task without checking the outcome post-deployment.
 
-- missing, unstable, or misused keys
+Instead, checking the final effect includes:
 
-- semantic mismatches hidden behind identical column names
+- visual validation: not “does the code run?”, but “are the outputs correct?”;
+- environment validation: checking behaviour across development, pre-production, and production;
+- end-to-end validation: whether the information now supports the intended decision;
+- stakeholder validation: closing the loop with the stakeholder who raised the issue.
 
-- wide tables that collapse unrelated concepts
+Ultimately, the final effect that needs to be checked is always:
 
-- implicit dependencies on ordering, timing, or existence
+> The business receives the information it needs to make the decision.
 
-- weak business processes that produce unreliable identity
+### Example: false deletions after a partial source extract
 
-- compounded logic that mixes extraction, transformation, and aggregation
+Suppose an operational report suddenly shows that thousands of active records have disappeared.
 
-Two engineers may observe the same symptom and trigger. One applies a patch. The other reshapes the system. The difference is not effort, but judgement.
+The immediate pressure is intense. The business thinks the report is wrong. The delivery team thinks the source system may have deleted records. Someone suggests restoring yesterday’s data. Someone else suggests disabling deletion logic. Another person asks whether the report can simply exclude today’s load.
 
-Sound judgement is the willingness to act where the system is wrong, not merely where it is noisy.
+A hasty response may make the report look better while making the warehouse less trustworthy.
 
-### Step 4: Final effect — knowing when you are done
+Using the four-step framework, the engineer systematically tackles the issue.
 
-Between diagnosing root cause and completing work lies the act of applying a fix. Fixes vary: containment, refactoring, redesign, or process change.
+**Symptom.** The reported symptom is that the operational report shows far fewer active records than expected. But this is only the first visible issue. The engineer canvasses nearby symptoms and finds that the downloaded files are shorter than usual, and that several downstream tables have lost records. Significantly, the data extract step did not fail and reported successful completion, but took much longer than normal.
 
-Regardless of the fix, the final act of sound judgement is to check the final effect.
+**Trigger.** After investigation, the source is found to be extracted through an API. Since the API is rate-limited, the extract is downloaded in batches. The team had been warned of a planned network change through email, and the timing coincided with the extraction.
 
-This includes:
+It turns out the network change is the trigger. The change resulted in extended API calls, and some calls timed out. However, the timeout exit was not logged as an error, so the extraction still appeared successful.
 
-- visual validation: not “does the code run”, but “are the outputs correct”
+**Root cause.** One team member suggests that timeout exits need to be reported as errors to prevent future occurrences. Another team member suggests better coordination with the change management team, and that the team leader regularly attend the organisation’s change committee meeting to represent the team’s pipeline interests.
 
-- environment validation: behaviour across development, pre-production, and production
+These may be relevant, but in this case they do not address the root cause.
 
-- end-to-end validation: whether the information now supports the intended decision
+The deeper issue is the design of deletion detection. The source system allows records to be deleted, but the API does not provide a reliable delete log. The warehouse therefore relies on a full source scan to infer deletes: if a record exists in the warehouse but is absent from the latest full scan, it is treated as deleted.
 
-A critical rule applies:
+This design is only safe if a completed scan means a complete population has been received. In this case, that assumption was false. The pipeline treated an incomplete extraction as a complete scan, then interpreted the missing records as deletes.
 
-The final effect is not the absence of the symptom.
+**Final effect.** The final effect is not simply reporting timeout errors or improving attendance at the change committee meeting, because other issues may still produce incomplete extraction. Those actions may help with containment, but they do not make the design safe.
 
-Error suppression creates silence, not correctness. Silence is often mistaken for success, until the failure reappears elsewhere.
+The business needs the warehouse to preserve the correct population of active records, even when remote extraction fails silently.
 
-Knowing the final effect is difficult because it requires seeing what “good” should be.
+A better fix is to protect the deletion-detection step. The full scan should be staged first. The pipeline should check the expected batch count or source row count before applying deletion logic. Only when the extract is fully accounted for should the warehouse compare populations and mark deletes. If the scan is incomplete, the run should be quarantined, the prior population preserved, and the team alerted.
 
-Engineers often fail to recognise slow systems because they do not know what fast systems look like. They fail to recognise weak models because they do not know what expressive models look like.
-
-In data engineering, the final effect is always the same:
-
-The business receives the information it needs to make the decision.
-
-Pipeline success, test success, and error absence are necessary — but they are not the end.
-
-## Sound judgement throughout data engineering
-
-Sound judgement is not exercised only when something breaks. It is present throughout the discipline of a data engineer:
-
-- Expressiveness: o Symptom-level response: rename columns or add documentation when reports confuse users. o Root-cause response: reshape the model so business meaning is explicit in its structure.
-
-- Fragment modelling: o Symptom-level response: patch special cases into existing tables as complexity grows. o Root-cause response: extract independent fragments and isolate responsibilities.
-
-- Reference data and conformance: o Symptom-level response: reconcile mismatched numbers in reports. o Root-cause response: introduce shared reference data and apply it consistently.
-
-- Aggregation and grain: o Symptom-level response: simplify visuals or add filters when reports are slow or inconsistent. o Root-cause response: aggregate correctly in the pipeline at a grain aligned with decisions.
-
-In each case, nothing is “broken” in an obvious sense. Yet judgement is still required.
-
-Mature engineers recognise these situations early and act at the level that prevents future failure.
+This is a contrived and simplified example. Real failures are rarely so simple. However, it shows why troubleshooting must move beyond the visible symptom. The report was where the problem appeared. The source extract was the trigger. The root cause was unsafe deletion logic built on an unmonitored assumption. The final effect was a warehouse that could distinguish genuine deletion from incomplete capture.
 
 ## Conclusion
 
-Sound judgement is the ability to act at the right level of abstraction, at the right time, for the right reason.
+This chapter explained a simple four-step framework for troubleshooting:
 
-The diagnostic framework introduced here makes that judgement explicit:
+1. Canvass the symptoms.
+2. Identify the trigger.
+3. Diagnose the root cause.
+4. Check the final effect.
 
-1. Canvas the symptoms
+While the framework looks simple, it is distilled from countless scars, from small errors to costly failures, where premature conclusion and hasty fixes only made things worse.
 
-2. Identify the trigger
+Ultimately, troubleshooting complex errors in production, under time pressure, is a skill that can only be learned through personal experience. However, for new engineers, the framework provides a mental model to help accelerate attaining the necessary clarity and judgement.
 
-3. Diagnose the root cause
+Most importantly, the framework is not only for time-sensitive production failures. It applies to the entire discipline of data engineering. It is captured in the final principle of data engineering: instead of stopping at the symptoms, diagnose the root cause.
 
-4. Check the final effect
-
-Common failures arise from:
-
-- acting on symptoms without understanding scope
-
-- mistaking triggers for causes
-
-- equating silence with success
-
-The goal is not to avoid problems. It is to address them at the level where they stop recurring. Thus, instead of treating the symptom, diagnose the root cause.
-
-Sound judgement is not a talent. It is a discipline — and it is the thread that runs through all effective data engineering work.
+> [!NOTE]
+> **Key ideas**
+>
+> The sixth principle of data engineering is diagnose the root cause.
+>
+> Data engineering is reconstructive because data begins as a fragment of reality captured by process.
+>
+> Troubleshooting a production failure is a crystallised instance of the whole discipline.
+>
+> The four steps of troubleshooting are: canvass the symptoms, identify the trigger, diagnose the root cause, and check the final effect.
+>
+> A symptom is what has visibly gone wrong. A trigger is the event that exposed it. A root cause is the underlying design or process issue that allowed it to happen.
+>
+> The final effect is not merely the disappearance of the symptom. The work is complete when the business receives the information it needs to make the decision.
