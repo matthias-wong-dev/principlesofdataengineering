@@ -1983,6 +1983,10 @@ For example, milestone datetimes could be implemented as additional columns with
 
 In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
 
+![](book/epub-assets/diagram-006.png)
+
+*Figure 1. A giant table hides the entity of interest, mixes grains, and makes change detection harder. Meaningful fragments separate information into clear grains around the entity, so each fragment can be built, tested, reused, and updated deliberately.*
+
 ## Symptoms of poor fragmentation
 
 When meaningful fragments are missing, the symptoms are usually visible:
@@ -2414,7 +2418,7 @@ Continuing with the example above:
 - Production—Sourcing, Manufacturing, Quality control
 - Sales—Orders, Shipping, Customer feedback
 
-![](book/epub-assets/diagram-006.png)
+![](book/epub-assets/diagram-007.png)
 
 *Figure 1. Linear process diagram. Business processes are arranged in chronological order and grouped into Design, Production, and Sales.*
 
@@ -3350,7 +3354,7 @@ One common theme in this chapter is the movement from information at a finer gra
 
 Combination dimensions, choice dimensions, Sankey dimensions, and storytelling dimensions all follow this pattern.
 
-![](book/epub-assets/diagram-007.png)
+![](book/epub-assets/diagram-008.png)
 
 *Figure 1. Lower-grain detail is pushed back to the entity grain, then exposed as a dimension value that users can interact with safely.*
 
@@ -5932,6 +5936,12 @@ Fuzzy logic is handled through iterative approximation.
 | Random validation | Does the pattern hold up when checked against unbiased samples? |
 | Monitoring for drift | Does the pattern continue to behave over time? |
 
+Figure 1 shows illustrate the data quality issues that arise from the projection of the business world to the data world, and the work of the data engineer to address the gap.
+
+![](book/epub-assets/diagram-009.png)
+
+*Figure 1. Business reality is projected into recorded data with loss, distortion, and misalignment. Data quality work shapes recorded data back toward business intent by defining the concepts, relationships, and assumptions needed for use.*
+
 One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
 
 This is covered in more detail in [Tests and assumptions](#docs-quality-reliability-tests-and-assumptions).
@@ -7599,7 +7609,7 @@ The standard pattern has three steps:
 | Check | Which rows genuinely changed, and are those changes safe? |
 | Apply | How should the target table be updated without losing history or spreading faults? |
 
-![](book/epub-assets/diagram-008.png)
+![](book/epub-assets/diagram-010.png)
 
 *Figure 1. The load mechanics pattern: stage incoming data, check proposed changes, then apply safe changes and log what happened.*
 
@@ -8011,7 +8021,7 @@ Suppose a sales pipeline contains six tables:
 
 The dependency graph might look like this.
 
-![](book/epub-assets/diagram-009.png)
+![](book/epub-assets/diagram-011.png)
 
 *Figure 1. Example dependency graph for a sales pipeline. A table can load only after all upstream tables pointing into it have finished.*
 
@@ -8978,7 +8988,7 @@ In the example, this returns `E1002` and `E1003`:
 
 The relationship between the source update time, the translation to pipeline time using the polling table, and the refresh bookmark on the target table to find the source records to update can be visualised as two parallel timelines.
 
-![](book/epub-assets/diagram-010.png)
+![](book/epub-assets/diagram-012.png)
 
 *Figure 1. Raw.Bookmark polling rows map source update time to pipeline time. The previous Curated.Event refresh used the latest polling row available when it started, mapping its target bookmark to source boundary 07:56. The current refresh resumes from that target bookmark, so it considers source events after 07:56.*
 
@@ -9625,7 +9635,7 @@ This script illustrates the complete pattern:
 
 Visually the procedure looks like:
 
-![](book/epub-assets/diagram-011.png)
+![](book/epub-assets/diagram-013.png)
 
 *Figure 1. The incremental extract pattern follows the SQL script from top to bottom. The refresh bookmark defines the change boundary. The upsert driver creates a minimal staging table by downfiltering the normal query. The delete driver identifies rows to remove from T. Load mechanics then applies exact deletes and genuine upserts.*
 
@@ -9883,7 +9893,7 @@ Each step is increasingly sophisticated, and corresponds to a deeper level of ga
 
 This is visualised below:
 
-![](book/epub-assets/diagram-012.png)
+![](book/epub-assets/diagram-014.png)
 
 *Figure 1. Partitioning is like sorting incoming books into boxes by publishing year. Partitioning enables divide-and-conquer loading. A rolling window means very old books are no longer processed. Incremental refresh compares each incoming segment’s latest update datetime with the stored bookmark on the matching box, then refreshes only the box whose value changed.*
 
@@ -10198,7 +10208,7 @@ The seven engagement principles that follow provide a practical framework for gu
 6. Design for workflows
 7. Spot the 20%
 
-![](book/epub-assets/diagram-013.png)
+![](book/epub-assets/diagram-015.png)
 
 *Figure 1. Guiding stakeholders through ambiguity is a disciplined movement from unclear need to shared clarity. Trust and listening make dialogue possible; intent and vision give it direction; solution sketches and workflows make it concrete; spotting the 20% protects the project from hidden complexity.*
 
@@ -10363,7 +10373,7 @@ When projects meander, it is often because direction is unclear. The best advice
 
 The best way to refine the solution hypothesis is through an open workbench format. In an open workbench, the delivery team and stakeholders meet regularly to explore the data model, experiment with new features, test definitions, and provide feedback for the next iteration. Stakeholders may come from different business areas, making the data model a centre for converging perspectives.
 
-![](book/epub-assets/diagram-014.png)
+![](book/epub-assets/diagram-016.png)
 
 *Figure 2. The open workbench brings stakeholder intent, business workflows, source data, and solution sketches into the same conversation. Vision anchors the work from above; trust supports it from below. Between them, the team listens, sketches, tests, and refines until the solution becomes recognisable to the business.*
 
@@ -10387,7 +10397,7 @@ Every workflow has at least two elements: an intent and a trigger.
 
 For example, a helpdesk workflow might look like this.
 
-![](book/epub-assets/diagram-015.png)
+![](book/epub-assets/diagram-017.png)
 
 *Figure 3. A workflow begins with a trigger and is organised around an intent. The data product is useful because it supports the action between them.*
 
@@ -10447,6 +10457,8 @@ The seven engagement principles capture hard-earned wisdom for facilitating thes
 > Requirements are discovered through dialogue, not merely collected upfront.
 >
 > The delivery team should guide stakeholders through ambiguity until unclear needs become shared understanding.
+>
+> > The fifth principle of data engineering is **illuminate ambiguity**.
 >
 > The seven engagement principles are:
 >
@@ -10538,7 +10550,7 @@ The four stages are:
 3. Scope
 4. Build
 
-![](book/epub-assets/diagram-016.png)
+![](book/epub-assets/diagram-018.png)
 
 *Figure 1. Construction planning moves from discovery to vision, scope, and build. The plan becomes more specific as commitment increases, but remains flexible enough to adapt as discovery continues.*
 
@@ -10669,7 +10681,7 @@ A construction plan designed in this manner is, like a good travel itinerary, bo
 
 The following is an example of a construction plan for manufacture and quality control.
 
-![](book/epub-assets/diagram-017.png)
+![](book/epub-assets/diagram-019.png)
 
 *Figure 2. A construction plan is a delivery artefact. It gives the team a sequenced view of releases, information focus, descriptions, and artefacts without requiring the whole project to be specified in full detail.*
 
@@ -10723,241 +10735,217 @@ Success hinges increasingly on planning. The mark of an experienced data enginee
 
 # When things go wrong {#docs-judgement-under-ambiguity-when-things-go-wrong}
 
-*Sound judgement means acting at the level where problems stop recurring.*
+*All data engineering is troubleshooting.*
 
-## Acting at the right level
+## Things are already wrong
 
-Problems in data engineering are often fixed at the wrong level.
+Other engineering disciplines, such as bridge-building, are primarily constructive. A crack in the bridge is an exception, not the rule.
 
-A broken report may be corrected without fixing the model. A failed load may be rerun without fixing the dependency. A confusing metric may be renamed without fixing the grain. In each case, the visible problem disappears, but the condition that produced it remains.
+Data engineering is fundamentally different.
 
-Sound judgement is the ability to recognise the level at which a problem should be addressed.
+The central premise of data engineering is that:
 
-The mature data engineer is not satisfied when the visible error has gone away. The question is not only:
+> Data is a fragment of reality captured by process.
 
-> What went wrong?
+The data world is an imperfect projection of the business world, which the data engineer reshapes in light of intent.
 
-The deeper questions are:
+This means that the discipline, while it has elements of creativity and construction, is reconstructive from the very beginning.
 
-> Why was this possible?
->
-> What must hold for the system to be genuinely fixed?
+In this sense, troubleshooting is not merely something that happens when the craft goes wrong. It is a concentrated form of the craft itself.
 
-The sixth and final principle of data engineering is therefore: instead of treating symptoms, diagnose the **root cause**.
+What follows is a framework for troubleshooting failures. This explicit framework is necessary because production failures are real, and data engineers need a structured approach to stay calm and systematically resolve them.
 
-## Four diagnostic levels
+But a production failure is only the clearest instance of a wider discipline. It is a moment when the engineer’s judgement is tested under pressure. In practice, all data engineering involves the same movement: seeing where and how the recorded data became misaligned with business intent, and then deciding where to intervene.
 
-A data engineer can practise sound judgement by distinguishing four diagnostic levels that are often confused.
+The sixth and final principle of data engineering is this:
 
-| Level | Diagnostic question | Role |
-| --- | --- | --- |
-| Symptom | What is observably wrong? | Reveals that attention is needed. |
-| Trigger | What event exposed the symptom? | Locates the point of exposure. |
-| Root cause | What structural condition allows this to recur? | Identifies the level where correction is needed. |
-| Final effect | What must hold for the system to be genuinely fixed? | Defines what successful repair means. |
+> Instead of stopping at the symptoms, diagnose the root cause.
 
-This framework does not prescribe a solution. It disciplines attention. It prevents the engineer from reacting to what is loud instead of addressing what is consequential.
+This applies to the whole book. Troubleshooting a production failure is simply a crystallised instance of the discipline.
 
-![](book/epub-assets/diagram-018.png)
+## The four steps to troubleshooting
 
-*Figure 1. Sound judgement distinguishes symptoms, triggers, root causes, and final effects. The visible problem matters, but the deeper task is to understand why recurrence is possible and what must hold for the system to be genuinely fixed.*
+When a data product fails, there is pressure to address it immediately using the quickest means possible.
 
-### Example: active customers
+This often creates greater trouble. Large data pipelines are typically so complex that the first solution that comes to mind is often the wrong one, and applying it can create compounding issues.
 
-Suppose a report shows too many active customers.
+Instead, the data engineer must stay calm and understand the situation. A practical diagnosis moves through four steps:
 
-- Symptom: the active customer count is too high.
+1. Canvass the symptoms.
+2. Identify the trigger.
+3. Diagnose the root cause.
+4. Check the final effect.
 
-- Trigger: a new customer status was added in the source system.
+Each step is about sustaining judgement under ambiguity.
 
-- Root cause: the model relies on a hard-coded list of inactive statuses instead of a maintained status classification.
+![](book/epub-assets/diagram-020.png)
 
-- Final effect: active customers are classified according to a maintained business definition that remains correct when source statuses change.
+*Figure 1. Diagnosis moves from the visible symptom to the trigger, then to the root cause, and finally to the intended effect.*
 
-The trigger explains why the issue surfaced now. It does not explain why the system was fragile.
+### Step 1—Canvass the symptoms
 
-The final effect is not simply that today’s number is corrected. The final effect is that the model classifies active customers correctly under the intended business definition.
+The first symptom, such as a stakeholder complaining about an unexpected number in a report, is a sign that something has gone wrong. However, this symptom cannot be taken at face value.
 
-## Symptoms—seeing the boundary of failure
+When a patient reports chest pain, the doctor’s first response is not to accept the patient’s diagnosis. The doctor asks about other symptoms, such as shortness of breath, dizziness, fever, recent injury, medication, and medical history. The aim is to build a wider picture before deciding what the symptom means.
 
-The first act of sound judgement is to canvas the symptoms.
+The same applies to data engineering.
 
-Stakeholders describe what they see. They do not describe the full boundary of failure. Beginning work from a single reported symptom allows the reporting channel to define the problem, and that definition is almost always incomplete.
+The data engineer should canvass the issues that look like something has gone wrong, using experience to judge what may be relevant and what is probably unrelated.
 
-At this stage, interpretation is a risk. The task is to observe before explaining.
+Examples may be:
 
-Typical symptom canvassing includes:
-
-- If one report is broken, are other reports broken?
-
+- If one report is broken, are others broken?
 - If one metric is wrong, are related metrics wrong?
+- Did the pipeline produce an abnormal number of deletes?
+- Were any records rejected during validation?
+- Did a table load time increase drastically?
+- Did any unit tests fail?
+- Did any assumption checks fail?
+- Are there anomalies upstream or downstream of the table with the reported error?
 
-- If a domain disappears, did the underlying rows disappear or only their classification?
+This is one reason why systematic logging in the warehouse and established tools for querying the logs are essential to a mature operation. Practised observability allows fast and accurate canvassing of symptoms.
 
-- Did row counts change?
+### Step 2—Identify the trigger
 
-- Did distributions shift?
+A patient reporting a symptom often implies a diagnosis by associating it with a recent event: “I started feeling chest pain after lifting heavy boxes,” or “I developed a fever after eating seafood.” The doctor does not ignore this history, but also does not accept it as the diagnosis. The recent event may be relevant, but it may only be the trigger that exposed an underlying condition.
 
-- Did null rates spike?
+In the same way, the data engineer’s next step, after canvassing the symptoms, is to identify the trigger.
 
-- Did upstream pipelines succeed?
-
-- Did downstream consumers fail?
-
-Jumping ahead at this stage is a failure of judgement. Engineers tend to do so for two reasons: pattern-matching based on past experience, and taking the reported symptom as a complete description.
-
-Both lead to work that is precise but misdirected.
-
-Sound judgement at this stage consists in restraint. Seeing clearly comes before acting decisively.
-
-## Triggers—locating the point of exposure
-
-The second act of sound judgement is to identify the trigger: the event that caused the symptom to surface.
-
-Triggers are time-bound and concrete. They narrow the search space and provide orientation.
+The trigger is the event that allowed the symptom to surface.
 
 Common triggers in data engineering include:
 
-- schema changes in source systems;
-
-- new or invalid records entering a load;
-
-- code changes or refactors;
-
-- infrastructure or platform migrations;
-
+- changes upstream, such as schema changes in source systems;
+- new or unexpected source values;
+- unusual records entering the pipeline;
+- recent code releases;
+- infrastructure or platform changes;
 - permission or security changes;
+- changes in load ordering or scheduling;
+- changes in business process or operational behaviour;
+- delayed, missing, or partial source loads.
 
-- changes in load ordering or scheduling.
+If the symptom is reported by a stakeholder, identifying the trigger may involve asking questions. Useful questions include: “Why do you think the number is wrong?”, “What would you expect it to be?”, and “Do you have another source to compare with?”
 
-Triggers are useful because they are often discoverable. They may also allow temporary containment: rolling back a change, bypassing a load, delaying execution, or applying a short-term patch.
+Identifying the trigger is useful for two reasons.
 
-However, sound judgement requires a strict distinction.
+First, the trigger often provides a hint for an urgent patch. If the trigger is a code release, rolling back the code may be the temporary fix.
 
-A trigger explains when a symptom appeared.
+Second, and more importantly, the trigger is a clue to finding the root cause. But just like a patient’s self-report, the important discipline is not to confuse the trigger with the root cause itself.
 
-A root cause explains why it can reappear.
+### Step 3—Diagnose the root cause
 
-Treating the trigger as the cause leads to fragile systems that fail again under different conditions.
+Once the patient has reported symptoms and given an account of recent history, the doctor often starts taking measurements: blood pressure, temperature, oxygen saturation, or a physical examination. Some cases may need blood tests, an X-ray, or other investigations.
 
-## Root causes—finding why recurrence is possible
+With these measurements, the doctor is diagnosing the root cause—what actually caused the symptoms to occur.
 
-The third act of sound judgement is to diagnose the root cause.
+Root cause diagnosis is often difficult, especially under time pressure. The two main approaches are:
 
-Root causes explain recurrence. They are structural conditions that allow different triggers to produce the same class of symptom.
+- Theoretical: reading the system, such as scripts, metadata, logs, and table dependencies, and identifying what must be true for the failure to occur. For example, if the row count became unexpectedly high and the load time increased significantly, the engineer may inspect the code and discover a table had been accidentally joined onto its own column.
 
-Root cause diagnosis may be theoretical or experimental.
+- Experimental: isolating variables through controlled tests, such as making changes in a test environment and observing the result. For example, if the data engineer suspects a code release caused the issue, without being able to see which code, then reverting in a development environment and re-running may confirm the diagnosis.
 
-It is theoretical when the engineer reads the system and identifies what must be true for the failure to occur.
+Their application is situational. While experimental diagnosis can be safer, it is not always possible to conduct the experiment. It requires a scientific approach. Theoretical diagnosis is often faster, but it can be easy to misread complex code. Both require deep skill.
 
-It is experimental when the engineer isolates variables through controlled tests.
+The difficulty of diagnosing root cause, however, is not merely technical. It is also a matter of judgement.
 
-Both require skill. Theoretical diagnosis depends on structural understanding. Experimental diagnosis depends on technical competence and disciplined inquiry.
+One engineer may think one event or condition is the root cause, while another engineer thinks it is only a trigger.
 
-A useful rule is:
+One way to distinguish root cause from trigger is that:
 
-> Root causes violate the principles that define the ideal system. Triggers merely activate those violations.
+> Root cause issues are those that violate design principles.
 
-In data engineering, recurring root causes include:
+For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](#docs-quality-reliability-tests-and-assumptions).
 
-- incorrect or ambiguous grain;
+In this view, the disagreement between engineers reflects a different understanding of the design principle that has been violated.
 
-- missing, unstable, or misused keys;
+This also affects the final step.
 
-- semantic mismatches hidden behind identical column names;
+### Step 4—Check the final effect
 
-- wide tables that collapse unrelated concepts;
+The doctor finishes, not when the symptoms have disappeared, but when the patient is well.
 
-- implicit dependencies on ordering, timing, or existence;
+The final effect is the only confirmation of the diagnosis. Importantly, the final effect is not the absence of the symptom.
 
-- weak business processes that produce unreliable identity;
+The equivalent is much harder for data engineers.
 
-- compounded logic that mixes extraction, transformation, and aggregation.
+Inexperienced data engineers sometimes silence the error. This is not addressing the root cause.
 
-Two engineers may observe the same symptom and the same trigger. One applies a patch. The other reshapes the system. The difference is not effort, but judgement.
+Another common mistake is to create the code fix in development, deploy it to production, assume the code is fixed, and move to the next task without checking the outcome post-deployment.
 
-Sound judgement is the willingness to act where the system is wrong, not merely where it is noisy.
+Instead, checking the final effect includes:
 
-## Final effects—knowing what fixed means
+- visual validation: not “does the code run?”, but “are the outputs correct?”;
+- environment validation: checking behaviour across development, pre-production, and production;
+- end-to-end validation: whether the information now supports the intended decision;
+- stakeholder validation: closing the loop with the stakeholder who raised the issue.
 
-Between diagnosing root cause and completing work lies the act of applying a fix. Fixes vary. A fix may be containment, refactoring, redesign, additional monitoring, reference data, process change, or a new modelling decision.
+Ultimately, the final effect that needs to be checked is always:
 
-Regardless of the fix, the final act of sound judgement is to check the final effect.
+> The business receives the information it needs to make the decision.
 
-This includes:
+### Example: false deletions after a partial source extract
 
-- visual validation—not merely “does the code run?” but “are the outputs correct?”;
+Suppose an operational report suddenly shows that thousands of active records have disappeared.
 
-- environment validation—does the behaviour hold across development, pre-production, and production?;
+The immediate pressure is intense. The business thinks the report is wrong. The delivery team thinks the source system may have deleted records. Someone suggests restoring yesterday’s data. Someone else suggests disabling deletion logic. Another person asks whether the report can simply exclude today’s load.
 
-- end-to-end validation—does the information now support the intended decision?
+A hasty response may make the report look better while making the warehouse less trustworthy.
 
-A critical rule applies:
+Using the four-step framework, the engineer systematically tackles the issue.
 
-> The final effect is not the absence of the symptom.
+**Symptom.** The reported symptom is that the operational report shows far fewer active records than expected. But this is only the first visible issue. The engineer canvasses nearby symptoms and finds that the downloaded files are shorter than usual, and that several downstream tables have lost records. Significantly, the data extract step did not fail and reported successful completion, but took much longer than normal.
 
-Error suppression creates silence, not correctness. Silence is often mistaken for success until the failure reappears elsewhere.
+**Trigger.** After investigation, the source is found to be extracted through an API. Since the API is rate-limited, the extract is downloaded in batches. The team had been warned of a planned network change through email, and the timing coincided with the extraction.
 
-Knowing the final effect is difficult because it requires seeing what good should be. Engineers often fail to recognise slow systems because they do not know what fast systems look like. They fail to recognise weak models because they do not know what expressive models look like.
+It turns out the network change is the trigger. The change resulted in extended API calls, and some calls timed out. However, the timeout exit was not logged as an error, so the extraction still appeared successful.
 
-In data engineering, the final effect is always tied to business intent.
+**Root cause.** One team member suggests that timeout exits need to be reported as errors to prevent future occurrences. Another team member suggests better coordination with the change management team, and that the team leader regularly attend the organisation’s change committee meeting to represent the team’s pipeline interests.
 
-The business must receive the information it needs to make the decision.
+These may be relevant, but in this case they do not address the root cause.
 
-Pipeline success, test success, and error absence are necessary, but they are not the end.
+The deeper issue is the design of deletion detection. The source system allows records to be deleted, but the API does not provide a reliable delete log. The warehouse therefore relies on a full source scan to infer deletes: if a record exists in the warehouse but is absent from the latest full scan, it is treated as deleted.
 
-## Sound judgement throughout data engineering
+This design is only safe if a completed scan means a complete population has been received. In this case, that assumption was false. The pipeline treated an incomplete extraction as a complete scan, then interpreted the missing records as deletes.
 
-Sound judgement is not exercised only when something breaks. It is present throughout the discipline of a data engineer.
+**Final effect.** The final effect is not simply reporting timeout errors or improving attendance at the change committee meeting, because other issues may still produce incomplete extraction. Those actions may help with containment, but they do not make the design safe.
 
-| Area | Symptom-level response | Root-cause response |
-| --- | --- | --- |
-| Expressiveness | Rename columns or add documentation when reports confuse users. | Reshape the model so business meaning is explicit in its structure. |
-| Fragment modelling | Patch special cases into existing tables as complexity grows. | Extract independent fragments and isolate responsibilities. |
-| Reference data and conformance | Reconcile mismatched numbers in reports. | Introduce shared reference data and apply it consistently. |
-| Aggregation and grain | Simplify visuals or add filters when reports are slow or inconsistent. | Aggregate correctly in the pipeline at a grain aligned with decisions. |
+The business needs the warehouse to preserve the correct population of active records, even when remote extraction fails silently.
 
-In each case, nothing is obviously “broken.” Yet judgement is still required.
+A better fix is to protect the deletion-detection step. The full scan should be staged first. The pipeline should check the expected batch count or source row count before applying deletion logic. Only when the extract is fully accounted for should the warehouse compare populations and mark deletes. If the scan is incomplete, the run should be quarantined, the prior population preserved, and the team alerted.
 
-A model can be confusing without throwing an error. A table can be useful today while becoming impossible to maintain tomorrow. A dashboard can run quickly while answering the wrong question. A metric can reconcile locally while hiding a deeper semantic mismatch.
-
-Mature engineers recognise these situations early and act at the level that prevents future failure.
+This is a contrived and simplified example. Real failures are rarely so simple. However, it shows why troubleshooting must move beyond the visible symptom. The report was where the problem appeared. The network change was the trigger. The root cause was unsafe deletion logic built on an unmonitored assumption. The final effect was a warehouse that could distinguish genuine deletion from incomplete capture.
 
 ## Conclusion
 
-Sound judgement is the discipline of acting at the right level.
+This chapter explained a simple four-step framework for troubleshooting:
 
-The diagnostic framework is simple:
-
-1. Canvas the symptoms.
-
+1. Canvass the symptoms.
 2. Identify the trigger.
-
 3. Diagnose the root cause.
-
 4. Check the final effect.
 
-Common failures arise from acting on the first symptom, mistaking the trigger for the cause, or treating silence as success.
+While the framework looks simple, it is distilled from countless scars, from small errors to costly failures, where premature conclusion and hasty fixes only made things worse.
 
-The goal is not merely to remove the visible problem. It is to address the condition that allowed the problem to occur.
+Ultimately, troubleshooting complex errors in production, under time pressure, is a skill that can only be learned through personal experience. However, for new engineers, the framework provides a mental model to help accelerate attaining the necessary clarity and judgement.
 
-Instead of treating symptoms, diagnose the **root cause**.
+Most importantly, the framework is not only for time-sensitive production failures. It applies to the entire discipline of data engineering. It is captured in the final principle of data engineering: instead of stopping at the symptoms, diagnose the root cause.
 
 > **Key ideas.**
 >
-> Problems in data engineering are often fixed at the wrong level.
+> The sixth principle of data engineering is diagnose the root cause.
 >
-> A symptom is what is observably wrong.
+> Data engineering is reconstructive because data begins as a fragment of reality captured by process.
 >
-> A trigger is the event that exposed the symptom.
+> Troubleshooting a production failure is a crystallised instance of the whole discipline.
 >
-> A root cause is the structural condition that allows the problem to recur.
+> The four steps of troubleshooting are: canvass the symptoms, identify the trigger, diagnose the root cause, and check the final effect.
 >
-> A final effect defines what must hold for the system to be genuinely fixed.
+> A symptom is what has visibly gone wrong. A trigger is the event that exposed it.
 >
-> The final effect is not the absence of the symptom.
+> A root cause issue is the condition that violates a design principle.
 >
-> Sound judgement is the discipline of acting at the level where problems stop recurring.
+> The final effect is not merely the disappearance of the symptom. The work is complete when the business receives the information it needs to make the decision.
 
 \cleardoublepage
 
