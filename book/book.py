@@ -217,13 +217,16 @@ def svg_for_thumbnail(svg: str) -> str:
         return svg
 
     min_x, min_y, width, height = (float(value) for value in view_box_match.groups())
-    if height <= width:
-        return svg
 
     svg = re.sub(r'(<svg\b[^>]*?)\sstyle="[^"]*"', r"\1", svg, count=1, flags=re.IGNORECASE)
-    svg = re.sub(r"<svg\b", '<svg overflow="visible"', svg, count=1, flags=re.IGNORECASE)
+    if re.search(r"<svg\b[^>]*\boverflow=", svg, flags=re.IGNORECASE):
+        svg = re.sub(r'\boverflow="[^"]*"', 'overflow="visible"', svg, count=1, flags=re.IGNORECASE)
+    else:
+        svg = re.sub(r"<svg\b", '<svg overflow="visible"', svg, count=1, flags=re.IGNORECASE)
 
-    square = format_svg_number(height)
+    # Quick Look's SVG thumbnailer can clip wide or tall artwork to a square
+    # preview canvas. Give it a square SVG viewport, then crop whitespace later.
+    square = format_svg_number(max(width, height))
     view_box_match = re.search(
         r'viewBox="([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)\s+([+-]?\d+(?:\.\d+)?)"',
         svg,
@@ -232,6 +235,8 @@ def svg_for_thumbnail(svg: str) -> str:
     svg = svg[: view_box_match.start()] + view_box + svg[view_box_match.end() :]
     if re.search(r'\bwidth="[+-]?\d+(?:\.\d+)?"', svg):
         svg = re.sub(r'\bwidth="[+-]?\d+(?:\.\d+)?"', f'width="{square}"', svg, count=1)
+    if re.search(r'\bheight="[+-]?\d+(?:\.\d+)?"', svg):
+        svg = re.sub(r'\bheight="[+-]?\d+(?:\.\d+)?"', f'height="{square}"', svg, count=1)
     return svg
 
 
@@ -690,6 +695,7 @@ def clean_body(
     target: str,
     link_map: dict[str, str],
     diagrams: DiagramRenderer,
+    heading_shift: int = 0,
 ) -> str:
     text = page.body.replace("\r\n", "\n")
     text = strip_hugo_markup(text)
@@ -701,11 +707,42 @@ def clean_body(
         text = highlight_code_blocks(text, target)
     text = convert_note_blocks(text)
     text = strip_leading_title_heading(text, page.title)
+    if heading_shift:
+        text = shift_markdown_headings(text, heading_shift)
     text = normalize_whitespace(text)
     if target in {"pdf", "kdp"}:
         for src, dst in PDF_SAFE_REPLACEMENTS.items():
             text = text.replace(src, dst)
     return text
+
+
+def shift_markdown_headings(text: str, amount: int) -> str:
+    lines: list[str] = []
+    in_fence = False
+    fence_marker: str | None = None
+    heading_re = re.compile(r"^(#{1,5})(\s+.+)$")
+
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            if in_fence and marker == fence_marker:
+                in_fence = False
+                fence_marker = None
+            elif not in_fence:
+                in_fence = True
+                fence_marker = marker
+            lines.append(line)
+            continue
+
+        if not in_fence:
+            match = heading_re.match(line)
+            if match:
+                hashes, rest = match.groups()
+                line = f"{'#' * min(6, len(hashes) + amount)}{rest}"
+        lines.append(line)
+
+    return "\n".join(lines)
 
 
 def clean_title(title: str, target: str) -> str:
@@ -733,16 +770,16 @@ def latex_escape(text: str) -> str:
     return "".join(replacements.get(char, char) for char in text)
 
 
-def render_heading(page: Page, target: str) -> str:
+def render_heading(page: Page, target: str, level: int = 1) -> str:
     title = clean_title(page.title, target)
     if target in {"epub", "pdf", "kdp"}:
-        return f"# {title} {{#{page_anchor(page)}}}"
-    return f"# {title}"
+        return f"{'#' * level} {title} {{#{page_anchor(page)}}}"
+    return f"{'#' * level} {title}"
 
 
 def render_section_break(page: Page, target: str) -> str:
     if target == "epub":
-        return render_heading(page, target)
+        return render_heading(page, target, level=1)
 
     title = latex_escape(clean_title(page.title, target))
     anchor = page_anchor(page)
@@ -766,9 +803,11 @@ def render_chapter(
     target: str,
     link_map: dict[str, str],
     diagrams: DiagramRenderer,
+    heading_level: int = 1,
+    body_heading_shift: int = 0,
 ) -> str:
-    body = clean_body(page, target, link_map, diagrams)
-    heading = render_heading(page, target)
+    body = clean_body(page, target, link_map, diagrams, heading_shift=body_heading_shift)
+    heading = render_heading(page, target, level=heading_level)
     if page.lede:
         lede = f"*{page.lede.strip()}*"
         return f"{heading}\n\n{lede}\n\n{body}" if body else f"{heading}\n\n{lede}"
@@ -853,7 +892,7 @@ def render_epub_front_matter() -> str:
             f'author: "{AUTHOR}"',
             "language: en-AU",
             "toc: true",
-            "toc-depth: 3",
+            "toc-depth: 2",
             "numbersections: false",
             "links-as-notes: false",
             "css: book/epub.css",
@@ -883,7 +922,17 @@ def build_book(target: str) -> str:
             chunks.append(render_section_break(section, target))
 
         for child in children:
-            chunks.append(render_chapter(child, target, link_map, diagrams))
+            epub_nested = target == "epub" and section.title.lower() != "about"
+            chunks.append(
+                render_chapter(
+                    child,
+                    target,
+                    link_map,
+                    diagrams,
+                    heading_level=2 if epub_nested else 1,
+                    body_heading_shift=1 if epub_nested else 0,
+                )
+            )
             if target in {"pdf", "kdp"}:
                 chunks.append(r"\newpage")
 
@@ -914,7 +963,7 @@ def pandoc_command(target: str, source: Path, artifact: Path) -> list[str]:
             ]
         )
     else:
-        command.extend(["--toc", "--toc-depth=3"])
+        command.extend(["--toc", "--toc-depth=2"])
     return command
 
 

@@ -3,7 +3,7 @@ title: "Principles of Data Engineering"
 author: "Matthias Wong"
 language: en-AU
 toc: true
-toc-depth: 3
+toc-depth: 2
 numbersections: false
 links-as-notes: false
 css: book/epub.css
@@ -62,11 +62,11 @@ Adaptation and additional material © Matthias Wong 2026
 
 # Foundations {#docs-foundations}
 
-# What is data engineering? {#docs-foundations-what-is-data-engineering}
+## What is data engineering? {#docs-foundations-what-is-data-engineering}
 
 *The aim of data engineering is insight.*
 
-## The aim is insight
+### The aim is insight
 
 The aim of data engineering is insight.
 
@@ -74,7 +74,7 @@ But what is insight? Insight is information analysed in the light of intent.
 
 > Data engineering, therefore, is an activity in which business intent is applied to data to create first information, then insight.
 
-## Why is it engineering
+### Why is it engineering
 
 There are other activities besides data engineering that seek insight. These include staff consultation, customer feedback, and market research. In the case of government agencies, these activities include overt and covert means such as diplomacy and espionage.
 
@@ -82,11 +82,11 @@ Data engineering distinguishes itself from other means of gaining insight throug
 
 Like other engineering disciplines, it focuses on systematic rigour, efficiency, and reproducibility—achieving these through the application of scientific and mathematical principles. As with other engineering disciplines, data engineering arose in today's technological society as an effective tool to tackle complexity.
 
-## Where data engineering is different
+### Where data engineering is different
 
 Despite similarities in method, data engineering differs from other engineering disciplines in crucial ways.
 
-### Easy substitutes
+#### Easy substitutes
 
 There are easy substitutes to data engineering.
 
@@ -94,7 +94,7 @@ The business engaging a data engineer is seeking insight, and in many instances,
 
 This is not the case in other disciplines. The client who engages a bridge engineer needs a bridge. The client who engages a software engineer needs software. There are no easy alternatives to achieving these aims, and therefore no easy alternatives to the engineering effort.
 
-### Open-ended questions
+#### Open-ended questions
 
 The search for business insight is open-ended.
 
@@ -102,7 +102,7 @@ If a client asks for a bridge, the bridge is the end of the engagement. A bridge
 
 This interminability of aim means that a data engineering project is likewise open-ended. In no other engineering discipline is the engineer working with such a degree of open-endedness.
 
-### Ambiguous goals
+#### Ambiguous goals
 
 The search for business insight is ambiguous.
 
@@ -112,7 +112,7 @@ And partly it is because of the wide range of stakeholders who need to be engage
 
 This ambiguity of aim is akin to the challenge of planning a new city suburb to satisfy the needs of all residents. Again, this is a unique challenge for a data engineer.
 
-## The fluid nature of data engineering
+### The fluid nature of data engineering
 
 The search for business insights is shaped by three intrinsic characteristics:
 
@@ -136,11 +136,11 @@ The search for business insights is both demanding in complexity and fluid in na
 >
 > The availability of easy substitutes, the open-endedness of the search, and the ambiguity of aim define the fluid nature of data engineering.
 
-# What is data? {#docs-foundations-what-is-data}
+## What is data? {#docs-foundations-what-is-data}
 
 *Data is a fragment of reality.*
 
-## The central premise
+### The central premise
 
 Insight is information analysed in the light of intent. However, the data engineer starts one step further back than information. Data engineering starts with data.
 
@@ -158,7 +158,7 @@ This definition means data is neither reality itself nor mere record-keeping. It
 
 This becomes especially important at scale. In a small organisation, leaders may retain a direct sense of what is happening. In a large organisation, that direct visibility breaks down. Data becomes the means by which reality remains visible across distance, hierarchy, and complexity.
 
-## How is data captured?
+### How is data captured?
 
 Data is captured by process.
 
@@ -170,7 +170,7 @@ The capture itself may also be imperfect. It can be technically difficult, costl
 
 Data is therefore never a simple copy of the world. It is an imperfect projection of the real world onto the data world. The work of the data engineer begins by understanding these imperfections.
 
-## How is data used?
+### How is data used?
 
 Data is captured by business processes. Once collected, it can be used to return understanding to the business.
 
@@ -190,11 +190,11 @@ We will return frequently to the concepts illustrated in Figure 1 throughout thi
 >
 > Data engineering reshapes the data world into forms the business world can use.
 
-# Data and organisations {#docs-foundations-data-and-organisations}
+## Data and organisations {#docs-foundations-data-and-organisations}
 
 *Data helps organisations see themselves.*
 
-## Data and organisational self-understanding
+### Data and organisational self-understanding
 
 Data is a fragment of reality. This includes the reality of the environment in which they operate, but also the reality of the organisation itself.
 
@@ -202,7 +202,7 @@ This has implications for how data engineering work is done in practice. The vet
 
 To understand this, it is useful to visualise an organisation as a feedback loop.
 
-## The organisation agency cycle
+### The organisation agency cycle
 
 The central premise "Data is a fragment of reality captured by process" can be interpreted as a feedback loop around three components: business processes, digital systems, and captured data. This relationship is illustrated in Figure 1.
 
@@ -218,7 +218,7 @@ The implication is that what the organisation does is shaped by what it sees, an
 
 Consequently, data is central to an organisation's self-understanding. Data engineering is not one capability among others. It is the capability through which other capabilities become visible.
 
-## Implications for data engineering
+### Implications for data engineering
 
 There are two important implications for data engineering work.
 
@@ -240,11 +240,11 @@ The agency cycle therefore shows why no part of data work is neutral. The busine
 
 # Creating information {#docs-creating-information}
 
-# Expressiveness and fragment modelling {#docs-creating-information-expressiveness-and-fragment-modelling}
+## Expressiveness and fragment modelling {#docs-creating-information-expressiveness-and-fragment-modelling}
 
 *Data engineering begins by shaping data into expressive, reusable fragments.*
 
-## From data to reusable information
+### From data to reusable information
 
 Data engineering reshapes [fragments of reality](#docs-foundations-what-is-data) into forms the business can use.
 
@@ -258,7 +258,7 @@ This book introduces six principles of data engineering. The first two are **exp
 >
 > Instead of building giant tables, create meaningful fragments.
 
-## Expressiveness
+### Expressiveness
 
 Insight is [information analysed in the light of intent](#docs-foundations-what-is-data-engineering). A data engineer who takes this seriously becomes invested in the business world, asks how data relates to it, and is driven by the need to organise data in a way that makes sense for business decisions.
 
@@ -280,7 +280,7 @@ It is **operable**: the model can be used in workflows or decisions with minimal
 
 Expressiveness encompasses all aspects of a good data engineer’s work. It lies in everything: the way the engineer designs tables, chooses names for tables and columns, connects entities through primary and foreign keys, and describes the intent of code to others.
 
-## Fragment modelling
+### Fragment modelling
 
 The [fluid nature of business insight](#docs-foundations-what-is-data-engineering) means that the data engineer cannot know in advance exactly what needs to be built.
 
@@ -328,11 +328,11 @@ Fragment modelling can be disorienting for an engineer used to traditional wareh
 >
 > In a well-designed pipeline, tables can be understood as functions that transform fragments of data into reusable information.
 
-# Mapping the data world {#docs-creating-information-mapping-the-data-world}
+## Mapping the data world {#docs-creating-information-mapping-the-data-world}
 
 *The data engineer's first task is to relate records back to the business entities behind them.*
 
-## From records to entities
+### From records to entities
 
 Business is not interested in data for data’s sake. It is interested in the business reality behind the data.
 
@@ -346,7 +346,7 @@ This shift from data record to business entity is the first practical step in ex
 
 For a data engineer who starts with the data and reaches back to the business world, the tool of choice is the primary key.
 
-## Primary key
+### Primary key
 
 Primary keys play a special role in establishing the correspondence between business entities in the real world and data records in the data world.
 
@@ -389,7 +389,7 @@ A direct corollary of the primary key’s significance is that relational algebr
 
 Experienced engineers think in keys. They rely on algebraic operations to track and communicate data rather than memorise every detail of source processes. Discussion of relational algebra lies beyond this text’s scope.
 
-## Immutable and mutable entities
+### Immutable and mutable entities
 
 It is helpful to divide business entities into two broad types: immutable and mutable.
 
@@ -435,11 +435,11 @@ These are the subjects of the next two chapters: [Entity processing](#docs-creat
 >
 > Mutable entities lead to entity tracking.
 
-# Entity processing {#docs-creating-information-entity-processing}
+## Entity processing {#docs-creating-information-entity-processing}
 
 *Entity processing applies to business processes built around immutable transactional entities.*
 
-## Processing immutable entities
+### Processing immutable entities
 
 Entity processing is the main pattern for [immutable business entities](#docs-creating-information-mapping-the-data-world): entities that are treated as fixed once created.
 
@@ -470,7 +470,7 @@ The correct lens is the one that supports business action.
 
 Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](#docs-creating-information-expressiveness-and-fragment-modelling) is suited to this task because different aspects of the entity can be maintained in different fragments.
 
-## Building the pipeline
+### Building the pipeline
 
 A pipeline for entity processing follows three broad passes:
 
@@ -478,13 +478,13 @@ A pipeline for entity processing follows three broad passes:
 - **Map**—compute reusable blocks of business meaning.
 - **Reduce**—aggregate to the grain required for analysis.
 
-### First pass—Filter
+#### First pass—Filter
 
 The first pass works predominantly with incoming raw data. Its aim is to establish structure and meaning, beginning with keys.
 
 It has three stages: identifying keys, defining reference tables, and extracting transactions.
 
-#### Identifying keys
+##### Identifying keys
 
 The first task is to identify the business keys that serve as primary keys to the raw data. These may be defined as database constraints in the source data, or inferred through exploratory analysis.
 
@@ -498,7 +498,7 @@ In header-detail structures, detail rows are often stored as simple lists. For e
 
 Keys do not need to be enforced as physical constraints. They can be stored in metadata tables. What matters is that they communicate meaning and can be looked up by consumers of the data.
 
-#### Defining reference tables
+##### Defining reference tables
 
 Reference tables are small, slow-moving, descriptive tables that describe the content of larger, fast-moving transaction tables.
 
@@ -520,7 +520,7 @@ The data engineer can make reference data more expressive by:
 - Using reference data to identify conformance across the warehouse.
 - Adding metadata such as business definitions and descriptions.
 
-#### Extracting transaction tables
+##### Extracting transaction tables
 
 Transaction tables are fast-moving tables that record business events. They are the primary source of informational value for the business.
 
@@ -561,7 +561,7 @@ When these steps are applied, the data engineer will have:
 - Applied change detection to incoming records to support downstream change tracking.
 - Set up a foundation for future optimisation, including incremental extraction.
 
-### Second pass—Map
+#### Second pass—Map
 
 The first pass extracts raw data, clarifies basic meaning, and establishes the foundation for deeper analytical work.
 
@@ -604,7 +604,7 @@ The full set of tables would look like this.
 | 1001 | B | 20 | 15 | 5 |
 | 1002 | A | 60 | 36 | 24 |
 
-### Third pass—Reduce
+#### Third pass—Reduce
 
 The third pass focuses on aggregation.
 
@@ -636,7 +636,7 @@ The outputs of this pass are valuable building blocks.
 
 In business intelligence scenarios, they provide ready-to-use measures for dashboards and reports. In data science scenarios, they are equally important: much of feature engineering involves aggregating detailed attributes back to the correct grain.
 
-### Summary of the three passes
+#### Summary of the three passes
 
 When complete, the pipeline produces reusable information blocks: expressive of business intent, supported by metadata, and delivered through an efficient and robust process.
 
@@ -648,7 +648,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 
 *Figure 1. The three passes of entity processing, showing both the purpose of each pass and example artefacts produced in a sales pipeline.*
 
-## Common problems
+### Common problems
 
 New data engineers should watch for common mistakes in entity processing.
 
@@ -676,11 +676,11 @@ The same temptation applies to all three passes. Convenience at the beginning cr
 >
 > The reduce pass returns detailed fragments to the grain required by business intent.
 
-# Entity tracking {#docs-creating-information-entity-tracking}
+## Entity tracking {#docs-creating-information-entity-tracking}
 
 *Entity tracking applies when business entities change over time while remaining the same entity.*
 
-## Tracking mutable entities
+### Tracking mutable entities
 
 Entity tracking is the main pattern for [mutable business entities](#docs-creating-information-mapping-the-data-world): those that change over time while still being considered the same entity.
 
@@ -705,7 +705,7 @@ These characteristics explain the goals of entity tracking:
 - Provide drill-down information about the entity and the changes it has undergone.
 - Understand the effect of entities on other business outcomes.
 
-## Two ways to track
+### Two ways to track
 
 There are two common ways to track a mutable entity. The first is by its attributes. The second is by its behaviour.
 
@@ -720,13 +720,13 @@ Many systems have both. A bank, for example, may track accounts in two ways:
 
 The same three-pass structure applies to both modes, but with different emphasis. Attribute tracking introduces distinctive temporal machinery early. Behaviour tracking enters in the third pass when actions are reduced into entity-level signals over time.
 
-## Building the pipeline
+### Building the pipeline
 
 Much of the approach from entity processing still applies. The data engineer must identify the entity of interest, craft [expressive reference tables](#docs-creating-information-reference-data), preserve necessary detail, and tell a coherent story.
 
 The difference is that mutable entities introduce time into the entity itself. In entity processing, time usually appears around the entity: orders, confirmation, shipment, completion. In entity tracking, time defines the state of the entity.
 
-### First pass—Filter and compress
+#### First pass—Filter and compress
 
 The first pass removes noise, establishes keys, and builds the basic semantic map.
 
@@ -757,7 +757,7 @@ The data engineer should also decide how to handle gaps. In some systems  a reco
 
 For behaviour tracking, the first pass usually resembles entity processing. The data engineer filters and structures behaviour records, such as transactions, audit results, observations, or actions. The important temporal requirement is to preserve the event time of each behaviour.
 
-### Second pass—Build the timeline
+#### Second pass—Build the timeline
 
 An entity usually has attributes stored in multiple tables.
 
@@ -819,7 +819,7 @@ In this example, we use inner join for simplicity. Real systems also require car
 >
 > We do not develop the full pattern here. The important point is that the timeline approach generalises. A timeline can be extended across an additional time dimension, giving the user a disciplined way to answer these questions while maintaining the clarity on the multiple time dimensions.
 
-### Third pass—Create snapshots and infer behaviour
+#### Third pass—Create snapshots and infer behaviour
 
 The third pass produces entity-level outputs over time.
 
@@ -857,7 +857,7 @@ With this table, a consumer should not need to recalculate balances or scan tran
 
 At an advanced level, behavioural fragments can themselves become Type II attributes. For example, once `Bank.AccountValue` identifies whether an account is a millionaire at each period, the data engineer can convert that repeated period-level result into a history of millionaire status over time.
 
-### Summary of the three passes
+#### Summary of the three passes
 
 When complete, the pipeline produces reusable tracking blocks: expressive business entities, clear management of time, in computationally compact form.
 
@@ -869,7 +869,7 @@ An overview of the three passes and examples is summarised in Figure 1.
 
 *Figure 1. The three passes of entity tracking, showing both the purpose of each pass and example artefacts produced in a bank account pipeline.*
 
-## Common problems
+### Common problems
 
 Compared with entity processing, entity tracking has additional difficulties.
 
@@ -915,11 +915,11 @@ Computational performance can also become a bottleneck, especially in end-of-per
 >
 > The central difficulty of entity tracking is representing change without losing identity.
 
-# Reference data {#docs-creating-information-reference-data}
+## Reference data {#docs-creating-information-reference-data}
 
 *Reference data gives business meaning a stable place to live.*
 
-## A stable place for meaning
+### A stable place for meaning
 
 In the chapters [Entity processing](#docs-creating-information-entity-processing) and [Entity tracking](#docs-creating-information-entity-tracking), reference tables appeared as a way to make business meaning expressive. They gave names, descriptions, and analytical attributes a stable place to live.
 
@@ -929,7 +929,7 @@ Two constructs are important for this purpose: **reference tables** and **mappin
 
 This chapter focuses on applying these ideas within a single system. The next chapter extends the same pattern across [multiple systems](#docs-creating-information-conforming-systems).
 
-## A point of reference
+### A point of reference
 
 A reference table that applies to multiple business processes becomes a shared point of reference.
 
@@ -943,7 +943,7 @@ In simple cases, systems can map directly to the shared reference. In more compl
 
 The goal is not to force every source system to use identical codes. The goal is to provide a common reference that allows information from different sources to be understood consistently.
 
-## Building and applying shared references
+### Building and applying shared references
 
 It can be tempting to select a source-system table and declare it to be the golden reference, asking all other systems to conform to it.
 
@@ -959,7 +959,7 @@ A practical approach consists of three steps:
 
 The following example uses a sales process from a fictional system called `Cake`.
 
-### Step 1—Model the local system
+#### Step 1—Model the local system
 
 Begin by modelling the source system in isolation. The objective at this stage is not integration. The objective is to understand and represent the system faithfully.
 
@@ -981,7 +981,7 @@ The local model should stand on its own before any reference-data work begins.
 
 This separation allows the engineering work to progress while mapping decisions are still being refined.
 
-### Step 2—Build shared references
+#### Step 2—Build shared references
 
 Next, construct the warehouse reference table and the mapping table.
 
@@ -1024,7 +1024,7 @@ An alternative is to combine them into a single table.
 
 While convenient, this introduces a polymorphic key. The meaning of the source code depends on the value of another column. Such designs are practical but no longer correspond cleanly to traditional entity-relationship semantics.
 
-### Step 3—Apply during presentation
+#### Step 3—Apply during presentation
 
 The final step is to apply the mapping during presentation.
 
@@ -1080,7 +1080,7 @@ In summary, the complete pattern introduces four tables, each table having a dis
 
 This structure provides flexibility, stability, and reuse while keeping responsibilities clear.
 
-## Why these separations
+### Why these separations
 
 The pattern depends on several separations:
 
@@ -1100,7 +1100,7 @@ Second, the design remains modular. Reference tables and mapping tables can be c
 
 Third, reference data has an amplification effect. A change to a single reference row may affect large portions of the warehouse. If shared references are introduced too early into local transaction tables, changes to the warehouse reference can ripple through the local model. Delaying the dependency until presentation reduces unnecessary coupling.
 
-## When to simplify
+### When to simplify
 
 Smaller systems may not require the full pattern.
 
@@ -1110,7 +1110,7 @@ If a mapping can be expressed directly and maintained safely, `Cake.CountryMap` 
 
 The full pattern exists because it scales well. Simpler systems can often adopt lighter variations without losing the underlying principle.
 
-## The discipline of separation
+### The discipline of separation
 
 The pattern is simple, but easy to damage in practice.
 
@@ -1134,11 +1134,11 @@ Above all, it is a discipline of separation, not a mechanical implementation rec
 >
 > Changes to shared references can amplify across the warehouse; delay the dependency until presentation when possible.
 
-# Conforming systems {#docs-creating-information-conforming-systems}
+## Conforming systems {#docs-creating-information-conforming-systems}
 
 *Systems should be integrated only after the nature of their sameness is understood.*
 
-## Integration without distortion
+### Integration without distortion
 
 Integration is common, tempting, and dangerous because it invites the data engineer to connect tables before clarifying what kind of sameness is involved.
 
@@ -1153,7 +1153,7 @@ There are two approaches:
 - **Vertical integration**—the same kind of entity is recorded across multiple systems.
 - **Horizontal integration**—different entities can be compared through shared references.
 
-## Vertical integration
+### Vertical integration
 
 Vertical integration applies when the same kind of entity is recorded across multiple systems.
 
@@ -1167,7 +1167,7 @@ Integration proceeds in three steps:
 - Build conformed reference tables.
 - Integrate the transaction tables.
 
-### Step 1—Model systems individually
+#### Step 1—Model systems individually
 
 A common mistake is to integrate too early.
 
@@ -1185,7 +1185,7 @@ The local tables might be:
 
 At this stage, no union is required. The goal is to represent each incoming system clearly.
 
-### Step 2—Build conformed references
+#### Step 2—Build conformed references
 
 The second step is to build [reference data](#docs-creating-information-reference-data) that expresses shared business meaning across both systems.
 
@@ -1241,7 +1241,7 @@ In addition to aligning codes, the golden reference tables should:
 - Add analytical columns such as `[Is finished sale]` to support downstream use
 - Be documented with metadata to support clarity and reuse
 
-### Step 3—Integrate the transactions
+#### Step 3—Integrate the transactions
 
 Only after the local systems have been modelled and the references conformed should the transaction tables be integrated.
 
@@ -1311,7 +1311,7 @@ The overall workflow would look like:
 
 *Figure 1. Vertical integration. Local systems are modelled separately, mapped to conformed references, and then integrated into a unified transaction table.*
 
-## Horizontal integration
+### Horizontal integration
 
 Horizontal integration applies when the entities differ conceptually but share enough commonality to make comparison valuable. This pattern is closely related to Kimball's notion of conformed dimensions and the bus matrix. Different business processes remain separate while becoming comparable through shared references.
 
@@ -1393,7 +1393,7 @@ The result is:
 
 The comparison occurs through the shared references of calendar and region. Neither `Cake.Production` nor `Cake.Sales` has been altered or merged into a common transaction table. This is integration without collapse of meaning.
 
-### Horizontal integration through mapping fragments
+#### Horizontal integration through mapping fragments
 
 Sometimes shared references are not enough.
 
@@ -1426,7 +1426,7 @@ Sales in the same region and month are allocated to production batches in produc
 
 This is especially important when the relationship is fuzzy, inferred, many-to-many, or likely to change.
 
-## Choosing between vertical and horizontal integration
+### Choosing between vertical and horizontal integration
 
 The distinction between vertical and horizontal integration is not always obvious. A useful starting point is to ask two questions.
 
@@ -1458,11 +1458,11 @@ When the answer to either question is no, then vertical integration is likely to
 >
 > The central danger of integration is collapsing meaning for technical convenience.
 
-# Storytelling {#docs-creating-information-storytelling}
+## Storytelling {#docs-creating-information-storytelling}
 
 *Data engineering is not finished when the data is correct. It is finished when the business can see.*
 
-## Meaning beyond correctness
+### Meaning beyond correctness
 
 Source systems record operational events. They do not necessarily expose the outcomes, patterns, and journeys that matter for decision making.
 
@@ -1478,7 +1478,7 @@ This chapter explores three approaches:
 - **Trading detail for insight**—reducing noise into categories, combinations, and special cases.
 - **Storytelling dimensions**—combining these interpretations into reusable reference data.
 
-## Good and bad entities
+### Good and bad entities
 
 Business often sees the world through the lens of “good” and “bad.” A trade makes a profit or a loss. A customer is retained or lost. A production run succeeds or fails.
 
@@ -1512,7 +1512,7 @@ The source system may record production events and inspection notes, but the bus
 
 The definition of good and bad can be a significant point of debate in a complex organisation with different business viewpoints. In these situations, it can be extremely challenging to arrive at a consensus. Many organisations fail to do so, crippling their ability to see issues consistently. In this case, it is often [the creativity and technical expertise of the data engineer](#docs-foundations-data-and-organisations) that can broker between parties by showing the way forward.
 
-## Trading detail for insight
+### Trading detail for insight
 
 Not every detail contributes equally to understanding. Often the fastest path to insight is to reduce detail rather than increase it.
 
@@ -1526,7 +1526,7 @@ The data engineer has three common ways of trading details for insights:
 - Pivoting combinations
 - Highlighting special cases
 
-### Creating categories
+#### Creating categories
 
 Creating categories is the simplest way to surface insight that is hidden by noise. For example, using age bands rather than individual ages, or grouping days into seasons, can reveal patterns that are otherwise obscured.
 
@@ -1558,7 +1558,7 @@ Binary columns also play an important role in filtering and creating measures, a
 
 The grouping looks straightforward, but it has a large influence downstream in designing reports, exposing filters, and designing measures.
 
-### Pivoting combinations
+#### Pivoting combinations
 
 Another approach is to pivot options in the entity’s detail rows back to the entity grain.
 
@@ -1602,7 +1602,7 @@ Once pivoted, the data engineer can summarise the escalation path in a variety o
 
 The column `[Escalation path]` communicates an operational pattern that is difficult to see from detail rows alone. A business user does not need to inspect a deluge of tier values to understand whether the case stayed at the first tier, progressed through escalation, or jumped directly to a higher tier.
 
-### Highlighting special cases
+#### Highlighting special cases
 
 Sometimes a single result tells most of the story. For example, if there are multiple results, the most important one may be the worst result, first result, final result, or best result.
 
@@ -1660,7 +1660,7 @@ The worst inspection result for each cake can then be calculated as the maximum 
 
 The business no longer needs to inspect every individual inspection result. The most significant outcome has been surfaced at the grain of the cake itself.
 
-## Storytelling dimensions
+### Storytelling dimensions
 
 A storytelling dimension brings multiple acts of interpretation together into a single reusable business view.
 
@@ -1698,7 +1698,7 @@ Creating and applying a storytelling dimension follows three basic steps:
 - Map to the facts
 - Visual check
 
-### Step 1—Build the reference table
+#### Step 1—Build the reference table
 
 The storytelling dimension begins with a reference table that describes the journeys that matter to the business.
 
@@ -1763,7 +1763,7 @@ Such tables are often composed from underlying binary flags. The exact SQL depen
 
 In dimensional modelling, this type of reference table is sometimes called a junk dimension or transaction profile dimension.
 
-### Step 2—Map to facts
+#### Step 2—Map to facts
 
 Once the storytelling dimension exists, the entity of interest can be mapped to it.
 
@@ -1790,7 +1790,7 @@ The calculation can be added to an existing aggregation table if appropriate or 
 
 A table like this tells the business far more about the case than a simple list of escalation events is able to.
 
-### Step 3—Visual check
+#### Step 3—Visual check
 
 Storytelling dimensions should always be reviewed visually.
 
@@ -1809,12 +1809,12 @@ The distribution may reveal unexpected patterns, data-quality issues, or opportu
 
 Visual checks are therefore not merely validation. They are part of the iterative design process.
 
-### Multiple storytelling dimensions
+#### Multiple storytelling dimensions
 
 Complex business processes may require multiple storytelling dimensions.
 
 A help desk workflow may need one dimension describing escalation behaviour and another describing service-level agreement outcomes. A production process may need one dimension describing inspection outcomes and another describing manufacturing quality.
-## Storytelling and the organisation
+### Storytelling and the organisation
 
 Storytelling is important because correctness is not enough. A table can be accurate and still fail to show the business what happened.
 
@@ -1838,11 +1838,11 @@ This involves decisions and compromise: details to discard, or journeys to empha
 >
 > Visual checks are an essential part of developing storytelling dimensions.
 
-# Meaningful fragments {#docs-creating-information-meaningful-fragments}
+## Meaningful fragments {#docs-creating-information-meaningful-fragments}
 
 *Fragment modelling makes complex business meaning easier to build, test, reuse, and change.*
 
-## Fragment modelling
+### Fragment modelling
 
 The earlier chapters introduced [entity processing](#docs-creating-information-entity-processing), [entity tracking](#docs-creating-information-entity-tracking), [reference data](#docs-creating-information-reference-data), [conforming systems](#docs-creating-information-conforming-systems), and [storytelling](#docs-creating-information-storytelling). Each depended on the same discipline: break complexity into individual fragments and connect them deliberately.
 
@@ -1854,7 +1854,7 @@ The key idea is summarised by the [second principle of data engineering](#docs-c
 
 > Instead of building giant tables, create meaningful fragments.
 
-## Why giant tables fail
+### Why giant tables fail
 
 New engineers often build giant tables to answer queries. This feels convenient because everything is in one place, and there are fewer artefacts to create and deploy.
 
@@ -1864,7 +1864,7 @@ Wide tables accumulate unrelated meanings. Business logic becomes buried and ent
 
 The result is a pipeline that looks simple from far away and becomes fragile up close.
 
-## Meaningful fragments
+### Meaningful fragments
 
 Fragment modelling takes the opposite approach.
 
@@ -1878,7 +1878,7 @@ By packaging up complex calculation into a meaningful fragment, it becomes opera
 
 Consistent use of meaningful fragments makes the pipeline easier to understand, test, change, and reuse.
 
-### Restaurant analogy
+#### Restaurant analogy
 
 Fragment modelling is like *mise en place* in a restaurant kitchen.
 
@@ -1886,7 +1886,7 @@ The raw data are the whole potatoes and unwashed greens. Fragments are the prepa
 
 A good pipeline works the same way. Once the fragments are well prepared, insights can be assembled quickly, consistently, and without repeating the same preparation work.
 
-### The impact on legibility
+#### The impact on legibility
 
 A further benefit of meaningful fragments is legibility.
 
@@ -1900,7 +1900,7 @@ In this sense, fragments do more than package information for easy operability. 
 
 *Figure 1. A giant table hides the entity of interest, mixes grains, and makes change detection harder. Meaningful fragments separate information into clear grains around the entity, so each fragment can be built, tested, reused, and updated deliberately.*
 
-## Symptoms of poor fragmentation
+### Symptoms of poor fragmentation
 
 When meaningful fragments are missing, the symptoms are usually visible:
 
@@ -1913,11 +1913,11 @@ When meaningful fragments are missing, the symptoms are usually visible:
 
 These symptoms indicate that the pipeline has not been decomposed into its minimal informational components, and made easy for access.
 
-## Common fragment patterns
+### Common fragment patterns
 
 The following examples illustrate common fragment patterns. They are not exhaustive. Any self-contained piece of reusable business meaning can become a fragment.
 
-### Summaries of details and storytelling
+#### Summaries of details and storytelling
 
 Complex business processes generate detail rows that must be summarised to become useful. The computation for these summaries can be complex and should be placed in a separate fragment rather than compounded onto existing tables.
 
@@ -1952,7 +1952,7 @@ It may become the default filter in reports and queries because it lets users st
 
 Thus, the storytelling fragment absorbs that complexity once, so ordinary queries can remain simple. Across a warehouse with many users, the option to skip over the detailed grain can vastly reduce errors and improve maintenance.
 
-### Milestone datetimes
+#### Milestone datetimes
 
 Business is always interested in measuring the time between milestones. This can be difficult if steps repeat or spread across multiple tables. The data engineer can add value by precomputing these milestones into a dedicated fragment.
 
@@ -1980,7 +1980,7 @@ The fragment makes duration calculations straightforward and avoids repeated eve
 
 Milestone tables are also known as accumulating snapshots in dimensional modelling.
 
-### Current or primary version
+#### Current or primary version
 
 Many entities have multiple versions. The full version history may be useful for audit or lineage, but the business often needs the current or primary version.
 
@@ -2005,13 +2005,13 @@ Users can then retrieve the current state without reconstructing the version-sel
 
 This is one case where fragment modelling can reduce immediate expressiveness if naming is poor. Most users do not expect to retrieve a row from one table and then consult another table to find whether it is current. The data engineer should compensate by naming the main table clearly, for example by using `version` in the table name or key columns.
 
-### Timeline and end-of-period
+#### Timeline and end-of-period
 
 When entities change over time, users often need consistent point-in-time views. This can be error-prone for users when the attributes are spread across multiple tables, because joins require careful handling of time conditions. The data engineer can make these results easily accessible through corresponding fragments.
 
 The relevant fragments—timelines and end-of-period tables— are discussed in [Entity tracking](#docs-creating-information-entity-tracking).
 
-### Mapping
+#### Mapping
 
 Business processes often do not record relationships at the grain required for analysis.
 
@@ -2035,7 +2035,7 @@ For example, the business may want to relate sales to production batches, even t
 
 Rather than disturbing the grain of either table, the relationship is represented in its own fragment.
 
-### Distribution weights
+#### Distribution weights
 
 Sometimes a value is recorded only in aggregate form. However, the business wants to understand that value at the detail level and proposes a rule for distributing it. This logic can be complex and should be calculated in its own fragment. This is the distribution weights table.
 
@@ -2113,7 +2113,7 @@ If the business assumes each drink order has equal value, the data engineer can 
 
 The final two columns can be used as a fractional weight. For example, `T1001` has a bill amount of `120.00`, and wine accounts for `2 / 4` drink orders, so the estimated wine value is `60.00`. This also simplifies whole-of-month measures at the item level. A monthly estimate of wine sales can be calculated without repeatedly scanning and counting the raw order rows.
 
-### Hubs
+#### Hubs
 
 A hub creates a consistent surrogate key for the same entity appearing across multiple systems.
 
@@ -2152,7 +2152,7 @@ This key can then be used for light anonymisation, relationship modelling, or do
 
 The hub belongs to no single subsystem. It is a central fragment where pairing and key assignment occur.
 
-## The discipline of meaningful fragments
+### The discipline of meaningful fragments
 
 Fragment modelling is a discipline of decomposition.
 
@@ -2185,11 +2185,11 @@ This is one of the hallmarks of mature data engineering: the ability to see a da
 
 # Presenting insights {#docs-presenting-insights}
 
-# The craft of dimensional modelling {#docs-presenting-insights-the-craft-of-dimensional-modelling}
+## The craft of dimensional modelling {#docs-presenting-insights-the-craft-of-dimensional-modelling}
 
 *Information does not become insight until users can see it, touch it, and ask it questions.*
 
-## From information to insight
+### From information to insight
 
 Insight is information analysed in light of intent. The previous section, [Creating information](#docs-creating-information-expressiveness-and-fragment-modelling), focused on building reusable blocks of information from data.
 
@@ -2203,7 +2203,7 @@ In the Microsoft ecosystem, Power BI semantic models make dimensional modelling 
 
 A dimensional model in Power BI is therefore best understood as a product interface.
 
-## The craft
+### The craft
 
 Building a data pipeline is largely an engineering exercise. It requires correctness, reproducibility, performance, and maintainability.
 
@@ -2231,11 +2231,11 @@ Three guiding questions organise the chapters in this section:
 - What does a good dimensional model look and feel like?
 - What modelling tools are available to anticipate a range of user behaviours?
 
-# Anticipating questions {#docs-presenting-insights-anticipating-questions}
+## Anticipating questions {#docs-presenting-insights-anticipating-questions}
 
 *A strong dimensional model preserves the structure needed to answer questions before they are formally asked.*
 
-## Designing for questions not yet asked
+### Designing for questions not yet asked
 
 A good dimensional model does not merely answer the questions already written in requirements. It preserves enough business structure to answer all the questions users are likely to ask during the model’s lifetime.
 
@@ -2263,7 +2263,7 @@ To develop a model that anticipates questions and captures the breadth of inform
 
 Each step has an artefact to help the data engineer and business stakeholders check the comprehensiveness of the model.
 
-## All the facts
+### All the facts
 
 The first step to building a dimensional model that can anticipate all reasonable questions is to ensure it captures all the relevant business processes. For ease of memory, this is the step to capture “all the facts.”
 
@@ -2329,7 +2329,7 @@ The identified business processes form the facts of the dimensional model. Hence
 
 Identifying the business processes is the hardest part of anticipating questions. It involves making business decisions and requires a high degree of judgement and practical experience. Once the processes are identified, the next step of identifying the business information follows more mechanically.
 
-## All the dimensions
+### All the dimensions
 
 The second step, after identifying the business processes in scope, is to identify all the business information known to those processes. This ensures that all reasonable questions about the processes included in the model can be answered. For ease of memory, this is the step to capture “all the dimensions.”
 
@@ -2381,7 +2381,7 @@ In other words, the cumulative information diagram maps real-world processes to 
 
 Since business information becomes dimensions in a dimensional model, this step can be remembered as “all the dimensions.”
 
-## All the relationships
+### All the relationships
 
 The final step is to ensure that the business processes and their known information are reflected in the dimensional model through filtering relationships. If all relevant processes are captured, all relevant information is identified, and valid relationships are correctly implemented, then the model can anticipate all reasonable questions.
 
@@ -2485,7 +2485,7 @@ The bus matrix is also a chance to check naming. Dimensions should be nouns beca
 
 The relationship between business information and business processes is mirrored in the relationship between dimensions and facts. Hence this step can be remembered as “all the relationships.”
 
-## Conclusion
+### Conclusion
 
 The three-step approach guides the data engineer to work on the information captured in business processes, rather than the stated requirements of “I would like to see X by Y”. The focus is on preserving information, not on answering specific questions.
 
@@ -2521,11 +2521,11 @@ This is how the data engineer anticipates questions.
 >
 > The chronological bus shows which questions the model can and cannot answer.
 
-# A good dimensional model {#docs-presenting-insights-a-good-dimensional-model}
+## A good dimensional model {#docs-presenting-insights-a-good-dimensional-model}
 
 *A good dimensional model lets users ask real business questions without guessing.*
 
-## What makes a good dimensional model?
+### What makes a good dimensional model?
 
 A dimensional model is successful when users can ask real business questions and obtain the expected answers without guessing how the model works.
 
@@ -2534,7 +2534,7 @@ This chapter describes a good dimensional model through two questions:
 - What should a good model achieve?
 - What are the signs of a good model?
 
-## What should a good model achieve?
+### What should a good model achieve?
 
 A good dimensional model in Power BI should:
 
@@ -2544,7 +2544,7 @@ A good dimensional model in Power BI should:
 - Support both summary and detail
 - Perform quickly
 
-### Resonate with the view from business intent
+#### Resonate with the view from business intent
 
 A dimensional model is where expressiveness is tested by use.
 
@@ -2558,7 +2558,7 @@ This may also require creating perspectives the business has not yet articulated
 
 Metadata also plays a key role. Descriptions should speak the business language, state the intent clearly, and, in complex cases, explain the logic in near-pseudocode using business terms.
 
-### Be intuitive and unambiguous
+#### Be intuitive and unambiguous
 
 As a self-service data model, a Power BI model should let users drag and drop fields to get answers. For this purpose, the model should just work.
 
@@ -2570,7 +2570,7 @@ For example, ambiguity can occur when a column has been denormalised into multip
 
 An unambiguous model gives the user one obvious way to answer a question. The model should either answer the question accurately or make it apparent that it cannot.
 
-### Anticipate questions
+#### Anticipate questions
 
 A good model does not merely satisfy the initial requirements. It anticipates the full range of reasonable business questions.
 
@@ -2580,7 +2580,7 @@ In practice, this means a business process should either be outside the model, o
 
 This is subject of the chapter [anticipating questions](#docs-presenting-insights-anticipating-questions).
 
-### Support both summary and detail
+#### Support both summary and detail
 
 One of the most powerful features of Power BI is the ability for users to move interactively through data by cross-filtering and drill-through.
 
@@ -2590,7 +2590,7 @@ The opposite path is also common. Users who operate at the detailed level often 
 
 A data engineer cannot ignore the need to support both high-level and detailed views. While individual reports may emphasise one or the other, the underlying model often needs to support both.
 
-### Perform quickly
+#### Perform quickly
 
 Most queries should return in under a second. Complex or infrequent queries should complete in under two seconds. Longer runtimes are acceptable only in rare cases.
 
@@ -2598,7 +2598,7 @@ Performance is not merely a user-experience consideration. It can also signal de
 
 A slow model often indicates that key information has not been pre-computed through [meaningful fragments](#docs-creating-information-meaningful-fragments). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
 
-## What are the signs of a good model?
+### What are the signs of a good model?
 
 The following signs do not guarantee that the above objectives are met, and some of the signs may occasionally be absent for good reasons. But a strong Power BI dimensional model will usually show many of them. Their absence or frequent violation would hint at a model that is difficult to use.
 
@@ -2609,7 +2609,7 @@ The signs can be grouped into four areas:
 - Facts and measures
 - Relationships
 
-### Names and metadata
+#### Names and metadata
 
 Names should be business-centric rather than system-centric. It is a common mistake for data engineers to use acronyms or terms from the source system rather than names that reflect the business content itself. This should be avoided unless the model is intentionally about the system.
 
@@ -2631,7 +2631,7 @@ A common case is the transaction and reference table pair, such as `Sales` and `
 
 Finally, a strong indicator of a good dimensional model is the presence of rich, business-centric descriptions in the hover text of tables, columns, and measures.
 
-### Dimensions
+#### Dimensions
 
 In Power BI, dimensions are the window through which users interact with the model. A good dimensional model consciously treats dimensions as the user's point of access. They are the biggest influence on the model's look and feel.
 
@@ -2655,7 +2655,7 @@ The presence of both ID dimensions and storytelling dimensions suggests that the
 
 The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](#docs-presenting-insights-dimensional-modelling-for-ux).
 
-### Facts and measures
+#### Facts and measures
 
 Power BI is designed so that users primarily interact with dimensions and measures rather than facts. This is explained in greater depth in the chapter on [filtering behaviour](#docs-presenting-insights-filtering-behaviour).
 
@@ -2683,7 +2683,7 @@ The prominence of measures, their business-centricity, and their organisation th
 
 Measures are also easier to define when the pipeline has already created meaningful fragments at the right grain. A good model should not rely on complex measures to compensate for missing upstream structure.
 
-### Relationships
+#### Relationships
 
 Relationships in a Power BI model define user interactivity.
 
@@ -2711,7 +2711,7 @@ Relationships are explored in greater depth in the chapter on [anticipating ques
 
 Since dimensions are the user's access point to the model, the column on the filtered side of the relationship, usually in the fact table, should be hidden to avoid ambiguity. The user should use the column on the filtering side, usually in the dimension.
 
-## Conclusion
+### Conclusion
 
 This chapter sketched what a good dimensional model looks like.
 
@@ -2737,11 +2737,11 @@ The Zen of Python is a useful guide to designing a dimensional model. Its emphas
 >
 > A strong model makes answers appear naturally because the data engineer has already made the hard design decisions.
 
-# Dimensional modelling for UX {#docs-presenting-insights-dimensional-modelling-for-ux}
+## Dimensional modelling for UX {#docs-presenting-insights-dimensional-modelling-for-ux}
 
 *In an interactive model, dimensions are what users touch; facts are what respond.*
 
-## Facts and dimensions as interaction
+### Facts and dimensions as interaction
 
 Dimensional modelling is usually taught as a distinction between table types—facts record activity; dimensions provide context.
 
@@ -2749,7 +2749,7 @@ That distinction is correct, but not enough to achieve the expectations of a [go
 
 A model is good when the user can answer questions without guessing. This chapter explains facts and dimensions from that point of view. That is, dimensional modelling for user experience (UX).
 
-## Understanding facts and dimensions
+### Understanding facts and dimensions
 
 Classical dimensional modelling revolves around two core concepts: facts and dimensions.
 
@@ -2767,7 +2767,7 @@ From the business view:
 
 A common explanation says that dimensions filter facts. This is true, but it hides the practical point: filtering is a form of control.
 
-###  An analogy of robots
+####  An analogy of robots
 
 To make the distinction concrete, think of dimensions as levers and facts as robots.
 
@@ -2796,7 +2796,7 @@ In this view, the physical relationship pattern is secondary. A dimension may ha
 
 This abstract view is useful when tackling demanding usage scenarios.
 
-## A repertoire of facts and dimensions
+### A repertoire of facts and dimensions
 
 The categories below are not a complete taxonomy of dimensional modelling. They are a practical repertoire for handling usage scenarios. They name the roles tables can play when a model is designed for interaction.
 
@@ -2820,11 +2820,11 @@ Dimensions:
 8. Search dimension, a sub-type being the ID dimension
 9. Degenerate dimension
 
-## Facts
+### Facts
 
 Facts are the responsive machinery of the model. They contain business activity, business state, or display detail that becomes visible when the user interacts with dimensions.
 
-### Measurable fact
+#### Measurable fact
 
 A **measurable fact** records business activity that can be counted, summed, averaged, or otherwise aggregated.
 
@@ -2859,7 +2859,7 @@ The physical grain is different, but the modelling role is the same: `'Inspectio
 
 Measurable facts are the default facts for [entity processing](#docs-creating-information-entity-processing) scenarios.
 
-### End-of-period fact
+#### End-of-period fact
 
 An **end-of-period fact** records the state of an entity at a regular reporting point.
 
@@ -2882,7 +2882,7 @@ This fact supports questions such as:
 
 The important point is that the fact records state at a reporting boundary. It turns a changing entity into something the user can query at a stable point in time.
 
-### Annotation fact
+#### Annotation fact
 
 An **annotation fact** records display detail attached to another fact, usually where the detail is too fine-grained or too high-cardinality to belong in the main fact table.
 
@@ -2911,13 +2911,13 @@ Often, a measure is still needed to display annotation detail in a controlled wa
 
 An annotation fact is therefore not a second business process. It is an adjunct fact. It carries detail that describes another fact.
 
-## Dimensions
+### Dimensions
 
 Dimensions are the controlled surfaces of interaction. They give users handles for filtering, grouping, searching, comparing, and storytelling.
 
 A dimension is not merely a lookup table. In an interactive model, it is a control.
 
-### Business dimension
+#### Business dimension
 
 A **business dimension** is an ordinary control surface that lets users filter and group facts using familiar business categories.
 
@@ -2935,7 +2935,7 @@ This dimension filters `'Inspection'`. A user can place `[Inspection status]` on
 
 The important point is not only that `'Inspection status'` is a low-cardinality lookup table. The important point is that it is a natural thing for the user to touch.
 
-### Role-playing dimension
+#### Role-playing dimension
 
 A **role-playing dimension** is a dimension that takes different meanings depending on which fact column it filters.
 
@@ -2958,7 +2958,7 @@ A dimension is not role-playing merely because it filters many facts. The relate
 
 For example, suppose `[Manufacture date]` appears on `'Manufacture'`, `'Order'`, and `'Shipping'`, and `'Reporting calendar'` relates to each fact through `[Manufacture date]`. Even though the calendar filters three facts, it is not role-playing. It means the same thing in each case: manufacture date. It is better understood as a business dimension, and may be better named `'Manufacture calendar'`.
 
-### Histogram dimension
+#### Histogram dimension
 
 A **histogram dimension** turns numeric values into a filterable and visualisable dimension.
 
@@ -2983,7 +2983,7 @@ As well as allowing the user to filter the model on a numeric value, the dimensi
 
 This is especially useful for time-to-process metrics. Instead of showing only an average processing time, the model can show the distribution: how many cases took 0 to 1 days, 2 to 5 days, 6 to 10 days, or more than 10 days.
 
-### Combination dimension
+#### Combination dimension
 
 A **combination dimension** represents combinations of related binary properties at the entity grain.
 
@@ -3021,7 +3021,7 @@ The consignment fact carries `[Cargo combination SK]`. The user interacts with `
 
 Combination dimensions are especially useful for `and` logic. They allow the user to ask for entities that have this property and that property while keeping the model at the correct grain.
 
-### Choices dimension
+#### Choices dimension
 
 A **choices dimension** is a low-cardinality, multi-valued dimension that lets users filter for entities that have any selected attribute.
 
@@ -3116,7 +3116,7 @@ For example, `'System combination'` may contain `[Has System A]`, `[Has System B
 
 The decision depends on the question. If the business wants combinations, use a combination dimension. If the business wants any selected value, use a choices dimension. Since they are lightweight, it is always possible to have both if beneficial.
 
-### Sankey dimension
+#### Sankey dimension
 
 A **Sankey dimension** represents possible paths through a sequence of checkpoints.
 
@@ -3162,7 +3162,7 @@ Computationally these are low costs and low complexity translations.
 
 The key is to recognise the underlying axes of binary choice. Once those axes are identified, the data engineer can express them in different dimensional forms depending on the interaction the user needs. Thus, the data engineer is not merely arranging tables, but recognising the latent structure of interaction in the business problem.
 
-### Storytelling dimension
+#### Storytelling dimension
 
 A **storytelling dimension** groups entities into meaningful business journeys.
 
@@ -3176,7 +3176,7 @@ A storytelling dimension is created when the data engineer steps back from raw d
 
 In a self-service model, storytelling dimensions often act as the first portal into the data. They divide the population into meaningful strata and help users begin analysis before drilling into detail.
 
-### Search dimension
+#### Search dimension
 
 A **search dimension** is a high-cardinality dimension that gives users a controlled way to find, retrieve, drill through, or cross-filter records.
 
@@ -3216,7 +3216,7 @@ Search dimensions can significantly increase model size. They should be used del
 
 Due to Power BI filtering behaviour, search dimensions often need to be used with a unit-record display measure. This is explained in the [Filtering behaviour](#docs-presenting-insights-filtering-behaviour) and [Designing measures](#docs-presenting-insights-designing-measures) chapters.
 
-### Degenerate dimension
+#### Degenerate dimension
 
 A **degenerate dimension** is a dimension-like field retained inside a fact table rather than lifted into a separate dimension table.
 
@@ -3245,7 +3245,7 @@ The question is not whether the field can remain in the fact table. The question
 
 If the user needs to touch it, it probably belongs on the controller, not on the robot.
 
-## Pushing detail back to the entity
+### Pushing detail back to the entity
 
 One common theme in this chapter is the movement from information at a finer grain than the entity back to the entity level, and then into a dimension.
 
@@ -3283,11 +3283,11 @@ That is the heart of dimensional modelling in an interactive model.
 >
 > A good dimensional model lets users interact with business activity reliably without guessing how the model works.
 
-# Filtering behaviour {#docs-presenting-insights-filtering-behaviour}
+## Filtering behaviour {#docs-presenting-insights-filtering-behaviour}
 
 *Filtering design is what makes a Power BI model feel intuitive—or frustrating.*
 
-## Filtering as interaction design
+### Filtering as interaction design
 
 Filtering design is what makes a Power BI model feel intuitive—or frustrating.
 
@@ -3311,7 +3311,7 @@ Second, it applies those mechanisms to tricky modelling scenarios. These include
 
 The purpose is not to memorise tricks. The purpose is to understand how Power BI responds when users interact with the model, so the data engineer can design those responses deliberately.
 
-## Ways of filtering
+### Ways of filtering
 
 There are five common ways filtering appears in Power BI:
 
@@ -3321,7 +3321,7 @@ There are five common ways filtering appears in Power BI:
 - Visual-level filtering
 - Measure-defined filtering
 
-### Relationship filtering
+#### Relationship filtering
 
 Relationship filtering is the standard case of filtering.
 
@@ -3357,7 +3357,7 @@ Second, the business meaning becomes buried. Attributes such as region, product,
 
 Third, cross-filtering and drillthrough across multiple business processes become harder. A conformed dimension such as `'Calendar'`, `'Product'`, or `'Region'` can filter several facts. A degenerate column inside one fact cannot naturally serve as a shared point of interaction.
 
-### Common-fact filtering
+#### Common-fact filtering
 
 Filtering also appears indirectly through common filtered tables.
 
@@ -3411,7 +3411,7 @@ If multiple fact tables are filtered by both dimensions, Power BI shows combinat
 
 This “upward” filtering from facts to dimensions enables the intuitive experience of a dimensional model. It is why dimensions alone can serve as the interface, even when facts are hidden. Mastering this behaviour is central to designing good Power BI models.
 
-### Non-blank measure filtering
+#### Non-blank measure filtering
 
 The previous method relies on implicit filtering through relationships and common facts. In simple models, this is often enough. In complex models with several fact tables, it may not be.
 
@@ -3442,7 +3442,7 @@ If several measures are added, the visual may retain rows where any measure retu
 
 This mirrors fact table filtering, but gives the data engineer more control. Instead of relying only on row existence in a fact table, the data engineer can define the measure logic that determines which values should remain visible.
 
-### Visual-level filtering
+#### Visual-level filtering
 
 Sometimes a measure cannot be placed directly in the visual, or doing so would interfere with the visual’s layout.
 
@@ -3454,7 +3454,7 @@ For example, `[Has sales]` may return `1` when there is at least one sale in the
 
 This method is useful, but should be used with care. The evaluation cost can be significant when the visual has a large number of possible values and the measure must be calculated for each one.
 
-### Measure-defined filtering
+#### Measure-defined filtering
 
 The previous methods control which dimension values appear in a visual. Sometimes the data engineer needs to apply filters directly inside the measure calculation itself.
 
@@ -3501,13 +3501,13 @@ The model relationship does not permanently change. The filtering path changes o
 
 Measure-defined filtering is powerful because it allows precise behaviour without permanently changing the model. It is also dangerous because the filtering rule becomes hidden inside the measure. Used well, it solves specific interaction problems. Used carelessly, it creates a model where results are technically correct but difficult to explain.
 
-## Filtering scenarios
+### Filtering scenarios
 
 The five filtering mechanisms above can be combined to support a wide range of interactivity goals while preserving the standard dimensional model pattern: dimensions filter facts using single-direction relationships.
 
 The scenarios below are not exhaustive. Their purpose is to show how filtering design supports user interaction in real models.
 
-### Displaying unit records for a single business process
+#### Displaying unit records for a single business process
 
 A common requirement is to show one row per business transaction.
 
@@ -3519,7 +3519,7 @@ A better approach is to hide `'Sale'` and let dimensions and measures reconstruc
 
 The point of hiding the fact table is not tidiness. It is to protect the user experience. If users interact directly with the fact table, they can produce technically valid but strange results. If they interact through dimensions and measures, the model is much more likely to behave sensibly no matter which direction they approach it from.
 
-#### The model setup
+##### The model setup
 
 Suppose there is a business process represented by the `'Sale'` fact table.
 
@@ -3559,7 +3559,7 @@ The setup is as follows:
 | 1 | Cake |
 | 2 | Bread |
 
-#### Reconstructing the transaction row
+##### Reconstructing the transaction row
 
 The user should reach the sale through:
 
@@ -3572,7 +3572,7 @@ Together, these fields give the user the full sale record without exposing the f
 
 This works because Power BI returns only combinations of dimension values that correspond to existing rows in `'Sale'` (common-fact filtering).  Since `'Sales ID'[Sales order number]` uniquely identifies the sales transaction, adding `'Sales ID'[Sales order number]`, with either `'Sales calendar'[Sales date]` or `'Sales product'[Product name]` downfilters `'Sales'` to the transactions that exist.
 
-#### Why use a measure for the amount?
+##### Why use a measure for the amount?
 
 `'Sale'` has an amount recorded in `[Sales amount]`. A simplistic approach is to expose `'Sale'[Sales amount]` to the user as though it were an ordinary field. Instead, a better approach is to expose `[Total sales amount]`.
 
@@ -3591,7 +3591,7 @@ This is far superior to exposing both. At the transaction level, both may show t
 
 With this setup, `[Total sales amount]` behaves consistently across situations. The user gets sensible results without needing to remember special cases.
 
-#### Why this remains intuitive
+##### Why this remains intuitive
 
 The benefit is that the model behaves sensibly from multiple directions. The user can start with the sales order number, the date, the product, or the measure. In each case, Power BI’s filtering behaviour narrows the model toward valid sales records.
 
@@ -3619,7 +3619,7 @@ Even this simple use case requires careful modelling work. The model must cater 
 
 In this example, `'Sales ID'[Sales order number]` is a single-column business key. If the business key has multiple columns, all columns need to be used.
 
-### Displaying unit records for two business processes
+#### Displaying unit records for two business processes
 
 The single-process case is difficult enough. The two-process case introduces a new problem: different business processes may share some controls but not others.
 
@@ -3677,7 +3677,7 @@ The model therefore behaves differently depending on what the user is trying to 
 - Refund transactions
 - Sales and refund information together
 
-### Displaying sales
+#### Displaying sales
 
 When displaying sales records, everything works as if there were only the `'Sale'` fact table.
 
@@ -3689,7 +3689,7 @@ Single-direction filters also matter. If the report canvas has a filter on `'Ref
 
 This would not be true if the model used bidirectional filters carelessly. The refund date could unexpectedly affect sales visuals.
 
-### Displaying refunds
+#### Displaying refunds
 
 When displaying refund records, the user is interested in `[Total refund amount]`, but they may also need the sales context, such as `'Sales ID'[Sales order number]` and `'Sales product'[Product name]`.
 
@@ -3731,7 +3731,7 @@ The use of `[Total refund amount]`, rather than the degenerate `'Refund'[Refund 
 
 This is another example of why degenerate numeric columns are problematic and why fact tables are better hidden.
 
-### Displaying sales and refunds together
+#### Displaying sales and refunds together
 
 The user may want to see sales and refund business processes simultaneously. This is not one problem. There are three common intentions:
 
@@ -3741,7 +3741,7 @@ The user may want to see sales and refund business processes simultaneously. Thi
 
 Each intention has a different grain and therefore a different filtering problem.
 
-#### Side-by-side visuals
+##### Side-by-side visuals
 
 Displaying sales and refunds side by side on the same report page is the simplest case.
 
@@ -3792,7 +3792,7 @@ When used as a slicer, both tables return rows for the selected date. This works
 
 The chain of filtering behind the scenes creates a seamless experience for the user.
 
-#### Sales with refund details
+##### Sales with refund details
 
 If the user wants a single table of sales transactions with refund amount, the visual should remain at the sales grain.
 
@@ -3819,7 +3819,7 @@ The technical reason is that `'Refund calendar'` relates only to `'Refund'`, not
 
 If displaying refund dates is necessary, the data engineer can create a measure such as `[Sales refund dates]` that returns the unique refund date if there is one, or concatenates distinct dates if there are several.
 
-#### Refunds with sales details
+##### Refunds with sales details
 
 The reverse scenario does not mirror cleanly.
 
@@ -3840,7 +3840,7 @@ The second option adds a more narrowly defined measure, such as `[Sales amount b
 
 The measure is unlikely to be useful everywhere, but it is useful in the refund context.
 
-### Displaying unit records for three or more business processes
+#### Displaying unit records for three or more business processes
 
 The techniques above rely on conformed dimensions and the existence of fact rows to filter. The ID dimension plays a special role.
 
@@ -3870,7 +3870,7 @@ An alternative is to use the measure as a visual-level filter. This is convenien
 
 This has a learning curve, but it can be helpful. A model with more than four or five business processes is already likely to be complicated. For a user dealing with this level of complexity, the additional complexity of display measures is minimal. In fact, an explicit menu of display measures can clarify which business process the user is trying to display.
 
-### Cascading filters
+#### Cascading filters
 
 Cascading filters refer to the behaviour where selecting a value in one filter narrows the choices in another so that only valid options remain.
 
@@ -3898,7 +3898,7 @@ The solution relies on a common fact table and a measure that passes information
 
 This is a case where the dimension is on the receiving end of the button-and-effect relationship. The data engineer can support this without using bidirectional relationships across the whole model.
 
-### Aggregating dimension values
+#### Aggregating dimension values
 
 Cascading filters aim to filter one dimension by another. Sometimes the goal is to aggregate dimension values by another dimension.
 
@@ -3940,7 +3940,7 @@ The exact DAX depends on the model, but the principle is the same: temporarily c
 
 This avoids compromising the whole model with bidirectional relationships or denormalised columns. The model remains clean, and the special behaviour is contained inside the measure that needs it.
 
-### Filter by having
+#### Filter by having
 
 Sometimes the user does not want to filter a dimension by the value it currently has. They want to filter by whether the entity has ever had an attribute.
 
@@ -4026,7 +4026,7 @@ From the user’s perspective, these are search tables that allow searching empl
 
 Unlike tampering with fact tables, this solution is non-destructive. The fact table has not changed. The ordinary point-in-time path remains intact. The search dimension adds a new interface path for a different user intention.
 
-### Dynamic Type I
+#### Dynamic Type I
 
 A common workforce reporting request sounds like this: *"When I choose August, show me the last 12 months using the organisation structure as at August."*
 
@@ -4067,7 +4067,7 @@ The ordinary Type II relationship does not do that. It reports each fact row usi
 
 Thus, Dynamic Type I changes the lens. It says: use the selected reporting date to decide which organisation-unit row is current, then view the relevant historical facts through that selected-date structure.
 
-#### Solving Dynamic Type
+##### Solving Dynamic Type
 The problem is notoriously complex to solve by amending the fact table. It requires associating the organisation unit’s full history with each fact row. That approach is complex, fragile, and expensive.
 
 The key is to recognise that the model already has the history in `'Organisation unit'`. The information is already in the model, and what's missing is to surface it. The better solution is to surface it at query time.
@@ -4104,7 +4104,7 @@ For August 2023, `T1001` resolves to the row where `[Group name] = Group B`. The
 
 This creates a problem. The original `'Organisation unit'` no longer behaves as before. This could be problematic. If the original behaviour needs to be preserved, there are two broad implementation options.
 
-#### Option A—Keep one dimension and switch in measures
+##### Option A—Keep one dimension and switch in measures
 
 The first option is to do the switching in the measure.
 
@@ -4114,7 +4114,7 @@ In measures that need dynamic Type I, deactivate the `[Team unit SK]` path and a
 
 In this implementation, `'Organisation unit'` works as Type II by default, and the user chooses the dynamic Type I perspective through measures.
 
-#### Option B—Add a new dimension
+##### Option B—Add a new dimension
 
 The second option is to switch through dimensions. This is done by duplicating `'Organisation unit'` as `'End of period organisation unit'`, and adding `[Team unit ID]` to `'Employee end of month'`.
 
@@ -4145,7 +4145,7 @@ The distinction is whether the user chooses Type II or dynamic Type I through di
 
 The important point is that Dynamic Type I does not rewrite history in the fact table. It changes the reporting lens at query time.
 
-## Buttons and effects
+### Buttons and effects
 
 The take-away from above is not exhaustive list of filtering techniques. That would be a book in itself.
 
@@ -4194,11 +4194,11 @@ Power BI supports this through the five filtering mechanisms described at the st
 >
 > Good filtering design anticipates how users will interact with the model and makes sensible behaviour occur naturally.
 
-# Designing measures {#docs-presenting-insights-designing-measures}
+## Designing measures {#docs-presenting-insights-designing-measures}
 
 *Measures compress facts into business meaning, then unpack that meaning in user context.*
 
-## Measures as compression and re-expression
+### Measures as compression and re-expression
 
 A fact table may contain thousands, millions, or billions of rows. A measure compresses those rows into a business expression, then unpacks that expression again in user context.
 
@@ -4214,20 +4214,20 @@ This chapter covers three areas:
 
 The next chapter, [Measure of measures](#docs-presenting-insights-measure-of-measures), introduces a pattern for managing structured families of measures.
 
-## Signs of good measures
+### Signs of good measures
 
 There are two signs of good measures:
 
 - business centricity;
 - technical simplicity.
 
-### Business centricity
+#### Business centricity
 
 A measure is not merely a calculation. It is a business expression made available to the user for unpacking.
 
 Every aspect of a measure should reflect business meaning. This includes its definition, name, description, display folder, and placement alongside related measures.
 
-#### Alignment to business reality
+##### Alignment to business reality
 
 A measure should align with real-world events.
 
@@ -4252,7 +4252,7 @@ By contrast, `[Total inspection hours]` remains close to concrete reality. An ho
 
 This does not mean `[Number of inspections]` is always wrong. The point is that the data engineer should understand what the measure is really compressing, and where possible, stay closer to concrete reality than abstraction.
 
-#### Business specificity
+##### Business specificity
 
 Measures should be specific to the business question they answer.
 
@@ -4280,7 +4280,7 @@ These measures are not merely variants of `[Employee count]`. They are specific 
 
 A technical measure such as `[_Employee count]` and `[_Employee count end of period]` may still be useful internally. If it is not useful to users directly, it should be hidden to support business-facing measures without cluttering the interface.
 
-#### Names
+##### Names
 
 Measure names should be explicit, grammatical, and able to stand alone.
 
@@ -4302,7 +4302,7 @@ Avoid non-standard abbreviations. Saving a few characters does not help the user
 
 Names should also support search. Users often find measures by typing keywords in the field list. If the business calls something `commencements`, the measure name may include `commencements`. Anticipating the user search should be part of the measure design.
 
-#### Descriptions
+##### Descriptions
 
 Descriptions should explain business meaning.
 
@@ -4322,7 +4322,7 @@ Counts employees who were active at the end of the selected period and whose lea
 
 The description is part of the interface. It is often the first explanation the user sees, and an opportunity to build trust.
 
-#### Display folders
+##### Display folders
 
 Display folders help measures appear in business-facing groups.
 
@@ -4338,7 +4338,7 @@ Technical or report-specific measures can be placed in folders such as:
 - `Dashboard`
 - `Display unit records`
 
-#### Proximity to related measures
+##### Proximity to related measures
 
 The meaning of a measure is influenced by nearby measures.
 
@@ -4362,7 +4362,7 @@ There are two practical forms of proximity:
 
 A data engineer can take advantage of the proximity effect during measure naming and placement.
 
-### Technical simplicity
+#### Technical simplicity
 
 Measures should be technically simple.
 
@@ -4375,7 +4375,7 @@ There are two important foundations for technical simplicity:
 - precomputing complex information;
 - preparing binary flags.
 
-#### Precomputing complex information
+##### Precomputing complex information
 
 Complex business logic should usually be computed in the data layer.
 
@@ -4403,7 +4403,7 @@ The rule is not “precompute everything.” The rule is:
 
 The data engineer should understand the filtering behaviour of Power BI well enough to know which logic belongs in the pipeline and which logic belongs in a measure.
 
-#### Preparing binary flags
+##### Preparing binary flags
 
 Binary flags are true-or-false columns that express business logic clearly.
 
@@ -4454,7 +4454,7 @@ Binary flags also participate cleanly in `and` and `or` logic. For example:
 
 Using binary flags makes measures faster to write, easier to maintain, and easier to understand. The business logic has been named and surfaced in the model.
 
-## Interface roles of measures
+### Interface roles of measures
 
 Measures do not all play the same role in the user experience. Some measures answer business questions directly. Some display contextual information. Some control whether rows appear. Some support the presentation of a dashboard.
 
@@ -4465,7 +4465,7 @@ These are interface roles. There are four common roles:
 - filtering measures;
 - dashboard measures.
 
-### Aggregating measures
+#### Aggregating measures
 
 Aggregating measures are the measures most people think of first.
 
@@ -4483,7 +4483,7 @@ For end-of-period facts, they often need to identify the relevant reporting peri
 
 Aggregating measures should usually be business-facing. They are the main way facts become visible to users.
 
-### Dimensional measures
+#### Dimensional measures
 
 A dimensional measure turns dimension values into a measure result.
 
@@ -4513,7 +4513,7 @@ A dimensional measure such as `[Refunded products]` cannot do the same thing. It
 
 Its chief purpose is display.
 
-### Filtering measures
+#### Filtering measures
 
 Filtering measures exist to control what appears.
 
@@ -4542,7 +4542,7 @@ Display unit-record measures are a special case. They are used to control whethe
 
 Filtering measures are technical, but they still need business meaning. Their descriptions should explain how they are intended to be used.
 
-### Dashboard measures
+#### Dashboard measures
 
 Dashboard measures support report presentation.
 
@@ -4568,7 +4568,7 @@ For example:
 
 Dashboard measures often inspect user context. They commonly use functions such as `selectedvalue`, `hasonevalue`, `isfiltered`, and `isinscope`.
 
-## Technical patterns for measures
+### Technical patterns for measures
 
 Most measures fall into a small number of technical patterns.
 
@@ -4592,7 +4592,7 @@ The techniques in this section assume that the model has been prepared properly.
 
 If those foundations are missing, the same DAX patterns may become difficult or impossible to apply. A measure cannot recover a grain if the key for that grain has been discarded. It cannot express a business category if the category has never been modelled. It cannot follow a relationship path if the relevant identifier has not been preserved.
 
-### Base measures
+#### Base measures
 
 Base measures interact directly with fact tables.
 
@@ -4644,7 +4644,7 @@ Base measures should carry as little business complexity as possible. They shoul
     <span class="kw">keepfilters</span> ( &#x27;Inspection outcome&#x27;[Is failed inspection] )
 )</code></pre></div>
 
-### Derived measures
+#### Derived measures
 
 Derived measures build on base measures.
 
@@ -4669,7 +4669,7 @@ For example:
 
 The meaning should be explicit. The user should understand which filters are removed and which remain.
 
-### Context-aware measures
+#### Context-aware measures
 
 Context-aware measures inspect the user’s current selection and respond accordingly.
 
@@ -4707,7 +4707,7 @@ Context-aware measures are useful because Power BI users interact with the model
 
 But context-aware logic should remain explainable. If a measure behaves differently in different visuals, its description should make that behaviour clear.
 
-### Advanced scenario: polymorphic keys
+#### Advanced scenario: polymorphic keys
 
 Polymorphic keys occur when the meaning of one key column depends on another column.
 
@@ -4749,7 +4749,7 @@ New data engineers often solve this by concatenating item type and item key into
 
 The idea is similar to SQL: group by the resolving column, aggregate each segment, then aggregate the result.
 
-### Advanced scenario: embedded grain
+#### Advanced scenario: embedded grain
 
 Embedded grain occurs when a table is physically stored at one grain, but contains enough repeated keys or attributes to recover another grain.
 
@@ -4790,7 +4790,7 @@ ID dimensions can help because they preserve the keys needed to reconstruct the 
 
 The broader lesson is that measures must know the grain of the thing being measured. If the grain is embedded inside a denormalised fact, the measure may need to recover it explicitly.
 
-### Advanced scenario: unsupported relationships
+#### Advanced scenario: unsupported relationships
 
 Unsupported relationships occur when the standard single-direction dimension-to-fact relationship structure does not naturally support the required calculation.
 
@@ -4838,11 +4838,11 @@ They should be used deliberately. If many measures require complex relationship 
 >
 > If measure logic becomes difficult to explain, the data engineer should consider whether the model or pipeline should be improved.
 
-# Measure of measures {#docs-presenting-insights-measure-of-measures}
+## Measure of measures {#docs-presenting-insights-measure-of-measures}
 
 *Sometimes the measures themselves have dimensional structure, and that structure should be modelled.*
 
-## Measures as a modelled structure
+### Measures as a modelled structure
 
 The previous chapter described measures as the face of facts. A measure compresses fact-table content into business meaning, then unpacks that meaning in user context.
 
@@ -4858,7 +4858,7 @@ This should be distinguished from other Power BI approaches that look similar on
 
 Instead, **measure of measures** refers to the modelling pattern of making the underlying structure of measures explicit for user interaction. The `switch` measure is only one component of that pattern.
 
-## The problem
+### The problem
 
 Consider a company that manages three operational stages:
 
@@ -4902,7 +4902,7 @@ Moreover, the complexity quickly explodes. For example, if two additional concep
 
 Calculating percentage processed on schedule for each process stage leads to 3 additional measures and 12 total. If national versions are created for all 12, the total becomes 24.
 
-## The measure of measures pattern
+### The measure of measures pattern
 
 The measure of measures pattern introduces four elements:
 
@@ -4911,7 +4911,7 @@ The measure of measures pattern introduces four elements:
 3. Derived measures
 4. A formatting calculation group
 
-### Step 1—Create a measure table
+#### Step 1—Create a measure table
 
 The measure table is a small table that lists the measures and annotates them with business attributes.
 
@@ -4937,7 +4937,7 @@ With the table, the model now knows that `[Manufacture process volume]`, `[Order
 
 The display order columns are important. Alphabetical order is rarely the same as business order. For example, `[Process stage]` is in order of manufacture, orders, and shipping.
 
-### Step 2—Create a switch measure
+#### Step 2—Create a switch measure
 
 The switch measure returns the correct base measure depending on the selected row in `'Operational metric'`.
 
@@ -4964,7 +4964,7 @@ The measure table provides the selection. The switch measure provides the value.
 
 The ordinary underlying measures can be called base measures. They calculate directly from facts or from ordinary dimensional context. The switch measure is the first measure that operates over the structure of those base measures.
 
-### Step 3—Define derived measures
+#### Step 3—Define derived measures
 
 Once the switch measure exists, the data engineer can define derived measures over the structure of the measure table.
 
@@ -5012,7 +5012,7 @@ For example, when the process stage is filtered to `Manufacture`, `[Process volu
 
 When the process stage is filtered to `Orders`, the same measure resolves to the order measures.
 
-### Step 4—Handle formatting
+#### Step 4—Handle formatting
 
 A switch measure does not automatically preserve the original format of each underlying measure.
 
@@ -5042,17 +5042,17 @@ Without this step, the measure of measures may return correct numbers but displa
 >
 > In practice, long `switch` measures and matching format-string expressions should usually be generated by code when this pattern is used regularly.
 
-## Benefits
+### Benefits
 
 The measure of measures pattern has several benefits.
 
-### Simplified DAX management
+#### Simplified DAX management
 
 Instead of repeating similar logic across many measures, the data engineer can define reusable derived measures.
 
 This reduces duplication and lowers maintenance cost. In some cases, it is the only viable solution without creating a tangle of DAX definitions or nightmare reports.
 
-### Explicit business structure
+#### Explicit business structure
 
 The measure table expresses the structure of the metrics directly.
 
@@ -5070,7 +5070,7 @@ The numbers are returned by different underlying measures, but the row and colum
 
 This visual is difficult to build with separate measures.
 
-### More powerful reporting
+#### More powerful reporting
 
 The third benefit is powerful reporting. A visual can place `[Process stage]` and `[Metric]` on rows, `[Reporting year]` on columns, and `[Operational metric]` as the value.
 
@@ -5094,7 +5094,7 @@ If each process is managed by a different team, `[Process stage]` can be used as
 
 Used appropriately, the measure of measures enables powerful reports that would otherwise be impractical or impossible.
 
-### Avoiding awkward fact-table unions
+#### Avoiding awkward fact-table unions
 
 Inexperienced data engineers sometimes try to solve the same problem by forcing fact tables into an awkward union so that different process stages can appear as rows in a single table.
 
@@ -5102,11 +5102,11 @@ That may be appropriate in some models, but not always. If the processes are gen
 
 The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](#docs-creating-information-conforming-systems) when vertical integration of the underlying facts is not appropriate.
 
-## Dangers
+### Dangers
 
 The measure of measures pattern is powerful, but it should be used judiciously.
 
-### Performance
+#### Performance
 
 Large `switch` measures can perform poorly, especially when the selected field is not the same column used by the switch.
 
@@ -5114,7 +5114,7 @@ For example, performance may be worse when the visual filters on `[Metric]` or `
 
 With many branches, performance should be tested in practice.
 
-### Dynamism for its own sake
+#### Dynamism for its own sake
 
 Dynamism can be overused.
 
@@ -5122,7 +5122,7 @@ In theory, any list of measures can be placed into a switch. That does not mean 
 
 The criterion is business expressiveness. The pattern is appropriate when the measures form a coherent structure: process stages, business lines, quality criteria, product families, or similar.
 
-### Hiding important information behind clicks
+#### Hiding important information behind clicks
 
 A dynamic report is not automatically a good report.
 
@@ -5130,7 +5130,7 @@ If users must keep clicking before they can see what matters, the report may be 
 
 The measure of measures should be used to create explicitly expressive visuals, not to hide information behind unnecessary interaction.
 
-### Ambiguous aggregation across measures
+#### Ambiguous aggregation across measures
 
 The measure table often has a composite key. In the example above, `[Process stage]` and `[Metric]` together identify a specific measure.
 
@@ -5138,7 +5138,7 @@ If the user selects `[Metric] = Process volume` without selecting `[Process stag
 
 If aggregation across measures is required, it should be explicitly defined and tailored to the metric.
 
-## Relationship to switch measures
+### Relationship to switch measures
 
 Many discussions of `switch` measures in Power BI focus on technical convenience: allowing users to choose a measure from a slicer, reducing visual clutter, or reusing a visual for different metrics.
 
@@ -5172,11 +5172,11 @@ Without anchor in business meaning, dynamic measure selection can easily become 
 >
 > Aggregating across measures must be defined deliberately. Blank results are often a useful safeguard against accidental nonsense.
 
-# Interactive row level security {#docs-presenting-insights-interactive-row-level-security}
+## Interactive row level security {#docs-presenting-insights-interactive-row-level-security}
 
 *RLS should limit access without destroying unit-record interactivity.*
 
-## Security without losing context
+### Security without losing context
 
 Row level security (RLS) in Power BI means exposing to users only the rows they are allowed to see. This is implemented through a DAX filter attached to the user’s security role.
 
@@ -5193,7 +5193,7 @@ This leads to two distinct tasks in implementing RLS:
 - limiting what users can see;
 - preserving population context.
 
-## Limiting what users can see
+### Limiting what users can see
 
 RLS first needs an access-control pattern. There are two common approaches:
 
@@ -5202,7 +5202,7 @@ RLS first needs an access-control pattern. There are two common approaches:
 
 This choice determines how the permitted population is assigned to each user.
 
-### Static roles
+#### Static roles
 
 Static roles use one RLS role per access category.
 
@@ -5228,7 +5228,7 @@ The weakness is maintenance. Static roles work when the access categories are fe
 
 A clear naming convention is important. `Limited` and `Unlimited` are often clearer than `Restricted` and `Unrestricted`, because `restricted` can mean either access to restricted data or restriction from data.
 
-### Dynamic roles
+#### Dynamic roles
 
 Dynamic roles use a security mapping table and the user’s identity, usually through `userprincipalname()`.
 
@@ -5265,7 +5265,7 @@ Multiple copies of the access table may be needed if filtering applies across mu
 
 Whether access is static or dynamic, the result is the same: each user sees only their permitted rows. The harder problem is what happens when the user needs to compare those rows with a wider population.
 
-## Preserving population context
+### Preserving population context
 
 RLS removes rows from the user’s visible population. If the user needs comparison against a wider population, that wider population must remain available through another modelling path.
 
@@ -5286,7 +5286,7 @@ There are two approaches to preserving population context while retaining unit-r
 - anonymous facts;
 - pseudonymous dimensions.
 
-### Anonymous facts
+#### Anonymous facts
 
 The anonymous approach duplicates the fact table and removes sensitive columns and sensitive relationship paths.
 
@@ -5325,7 +5325,7 @@ The anonymous approach preserves interactivity by keeping the population fact at
 
 When there are many pairs of user and population measures, maintaining the measures can become tedious. The measure of measures pattern can help by creating one switch measure for restricted measures and another for population measures. Derived comparison measures can then be defined over the two switch measures rather than repeated for every metric.
 
-### Pseudonymous dimensions
+#### Pseudonymous dimensions
 
 The pseudonymous approach assumes sensitive information is contained in dimensions.
 
@@ -5397,7 +5397,7 @@ Care must be taken when masking. In some cases, the primary key itself is sensit
 
 The pseudonymous approach is lighter than duplicating facts, but it is also riskier. Because the same underlying facts remain available, an informed user may infer identities from distinctive combinations of values.
 
-## Choosing an approach
+### Choosing an approach
 
 The anonymous and pseudonymous approaches solve the same problem in different ways.
 
@@ -5433,11 +5433,11 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 
 # Quality & reliability {#docs-quality-reliability}
 
-# The foundations of trust {#docs-quality-reliability-the-foundations-of-trust}
+## The foundations of trust {#docs-quality-reliability-the-foundations-of-trust}
 
 *Quality and reliability are the foundations of trust in a data product.*
 
-## Quality and reliability
+### Quality and reliability
 
 Data is a fragment of reality captured by process.
 
@@ -5461,7 +5461,7 @@ The issue is not with the source data, but with mechanical **reliability**: the 
 
 Reliability is the discipline of making the data product stable against predictable forms of breakage.
 
-## Trust requires both
+### Trust requires both
 
 Quality keeps users from guessing what the data means. Reliability keeps users from guessing whether the output worked.
 
@@ -5472,7 +5472,7 @@ When both are available, users can use the product without second-guessing. Thus
 | Quality | Does this data product represent the business reality well enough for the decision? | “This does not match the world I know.” |
 | Reliability | Does the pipeline consistently produce the data product without hidden breakage? | “This number might be broken.” |
 
-## The third principle: anticipate errors
+### The third principle: anticipate errors
 
 This section introduces the third principle of data engineering: anticipate errors.
 
@@ -5494,11 +5494,11 @@ Because of these changes, a trustworthy data product cannot depend on everything
 >
 > Reliability keeps users from guessing whether the data worked.
 
-# Quality metadata {#docs-quality-reliability-quality-metadata}
+## Quality metadata {#docs-quality-reliability-quality-metadata}
 
 *Without metadata, everyone is guessing.*
 
-## When metadata is missing
+### When metadata is missing
 
 Metadata is the place where meaning is either carried by the data product or abandoned to the user.
 
@@ -5524,7 +5524,7 @@ There are three basic kinds of metadata discussed in this chapter:
 
 Without good names, artefacts become unrecognisable. Without descriptions, artefacts become incomprehensible. Without keys, they become lost: disconnected from reality and from the other artefacts that give them meaning.
 
-## Names answer: what is this thing?
+### Names answer: what is this thing?
 
 Names make artefacts recognisable.
 
@@ -5564,7 +5564,7 @@ If a table is called `summary`, it should usually be renamed to reflect what is 
 
 These principles apply just as much to code. Temporary tables and CTEs should be named with business meaning, not cryptic abbreviations like `tmp`. In complex code, column renaming should happen early, on first contact, and persist throughout transformation.
 
-## Descriptions answer: what does this mean?
+### Descriptions answer: what does this mean?
 
 Descriptions make artefacts comprehensible.
 
@@ -5614,7 +5614,7 @@ Clear statements of limitation are essential for transparency and reliable appli
 
 This is where descriptions protect users from misuse. They do not merely explain what an artefact means in normal cases; they mark the boundary beyond which that meaning breaks down.
 
-## Keys answer: how does this relate?
+### Keys answer: how does this relate?
 
 Database keys include primary keys, foreign keys, and unique keys. They are also metadata.
 
@@ -5638,7 +5638,7 @@ Ultimately, keys are not just technical constraints. They are statements of iden
 
 This makes them a non-negotiable part of metadata.
 
-## Metadata should be data
+### Metadata should be data
 
 Data without metadata is data without context.
 
@@ -5666,11 +5666,11 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 >
 > Metadata should be stored and treated as data.
 
-# Three approaches to data quality {#docs-quality-reliability-three-approaches-to-data-quality}
+## Three approaches to data quality {#docs-quality-reliability-three-approaches-to-data-quality}
 
 *When recorded data does not meet business intent, choose the right kind of intervention.*
 
-## Quality means fitness for intent
+### Quality means fitness for intent
 
 Most people see data quality issues as failures of data capture to reflect reality.
 
@@ -5743,7 +5743,7 @@ One theme runs through all three approaches: assumptions must be monitored. If a
 
 This is covered in more detail in [Tests and assumptions](#docs-quality-reliability-tests-and-assumptions).
 
-## Human curation: when judgement is needed
+### Human curation: when judgement is needed
 
 If data quality issues arise from a gap between recorded data and business intent, one simple remedy is to allow business experts to intervene directly.
 
@@ -5757,7 +5757,7 @@ This section covers three scenarios where human curation is appropriate:
 2. Applying assumptions
 3. Data quality report
 
-### Data annotation
+#### Data annotation
 
 Data annotation is useful when records need to be classified, mapped, enriched, or corrected by a business expert.
 
@@ -5786,7 +5786,7 @@ Traditionally, data warehousing has treated human curation as an exception. But 
 
 Whether the curation concerns reference data, master data, or other forms of annotation, the data engineer must monitor for incoming records that require curation. Examples include uncategorised store locations, unmapped employee accounts, or new values that do not yet belong to a known category.
 
-### Applying assumptions
+#### Applying assumptions
 
 Applying assumptions is useful when a practical assumption can handle most cases, but violations need expert review.
 
@@ -5820,7 +5820,7 @@ This approach works best when violations are rare and the business expert can co
 
 If data quality issues are frequent or systemic, a data quality report may be more appropriate.
 
-### Data quality report
+#### Data quality report
 
 Data quality reports are suitable when issues are frequent, numerous, or easier to treat in bulk on a periodic basis.
 
@@ -5854,7 +5854,7 @@ A data quality dimension also supports systematic analysis by enabling statistic
 
 Reports are only effective if they embed in the user’s workflow. A decontextualised report becomes forgotten and unused. The same applies to data quality reports. The business should have a workflow trigger that prompts engagement with the report.
 
-## Precise rules: when intent can be formalised
+### Precise rules: when intent can be formalised
 
 Translating business knowledge into precise rules allows it to be automated and reduces reliance on human intervention.
 
@@ -5871,7 +5871,7 @@ This section covers four recurring types of precise rule:
 3. Defining the primary record
 4. Defining relationships
 
-### Defining analytical concepts
+#### Defining analytical concepts
 
 Defining analytical concepts closes the quality gap between operational detail and business interpretation.
 
@@ -5879,7 +5879,7 @@ Since business insight is information analysed in light of business intent, a di
 
 Defining analytical concepts takes [leadership and negotiation skill](#docs-foundations-data-and-organisations). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
-#### Good and bad entities
+##### Good and bad entities
 
 Good and bad entity definitions close the quality gap between detailed operational outcomes and the business’s need for a usable judgement.
 
@@ -5914,7 +5914,7 @@ It is not reasonable to expect operational systems to always define these concep
 
 This implementation is studied in greater depth in [Entity processing](#docs-creating-information-entity-processing).
 
-#### Milestones
+##### Milestones
 
 Milestones close the quality gap between messy workflow events and meaningful process control.
 
@@ -5972,7 +5972,7 @@ To deal with loops and repeated events, the data engineer can define the earlies
 
 This pattern is studied in [Meaningful fragments](#docs-creating-information-meaningful-fragments).
 
-#### Conformed dimensions
+##### Conformed dimensions
 
 Conformed dimensions close the quality gap between local system categories and enterprise intent.
 
@@ -6027,7 +6027,7 @@ When done appropriately, a conformed view can empower decision-makers at the mos
 
 Conformed dimensions are studied in [Reference data](#docs-creating-information-reference-data).
 
-### Defining primary keys
+#### Defining primary keys
 
 Defining primary keys closes the quality gap between database rows and real-world entities by making their link explicit.
 
@@ -6041,7 +6041,7 @@ The primary key articulates the data engineer’s view of how the data row shoul
 
 Most primary keys can be traced by examining how a business process creates, retrieves, and updates a data record. Three common patterns are sequence numbers, version numbers, and temporality.
 
-#### Sequence numbers
+##### Sequence numbers
 
 Sequence numbers close the quality gap where the source system stores a list, but the data product needs stable business identity for each row.
 
@@ -6075,7 +6075,7 @@ Sometimes a system will implement a meaningless key such as `[Sales item ID]`, a
 
 In general, sequence numbers are effective wherever there is a miscellaneous list of line items within a header. Care must be taken to ensure the sequence is deterministic by breaking ties—using a surrogate key like `[Sales item ID]` as a sort order is a reliable approach.
 
-#### Version numbers
+##### Version numbers
 
 Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
 
@@ -6107,7 +6107,7 @@ The order can be represented with a stable `[Order ID]` and a changing `[Order v
 
 The primary key for `Sales.OrderVersion` is `[Order ID]`, `[Order version number]`.
 
-#### Temporality
+##### Temporality
 
 Temporality closes the quality gap where the business needs historical interpretation but the source system only presents the current state.
 
@@ -6131,7 +6131,7 @@ The business key is `[Employee ID]`, `[Start datetime]`. `[End datetime]` marks 
 
 Recovering temporality depends on how history is stored. Sometimes it is available in audit tables. Sometimes it must be reconstructed with help from business experts.
 
-### Defining the primary record
+#### Defining the primary record
 
 Defining the primary record closes the quality gap between multiple records and one underlying entity.
 
@@ -6171,7 +6171,7 @@ Subsequent transformation can focus on the `[Primary observation ID]` grain. The
 
 Care must be taken to resolve race conditions. If two users submit observations at the same time, only one record should be selected as primary. This can be resolved deterministically using a surrogate key such as `[Observation ID]`.
 
-### Defining relationships
+#### Defining relationships
 
 Defining relationships closes the quality gap where analytically important relationships were not recorded by the source system.
 
@@ -6186,7 +6186,7 @@ Two useful techniques are:
 - nearest temporal joins;
 - mapping tables.
 
-#### Nearest temporal join
+##### Nearest temporal join
 
 Nearest temporal joins close the quality gap between related events whose relationship was not explicitly recorded.
 
@@ -6265,7 +6265,7 @@ In the fire-safety example, certificate submission and inspection are not the sa
 
 This is the discipline of the pattern: use time to restore a relationship only where business knowledge says the relationship is meaningful, then monitor the assumptions that make it safe.
 
-#### Mapping tables
+##### Mapping tables
 
 Mapping tables close the quality gap between entities that must be related analytically but are not related operationally.
 
@@ -6316,7 +6316,7 @@ Because the relationship is inferred rather than recorded, it should be tested. 
 
 Variants of this are studied in [Meaningful fragments](#docs-creating-information-meaningful-fragments).
 
-## Fuzzy logic: when intent can only be approximated
+### Fuzzy logic: when intent can only be approximated
 
 There are cases where precise rules do not apply.
 
@@ -6345,7 +6345,7 @@ The following is a three-step process, a kind of “poor man’s data science”
 
 This approach can be highly effective in common scenarios that require extracting information from free text. A data engineer should be comfortable considering this approach and ready to pivot to a more sophisticated data science method when necessary.
 
-### Step 1—Loose–tight iteration
+#### Step 1—Loose–tight iteration
 
 Loose–tight iteration closes the quality gap where a pattern is real enough to use, but too messy to define perfectly at the start.
 
@@ -6429,7 +6429,7 @@ Each adjustment changes the match set and reject set. It is usually better to ti
 
 The key idea is that focusing only on matches creates a blind spot. The rejected records are equally significant. A useful pattern is found by examining both incorrect matches and incorrect rejects.
 
-### Step 2—Random validation
+#### Step 2—Random validation
 
 Random validation closes the quality gap where approximate logic looks plausible, but has not been checked against independent judgement.
 
@@ -6471,7 +6471,7 @@ This validation process should be repeated periodically. Even if the pattern was
 
 Regular validation helps ensure the pattern continues to serve its intended purpose.
 
-### Step 3—Monitoring for drift
+#### Step 3—Monitoring for drift
 
 Monitoring for drift closes the quality gap where an approximation was once good enough, but may stop behaving as intended over time.
 
@@ -6524,11 +6524,11 @@ Useful drift statistics may include:
 >
 > All three approaches depend on monitoring the assumptions that make the intervention safe.
 
-# Tests and assumptions {#docs-quality-reliability-tests-and-assumptions}
+## Tests and assumptions {#docs-quality-reliability-tests-and-assumptions}
 
 *Good engineering makes failure visible before it reaches the user.*
 
-## Anticipating errors
+### Anticipating errors
 
 A data product is not trustworthy merely because it is correct today. It is trustworthy when users are not caught unawares by eventual failures.
 
@@ -6567,7 +6567,7 @@ Tests protect the correctness of implemented logic. Monitored assumptions protec
 
 Both should run regularly, such as once per pipeline batch. Their purpose is not to eliminate failure entirely. Their purpose is to prevent avoidable failure from remaining hidden.
 
-## Tests: checking the same result two ways
+### Tests: checking the same result two ways
 
 A data test is strongest when expected and actual results are calculated independently.
 
@@ -6598,7 +6598,7 @@ The way to write a good test is to ask:
 
 The following examples are not exhaustive. They illustrate the mindset of checking weak points by calculating the same result through a different path.
 
-### Row counts
+#### Row counts
 
 Row count tests check whether records have appeared, disappeared, or duplicated unexpectedly.
 
@@ -6633,7 +6633,7 @@ If the extract relies on an architectural column such as `[Row update datetime]`
 
 Selecting a sample of recent records is also useful. A recent-record sample can check creation, update, and deletion behaviour across many columns, not only row counts.
 
-### Checksums on key results
+#### Checksums on key results
 
 Checksum tests check whether an important summary result still balances.
 
@@ -6679,7 +6679,7 @@ This test is not a copy of the transformation. It checks whether the transformed
 
 A more comprehensive version can group by values such as `[Product type]`, `[Manufacture site]`, or `[Inspection month]`. This increases the chance of catching errors that affect only a segment of the data.
 
-### Bypassing mapping tables
+#### Bypassing mapping tables
 
 Mapping tables are often introduced where the source system did not record an analytical relationship.
 
@@ -6735,7 +6735,7 @@ For example, if the business rule assumes food cost is evenly distributed among 
 
 Grouping by reference columns such as `[Food item ID]`, `[Food item type]`, or `[Table sitting ID]` can make the test more sensitive.
 
-### Checking boundary cases
+#### Checking boundary cases
 
 Boundary cases are common sources of error.
 
@@ -6773,7 +6773,7 @@ To guard against this, the data engineer should also test turning points, such a
 
 A rolling-window measure that passes at calendar-year boundaries, financial-year boundaries, and interim month turning points provides much stronger assurance than one tested only at convenient dates.
 
-### Using subject matter knowledge
+#### Using subject matter knowledge
 
 Subject matter knowledge can introduce independence into a test.
 
@@ -6807,7 +6807,7 @@ In general, existence and uniqueness conditions known to business experts can be
 
 This is one of the strongest ways to write tests because it introduces a source of independence outside the code itself.
 
-## Monitored assumptions: surfacing records that require attention
+### Monitored assumptions: surfacing records that require attention
 
 Data engineers must make assumptions.
 
@@ -6829,7 +6829,7 @@ The following are common cases.
 | Data quality rules still hold | Invalid dates, duplicate keys, or out-of-range values appear. |
 | Fuzzy logic has not drifted | Match rates or validation results move outside tolerance. |
 
-### Is source data up to date?
+#### Is source data up to date?
 
 Source data cannot always be assumed to arrive on time.
 
@@ -6848,7 +6848,7 @@ If the query returns `Sales.Payment`, the issue needs attention. The data produc
 
 This assumption is especially important when multiple source systems are combined. A report may look normal while one process has updated and another has not.
 
-### Is reference data complete?
+#### Is reference data complete?
 
 Reference data is vital to a quality warehouse.
 
@@ -6877,7 +6877,7 @@ A monitored assumption can check whether any source country codes have arrived w
 
 The query should return only the values that require human attention. In this case, someone needs to decide whether `SGP` maps to an existing country record or whether the country reference data need to be extended.
 
-### Are there unanticipated values?
+#### Are there unanticipated values?
 
 Hard-coded values are sometimes unavoidable.
 
@@ -6895,7 +6895,7 @@ This assumption does not necessarily mean the pipeline is broken. It means the b
 
 This is especially important when a transformation uses `case` logic, hard-coded mappings, or manually curated categories.
 
-### Are there data quality issues?
+#### Are there data quality issues?
 
 Source data may contain issues from unvalidated collection.
 
@@ -6919,7 +6919,7 @@ Similarly, duplicate records may be removed from the main analytical table and w
 
 These are monitored assumptions because the business needs to know that the issue occurred. The pipeline may be able to continue, but the underlying source issue still requires attention.
 
-### Is there data drift?
+#### Is there data drift?
 
 Statistical and fuzzy logic often rely on assumptions about the distribution or pattern of input data.
 
@@ -6945,7 +6945,7 @@ A monitored assumption should return rows, periods, or segments where the statis
 
 The important point is that fuzzy logic should not be treated as set-and-forget. Its assumptions must be monitored.
 
-## Tests and assumptions together
+### Tests and assumptions together
 
 Tests and monitored assumptions are closely related, but they protect different things.
 
@@ -6967,7 +6967,7 @@ A useful rule of thumb is:
 | Core reconciliation or row preservation | Test | Failure suggests the transformation may have broken. |
 | Statistical or fuzzy pattern stability | Monitored assumption | Failure suggests logic may need review. |
 
-## Conclusion
+### Conclusion
 
 Tests and assumptions accelerate delivery rather than slow it down. They reduce the cost of change. They allow data engineers to modify complex transformations with confidence. They make it safer to refactor code, adjust business logic, optimise performance, and release improvements without relying on hope.
 
@@ -6993,11 +6993,11 @@ New engineers naturally spend more time choosing patterns and building their imp
 >
 > Monitored assumptions detect changes that make the logic unsafe.
 
-# Fault tolerance {#docs-quality-reliability-fault-tolerance}
+## Fault tolerance {#docs-quality-reliability-fault-tolerance}
 
 *Good engineering contains errors before they spread through the pipeline.*
 
-## Containing failure
+### Containing failure
 
 Good engineering contains failure before it spreads.
 
@@ -7027,7 +7027,7 @@ This chapter introduces three common fault patterns:
 
 These patterns illustrate the mindset of building a fault-tolerant pipeline.
 
-## Uniqueness
+### Uniqueness
 
 Uniqueness faults occur when the relationship between real-world entities and database records breaks down.
 
@@ -7084,7 +7084,7 @@ If uniqueness violations are rare, a reject-record pattern may be sufficient. If
 
 In such cases, the data engineer should implement a specific treatment for the table. This may include deterministic deduplication, a remediation workflow, or a data quality report.
 
-## Existence
+### Existence
 
 Existence faults occur when required records or values are missing, or when records remain in the data world after their real-world counterpart has disappeared.
 
@@ -7179,7 +7179,7 @@ However, safe handling must not become silent handling.
 
 If a missing header catches up in the next batch, the issue may resolve. If it does not catch up, tests or monitored assumptions should surface the prolonged discrepancy.
 
-## Stability
+### Stability
 
 Stability faults occur when small real-world changes produce disproportionate changes in the data world.
 
@@ -7230,7 +7230,7 @@ Another habit is to manage dependencies carefully. Small reference tables can ha
 
 These design habits are developed further in [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics) and [Load dependencies](#docs-efficient-stable-pipeline-load-dependencies).
 
-## Conclusion
+### Conclusion
 
 Uniqueness, existence, and stability are three common fault patterns. But the possibilities of error are limitless. Parallel loads may deadlock. Source systems may change without notice. Files may arrive late.  Users may enter unexpected values.
 
@@ -7260,11 +7260,11 @@ This is why the data engineer builds with fault tolerance: not every error is fa
 
 # Efficient & stable pipeline {#docs-efficient-stable-pipeline}
 
-# Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
+## Efficiency and stability {#docs-efficient-stable-pipeline-efficiency-and-stability}
 
 *A mature pipeline keeps changes in computation aligned to changes in information.*
 
-## Correspondence between information and computation
+### Correspondence between information and computation
 
 A mature pipeline maintains correspondence between changes in information and changes in computation.
 
@@ -7281,7 +7281,7 @@ This is also the fourth principle of data engineering:
 
 > Instead of wholesale response, maintain proportionate change.
 
-## Efficiency
+### Efficiency
 
 Developers often talk about fast and slow. But fast and slow are slippery terms.
 
@@ -7310,7 +7310,7 @@ Efficiency is important because it is central to sustainable warehouse growth. I
 
 Some performance factors sit outside the data engineer’s immediate control: server configuration, infrastructure limits, source-system behaviour, or the business value of the information being processed. But the data engineer can still ensure that the pipeline does only the necessary work, and no more, to reflect real-world change.
 
-## Stability
+### Stability
 
 **Stability** is closely related to efficiency.
 
@@ -7326,7 +7326,7 @@ Reports that suddenly become empty or radically different undermine trust. There
 
 A stable pipeline does not merely run successfully. It changes in ways that correspond to changes in the world it represents.
 
-## Efficiency and stability together
+### Efficiency and stability together
 
 Efficiency and stability are related but distinct.
 
@@ -7358,11 +7358,11 @@ The chapters in **Efficiency & stability** explore how to build pipelines that a
 >
 > Meaningful fragments help preserve correspondence by keeping change local, legible, and proportionate.
 
-# Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
+## Load mechanics {#docs-efficient-stable-pipeline-load-mechanics}
 
 *A mature load applies only genuine changes, after checking that they are safe.*
 
-## Controlling change
+### Controlling change
 
 Efficiency and stability both depend on the warehouse remaining in control of change.
 
@@ -7394,7 +7394,7 @@ The standard pattern has three steps:
 
 *Figure 1. The load mechanics pattern: stage incoming data, check proposed changes, then apply safe changes and log what happened.*
 
-## The three-step load pattern
+### The three-step load pattern
 
 Suppose the target table is `Sales.Order`. The goal is to update `Sales.Order` with the latest batch of data.
 
@@ -7414,7 +7414,7 @@ For any target table, the standard load pattern may create the following artefac
 
 This may seem like a lot of machinery. The rest of this chapter explains why each part exists.
 
-### Step 1—Stage the incoming data
+#### Step 1—Stage the incoming data
 
 The first step is to load the latest batch of data into a staging table.
 
@@ -7450,7 +7450,7 @@ The incoming staging table may look like this.
 
 At this point, the target table has not yet changed. The incoming data is available for checking.
 
-### Step 2—Check the incoming data
+#### Step 2—Check the incoming data
 
 The Check step compares `Sales.Order_staging` against `Sales.Order` before loading data into the target.
 
@@ -7466,7 +7466,7 @@ Checking for genuine changes is essential. Checking for instability is highly de
 
 Instability and violation checks are part of [Fault tolerance](#docs-quality-reliability-fault-tolerance).
 
-#### Check for genuine changes
+##### Check for genuine changes
 
 Not every row in `Sales.Order_staging` is a genuine change.
 
@@ -7520,7 +7520,7 @@ If `Sales.Order_staging` is an incremental extract, delete detection must be tai
 
 This distinction is covered in [Responding to changes](/docs/efficient-stable-pipeline/responding-to-changes/).
 
-#### Check for instability
+##### Check for instability
 
 Once `Sales.Order_upsert` and `Sales.Order_delete` have been calculated, the pipeline can check whether the proposed changes are abnormal.
 
@@ -7545,7 +7545,7 @@ Logging change statistics over time helps set these thresholds. If a table norma
 
 If a table frequently breaches its threshold, the data engineer should not simply increase the threshold until the alert disappears. The extraction logic, source behaviour, and business process should be understood. The alert may be exposing instability that should be fixed.
 
-#### Check for violations
+##### Check for violations
 
 After genuine changes have been identified, the pipeline should check whether any rows in `Sales.Order_upsert` are unsafe to load.
 
@@ -7585,7 +7585,7 @@ After rejection, `Sales.Order_upsert` contains only safe rows to apply.
 
 The table is now safe to load.
 
-### Step 3—Apply the changes
+#### Step 3—Apply the changes
 
 After the Check step, the pipeline has separated incoming data into the actions it needs to take:
 
@@ -7636,11 +7636,11 @@ The history table preserves previous versions of updated and deleted rows.
 | O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 | 2025-05-01 08:00 |
 | O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 | 2025-05-01 08:00 |
 
-## After the load
+### After the load
 
 The loading process finishes with cleaning up temporary artefacts and logging what happened.
 
-### Clean up temporary artefacts
+#### Clean up temporary artefacts
 
 If there are no errors, temporary tables such as `Sales.Order_staging`, `Sales.Order_upsert`, and `Sales.Order_delete` do not usually need to be retained.
 
@@ -7650,7 +7650,7 @@ If there are errors, temporary artefacts and `Sales.Order_reject` may need to be
 
 These artefacts should be secured in the same way as the target table. Temporary load tables can contain the same sensitive information as the production table. They should not become a source of unintended data leakage.
 
-### Log, bookmarks and change statistics
+#### Log, bookmarks and change statistics
 
 The pipeline should log enough information to explain what happened during each load.
 
@@ -7697,7 +7697,7 @@ Over time, these logs form a history of how each table behaves.
 
 That history is valuable for troubleshooting, setting stability thresholds, capacity planning, and understanding whether a table’s behaviour has changed. For example, if `Sales.Order` normally updates between 1% and 3% of rows each day, a load that updates 40% of rows is immediately suspicious. Without change statistics, the pipeline has no memory of what normal looks like.
 
-## Is the extra work worth it?
+### Is the extra work worth it?
 
 At first glance, the three-step load pattern looks like overhead.
 
@@ -7749,11 +7749,11 @@ Investment in automation or appropriate technology ensures that this logic can b
 >
 > Load logging records bookmarks, change statistics, and success or failure so the pipeline can explain what happened.
 
-# Load orchestration {#docs-efficient-stable-pipeline-load-orchestration}
+## Load orchestration {#docs-efficient-stable-pipeline-load-orchestration}
 
 *Load dependencies are one of the first bottlenecks in a growing warehouse.*
 
-## Load stack
+### Load stack
 
 Load dependencies are one of the first bottlenecks in a growing warehouse.
 
@@ -7767,7 +7767,7 @@ As the warehouse grows, dependencies multiply. A pipeline may contain hundreds o
 
 The **load stack** approach begins from a simple observation: if the warehouse knows which tables depend on which other tables, load order can be computed at run time.
 
-## Orchestrating a load
+### Orchestrating a load
 
 The load stack approach rests on three objects.
 
@@ -7785,7 +7785,7 @@ The load candidate view combines both. It asks: given the dependency structure, 
 
 Once readiness is visible, workers can claim ready tables independently at run-time, without pre-planned orchestration.
 
-### Dependency metadata
+#### Dependency metadata
 
 Dependency metadata records which tables must be loaded before another table can load.
 
@@ -7823,7 +7823,7 @@ Each row states one direct dependency.
 
 Some tables have no dependencies. In this example, `Sales.Customer`, `Sales.Product`, and `Reference.Calendar` can load at the beginning of the workflow because nothing upstream needs to finish first.
 
-### The load stack
+#### The load stack
 
 The load stack is the list of tables to be loaded in a workflow.
 
@@ -7844,7 +7844,7 @@ The load stack records execution state. It does not itself decide which table is
 
 A table is ready only when all the tables it depends on have ended. This condition is called execution readiness.
 
-### Load candidates
+#### Load candidates
 
 A load candidate is a table in the load stack that is ready to load.
 
@@ -7868,13 +7868,13 @@ A load candidate view can expose this list at any time. The view can be simplifi
 | Sales.Product | No dependencies. |
 | Reference.Calendar | No dependencies. |
 
-## Using the load stack
+### Using the load stack
 
 The load stack can be used to implement dependency-aware parallel loading.
 
 The basic algorithm is simple.
 
-### Step 1—Refresh the load stack
+#### Step 1—Refresh the load stack
 
 At the beginning of the workflow, populate `Pipeline.LoadStack` with the tables that need to load.
 
@@ -7882,7 +7882,7 @@ Set `[Is started] = false` and `[Is ended] = false` for all rows. This creates a
 
 The stack may contain the full pipeline, or only a selected part of it. If a subset of tables is being loaded, the stack should include the necessary upstream tables required for that subset to load correctly.
 
-### Step 2—Start workers
+#### Step 2—Start workers
 
 Start any number of workers.
 
@@ -7900,7 +7900,7 @@ A worker performs the following loop:
 
 The worker exits when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
 
-### Step 3—Claim a candidate
+#### Step 3—Claim a candidate
 
 Once the workers have started, they can pick up load candidates for load.
 
@@ -7945,7 +7945,7 @@ commit transaction;</code></pre></div>
 
 The exact syntax will vary by SQL platform. The important point is that the worker should not select and claim a candidate in two unsafe steps. The claim should happen atomically.
 
-### Step 4—Load, end, and repeat
+#### Step 4—Load, end, and repeat
 
 When a table finishes loading, the worker marks it as ended.
 
@@ -8051,7 +8051,7 @@ After `Sales.OrderSummary` ends, the workflow is complete.
 
 The workflow ends when there are no rows in `Pipeline.LoadStack` where `[Is started] = false`.
 
-### Handling failure
+#### Handling failure
 
 If a table fails or aborts, the worker still marks it as ended.
 
@@ -8074,9 +8074,9 @@ This is consistent with the principle of fault tolerance. A failed table should 
 
 The important point is that the decision is visible. The load stack records what started, what ended, and what remains available to run. Errors should be separately logged.
 
-## Consequences of the load stack
+### Consequences of the load stack
 
-### Correct order is computed, not hard-coded
+#### Correct order is computed, not hard-coded
 
 The load candidate view ensures that a table is offered for loading only when its upstream dependencies have ended.
 
@@ -8084,7 +8084,7 @@ This means correct order does not depend on a developer manually maintaining a s
 
 When a new table is added, the data engineer adds its dependency metadata. The load candidate view uses that metadata to determine when it is ready. The orchestration logic does not need to be rewritten for every new dependency path.
 
-### Parallelism follows from readiness
+#### Parallelism follows from readiness
 
 Parallelism is a consequence of the readiness rule.
 
@@ -8096,7 +8096,7 @@ The number of workers can be adjusted according to available resources. The load
 
 Moreover, the algorithm is load-balanced by default with a greedy approach to assigning work. As soon as a load candidate is ready, a worker picks up the job. There are no situations where a table is ready to load and a worker is available, but the load does not happen.
 
-### Execution state is visible and manipulable
+#### Execution state is visible and manipulable
 
 Because the load stack is a table, the state of the workflow can be inspected while the load is running.
 
@@ -8117,7 +8117,7 @@ This makes the workflow controllable while it is running.
 
 The load is no longer a hidden procedural state inside a scheduler. It is visible and editable execution state.
 
-### Higher-frequency loads
+#### Higher-frequency loads
 
 Most warehouses run in daily batches, but some parts of a warehouse may need to load more frequently.
 
@@ -8127,7 +8127,7 @@ A path that is incrementally processed can be loaded hourly, every few minutes, 
 
 This gives the data engineering team a gradual path toward higher-frequency loading. Instead of adopting a dedicated streaming platform for the whole warehouse, the team can increase load frequency only where the business need and pipeline efficiency justify it.
 
-### Cross-technology loading requires shared state, not shared tooling
+#### Cross-technology loading requires shared state, not shared tooling
 
 The load stack can also support orchestration across technologies.
 
@@ -8149,11 +8149,11 @@ This makes the load stack technology-agnostic. The coordination happens through 
 >
 > The same pattern supports partial loads, higher-frequency loads, and cross-technology orchestration.
 
-# Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
+## Load dependencies {#docs-efficient-stable-pipeline-load-dependencies}
 
 *Every dependency is a trade-off between reuse, efficiency, and stability.*
 
-## Dependency as coupling
+### Dependency as coupling
 
 A dependency occurs when one object relies on another object for information or logic.
 
@@ -8171,7 +8171,7 @@ Therefore:
 
 The data engineer therefore has to decide when a dependency is worth creating.
 
-## Load dependencies and view dependencies
+### Load dependencies and view dependencies
 
 Dependencies occur in two important ways.
 
@@ -8194,7 +8194,7 @@ This chapter focuses on load dependencies. Whenever the word **dependency** is u
 
 Views are discussed later as an alternative to load dependencies.
 
-## The dependency trade-off
+### The dependency trade-off
 
 At every turn, the data engineer chooses between recalculating information and reusing existing information.
 
@@ -8210,7 +8210,7 @@ The decision depends on whether the value of reuse exceeds the cost of coupling.
 | Targeted | Is the dependency narrow enough to match the actual purpose? |
 | Stable | Will small source changes avoid causing disproportionate downstream change? |
 
-## Valuable dependencies
+### Valuable dependencies
 
 A dependency should carry information worth reusing.
 
@@ -8232,7 +8232,7 @@ The principle is simple:
 
 Dependencies should be reserved for information that is worth propagating.
 
-## Targeted dependencies
+### Targeted dependencies
 
 A dependency should be targeted.
 
@@ -8280,7 +8280,7 @@ The principle is:
 
 > A dependency should point to the smallest meaningful fragment that carries the required information.
 
-## Stable dependencies
+### Stable dependencies
 
 A dependency should be stable.
 
@@ -8303,7 +8303,7 @@ There are two common forms of instability:
 | Row-wise instability | One source row affects many downstream rows. |
 | Column-wise instability | A source column changes frequently or for reasons unrelated to business meaning. |
 
-### Row-wise instability
+#### Row-wise instability
 
 Row-wise instability occurs when a small number of source rows drive many downstream rows.
 
@@ -8323,7 +8323,7 @@ Small tables are often sources of instability because one row can affect many do
 
 This does not mean small tables should never be dependencies. It means the data engineer should be careful when a small table is used to drive large downstream effects.
 
-### Column-wise instability
+#### Column-wise instability
 
 Column-wise instability occurs when the source column itself is volatile.
 
@@ -8341,7 +8341,7 @@ The principle is:
 
 > Do not propagate volatile columns unless their volatility is meaningful to the downstream table.
 
-## The case of surrogate keys
+### The case of surrogate keys
 
 Surrogate keys are a special case of dependency.
 
@@ -8387,7 +8387,7 @@ The principle is:
 
 > A surrogate key dependency is justified when the value of the simplified key exceeds the coupling risk created by the lookup.
 
-## Views as an alternative
+### Views as an alternative
 
 Views can sometimes avoid load dependencies.
 
@@ -8425,7 +8425,7 @@ The choice between a load dependency and a view dependency is therefore another 
 | Query performance requires materialisation. | Query performance is acceptable without materialisation. |
 | A controlled loading buffer is valuable. | Instant propagation is acceptable. |
 
-## Healthy dependency depth
+### Healthy dependency depth
 
 The previous chapter showed how a load stack can make dependency orchestration manageable. That capability is powerful, but it also creates a second-order risk.
 
@@ -8465,11 +8465,11 @@ A healthy dependency is valuable, targeted, and stable. It propagates meaningful
 >
 > Views can avoid materialised reloads by propagating logic rather than persisted information, but they do not provide the same buffering, persistence, or row-level change tracking as loaded tables.
 
-# Incremental load: tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
+## Incremental load: tracking changes {#docs-efficient-stable-pipeline-tracking-changes}
 
 *Incremental work begins with reliable knowledge of what changed.*
 
-## Change observability
+### Change observability
 
 The aim of information efficiency is to process only what has changed.
 
@@ -8483,7 +8483,7 @@ Tracking change is the discipline of establishing a reliable relationship betwee
 
 > What source records may have changed since this target table last loaded successfully?
 
-## The problem of time
+### The problem of time
 
 Incremental loading depends on a deceptively simple question:
 
@@ -8514,7 +8514,7 @@ is only safe when the source change time is in-sync with the target’s processi
 
 Doing this systematically and accurately requires additional artefacts: refresh bookmarks and polling tables.
 
-## The simple update-datetime approach
+### The simple update-datetime approach
 
 To understand the general approach, it is useful to start with the simplest one.
 
@@ -8579,7 +8579,7 @@ The problem is not that the simple approach is wrong. It is that it makes the ta
 
 A more scalable pattern separates the time-tracking artefacts from the data content itself.
 
-## Refresh bookmarks
+### Refresh bookmarks
 
 As explained in [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics), each successful table load should record a refresh bookmark.
 
@@ -8618,7 +8618,7 @@ The refresh bookmark tracks the target table’s last successful processing stat
 
 To identify source changes, the pipeline needs a source-side change signal.
 
-## The source time problem
+### The source time problem
 
 The refresh bookmark is in pipeline time. It records when the target table last started a successful load.
 
@@ -8649,7 +8649,7 @@ External raw tables are often out-of-sync. Even if they contain an `[Update date
 
 When datetimes are out-of-sync, the pipeline needs a polling table.
 
-## Polling tables
+### Polling tables
 
 A polling table is source-side state.
 
@@ -8765,7 +8765,7 @@ A single polling table can store bookmarks for multiple source tables. It does n
 >
 > Overlap is often safer than trying to make the boundary too precise. It is acceptable for an incremental extract to read a little too much, provided the downstream load is idempotent and unchanged rows are ignored.
 
-## When polling tables can be skipped
+### When polling tables can be skipped
 
 Polling tables are needed when the source change datetime is out-of-sync with pipeline time.
 
@@ -8801,7 +8801,7 @@ In this case, the target’s refresh bookmark can be compared directly against t
 
 This is one of the reasons why the [Filter step](#docs-creating-information-entity-processing) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
 
-## The role of the filter step
+### The role of the filter step
 
 Three themes occur when tracking inserts, updates, and deletes.
 
@@ -8842,11 +8842,11 @@ In this way, the Filter step converts fragile or out-of-sync source change signa
 >
 > The Filter step converts source change signals into reliable pipeline change artefacts for downstream processing.
 
-# Incremental load: responding to change {#docs-efficient-stable-pipeline-responding-to-change}
+## Incremental load: responding to change {#docs-efficient-stable-pipeline-responding-to-change}
 
 *Source changes must be translated through query logic before the target can respond correctly.*
 
-## Change translation
+### Change translation
 
 [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) tells the pipeline what changed upstream. It does not tell the pipeline what should change downstream.
 
@@ -8869,7 +8869,7 @@ There are two main kinds of driver set.
 | Upsert driver | Keys whose rows should be recalculated and then inserted or updated in the target. |
 | Delete driver | Keys whose rows should be removed from the target. |
 
-## Source changes are not target actions
+### Source changes are not target actions
 
 The relationship between source change and target action is not straightforward.
 
@@ -8891,7 +8891,7 @@ These examples are simple, but the general lesson is that:
 
 > The target response is determined by the query.
 
-## Analysing the query
+### Analysing the query
 
 Suppose two source tables, `X` and `Y`, are used to produce a target table `T`.
 
@@ -8914,7 +8914,7 @@ The goal is to determine which rows in `T` need to be recalculated or removed.
 
 The way to calculate these depends on the shape of the query.
 
-### Common query shapes
+#### Common query shapes
 
 The following table summarises several common query shapes and how changes may propagate.
 
@@ -8934,7 +8934,7 @@ The table is not meant to memorise every case. Its purpose is to show that targe
 
 With more source tables, the analysis can become complicated quickly. A query with ten inputs may have many possible source changes, and each source change may affect the target differently.
 
-### Robustness
+#### Robustness
 
 For robustness, upsert drivers may be broader than strictly necessary. Delete drivers should be exact.
 
@@ -8952,11 +8952,11 @@ The rule is:
 
 > Upsert drivers may be conservative and include some extra keys. Delete drivers should contain only rows that no longer satisfy the target query’s presence rule.
 
-## Worked examples
+### Worked examples
 
 The following examples show how source changes are translated through query logic.
 
-### Worked example 1—Filter
+#### Worked example 1—Filter
 
 Suppose the target table contains only active headers.
 
@@ -9020,7 +9020,7 @@ The target action is different.
 
 This example shows that a source update can become either a target upsert or a target delete. The filter controls row presence.
 
-### Worked example 2—Aggregation
+#### Worked example 2—Aggregation
 
 Suppose the target table contains the total line value for each header.
 
@@ -9078,7 +9078,7 @@ No rows.
 
 This example shows that a source delete can become a target update. Aggregations turn row-level changes into value changes at a higher grain.
 
-### Worked example 3—Anti-join
+#### Worked example 3—Anti-join
 
 Suppose the target table contains headers in `X` that do not have any matching rows in `Y`.
 
@@ -9144,7 +9144,7 @@ No rows.
 
 This example shows that a source insert can become a target delete. Anti-joins reverse the usual intuition because the target row exists only while a matching source row is absent.
 
-## Applying the change
+### Applying the change
 
 Once the query has been analysed, the transformation can be converted from a full load to an incremental load.
 
@@ -9156,7 +9156,7 @@ Recall from [Load mechanics](#docs-efficient-stable-pipeline-load-mechanics) tha
 
 The detailed implementation of an incremental extract follows a consistent pattern.
 
-### Step 1—Write the full query
+#### Step 1—Write the full query
 
 Begin with the full query that expresses the business logic.
 
@@ -9170,7 +9170,7 @@ For example, suppose the full target query is an inner join between `X` and `Y`.
 
 This query is the definition of the target table. It should be understandable and testable as a full load before it is made incremental.
 
-### Step 2—Fetch the refresh bookmark
+#### Step 2—Fetch the refresh bookmark
 
 At the start of the load, retrieve the refresh bookmark that records the target table’s last successful processing boundary.
 
@@ -9185,7 +9185,7 @@ This bookmark defines the boundary for upstream change detection.
     <span class="kw">where</span> [Table name] = &#x27;T&#x27;
 );</code></pre></div>
 
-### Step 3—Create the upsert driver
+#### Step 3—Create the upsert driver
 
 Using the query analysis, create a temporary table of target keys to upsert.
 
@@ -9231,7 +9231,7 @@ This produces a minimal staging table. It contains only rows whose target values
 
 In other query shapes, deletes may also belong in the upsert driver. For example, in an aggregation, deleting a contributing row changes the aggregate value and therefore requires recalculation.
 
-### Step 4—Create the delete driver
+#### Step 4—Create the delete driver
 
 Using the query analysis, create a temporary table of target keys to delete.
 
@@ -9268,7 +9268,7 @@ Once the delete driver has been calculated, deleting from the target is straight
 <span class="kw">from</span>       T
 <span class="kw">inner</span> <span class="kw">join</span> #keys_to_delete <span class="kw">as</span> D <span class="kw">on</span> D.[PK] = T.[PK];</code></pre></div>
 
-### Step 5—Apply load mechanics
+#### Step 5—Apply load mechanics
 
 After the minimal staging table and delete driver have been created, the normal load mechanics can apply.
 
@@ -9284,7 +9284,7 @@ The pipeline can:
 
 This means full and incremental loads share the same business query and load mechanics. The difference is that incremental loads add driver sets to reduce the work.
 
-### Full incremental extract pattern
+#### Full incremental extract pattern
 
 Putting the steps together, the full pattern is:
 
@@ -9370,11 +9370,11 @@ Visually the procedure looks like:
 
 *Figure 1. The incremental extract pattern follows the SQL script from top to bottom. The refresh bookmark defines the change boundary. The upsert driver creates a minimal staging table by downfiltering the normal query. The delete driver identifies rows to remove from T. Load mechanics then applies exact deletes and genuine upserts.*
 
-## Why this pattern works
+### Why this pattern works
 
 This workflow has several advantages.
 
-### Uniformity
+#### Uniformity
 
 The same query logic underpins both full loads and incremental loads.
 
@@ -9382,7 +9382,7 @@ The difference lies in the driver set. A full load runs the query for all target
 
 This reduces the risk that the incremental load becomes a different definition from the full load.
 
-### Idempotency
+#### Idempotency
 
 The process works even if it runs more than once over the same interval.
 
@@ -9390,13 +9390,13 @@ If a load fails and is retried, the refresh bookmark ensures that the pipeline c
 
 If the load runs more frequently than usual, the outcome remains consistent. There may simply be fewer source changes to respond to.
 
-### Graceful fallback
+#### Graceful fallback
 
 If upstream changes touch many rows, the driver set expands, but the final result set may have minimal changes because the touched column is not selected for the target table.
 
 Using this approach, the incremental load will behave like a full load. This is acceptable. The staging table is still compared to the target, so only genuinely changed rows should be applied.
 
-## Best-practice workflow
+### Best-practice workflow
 
 Given the complexity of responding to change, incremental logic should be developed as a controlled workflow rather than assembled all at once.
 
@@ -9404,7 +9404,7 @@ The goal is to prove that the incremental load produces the same result as the f
 
 The following is a 9 steps pattern.
 
-### Step 1—Create a full-load comparison test
+#### Step 1—Create a full-load comparison test
 
 Start by creating a test that compares the incrementally maintained target table with the expected result of the full query.
 
@@ -9418,13 +9418,13 @@ The test establishes the standard of correctness. A correct incremental load sho
 
 A datetime filter can be used for performance during development, but it should be independent of the extract datetime being tested.
 
-### Step 2—Create a realistic change window
+#### Step 2—Create a realistic change window
 
 Load the table in full, then wait for source data to change or create controlled test changes.
 
 This gives the developer a realistic incremental window. The aim is to test the logic against actual source changes, not merely against an abstract query.
 
-### Step 3—Build the upsert driver
+#### Step 3—Build the upsert driver
 
 Build the upsert driver for one source table at a time.
 
@@ -9432,7 +9432,7 @@ As each source table is added, re-run the driver query and check both correctnes
 
 The upsert driver should include every key whose target values may need recalculation. It may be slightly broader than necessary, provided it remains performant.
 
-### Step 4—Test the minimal staging table
+#### Step 4—Test the minimal staging table
 
 Join the upsert driver to the full query.
 
@@ -9440,7 +9440,7 @@ This creates the minimal staging table. It should contain only the rows that may
 
 Check that the staging table is both correct and performant.
 
-### Step 5—Build the delete driver
+#### Step 5—Build the delete driver
 
 Build the delete driver separately from the upsert driver.
 
@@ -9448,7 +9448,7 @@ The delete driver should contain only rows that no longer satisfy the target que
 
 Special attention should be paid to performance because finding deletes often requires complex scans.
 
-### Step 6—Simulate deletes before applying them
+#### Step 6—Simulate deletes before applying them
 
 During development, simulate deletes with a `select` rather than immediately applying them.
 
@@ -9456,7 +9456,7 @@ The result set should be examined and compared with the correct result.
 
 Simulating the delete reduces the risk of deleting data while the delete logic is being tested, causing rework to load the data again.
 
-### Step 7—Apply changes through load mechanics
+#### Step 7—Apply changes through load mechanics
 
 Apply the upserts and deletes through normal load mechanics.
 
@@ -9470,7 +9470,7 @@ The load should:
 
 Then compare the incrementally maintained target with a fully loaded copy of the same target. The two should match.
 
-### Step 8—Run a zero-load benchmark
+#### Step 8—Run a zero-load benchmark
 
 After a successful load, rerun the upsert and delete drivers.
 
@@ -9478,13 +9478,13 @@ They should return no rows, or near zero rows, and should run quickly.
 
 This is the fastest the incremental load can ever be. It is also a useful baseline for detecting unnecessary work.
 
-### Step 9—Run incrementally over time
+#### Step 9—Run incrementally over time
 
 Continue loading incrementally over multiple days.
 
 The full-load comparison test should continue to pass. If it fails, the incremental response logic is likely missing a source change condition, over-deleting, or failing to handle a query shape correctly.
 
-## Using AI as a reviewer
+### Using AI as a reviewer
 
 Analysing source-change propagation through a complex query can be error-prone.
 
@@ -9498,7 +9498,7 @@ A useful prompt is to provide the query shape, source keys, target key, and the 
 
 The output should then be tested against the full-load result.
 
-## Conclusion
+### Conclusion
 
 Tracking changes identifies which source rows changed. Responding to change determines what those source changes mean for the target.
 
@@ -9526,11 +9526,11 @@ Together, the two steps—tracking changes and responding to change—apply the 
 >
 > The goal of an incremental load is to apply proportionate computational change.
 
-# Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
+## Optimising Power BI load {#docs-efficient-stable-pipeline-optimising-power-bi-load}
 
 *Power BI load is the final expression of pipeline design.*
 
-## Power BI as the final load boundary
+### Power BI as the final load boundary
 
 Loading a Power BI model is often one of the longest steps in the delivery of a data product. This is particularly true for models with large fact tables.
 
@@ -9552,7 +9552,7 @@ There are three main ways to optimise Power BI loads:
 
 This chapter assumes the model sources data from SQL, where purpose-built views or tables act as source tables that map one-to-one with the Power BI model tables.
 
-## Avoiding load with DirectQuery
+### Avoiding load with DirectQuery
 
 DirectQuery for fact tables avoids the load entirely by sending DAX queries to the source at report time. To provide a responsive experience, the underlying source table often needs to be materialised as a columnstore table dedicated to this purpose. While materialising a large fact table is costly, it can also be incrementally loaded so that refresh remains minimal.
 
@@ -9576,7 +9576,7 @@ Where dimensions are shared by both Import and DirectQuery facts, dual mode must
 
 DirectQuery can be powerful, but it is not a universal escape from model refresh. It shifts work from refresh time to query time. If the source is not designed for this workload, the user experiences the cost directly.
 
-## Efficient underlying source tables
+### Efficient underlying source tables
 
 One of the biggest factors influencing Power BI load times is the efficiency of the underlying source tables, which are often implemented as views. A source view should be a straightforward join of ready-to-use tables that have been indexed appropriately to support high-performance execution.
 
@@ -9598,7 +9598,7 @@ In short:
 
 > Power BI source views or tables should be tuned specifically for fast retrieval, not burdened with complex logic.
 
-## Partitioning the model
+### Partitioning the model
 
 Defining a table into partitions is the most effective way to reduce Power BI load times when fact tables grow large.
 
@@ -9608,7 +9608,7 @@ Partitioning a table offers increasing levels of enhancement that can be adopted
 2. apply a rolling window to drop older partitions;
 3. incrementally refresh only the partitions that changed.
 
-### Analogy for partitions
+#### Analogy for partitions
 
 Partitions are akin to having a large box of books from multiple publishing years. Batches of books arrive at regular intervals, and the box needs to be updated with the incoming batch. There can be new books, and old books can be updated. Updating the whole box can take a long time if the number of books is huge.
 
@@ -9626,7 +9626,7 @@ This is visualised below:
 
 *Figure 1. Partitioning is like sorting incoming books into boxes by publishing year. Partitioning enables divide-and-conquer loading. A rolling window means very old books are no longer processed. Incremental refresh compares each incoming segment’s latest update datetime with the stored bookmark on the matching box, then refreshes only the box whose value changed.*
 
-### Parallel partition refresh
+#### Parallel partition refresh
 
 A partition key is a business date or datetime column that divides the data into intervals such as daily, monthly, or yearly. Power BI can load these partitions in parallel.
 
@@ -9640,7 +9640,7 @@ There is a trade-off between load time and query time. Splitting one big box of 
 
 When partitioning, new developers often confuse which date to use. The partition key must be a business date rather than a change-tracking column such as `[Row update datetime]`. Using the same column for partitioning and change detection pushes rows toward the end of the range and breaks the logic. Following the analogy, the date should be the publishing year rather than the year the book arrived in a batch. The latter will always be in the last batch and does not correctly update older books.
 
-### Rolling windows
+#### Rolling windows
 
 When partitions are in place, rolling windows provide the next level of efficiency. Power BI allows a data engineer to define the number of partitions to keep, and older partitions are dropped from the model. This keeps the model size under control and prevents refresh times from growing indefinitely.
 
@@ -9650,7 +9650,7 @@ First, if the SQL source table itself rolls history, its window must be kept in 
 
 Second, the boundaries of fact tables must match related dimensions and other facts. This is particularly true for ID dimensions, which may contain keys only because related fact rows still exist. If dimensions are not kept in sync, they may contain primary key values that no longer exist in the fact tables. If a dimension drops keys too aggressively, relationships may break for facts that still remain.
 
-### Incremental partition refresh
+#### Incremental partition refresh
 
 Incremental refresh adds change detection on top of partitions so only partitions with changes are refreshed.
 
@@ -9660,7 +9660,7 @@ If the next polling query returns a different value from the value stored intern
 
 Following the analogy, each box of books by publishing year has a label showing the last update datetime observed for that box. This is the bookmark. When batches of books arrive, each year can be checked to see whether any book has an update datetime greater than the label on the box. This is the polling query. This is effective only if incoming batches are organised so that it is easy to find the maximum update datetime for each publishing year.
 
-### Custom polling tables
+#### Custom polling tables
 
 The native approach offered by Power BI can be limited if the source table is a view that joins multiple tables, and thus there is no single column representing change detection.
 
@@ -9676,7 +9676,7 @@ If Power BI can rapidly evaluate whether a partition needs refreshing and retrie
 
 This preparation itself takes time, and any base tables or polling tables should themselves be incrementally refreshed. Consequently, optimising Power BI loads means trading Power BI load time for source-side preparation time. If not done well, these artefacts can take longer to maintain than the time saved through incremental partition refresh.
 
-### Example refresh bookmarks and polling values
+#### Example refresh bookmarks and polling values
 
 Suppose `PBI.Sale` is partitioned monthly using `[Sale date]`.
 
@@ -9750,7 +9750,7 @@ Only the `2025-02` partition needs to refresh. When it is completed, the partiti
 | 2025-02 | 2026-05-09 11:10  |
 | 2025-03 | 2026-05-04 18:05 |
 
-## Conclusion
+### Conclusion
 
 DirectQuery, efficient source tables, and partitioned loads are the main ways to improve Power BI load performance.
 
@@ -9808,11 +9808,11 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 
 # Judgement under ambiguity {#docs-judgement-under-ambiguity}
 
-# The six principles of data engineering {#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering}
+## The six principles of data engineering {#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering}
 
 *The epitome of data engineering is judgement under ambiguity.*
 
-## Judgement under ambiguity
+### Judgement under ambiguity
 
 In the chapter [What is data engineering?](#docs-foundations-what-is-data-engineering), we began with the aim of data engineering, its task, and its challenges.
 
@@ -9846,7 +9846,7 @@ Real data engineering refuses easy answers that simplify the genuine complexity 
 
 This means the mark of the best data engineer is **sustained judgement under ambiguity**.
 
-## The six principles
+### The six principles
 
 The principles of data engineering can be seen in this light. We introduced four in the preceding sections. This final section introduces the last two.
 
@@ -9883,11 +9883,11 @@ The final chapter is the essay [Hallmarks of quality](#docs-judgement-under-ambi
 >
 > These principles help the data engineer keep working until data has been shaped into information that can serve business intent.
 
-# Working with stakeholders {#docs-judgement-under-ambiguity-working-with-stakeholders}
+## Working with stakeholders {#docs-judgement-under-ambiguity-working-with-stakeholders}
 
 *Ambiguity is not a defect.*
 
-## Guiding stakeholders through ambiguity
+### Guiding stakeholders through ambiguity
 
 Data projects often fail because teams treat requirements as something to collect rather than something to discover.
 
@@ -9911,7 +9911,7 @@ The fifth principle of data engineering is therefore: instead of waiting for cla
 
 In stakeholder work, this means guiding stakeholders through ambiguity until unclear needs become shared understanding.
 
-## Seven engagement principles
+### Seven engagement principles
 
 During development, the delivery team and stakeholders explore the data together in light of business intent. The delivery team contributes expertise by guiding stakeholders through ambiguity: helping them clarify intent, recognise workflows, test definitions, examine edge cases, and see how source data does or does not support the business purpose.
 
@@ -9929,7 +9929,7 @@ The seven engagement principles that follow provide a practical framework for gu
 
 *Figure 1. Guiding stakeholders through ambiguity is a disciplined movement from unclear need to shared clarity. Trust and listening make dialogue possible; intent and vision give it direction; solution sketches and workflows make it concrete; spotting the 20% protects the project from hidden complexity.*
 
-### Focus on trust
+#### Focus on trust
 
 Many assume that the primary mode of stakeholder engagement is extracting information. In this view, the question becomes: “How effectively and accurately can I get information from stakeholders to build a product?”
 
@@ -9969,7 +9969,7 @@ Beneath the surface, the stakeholder is:
 
 All these build trust. By remembering that the first responsibility of the team is to gain trust, we resist the temptation to cut people off or jump in to correct them. Patience is paramount.
 
-### Lead by listening
+#### Lead by listening
 
 In some types of partner dancing, there are two designated roles: Lead and Follow. The Lead initiates movements and the Follow completes the sequence with an elegant response.
 
@@ -10006,7 +10006,7 @@ These approaches respect intent and apply the first engagement principle: **focu
 
 This principle should never be used as a shield for blame—"I just did what you told me to do."
 
-### Own the business intent
+#### Own the business intent
 
 The task of data engineering is to align data to business intent. It is an experimental process that demands the data engineer see the stakeholder’s perspective first-hand. Without this, the team will never truly see what the stakeholder sees, and the potential of the solution will remain unrealised.
 
@@ -10028,7 +10028,7 @@ Owning the business intent is an extension of the first engagement principle: **
 
 Whether a team owns the business intent will define its passion, drive, business knowledge, and creativity. These qualities will determine whether its output is a mediocre reflection of the current state or a solution that pushes the business forward.
 
-### Anchor a vision
+#### Anchor a vision
 
 The natural extension of owning the business intent is a vision for the business. A vision is a view of the value the team aspires to achieve. It is both ambitious and concrete.
 
@@ -10066,7 +10066,7 @@ When priorities conflict, reference to the higher-level intent provides common g
 
 Unlike a building project, which relies on well-defined specifications of the target building and strict timelines to track progress, data projects are exploratory and open-ended. In this setting, a clear vision, rather than detailed specifications, plays the role of guiding the team. It serves as a north star and compass that sustains quality and momentum across a long project. For this reason, team leaders should insist on vision, quality, and momentum rather than rigid deadlines.
 
-### Gather around the solution
+#### Gather around the solution
 
 Data projects often waste time through too much talking and not enough doing.
 
@@ -10104,7 +10104,7 @@ This cannot be stressed enough: to stakeholders, the solution is the requirement
 
 Gathering around the solution is the ultimate way the delivery team guides stakeholders toward clarity. It helps them see how reshaped data interacts with business intent, turning abstract requirements into something tangible. Through iterative refinement—testing, visualising, and adjusting—the solution evolves until it displays fidelity with business reality.
 
-### Design for workflows
+#### Design for workflows
 
 It is common for data projects to deliver reports that are rarely used. Stakeholders may specify many requirements—“I want to see count of X per country”—and show excitement during development and testing. Yet after deployment, usage often drops quickly.
 
@@ -10130,7 +10130,7 @@ Contextualising requirements in workflows offers key advantages:
 
 Designing for workflows is a simple tool to ensure that project teams are grounded in real-world problems.
 
-### Spot the 20%
+#### Spot the 20%
 
 The 80/20 rule says 80% of results come from 20% of effort. Its flip side is that the remaining 20% consumes 80% of the effort. This creates an illusion that most work is done when the hardest part remains—the hidden, complex 20%.
 
@@ -10159,7 +10159,7 @@ In effect, the team acts as:
 
 Foreseeing hidden elements is hard. It takes strong business knowledge, technical experience, and high engagement skills to counter bias. Only the best teams do it well.
 
-## Conclusion
+### Conclusion
 
 The hardest part of any data project is thinking deeply about the business and how it relates to data. This can only be achieved when stakeholders and the delivery team explore the data together—thinking together through a dialogue focused on the solution.
 
@@ -10189,11 +10189,11 @@ The seven engagement principles capture hard-earned wisdom for facilitating thes
 >
 > These principles move the team beyond reacting to requirements and toward a solution that truly meets business intent.
 
-# Construction planning {#docs-judgement-under-ambiguity-construction-planning}
+## Construction planning {#docs-judgement-under-ambiguity-construction-planning}
 
 *A strong construction plan gives ambiguous work a flexible order.*
 
-## Shaping movement
+### Shaping movement
 
 Complex data projects are rarely clear at the beginning. The business intent may still be forming. The source data may not behave as expected. Dependencies may be unclear. Stakeholders may discover new priorities as soon as they see the first useful output.
 
@@ -10222,7 +10222,7 @@ If the engineer does not actively formulate a plan, there will be no plan—lead
 
 Projects can succeed or fail depending on the data engineer’s plan. It is one of the data engineer’s leadership roles when guiding stakeholders. Formulating a plan for the team is one of the most advanced skills to master and a mark of a confident engineer.
 
-## An effective plan
+### An effective plan
 
 A construction plan lays out, in sequence, the components the data engineer will build and gives the team a forecast of what will arrive when. It includes user-facing features as well as non-feature work such as unit tests, technical debt clean-up, metadata, and performance tuning.
 
@@ -10236,25 +10236,25 @@ A data engineer can craft an effective plan by aiming for three characteristics:
 - orderly yet flexible;
 - rotating new features with backend consolidation.
 
-### Ambitious yet grounded
+#### Ambitious yet grounded
 
 Being ambitious means having a view of the full business process and designing a model that can address future questions, rather than limiting the scope to requirements raised by current stakeholders.
 
 Being grounded means supporting this ambition with well-informed business analysis so that the plan is neither vague nor impossible. The engineer should know enough about the business, data, dependencies, and risks to make a reasonable judgement about the path ahead.
 
-### Orderly yet flexible
+#### Orderly yet flexible
 
 An orderly yet flexible plan is like a travel itinerary that is physically sensible but still able to shift. For a data engineer, being orderly means isolating releases in a way that promotes code clarity, avoids code entanglement, and minimises rework.
 
 Flexibility means structuring the plan so that key business priorities can shift forward or backward as a block without disrupting the whole schedule. This requires grouping deliverables around core business processes, rather than maintaining a miscellaneous list of disconnected business questions.
 
-### Rotate features with consolidation
+#### Rotate features with consolidation
 
 New features excite stakeholders and create momentum. However, the data engineer must balance visible features with invisible but equally important consolidation work.
 
 An effective plan achieves both by alternating between them. This rotation supports quality work by building consolidation into the schedule. It also gives stakeholders time to absorb one feature before moving on to the next. This is because data insights are exploratory. Testing a new feature requires users to interact with the output, understand its implications, and check edge cases thoroughly.
 
-## Formulating an effective plan
+### Formulating an effective plan
 
 A data engineer can craft an effective plan in four stages. Each stage involves increasing commitment to specific outcomes. A simple project may require only the first stage, while a complex project may require a detailed plan at the fourth stage.
 
@@ -10269,7 +10269,7 @@ The four stages are:
 
 *Figure 1. Construction planning moves from discovery to vision, scope, and build. The plan becomes more specific as commitment increases, but remains flexible enough to adapt as discovery continues.*
 
-### Stage 1—Discovery
+#### Stage 1—Discovery
 
 Formulating a plan begins with discovering facts about the business. The purpose of discovery is to answer key questions. At the highest level, these include:
 
@@ -10290,7 +10290,7 @@ To sharpen the focus on business objectives, the team should also answer:
 
 The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/).
 
-### Stage 2—Vision
+#### Stage 2—Vision
 
 A vision translates discovery into a statement of what the data product is trying to make visible. It should cover the business process at the right level: broad enough to guide future questions, but concrete enough to shape delivery.
 
@@ -10310,7 +10310,7 @@ As part of vision setting, it is important to sketch pen-and-paper wireframes of
 
 When the vision is framed this way, defining the project scope becomes straightforward.
 
-### Stage 3—Scope
+#### Stage 3—Scope
 
 The vision is an ambition to cover the business processes end to end. It is a statement of the linear process diagram.
 
@@ -10332,7 +10332,7 @@ Like the vision statement, the scope is a straightforward application of the lin
 
 A common error is to scope by system. For example, rather than working through the business process one by one, the team works through integrating systems one by one. This is the wrong perspective. One reason is that it easily leads to an unusable product because the system does not contain the minimal set of information needed to describe a business process.
 
-### Stage 4—Build
+#### Stage 4—Build
 
 The final stage is the construction plan. This is the practical roadmap for delivery that translates scope into actionable steps and sets out how the project will progress.
 
@@ -10344,7 +10344,7 @@ If the itinerary is well organised, it can be changed mid-way, such as swapping 
 
 The same logic applies to construction planning.
 
-#### Sequence by business process
+##### Sequence by business process
 
 At the highest level, build should proceed in the sequence of business processes. For example, if the scope includes manufacturing, quality control, sales, and shipping, then the build releases should follow this order, process by process. This contrasts with tackling a mix of manufacturing and sales, or sales and shipping, in one release.
 
@@ -10352,13 +10352,13 @@ If the data engineer finds this cannot be done, then the abstraction of business
 
 If possible, proceed in the same order as the business process. Avoid jumping to shipping and then doubling back to sales. However, if reverse order is necessary due to business priorities, then organising the build along the boundary of business processes can still avoid creating a mess.
 
-#### Break work into small releases
+##### Break work into small releases
 
 The releases should be broken down within a business process. For example, a complex project may expect to build 50 tables in total. This may be divided into releases of 3 to 8 tables at a time. The more challenging the project, the smaller the release size.
 
 Each release should be centred on a group of business information to expose. For example, if the scope is manufacturing, one release may focus on basic attributes such as product types, production status, and production date; another on manufacturing details such as material inputs and outputs; and another on aggregated information such as time to manufacture. In grouping releases, priority should be given to what is logical from a business point of view.
 
-#### Build in pipeline order
+##### Build in pipeline order
 
 Once defined, the construction plan must build in order of the pipeline by following table dependencies. This means a gradual increase in computation complexity.
 
@@ -10366,7 +10366,7 @@ For example, the first release may focus on basic attributes with little transfo
 
 This gradual layering of computation keeps complexity manageable and ensures each part is tested systematically along the way.
 
-#### Interleave Power BI exposure
+##### Interleave Power BI exposure
 
 In a complex project with many attributes, it is risky to work on all the underlying tables and then all the Power BI tables and measures as one release.
 
@@ -10374,7 +10374,7 @@ Instead, Power BI releases should be interleaved as information is curated in th
 
 User features are typically exposed through the self-service Power BI model.
 
-#### Rotate features with consolidation
+##### Rotate features with consolidation
 
 Releases should be tightly coupled with unit tests, fault tolerance, and metadata. Whenever a feature is released, unit tests and metadata should come with the release, rather than being handled as a bulk afterthought.
 
@@ -10384,7 +10384,7 @@ In a construction plan, not all releases will be user features. There is also im
 
 User features should rotate with backend work. This keeps up project momentum, allows data engineers to spend time on quality consolidation, and gives users space to test features between releases.
 
-#### Plan the near future in detail
+##### Plan the near future in detail
 
 By anchoring the construction plan on user features, and keeping in mind how releases build up into user features, it becomes easier to reshuffle development as priorities change without ending up in a tangled mess.
 
@@ -10400,7 +10400,7 @@ The following is an example of a construction plan for manufacture and quality c
 
 *Figure 2. A construction plan is a delivery artefact. It gives the team a sequenced view of releases, information focus, descriptions, and artefacts without requiring the whole project to be specified in full detail.*
 
-## Reframing stakeholder requirements
+### Reframing stakeholder requirements
 
 A typical IT project is driven by stakeholder requirements. But stakeholder requirements cannot determine the whole plan, any more than a town planner can plan a town-build simply by collecting a list of requirements from citizens. On the contrary, the town planner is expected to contribute expertise in dialogue with the community.
 
@@ -10412,7 +10412,7 @@ This can be done by reframing stakeholder requirements as objectives about core 
 
 In short, stakeholder requirements should be reframed to the level explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/). The delivery team has responsibility in guiding stakeholders comfortably on this journey, as described in [Working with stakeholders](#docs-judgement-under-ambiguity-working-with-stakeholders).
 
-## Conclusion
+### Conclusion
 
 In traditional IT projects, data engineers are often treated as doers who implement specified rules. This is far from their full potential. Being closest to the data, they [actively shape how the organisation understands its business](#docs-foundations-data-and-organisations) by reorganising information at a fundamental level. The plan is one expression of that responsibility.
 
@@ -10446,11 +10446,11 @@ Success hinges increasingly on planning. The mark of an experienced data enginee
 >
 > The mark of an experienced data engineer is an effective plan.
 
-# When things go wrong {#docs-judgement-under-ambiguity-when-things-go-wrong}
+## When things go wrong {#docs-judgement-under-ambiguity-when-things-go-wrong}
 
 *All data engineering is troubleshooting.*
 
-## Things are already wrong
+### Things are already wrong
 
 Other engineering disciplines, such as bridge-building, are primarily constructive. A crack in the bridge is an exception, not the rule.
 
@@ -10476,7 +10476,7 @@ The sixth and final principle of data engineering is this:
 
 This applies to the whole book. Troubleshooting a production failure is simply a crystallised instance of the discipline.
 
-## The four steps to troubleshooting
+### The four steps to troubleshooting
 
 When a data product fails, there is pressure to address it immediately using the quickest means possible.
 
@@ -10495,7 +10495,7 @@ Each step is about sustaining judgement under ambiguity.
 
 *Figure 1. Diagnosis moves from the visible symptom to the trigger, then to the root cause, and finally to the intended effect.*
 
-### Step 1—Canvass the symptoms
+#### Step 1—Canvass the symptoms
 
 The first symptom, such as a stakeholder complaining about an unexpected number in a report, is a sign that something has gone wrong. However, this symptom cannot be taken at face value.
 
@@ -10518,7 +10518,7 @@ Examples may be:
 
 This is one reason why systematic logging in the warehouse and established tools for querying the logs are essential to a mature operation. Practised observability allows fast and accurate canvassing of symptoms.
 
-### Step 2—Identify the trigger
+#### Step 2—Identify the trigger
 
 A patient reporting a symptom often implies a diagnosis by associating it with a recent event: “I started feeling chest pain after lifting heavy boxes,” or “I developed a fever after eating seafood.” The doctor does not ignore this history, but also does not accept it as the diagnosis. The recent event may be relevant, but it may only be the trigger that exposed an underlying condition.
 
@@ -10546,7 +10546,7 @@ First, the trigger often provides a hint for an urgent patch. If the trigger is 
 
 Second, and more importantly, the trigger is a clue to finding the root cause. But just like a patient’s self-report, the important discipline is not to confuse the trigger with the root cause itself.
 
-### Step 3—Diagnose the root cause
+#### Step 3—Diagnose the root cause
 
 Once the patient has reported symptoms and given an account of recent history, the doctor often starts taking measurements: blood pressure, temperature, oxygen saturation, or a physical examination. Some cases may need blood tests, an X-ray, or other investigations.
 
@@ -10574,7 +10574,7 @@ In this view, the disagreement between engineers reflects a different understand
 
 This also affects the final step.
 
-### Step 4—Check the final effect
+#### Step 4—Check the final effect
 
 The doctor finishes, not when the symptoms have disappeared, but when the patient is well.
 
@@ -10597,7 +10597,7 @@ Ultimately, the final effect that needs to be checked is always:
 
 > The business receives the information it needs to make the decision.
 
-### Example: false deletions after a partial source extract
+#### Example: false deletions after a partial source extract
 
 Suppose an operational report suddenly shows that thousands of active records have disappeared.
 
@@ -10629,7 +10629,7 @@ A better fix is to protect the deletion-detection step. The full scan should be 
 
 This is a contrived and simplified example. Real failures are rarely so simple. However, it shows why troubleshooting must move beyond the visible symptom. The report was where the problem appeared. The network change was the trigger. The root cause was unsafe deletion logic built on an unmonitored assumption. The final effect was a warehouse that could distinguish genuine deletion from incomplete capture.
 
-## Conclusion
+### Conclusion
 
 This chapter explained a simple four-step framework for troubleshooting:
 
@@ -10660,7 +10660,7 @@ Most importantly, the framework is not only for time-sensitive production failur
 >
 > The final effect is not merely the disappearance of the symptom. The work is complete when the business receives the information it needs to make the decision.
 
-# Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
+## Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
 
 *Quality is built into the work, not added after delivery.*
 
@@ -10692,7 +10692,7 @@ As developers, we must deliver the features, but also complete the following:
 
 These are the hallmarks of quality. When done well, we have not only delivered a feature but delivered quality work. The work will be high value, long lasting, will win trust and, importantly, give us pride in the work we do. Not everyone will carry out all aspects in every instance, but as a team, these are non-negotiables to quality.
 
-## Expressive entities
+### Expressive entities
 
 When looking at data, it is easy to forget we are dealing with a real world. Yet the real world is what decision makers deal with. All models, whether they are simulation models, data models, or machine learning models, are models of the world.
 
@@ -10710,7 +10710,7 @@ There is a temptation to keep moving on to the next feature. Moreover, the benef
 
 A quality data model is only achievable by a developer who has thought seriously about the world, how data relates to it, and how to organise the world in a way that makes sense for decisions. The ability to create data entities that are accurate and expressive of the world is an infallible mark of quality.
 
-## Well-written explanation
+### Well-written explanation
 
 Documentation is particularly important for data analysis, as opposed to, say, game programming, because data is a projection of real-world processes and data code acts as an interpreter between data and the world. This interpretation has a plain-English equivalent. Documentation is not simply “code comments” from one developer to another. It is an articulation to oneself and to others of how the output reflects reality.
 
@@ -10724,7 +10724,7 @@ A developer does not need to write documentation alone. It is the one task where
 
 It is interesting to see a shift of habit as developers mature. A new developer often writes code with no documentation. Over time, the developer gains the habit of writing documentation after completing code, then the habit of writing documentation together with code. When mature, it is common for a developer to start with code documentation for complex scenarios, usually for circulation. There is nothing surprising about this. The transition merely reflects the fact that the developer has mastered patterns in the work environment and is shifting focus from the mechanics of code-writing to the reality behind what the code is about.
 
-## Thoughtful unit-tests
+### Thoughtful unit-tests
 
 At the minimum, writing proper unit-tests means that a developer has solved the problem more than once and from different angles. This is enough to justify writing the test. Often, in writing a test, the developer discovers a logical error or edge case that escaped attention during development.
 
@@ -10736,7 +10736,7 @@ Tests are about quality, not quantity or coverage. Poorly written tests can lead
 
 Resist the temptation to delay a test. If instinct says a code should be tested, do not delay it to the next week. It is astonishing how often the test of which we think, “I probably should write this test, but I will do this a bit later,” is the one that would have caught an error on the week’s product release.
 
-## Assumptions are monitored
+### Assumptions are monitored
 
 All reasoning involves assumptions. Dealing with incomplete data especially requires assumptions. Assumptions are the X in “If X, then Y.” Assumptions are the shortcut to Y. They allow one to defer insignificant problems to a future date.
 
@@ -10754,7 +10754,7 @@ The key step to monitoring assumptions is to know when we are making one. More o
 
 Once assumptions have been identified, it is a matter of being disciplined and monitoring them through an automated framework.
 
-## Anticipate errors
+### Anticipate errors
 
 Tests and assumptions fall under the general category of error handling. The question which concerns a seasoned developer is not whether the code runs today, but how it may fail tomorrow. Many can write code against the actual, but writing code against the possible is a whole new level. One can often identify a superior developer by an instinctive, second-nature obsession with how the code may fail.
 
@@ -10770,7 +10770,7 @@ Error handling is hard because the developer needs to look beyond the now and an
 
 A delivery team that can continuously learn from errors is unstoppable. While error handling is challenging, a new developer can start by adopting the habit of expecting errors.
 
-## Adherence to patterns
+### Adherence to patterns
 
 There are slavish adherences to patterns that are counterproductive. However, patterns, whether they are coding styles, naming conventions, architecture, or the use of Git, are an indispensable part of a strong team. There are bad teams that follow patterns, but there are no good teams that do not have them.
 
@@ -10784,7 +10784,7 @@ These mental noises reduce the probability of detecting an error. It is astonish
 
 Judicious use of patterns in a team will advance quality by promoting solutions that survived the test of time. Patterns also accelerate delivery by removing developer uncertainty and simplifying decision making. On the other hand, an unthinking adherence to patterns through a copy-and-paste mindset can lead to overengineering or stifle innovation. To strike a balance between individual innovation and accumulated wisdom, team members should see themselves as participants in a conversation of innovation in which each team member can contribute with an attitude of “inquire, not debate.”
 
-## Optimised code
+### Optimised code
 
 Performant code carries out a task with as little server resource as possible. Elegant code promotes readability and simplicity. Taken together, we say the code has been optimised.
 
@@ -10796,11 +10796,11 @@ The secondary purpose of optimising code is to think about the problem again. It
 
 Not all good developers can write optimised code, but bad developers can never write elegant, optimised code. Optimised code is one of the harder hallmarks to achieve. We can all improve with practice.
 
-## Three aspects of quality
+### Three aspects of quality
 
 The hallmarks describe three aspects of data-based code: expressiveness, error handling and elegant code.
 
-### Expressiveness
+#### Expressiveness
 
 Creating expressive entities, well-written documentation.
 
@@ -10808,13 +10808,13 @@ Expressiveness is grounded in the fact that data is not a real-world entity in a
 
 Well-written documentation serves the same purpose by articulating in plain language how a data model relates to the real world. Analysts who continually take data at face value—each row in the Task table is a task, right?—or mechanically apply statistical algorithms from a textbook are divorced from the reality behind the data.
 
-### Error handling
+#### Error handling
 
 Anticipating errors, thoughtful unit-tests, monitoring assumptions.
 
 Error handling is to code what seat belts and safety brakes are to cars, or monitoring and kill-switches are to a power plant. They are not nice-to-haves but indispensable components of a complex computational environment. Unit tests and monitoring assumptions all help to mitigate against the inevitable day when an error occurs. A developer creating code without considering what may go wrong is akin to a builder who adds a floor to a building without strengthening the foundations—it will work, for now.
 
-### Elegant code
+#### Elegant code
 
 Adherence to patterns, optimised code.
 
@@ -10822,7 +10822,7 @@ Elegant code is key to sustainable growth. In a complex and fast-moving environm
 
 Performance-tuned code is obvious for the simple reason that computational resources are finite.
 
-## Final words
+### Final words
 
 These hallmarks of quality are not revolutionary. They have been around since code development began. The issue is not that developers do not know about them but that they do not do them because of lack of discipline or pressures to deliver.
 

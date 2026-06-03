@@ -27,10 +27,14 @@
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
 \providecommand{\pandocbounded}[1]{%
-  \Needspace{0.72\textheight}%
-  \begin{adjustbox}{max width=\linewidth,max totalheight=0.62\textheight,center}
-  #1%
+  \par%
+  \Needspace{0.82\textheight}%
+  \begin{center}%
+  \begin{adjustbox}{max width=0.96\linewidth,max totalheight=0.56\textheight,center}%
+    #1%
   \end{adjustbox}%
+  \end{center}%
+  \par%
 }
 \usepackage[table]{xcolor}
 \usepackage{hyperref}
