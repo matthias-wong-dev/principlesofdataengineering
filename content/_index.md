@@ -115,3 +115,7 @@ While the book is best read sequentially, the six sections are loosely independe
 4. [**Quality & reliability**](../docs/quality-reliability/)—move beyond generic data quality language into practical methods for metadata, testing, assumptions, human curation, precise rules, and fuzzy logic.
 5. [**Efficient & stable pipeline**](../docs/efficient-stable-pipeline/)—build pipelines that are efficient, stable, observable, and maintainable, including incremental processing and programmatic orchestration patterns.
 6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/)—learn the senior craft: working with stakeholders, planning uncertain delivery, and diagnosing root causes when things go wrong.
+
+## Comments welcome
+
+Comments are welcome, see [author page](/docs/about/the-author/) for contact information.
