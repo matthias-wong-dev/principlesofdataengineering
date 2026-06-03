@@ -146,6 +146,12 @@ body,
   max-width: 42rem;
 }
 
+.markdown pre,
+.markdown .highlight {
+  max-width: 42rem;
+  box-sizing: border-box;
+}
+
 .markdown code {
   background: #f1f4f7;
   border-color: #d7e0e8;
@@ -164,6 +170,22 @@ body,
 .markdown .highlight pre code {
   background: transparent;
   color: inherit;
+}
+
+.markdown pre:has(code.language-md),
+.markdown pre:has(code.language-markdown),
+.markdown pre:has(code[data-lang="md"]),
+.markdown pre:has(code[data-lang="markdown"]) {
+  overflow-x: visible;
+  white-space: pre-wrap;
+}
+
+.markdown pre:has(code.language-md) code,
+.markdown pre:has(code.language-markdown) code,
+.markdown pre:has(code[data-lang="md"]) code,
+.markdown pre:has(code[data-lang="markdown"]) code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .markdown .highlight,

@@ -17,7 +17,7 @@
     });
 
     const code = pre.querySelector("code");
-    if (!code || codeLanguage(code) !== "sql") {
+    if (!code || !["sql", "dax"].includes(codeLanguage(code))) {
       return;
     }
 
