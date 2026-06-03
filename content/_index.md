@@ -31,7 +31,7 @@ The book is organised around [six principles](../docs/judgement-under-ambiguity/
 5. **Illuminate ambiguity**—turn ambiguous business intent into ordered progress.
 6. **Diagnose root causes**—act on the conditions that make problems recur.
 
-This book is written from deep delivery experience and focuses on patterns that survive real systems.
+This book is written from deep delivery experience and focuses on patterns tested for complexity.
 
 It is for organisations that want data representations that do more than run.
 
