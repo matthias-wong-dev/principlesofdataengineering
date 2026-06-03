@@ -103,13 +103,17 @@ There will be cases where system names or technical implementation details are n
 
 For example, the description for `[Is non-compliant]` may be:
 
-> True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the `ResultCode` field in the source system, where `F` indicates failure.
+```md
+True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the "ResultCode" field in the source system, where "F" indicates failure.
+```
 
 The same principle applies to transformation logic. The transformation should be stated in business terms. Technical statements can be included as elaboration, but not as a substitute for meaning.
 
 For example:
 
-> This column is derived from the inspection result and officer notes. It is true if the inspection outcome was `Spoiled cake` or `Not tasty`, and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the `InspectionOutcomeFlag` measure using a combination of result codes and officer certification status.
+```md
+This column is derived from the inspection result and officer notes. It is true if the inspection outcome was "Spoiled cake" or "Not tasty", and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the [Inspection outcome] measure using a combination of result codes and officer certification status.
+```
 
 Limitations should also be framed in terms of business interpretation.
 
@@ -117,7 +121,9 @@ Limitations should also be framed in terms of business interpretation.
 
 A better statement is:
 
-> The inspector may not record a result if there are no issues. This means it is not possible to distinguish between a successful inspection and an inspection not performed.
+```md
+The inspector may not record a result if there are no issues. This means it is not possible to distinguish between a successful inspection and an inspection not performed.
+```
 
 Clear statements of limitation are essential for transparency and reliable application of business insight. They tell the user not only what the artefact means, but when it becomes dangerous to rely on it.
 

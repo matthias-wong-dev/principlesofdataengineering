@@ -287,21 +287,23 @@ Using the vision to structure discussions begins with agreement on the overall i
 
 Example dialogue:
 
-> **Stakeholder:** “We need a dashboard.”
-> 
-> **Team:** “Can you start by telling us the purpose of your business, your role, and what success means to you?”
-> 
-> **Stakeholder:** “Our goal is to improve customer experience. My team monitors service quality.”
-> 
-> **Team:** “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
-> 
-> **Stakeholder:** “Yes, but also recurring issues.”
-> 
-> **Team:** “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
-> 
-> **Stakeholder:** “Yes.”
-> 
-> **Team:** “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
+```md
+Stakeholder: “We need a dashboard.”
+
+Team: “Can you start by telling us the purpose of your business, your role, and what success means to you?”
+
+Stakeholder: “Our goal is to improve customer experience. My team monitors service quality.”
+
+Team: “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
+
+Stakeholder: “Yes, but also recurring issues.”
+
+Team: “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
+
+Stakeholder: “Yes.”
+
+Team: “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
+```
 
 This pattern—bringing stakeholders up to the highest level and then unpacking details step by step—requires fast thinking and familiarity with the organisation’s goals. It is harder than it appears, but essential for clarity.
 

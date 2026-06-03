@@ -5594,13 +5594,17 @@ There will be cases where system names or technical implementation details are n
 
 For example, the description for `[Is non-compliant]` may be:
 
-> True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the `ResultCode` field in the source system, where `F` indicates failure.
+```md
+True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the ResultCode field in the source system, where F indicates failure.
+```
 
 The same principle applies to transformation logic. The transformation should be stated in business terms. Technical statements can be included as elaboration, but not as a substitute for meaning.
 
 For example:
 
-> This column is derived from the inspection result and officer notes. It is true if the inspection outcome was `Spoiled cake` or `Not tasty`, and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the `InspectionOutcomeFlag` measure using a combination of result codes and officer certification status.
+```md
+This column is derived from the inspection result and officer notes. It is true if the inspection outcome was Spoiled cake or Not tasty, and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the InspectionOutcomeFlag measure using a combination of result codes and officer certification status.
+```
 
 Limitations should also be framed in terms of business interpretation.
 
@@ -5608,7 +5612,9 @@ Limitations should also be framed in terms of business interpretation.
 
 A better statement is:
 
-> The inspector may not record a result if there are no issues. This means it is not possible to distinguish between a successful inspection and an inspection not performed.
+```md
+The inspector may not record a result if there are no issues. This means it is not possible to distinguish between a successful inspection and an inspection not performed.
+```
 
 Clear statements of limitation are essential for transparency and reliable application of business insight. They tell the user not only what the artefact means, but when it becomes dangerous to rely on it.
 
@@ -6151,7 +6157,9 @@ Multiple citizens may report sightings of the same whale. As a result, multiple 
 
 Suppose the business has a rule such as:
 
-> A whale species at one GPS proximity should only appear once within a day.
+```md
+A whale species at one GPS proximity should only appear once within a day.
+```
 
 This rule can be used to group observations and identify a representative record.
 
@@ -6230,7 +6238,9 @@ To support analysis, the data engineer can create a nearest temporal join.
 
 For example, the rule might be:
 
-> An inspection relates to the most recent fire-safety certificate submitted for the same building before the inspection.
+```md
+An inspection relates to the most recent fire-safety certificate submitted for the same building before the inspection.
+```
 
 The result can be stored in `FireSafety.InspectionCertificate`.
 
@@ -6301,7 +6311,9 @@ To support analysis, the data engineer may introduce a mapping table called `Clu
 
 The logic may be based on a business rule such as:
 
-> Every member at the table shares the cost of all items ordered.
+```md
+Every member at the table shares the cost of all items ordered.
+```
 
 **Example structure of `Club.CustomerFoodOrderMap`**
 
@@ -9804,7 +9816,6 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 > Power BI manages partition bookmarks internally, but the pipeline may need to supply fast polling tables.
 >
 > Optimising Power BI load requires planning backward from the semantic model into the pipeline.
-```
 
 # Judgement under ambiguity {#docs-judgement-under-ambiguity}
 
@@ -10044,21 +10055,23 @@ Using the vision to structure discussions begins with agreement on the overall i
 
 Example dialogue:
 
-> **Stakeholder:** “We need a dashboard.”
->
-> **Team:** “Can you start by telling us the purpose of your business, your role, and what success means to you?”
->
-> **Stakeholder:** “Our goal is to improve customer experience. My team monitors service quality.”
->
-> **Team:** “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
->
-> **Stakeholder:** “Yes, but also recurring issues.”
->
-> **Team:** “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
->
-> **Stakeholder:** “Yes.”
->
-> **Team:** “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
+```md
+Stakeholder: “We need a dashboard.”
+
+Team: “Can you start by telling us the purpose of your business, your role, and what success means to you?”
+
+Stakeholder: “Our goal is to improve customer experience. My team monitors service quality.”
+
+Team: “So your organisation’s goal is to improve customer experience, and your team supports this by monitoring service quality?”
+
+Stakeholder: “Yes, but also recurring issues.”
+
+Team: “Okay, so you track service quality, but you also need to identify recurring issues to prevent them. Is that right?”
+
+Stakeholder: “Yes.”
+
+Team: “At the start you mentioned a dashboard. What is its purpose in this context? Is it for your team’s internal use, or to share insights with other areas?”
+```
 
 This pattern—bringing stakeholders up to the highest level and then unpacking details step by step—requires fast thinking and familiarity with the organisation’s goals. It is harder than it appears, but essential for clarity.
 
@@ -10296,13 +10309,17 @@ A vision translates discovery into a statement of what the data product is tryin
 
 For example, if the core business processes for an organisation are manufacturing, quality control, sales, shipping, and customer feedback, the vision statement could be:
 
-> Understand the factors that drive sales profit and customer satisfaction through an integrated data source covering manufacturing, quality control, sales, shipping, and customer feedback, so the business can monitor manufacturing turnaround, detect quality issues early, understand sales trends, improve shipping efficiency, and respond to customer sentiment.
+```md
+Understand the factors that drive sales profit and customer satisfaction through an integrated data source covering manufacturing, quality control, sales, shipping, and customer feedback, so the business can monitor manufacturing turnaround, detect quality issues early, understand sales trends, improve shipping efficiency, and respond to customer sentiment.
+```
 
 This vision statement is ambitious yet grounded. It resonates with business stakeholders, inspires confidence, and establishes trust by demonstrating that the project team understands the business. Being neither too vague nor too specific, the vision frames the project at the right level for prioritisation and dialogue.
 
 Such vision statements are easy to craft and extend naturally from the discovery questions. Yet many teams produce poor alternatives that lead projects to failure. For example, it is common to see vision statements such as:
 
-> Reduce pain points of manual processes and create near real-time dashboard of the operation.
+```md
+Reduce pain points of manual processes and create near real-time dashboard of the operation.
+```
 
 This is not a deep analysis of business intent but a reaction to user complaints. As such, it lacks the substance to serve as a foundation for the project.
 
@@ -10662,7 +10679,7 @@ Most importantly, the framework is not only for time-sensitive production failur
 
 ## Closing essay: Hallmarks of quality {#docs-judgement-under-ambiguity-closing-essay-hallmarks-of-quality}
 
-*Quality is built into the work, not added after delivery.*
+*A manifesto for data teams who want their work to endure*
 
 > **Note.**
 >

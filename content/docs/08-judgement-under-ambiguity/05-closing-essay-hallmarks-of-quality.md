@@ -2,7 +2,7 @@
 title: "Closing essay: Hallmarks of quality"
 url: /docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/
 description: A closing essay on the habits and standards that mark high-quality data engineering work.
-lede: Quality is built into the work, not added after delivery.
+lede: A manifesto for data teams who want their work to endure
 weight: 5
 # draft: true
 ---

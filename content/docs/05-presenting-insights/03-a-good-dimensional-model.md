@@ -163,8 +163,6 @@ Power BI supports this behaviour. If all columns in a table are hidden and the t
 
 Measures should be organised by display folders. By default, these folders should be grouped by business process. For example, a model with the processes `Manufacture`, `Order`, and `Shipping` could have folders called `"Manufacture"`, `"Order"`, and `"Shipping"`.
 
-<!-- > [!NOTE]
-> TODO: Insert manuscript screenshot or diagram from the source draft. -->
 
 The prominence of measures, their business-centricity, and their organisation through business processes are strong contributors to the look and feel of a good data model.
 

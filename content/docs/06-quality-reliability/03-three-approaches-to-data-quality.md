@@ -583,7 +583,9 @@ Multiple citizens may report sightings of the same whale. As a result, multiple 
 
 Suppose the business has a rule such as:
 
-> A whale species at one GPS proximity should only appear once within a day.
+```md
+A whale species at one GPS proximity should only appear once within a day.
+```
 
 This rule can be used to group observations and identify a representative record.
 
@@ -662,7 +664,9 @@ To support analysis, the data engineer can create a nearest temporal join.
 
 For example, the rule might be:
 
-> An inspection relates to the most recent fire-safety certificate submitted for the same building before the inspection.
+```md
+An inspection relates to the most recent fire-safety certificate submitted for the same building before the inspection.
+```
 
 The result can be stored in `FireSafety.InspectionCertificate`.
 
@@ -733,7 +737,9 @@ To support analysis, the data engineer may introduce a mapping table called `Clu
 
 The logic may be based on a business rule such as:
 
-> Every member at the table shares the cost of all items ordered.
+```md
+Every member at the table shares the cost of all items ordered.
+```
 
 **Example structure of `Club.CustomerFoodOrderMap`**
 

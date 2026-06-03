@@ -226,13 +226,17 @@ A vision translates discovery into a statement of what the data product is tryin
 
 For example, if the core business processes for an organisation are manufacturing, quality control, sales, shipping, and customer feedback, the vision statement could be:
 
-> Understand the factors that drive sales profit and customer satisfaction through an integrated data source covering manufacturing, quality control, sales, shipping, and customer feedback, so the business can monitor manufacturing turnaround, detect quality issues early, understand sales trends, improve shipping efficiency, and respond to customer sentiment.
+```md
+Understand the factors that drive sales profit and customer satisfaction through an integrated data source covering manufacturing, quality control, sales, shipping, and customer feedback, so the business can monitor manufacturing turnaround, detect quality issues early, understand sales trends, improve shipping efficiency, and respond to customer sentiment.
+```
 
 This vision statement is ambitious yet grounded. It resonates with business stakeholders, inspires confidence, and establishes trust by demonstrating that the project team understands the business. Being neither too vague nor too specific, the vision frames the project at the right level for prioritisation and dialogue.
 
 Such vision statements are easy to craft and extend naturally from the discovery questions. Yet many teams produce poor alternatives that lead projects to failure. For example, it is common to see vision statements such as:
 
-> Reduce pain points of manual processes and create near real-time dashboard of the operation.
+```md
+Reduce pain points of manual processes and create near real-time dashboard of the operation.
+```
 
 This is not a deep analysis of business intent but a reaction to user complaints. As such, it lacks the substance to serve as a foundation for the project.
 

@@ -451,4 +451,3 @@ The implication is that the data engineer must plan far ahead. Power BI’s effi
 > Power BI manages partition bookmarks internally, but the pipeline may need to supply fast polling tables.
 >
 > Optimising Power BI load requires planning backward from the semantic model into the pipeline.
-```
