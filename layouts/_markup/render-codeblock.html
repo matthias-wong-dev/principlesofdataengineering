@@ -7,8 +7,10 @@
   <a {{ with $href }}href="{{ . }}"{{ end }}>{{ . }}</a>
 </div>
 {{- end -}}
-{{- $language := .Type -}}
-{{- if eq (lower $language) "dax" -}}
-  {{- $language = "sql" -}}
+{{- if eq (lower .Type) "dax" -}}
+<div class="highlight">
+  <pre tabindex="0"><code class="language-dax" data-lang="dax">{{ .Inner | htmlEscape | safeHTML }}</code></pre>
+</div>
+{{- else -}}
+  {{- (transform.HighlightCodeBlock . .Options).Wrapped -}}
 {{- end -}}
-{{- transform.Highlight .Inner $language .Options -}}

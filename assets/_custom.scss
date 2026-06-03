@@ -272,6 +272,29 @@ body,
   background: transparent;
 }
 
+.markdown code.language-dax .dax-keyword,
+.markdown code.language-dax .dax-function {
+  color: #345f86;
+  font-weight: 600;
+}
+
+.markdown code.language-dax .dax-comment {
+  color: #6f7f90;
+}
+
+.markdown code.language-dax .dax-string,
+.markdown code.language-dax .dax-table {
+  color: #7a4e2f;
+}
+
+.markdown code.language-dax .dax-number {
+  color: #72558a;
+}
+
+.markdown code.language-dax .dax-identifier {
+  color: inherit;
+}
+
 .markdown .book-codeblock-filename {
   border-color: #c9d3dd;
   background: #edf2f6;
