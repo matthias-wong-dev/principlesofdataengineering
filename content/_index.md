@@ -18,7 +18,7 @@ It is underpinned by a central premise:
 
 > Data is a fragment of reality.
 
-That's why data engineering is not about moving things from point A to point B.
+That's why data engineering is not about moving records from point A to point B.
 
 It is to make reality legible to business.
 
@@ -70,7 +70,7 @@ It is for **analytics engineers and data engineers** who want a technology-agnos
 
 This book is prescriptive and opinionated.
 
-It does not try to be neutral about every possible pattern. It teaches hard-earned practices learned from production scars: how to model business entities, how to avoid giant tables, how to create reusable fragments, how to handle errors, how to manage change, and how to work with stakeholders when nobody yet knows exactly what should be built.
+It does not try to be neutral about every possible pattern. It teaches hard-earned practices learned from production scars: how to model business entities, how to avoid pipeline mess, how to detect and mitigate errors, how to do incremental transformation properly, and how to work with stakeholders when nobody yet knows exactly what should be built.
 
 The book explains advanced concepts in plain language. It assumes the reader is serious, but not that the reader already knows the vocabulary of data architecture.
 
