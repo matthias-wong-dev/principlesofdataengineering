@@ -14,7 +14,7 @@ It was born from years of ongoing dialogue with developers and business stakehol
 
 It would not have been possible without the many data engineers and analysts who contributed their thinking, challenged assumptions, and worked through complex problems in practice. Their experiences, questions, and solutions form the foundation of much of what is written here.
 
-Special thanks to E.D. and M.T. for their contribution and support throughout this journey, and to M.C., Z.B., D.S., S.S., S.M., and R.D. for their review and feedback.
+Special thanks to E.D. and M.T. for their contribution and support throughout this journey, and to M.C., Z.B., D.S., S.S., S.M., S.M., and R.D. for their review and feedback.
 
 ## Origin and release
 
