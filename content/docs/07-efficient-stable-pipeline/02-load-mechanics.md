@@ -173,7 +173,7 @@ For any target table, the standard load pattern may create the following artefac
 
 This may seem like a lot of machinery. The rest of this chapter explains why each part exists.
 
-### Step 1—Stage the incoming data
+### Step 1—Stage the incoming data {#step-1-stage-the-incoming-data}
 
 The first step is to load the latest batch of data into a staging table.
 
@@ -181,7 +181,7 @@ The staging table holds incoming data before the target table is touched. For `S
 
 `Sales.Order_staging` may contain a full extract of the source data. It may also contain only a subset of recently changed records. The latter is an incremental extract.
 
-An incremental extract can reduce the number of records to stage, check, and apply from hundreds of millions to a few thousand. The ways to do this reliably are covered in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/) and [Responding to changes](/docs/efficient-stable-pipeline/responding-to-changes/).
+An incremental extract can reduce the number of records to stage, check, and apply from hundreds of millions to a few thousand. The ways to do this reliably are covered in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/) and [Responding to changes](/docs/efficient-stable-pipeline/responding-to-change/).
 
 The staging step applies regardless of full or incremental extract.
 
@@ -277,7 +277,7 @@ If `Sales.Order_staging` is a full extract, deletes can be identified by finding
 
 If `Sales.Order_staging` is an incremental extract, delete detection must be tailored to the incremental logic. The staging table may contain only a fraction of the desired final table, so absence from staging does not necessarily mean deletion from the target.
 
-This distinction is covered in [Responding to changes](/docs/efficient-stable-pipeline/responding-to-changes/).
+This distinction is covered in [Responding to changes](/docs/efficient-stable-pipeline/responding-to-change/#source-changes-are-not-target-actions).
 
 #### Check for instability
 
@@ -372,7 +372,7 @@ The Apply step should also manage architectural columns for change datetimes:
 
 Because the Check step removed unchanged rows, `[Row update datetime]` is updated only when row content genuinely changes.
 
-As we will see in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/), these artefacts are necessary for downstream processing.
+As we will see in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/#the-role-of-the-filter-step), these artefacts are necessary for downstream processing.
 
 After applying the change, the target may look like this.
 
@@ -428,7 +428,7 @@ For incremental processing, the pipeline should also log the table’s refresh b
 
 A refresh bookmark records when the table started reading from its source data, if the load completed successfully. Suppose `Sales.Order` draws from several source tables. Any source records that appear after the bookmark belong to a later load.
 
-This bookmark gives the next load a safe starting point for incremental extraction. This is explained in greater detail in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/).
+This bookmark gives the next load a safe starting point for incremental extraction. This is explained in greater detail in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/#refresh-bookmarks).
 
 The refresh bookmark should only be advanced when the load succeeds. If the load fails or aborts, the bookmark should not move forward, because the next load still needs to consider the same source period.
 

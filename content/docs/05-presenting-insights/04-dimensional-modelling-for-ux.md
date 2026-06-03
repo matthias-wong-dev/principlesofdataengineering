@@ -132,7 +132,7 @@ An **end-of-period fact** records the state of an entity at a regular reporting 
 
 This pattern applies when the business needs to ask what existed, or what state something was in, at the end of a period. Examples include an account at the end of each month, an employee at the end of each pay cycle, or a supplier at the end of each reporting quarter.
 
-End-of-period facts are usually produced from [entity tracking](/docs/creating-information/entity-tracking/) pipelines. They let the model answer point-in-time questions without requiring users to solve validity-window logic inside the report.
+End-of-period facts are usually produced from [entity tracking](/docs/creating-information/entity-tracking/#third-pass-create-snapshots-and-infer-behaviour) pipelines. They let the model answer point-in-time questions without requiring users to solve validity-window logic inside the report.
 
 **Example structure of `'Account end of month'`**
 
@@ -450,7 +450,7 @@ This pattern is used when the raw process is too detailed for the user’s first
 
 Where a Sankey dimension shows movement, a storytelling dimension translates these movements into manageable categories that are business-meaningful.
 
-For example, the [Storytelling](/docs/creating-information/storytelling/) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order. The point is not merely to record the path a case took, but to express what that path means to the business.
+For example, the [Storytelling](/docs/creating-information/storytelling/#storytelling-dimensions) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order. The point is not merely to record the path a case took, but to express what that path means to the business.
 
 A storytelling dimension is created when the data engineer steps back from raw data and asks how the business understands the movement of the entity.
 
@@ -495,7 +495,7 @@ If the user expects to search using the field, model it as a search dimension. I
 
 Search dimensions can significantly increase model size. They should be used deliberately, and they are not ideal for aggregation.
 
-Due to Power BI filtering behaviour, search dimensions often need to be used with a unit-record display measure. This is explained in the [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/) and [Designing measures](/docs/presenting-insights/designing-measures/) chapters.
+Due to Power BI filtering behaviour, search dimensions often need to be used with a unit-record display measure. This is explained in the [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/#displaying-unit-records-for-three-or-more-business-processes) and [Designing measures](/docs/presenting-insights/designing-measures/#filtering-measures) chapters.
 
 
 

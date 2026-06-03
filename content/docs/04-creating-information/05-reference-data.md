@@ -23,7 +23,7 @@ A reference table that applies to multiple business processes becomes a shared p
 
 The calendar is a simple example. Most business processes can map directly to a calendar table through a date column. A country table is another common example. Product categories, organisational structures, geographic hierarchies, and customer classifications often play the same role.
 
-Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition. This makes reference data one of the main ways a warehouse gives stable form to [negotiated organisational meaning](/docs/foundations/data-and-organisations/).
+Such tables are commonly called **conformed reference tables** because multiple business processes conform to the same definition. This makes reference data one of the main ways a warehouse gives stable form to [negotiated organisational meaning](/docs/foundations/data-and-organisations/#implications-for-data-engineering).
 
 The term **golden record** is also used, particularly when a single reference table represents the authoritative version of a concept.
 
@@ -69,7 +69,7 @@ The local model should stand on its own before any reference-data work begins.
 
 This separation allows the engineering work to progress while mapping decisions are still being refined.
 
-### Step 2—Build shared references
+### Step 2—Build shared references {#step-2-build-shared-references}
 
 Next, construct the warehouse reference table and the mapping table.
 

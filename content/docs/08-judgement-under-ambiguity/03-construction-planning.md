@@ -217,7 +217,7 @@ To sharpen the focus on business objectives, the team should also answer:
 - Controls: What levers does the business have to influence this measure?
 - Drivers: What external events outside the business’s control may influence this measure?
 
-The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/).
+The outputs of discovery should be expressed as linear process diagrams and cumulative information diagrams, as explained in the chapter [Anticipating questions](/docs/presenting-insights/anticipating-questions/#all-the-facts).
 
 
 ### Stage 2—Vision
@@ -236,7 +236,7 @@ Such vision statements are easy to craft and extend naturally from the discovery
 
 This is not a deep analysis of business intent but a reaction to user complaints. As such, it lacks the substance to serve as a foundation for the project.
 
-As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that users can build from the data. The wireframe is a playback of what the team has heard, and the beginning of a [solution hypothesis](/docs/judgement-under-ambiguity/working-with-stakeholders/). Its purpose is to build trust that the team has understood the need and to inspire the project to strive for the finish line. It is akin to an artistic model of a public building before construction. A good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
+As part of vision setting, it is important to sketch pen-and-paper wireframes of sample reports that users can build from the data. The wireframe is a playback of what the team has heard, and the beginning of a [solution hypothesis](/docs/judgement-under-ambiguity/working-with-stakeholders/#gather-around-the-solution). Its purpose is to build trust that the team has understood the need and to inspire the project to strive for the finish line. It is akin to an artistic model of a public building before construction. A good model generates excitement and builds public confidence. To achieve this purpose, the wireframe itself needs to be ambitious yet grounded.
 
 When the vision is framed this way, defining the project scope becomes straightforward.
 
@@ -292,7 +292,7 @@ Each release should be centred on a group of business information to expose. For
 
 Once defined, the construction plan must build in order of the pipeline by following table dependencies. This means a gradual increase in computation complexity.
 
-For example, the first release may focus on basic attributes with little transformation. The second release may add more complex computation. A third release may aggregate information from prior tables. This is the natural progression for a data engineer following the filter → compute → reduce steps explained in [Creating information](/docs/modelling-reality/creating-information/).
+For example, the first release may focus on basic attributes with little transformation. The second release may add more complex computation. A third release may aggregate information from prior tables. This is the natural progression for a data engineer following the filter → compute → reduce steps explained in [Creating information](/docs/creating-information/entity-processing/#building-the-pipeline).
 
 This gradual layering of computation keeps complexity manageable and ensures each part is tested systematically along the way.
 
@@ -480,12 +480,12 @@ Instead, the data engineer takes stakeholder input as part of a broader consider
 
 This can be done by reframing stakeholder requirements as objectives about core business processes. If the requirements are too specific, such as a long list of details like “I want to see count of sales by product type,” they can be brought up a level by categorising them as objectives on sales. If the requirements are too vague, such as “I just want to know about my business,” they can be made more concrete by articulating objectives on key processes such as sales, manufacturing, or shipping.
 
-In short, stakeholder requirements should be reframed to the level explained in the chapter [Anticipating questions](/docs/modelling-reality/anticipating-questions/). The delivery team has responsibility in guiding stakeholders comfortably on this journey, as described in [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/).
+In short, stakeholder requirements should be reframed to the level explained in the chapter [Anticipating questions](/docs/presenting-insights/anticipating-questions/). The delivery team has responsibility in guiding stakeholders comfortably on this journey, as described in [Working with stakeholders](/docs/judgement-under-ambiguity/working-with-stakeholders/).
 
 ## Conclusion
 
 
-In traditional IT projects, data engineers are often treated as doers who implement specified rules. This is far from their full potential. Being closest to the data, they [actively shape how the organisation understands its business](/docs/foundations/data-and-organisations/) by reorganising information at a fundamental level. The plan is one expression of that responsibility.
+In traditional IT projects, data engineers are often treated as doers who implement specified rules. This is far from their full potential. Being closest to the data, they [actively shape how the organisation understands its business](/docs/foundations/data-and-organisations/#implications-for-data-engineering) by reorganising information at a fundamental level. The plan is one expression of that responsibility.
 
 The data engineer—working with the delivery team—does not merely receive requirements and estimate tasks. The engineer helps turn uncertain business intent into a sequenced path of delivery. This path must be orderly enough to build confidence and flexible enough to adapt as discovery continues.
 

@@ -21,7 +21,7 @@ This chapter covers three areas:
 - interface roles of measures;
 - technical patterns for building measures.
 
-The next chapter, [Measure of measures](/docs/presenting-insights/measure-of-measures/), introduces a pattern for managing structured families of measures.
+The next chapter, [Measure of measures](/docs/presenting-insights/measure-of-measures/#the-measure-of-measures-pattern), introduces a pattern for managing structured families of measures.
 
 ## Signs of good measures
 
@@ -310,7 +310,7 @@ A dimensional measure turns dimension values into a measure result.
 
 This sounds unusual because dimensions are normally used for grouping or filtering. But sometimes a user wants a dimension value displayed as a measure.
 
-For example, in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), the user may want to show all products refunded on a particular day. The product names come from `'Sales product'`, but the result is displayed as a measure.
+For example, in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/#displaying-refunds), the user may want to show all products refunded on a particular day. The product names come from `'Sales product'`, but the result is displayed as a measure.
 
 A simplified example is:
 
@@ -340,7 +340,7 @@ Its chief purpose is display.
 
 Filtering measures exist to control what appears.
 
-As explained in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), Power BI often retains visual rows where at least one measure returns a non-blank value. A measure can therefore be used as a filtering device.
+As explained in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/#non-blank-measure-filtering), Power BI often retains visual rows where at least one measure returns a non-blank value. A measure can therefore be used as a filtering device.
 
 Filtering measures typically return `1` or blank.
 
@@ -653,7 +653,7 @@ The most useful tools are:
 - `treatas`
 - `userelationship`
 
-`crossfilter` temporarily changes relationship direction for a calculation. As shown in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/), it can be used to retrieve dimension values through a relationship path that normally flows the wrong way.
+`crossfilter` temporarily changes relationship direction for a calculation. As shown in [Filtering behaviour](/docs/presenting-insights/filtering-behaviour/#relationship-filtering), it can be used to retrieve dimension values through a relationship path that normally flows the wrong way.
 
 `treatas` applies values from one table as though they filtered another table. It is powerful when the information is already in the model but no physical relationship exists.
 

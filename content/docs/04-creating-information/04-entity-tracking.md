@@ -9,7 +9,7 @@ weight: 4
 
 ## Tracking mutable entities
 
-Entity tracking is the main pattern for [mutable business entities](/docs/creating-information/mapping-the-data-world/): those that change over time while still being considered the same entity.
+Entity tracking is the main pattern for [mutable business entities](/docs/creating-information/mapping-the-data-world/#immutable-and-mutable-entities): those that change over time while still being considered the same entity.
 
 Examples include a customer whose contact details, preferences, or purchasing behaviour evolve; an employee whose qualifications, role, or performance record changes; or a supplier whose compliance status shifts over time.
 
@@ -84,7 +84,7 @@ The data engineer should also decide how to handle gaps. In some systems  a reco
 
 For behaviour tracking, the first pass usually resembles entity processing. The data engineer filters and structures behaviour records, such as transactions, audit results, observations, or actions. The important temporal requirement is to preserve the event time of each behaviour.
 
-### Second pass—Build the timeline
+### Second pass—Build the timeline {#second-pass-build-the-timeline}
 
 An entity usually has attributes stored in multiple tables.
 
@@ -151,7 +151,7 @@ In this example, we use inner join for simplicity. Real systems also require car
 > We do not develop the full pattern here. The important point is that the timeline approach generalises. A timeline can be extended across an additional time dimension, giving the user a disciplined way to answer these questions while maintaining the clarity on the multiple time dimensions.
 
 
-### Third pass—Create snapshots and infer behaviour
+### Third pass—Create snapshots and infer behaviour {#third-pass-create-snapshots-and-infer-behaviour}
 
 The third pass produces entity-level outputs over time.
 

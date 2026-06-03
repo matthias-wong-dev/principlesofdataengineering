@@ -673,9 +673,47 @@ def rewrite_internal_links(text: str, link_map: dict[str, str]) -> str:
         anchor = link_map.get(normalize_site_url(url))
         if not anchor:
             return match.group(0)
+        if fragment:
+            section_anchor = slugify_anchor(fragment.lstrip("#"))
+            return f"{prefix}#{anchor}-{section_anchor}{suffix}"
         return f"{prefix}#{anchor}{fragment or ''}{suffix}"
 
     return MARKDOWN_SITE_LINK_RE.sub(replace_link, text)
+
+
+def add_page_scoped_heading_anchors(text: str, page: Page) -> str:
+    lines: list[str] = []
+    in_fence = False
+    fence_marker: str | None = None
+    heading_re = re.compile(r"^(#{1,6})(\s+)(.+?)(?:\s+\{#[A-Za-z0-9_-]+\})?\s*$")
+    anchor_prefix = page_anchor(page)
+    seen_anchors: dict[str, int] = {}
+
+    for line in text.splitlines():
+        stripped = line.lstrip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            if in_fence and marker == fence_marker:
+                in_fence = False
+                fence_marker = None
+            elif not in_fence:
+                in_fence = True
+                fence_marker = marker
+            lines.append(line)
+            continue
+
+        if not in_fence:
+            match = heading_re.match(line)
+            if match:
+                hashes, spacing, title = match.groups()
+                base_anchor = f"{anchor_prefix}-{slugify_anchor(title)}"
+                count = seen_anchors.get(base_anchor, 0) + 1
+                seen_anchors[base_anchor] = count
+                anchor = base_anchor if count == 1 else f"{base_anchor}-{count}"
+                line = f"{hashes}{spacing}{title} {{#{anchor}}}"
+        lines.append(line)
+
+    return "\n".join(lines)
 
 
 def add_tracking_to_external_links(text: str) -> str:
@@ -709,6 +747,8 @@ def clean_body(
     text = strip_leading_title_heading(text, page.title)
     if heading_shift:
         text = shift_markdown_headings(text, heading_shift)
+    if target in {"epub", "pdf", "kdp"}:
+        text = add_page_scoped_heading_anchors(text, page)
     text = normalize_whitespace(text)
     if target in {"pdf", "kdp"}:
         for src, dst in PDF_SAFE_REPLACEMENTS.items():

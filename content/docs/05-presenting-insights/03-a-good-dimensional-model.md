@@ -78,7 +78,7 @@ Most queries should return in under a second. Complex or infrequent queries shou
 
 Performance is not merely a user-experience consideration. It can also signal deeper issues in the articulation of information.
 
-A slow model often indicates that key information has not been pre-computed through [meaningful fragments](/docs/creating-information/meaningful-fragments). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
+A slow model often indicates that key information has not been pre-computed through [meaningful fragments](/docs/creating-information/meaningful-fragments/). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
 
 ## What are the signs of a good model?
 
@@ -137,7 +137,7 @@ The second is the storytelling dimension. It sits at the opposite end of the spe
 
 The presence of both ID dimensions and storytelling dimensions suggests that the data engineer has considered a broad range of user needs. It is not a guarantee of quality, but it is a useful sign.
 
-The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/dimensional-modelling-for-ux/).
+The full set of useful dimensions is covered in the next chapter on the [components of a dimensional model](/docs/presenting-insights/dimensional-modelling-for-ux/#dimensions).
 
 ### Facts and measures
 
@@ -194,7 +194,7 @@ The criterion is whether the dimension belongs naturally to the grain of the fac
 | Manufacture date | 1 → * | 1 → * |
 | Shipping date |  | 1 → * |
 
-Relationships are explored in greater depth in the chapter on [anticipating questions](/docs/presenting-insights/anticipating-questions/).
+Relationships are explored in greater depth in the chapter on [anticipating questions](/docs/presenting-insights/anticipating-questions/#all-the-relationships).
 
 Since dimensions are the user's access point to the model, the column on the filtered side of the relationship, usually in the fact table, should be hidden to avoid ambiguity. The user should use the column on the filtering side, usually in the dimension.
 

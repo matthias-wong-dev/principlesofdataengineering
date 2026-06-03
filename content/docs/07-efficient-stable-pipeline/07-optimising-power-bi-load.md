@@ -65,7 +65,7 @@ The views may have simple logic such as:
 
 However, heavy transformations such as windowing, nested logic, and complex aggregation should be avoided. These belong upstream in curated layers where they can be tested, reused, and incrementally refreshed.
 
-String aggregation for display should also be avoided where possible, as this can often be handled with appropriate DAX measures, as explained in [Designing measures](/docs/presenting-insights/designing-measures/).
+String aggregation for display should also be avoided where possible, as this can often be handled with appropriate DAX measures, as explained in [Designing measures](/docs/presenting-insights/designing-measures/#dimensional-measures).
 
 The ideal case is to create fragments that are both meaningful and effective for loading into the Power BI model. If a source table still requires elaborate logic to stitch pieces together, the issue is not merely SQL tuning. The deeper issue is that upstream fragments have not been adequately prepared. 
 

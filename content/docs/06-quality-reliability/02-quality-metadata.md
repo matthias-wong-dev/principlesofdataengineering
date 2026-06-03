@@ -129,7 +129,7 @@ Database keys include primary keys, foreign keys, and unique keys. They are also
 
 Keys stop records from becoming lost.
 
-As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
+As explained in [Mapping the data world](/docs/creating-information/mapping-the-data-world/#primary-key), the primary key is what links a database record to its real-world business entity. For the user, they are the anchor between a table  and the entity it claims to represent.
 
 Moreover, a business domain is rarely three simple tables. It is usually a swamp of entities, events, statuses, and inferred relationships. Without keys, the user may see the records but have no reliable way to navigate them. 
 

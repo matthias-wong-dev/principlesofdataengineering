@@ -315,7 +315,7 @@ This example shows that a source insert can become a target delete. Anti-joins r
 
 Once the query has been analysed, the transformation can be converted from a full load to an incremental load.
 
-Recall from [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) that the differences between incremental extract and full extract are:
+Recall from [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#step-1-stage-the-incoming-data) that the differences between incremental extract and full extract are:
 
 - The staging table for the load has only a minimal set of records that is much smaller than the full set, but still covers all the records that would need to be upserted in the current batch. This is what makes the load fast.
 

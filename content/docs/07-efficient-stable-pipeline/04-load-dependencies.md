@@ -189,7 +189,7 @@ These columns may matter for the source system, but they may not represent meani
 
 A dependency on such a column can cause false downstream changes. It can make stable business information appear unstable.
 
-The mitigation is to separate change detection from business meaning. If a volatile column is only needed for polling or extraction, it should not necessarily be propagated downstream as information. Techniques for managing this are discussed in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/).
+The mitigation is to separate change detection from business meaning. If a volatile column is only needed for polling or extraction, it should not necessarily be propagated downstream as information. Techniques for managing this are discussed in [Tracking changes](/docs/efficient-stable-pipeline/tracking-changes/#the-role-of-the-filter-step).
 
 The principle is:
 
@@ -265,7 +265,7 @@ But views are not a complete substitute for loaded tables.
 
 Views can propagate errors instantly. If the source table contains a bad value, the view exposes it immediately. A materialised table can provide a buffer because it changes only when loaded.
 
-Views also do not track row-level change. As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/), the Check step of a load determines whether a row has genuinely changed. This allows downstream tables and processes to respond precisely to inserts, updates, and deletes. A view does not provide this kind of change event.
+Views also do not track row-level change. As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#check-for-genuine-changes), the Check step of a load determines whether a row has genuinely changed. This allows downstream tables and processes to respond precisely to inserts, updates, and deletes. A view does not provide this kind of change event.
 
 Views also do not preserve history when source systems delete old records. If a view points to a source that no longer contains a record, the view cannot recover it. A materialised warehouse table can preserve the information.
 

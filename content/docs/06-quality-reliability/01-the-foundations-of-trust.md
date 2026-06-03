@@ -11,7 +11,7 @@ weight: 1
 
 Data is a fragment of reality captured by process.
 
-Because of this, data is an [imperfect projection](/docs/foundations/what-is-data/) of the business world into the data world. Data quality issues arise from the gap between the business world and this projection.
+Because of this, data is an [imperfect projection](/docs/foundations/what-is-data/#how-is-data-captured) of the business world into the data world. Data quality issues arise from the gap between the business world and this projection.
 
 For example, key information required for decisions may not be captured. It may be captured in free-text format. It may be captured at the wrong grain. 
 

@@ -56,7 +56,7 @@ At this stage, no union is required. The goal is to represent each incoming syst
 
 ### Step 2—Build conformed references
 
-The second step is to build [reference data](/docs/creating-information/reference-data/) that expresses shared business meaning across both systems.
+The second step is to build [reference data](/docs/creating-information/reference-data/#step-2-build-shared-references) that expresses shared business meaning across both systems.
 
 For example, suppose the two systems record sales status differently.
 

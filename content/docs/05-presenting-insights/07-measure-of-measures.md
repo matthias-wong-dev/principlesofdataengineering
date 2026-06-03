@@ -280,7 +280,7 @@ Inexperienced data engineers sometimes try to solve the same problem by forcing 
 
 That may be appropriate in some models, but not always. If the processes are genuinely different and already have good measures, it may be better to structure the measures rather than reshape the facts.
 
-The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](/docs/creating-information/conforming-systems/) when vertical integration of the underlying facts is not appropriate.
+The measure of measures allows users to operate on the measures directly. It is a form of [horizontal integration](/docs/creating-information/conforming-systems/#horizontal-integration) when vertical integration of the underlying facts is not appropriate.
 
 ## Dangers
 

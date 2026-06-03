@@ -173,7 +173,7 @@ Figure 1. Business reality is projected into recorded data with loss, distortion
 
 One theme runs through all three approaches: assumptions must be monitored. If a data engineer closes a quality gap by applying judgement, rules, or approximation, the data product should also monitor whether that intervention continues to behave as intended.
 
-This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+This is covered in more detail in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/#monitored-assumptions-surfacing-records-that-require-attention).
 
 ## Human curation: when judgement is needed
 
@@ -256,7 +256,7 @@ If data quality issues are frequent or systemic, a data quality report may be mo
 
 Data quality reports are suitable when issues are frequent, numerous, or easier to treat in bulk on a periodic basis.
 
-An effective implementation is to create a [combination or choice dimension](/docs/presenting-insights/dimensional-modelling-for-ux/). A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
+An effective implementation is to create a [combination or choice dimension](/docs/presenting-insights/dimensional-modelling-for-ux/#combination-dimension). A combination dimension may include one column per issue and describe each transaction. For example, a dimension called `'Sales data quality'` might include `[Is missing sales amount]`, `[Is invalid sales date]`, `[Is unknown customer]`, and so on.
 
 **Example structure of `'Sales data quality'`**
 
@@ -309,7 +309,7 @@ Defining analytical concepts closes the quality gap between operational detail a
 
 Since business insight is information analysed in light of business intent, a direct way of improving data quality is to define the analytical concept that the business needs.
 
-Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
+Defining analytical concepts takes [leadership and negotiation skill](/docs/foundations/data-and-organisations/#implications-for-data-engineering). The data engineer is often well placed to broker between stakeholder groups by experimenting with the data and visually communicating possible outcomes.
 
 #### Good and bad entities
 
@@ -344,7 +344,7 @@ This gives the user an immediate view of the process at the level of business ju
 
 It is not reasonable to expect operational systems to always define these concepts. Their primary job is to execute workflows while preserving records. The data engineer plays a role by adding the analytical lens.
 
-This implementation is studied in greater depth in [Entity processing](/docs/creating-information/entity-processing/).
+This implementation is studied in greater depth in [Entity processing](/docs/creating-information/entity-processing/#third-pass-reduce).
 
 #### Milestones
 
@@ -402,7 +402,7 @@ In this example, the three milestones correspond to different control points. Ad
 
 To deal with loops and repeated events, the data engineer can define the earliest or latest relevant occurrence. For example, `[Advertisement published datetime]` may use the first publication event, while `[Offer accepted datetime]` may use the final accepted offer event.
 
-This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
+This pattern is studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/#milestone-datetimes).
 
 #### Conformed dimensions
 
@@ -457,13 +457,13 @@ This allows sales and shipping data to be analysed through the same country dime
 
 When done appropriately, a conformed view can empower decision-makers at the most senior levels of the organisation.
 
-Conformed dimensions are studied in [Reference data](/docs/creating-information/reference-data/).
+Conformed dimensions are studied in [Reference data](/docs/creating-information/reference-data/#building-and-applying-shared-references).
 
 ### Defining primary keys
 
 Defining primary keys closes the quality gap between database rows and real-world entities by making their link explicit.
 
-Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/). Unfortunately, some business processes do not rigorously define primary keys.
+Primary keys serve as the [link between data records and their counterparts in the real world](/docs/creating-information/mapping-the-data-world/#primary-key). Unfortunately, some business processes do not rigorously define primary keys.
 
 This can lead to slippery definitions in the database. In other cases, the primary key is defined at the application layer but remains invisible at the data layer, leaving the business user without a clear way to interpret the data.
 
@@ -511,7 +511,7 @@ In general, sequence numbers are effective wherever there is a miscellaneous lis
 
 Version numbers close the quality gap where the source system records change, but does not make the continuity of the entity clear.
 
-Version numbers are useful for [entities whose changes should be preserved as new versions](/docs/creating-information/entity-processing/).
+Version numbers are useful for [entities whose changes should be preserved as new versions](/docs/creating-information/entity-tracking/).
 
 For example, a customer order may be submitted, revised, and resubmitted before it is fulfilled. The business may still regard this as the same order, but each revision changes the content that was true at a particular point in time.
 
@@ -744,9 +744,9 @@ The logic may be based on a business rule such as:
 | T001 | M001 | FO002 | 0.5 |
 | T001 | M002 | FO002 | 0.5 |
 
-Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/).
+Because the relationship is inferred rather than recorded, it should be tested. Techniques for validating mapping logic are described in [Tests and assumptions](/docs/quality-reliability/tests-and-assumptions/#bypassing-mapping-tables).
 
-Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/).
+Variants of this are studied in [Meaningful fragments](/docs/creating-information/meaningful-fragments/#mapping).
 
 ## Fuzzy logic: when intent can only be approximated
 

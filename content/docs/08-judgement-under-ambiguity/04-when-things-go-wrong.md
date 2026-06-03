@@ -192,7 +192,7 @@ First, the trigger often provides a hint for an urgent patch. If the trigger is 
 
 Second, and more importantly, the trigger is a clue to finding the root cause. But just like a patient’s self-report, the important discipline is not to confuse the trigger with the root cause itself.
 
-### Step 3—Diagnose the root cause
+### Step 3—Diagnose the root cause {#step-3-diagnose-the-root-cause}
 
 Once the patient has reported symptoms and given an account of recent history, the doctor often starts taking measurements: blood pressure, temperature, oxygen saturation, or a physical examination. Some cases may need blood tests, an X-ray, or other investigations.
 
@@ -214,7 +214,7 @@ One way to distinguish root cause from trigger is that:
 
 > Root cause issues are those that violate design principles.
 
-For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/).
+For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/#monitored-assumptions-surfacing-records-that-require-attention).
 
 In this view, the disagreement between engineers reflects a different understanding of the design principle that has been violated.
 

@@ -196,7 +196,7 @@ Without trust, no data project can succeed. After each engagement, the question 
 
 The best ways to grow trust are transparency and active listening.
 
-- Transparency means clear communication of the [construction plan](/docs/judgement-under-ambiguity/construction-planning/) and regular demonstrations of progress—weekly or twice-weekly. This is akin to a home buyer seeing the building take shape.
+- Transparency means clear communication of the [construction plan](/docs/judgement-under-ambiguity/construction-planning/#formulating-an-effective-plan) and regular demonstrations of progress—weekly or twice-weekly. This is akin to a home buyer seeing the building take shape.
 
 - Active listening means thoughtful paraphrasing and summarising stakeholder input. When stakeholders hear their own language reflected, they feel understood and affirmed. This also happens when they are invited to check metadata, which gives them a tangible way to contribute.
 

@@ -44,7 +44,7 @@ Expressiveness encompasses all aspects of a good data engineer’s work. It lies
 
 ## Fragment modelling
 
-The [fluid nature of business insight](/docs/foundations/what-is-data-engineering/) means that the data engineer cannot know in advance exactly what needs to be built.
+The [fluid nature of business insight](/docs/foundations/what-is-data-engineering/#the-fluid-nature-of-data-engineering) means that the data engineer cannot know in advance exactly what needs to be built.
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 

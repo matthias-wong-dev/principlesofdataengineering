@@ -122,7 +122,7 @@ A more scalable pattern separates the time-tracking artefacts from the data cont
 
 ## Refresh bookmarks
 
-As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/), each successful table load should record a refresh bookmark.
+As explained in [Load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#log-bookmarks-and-change-statistics), each successful table load should record a refresh bookmark.
 
 A **refresh bookmark** is target-side state. It records how far the target table has successfully refreshed, without relying on the target table’s business columns to remember that state.
 
@@ -532,7 +532,7 @@ where
     or e.[Row delete datetime] > @refresh_bookmark_datetime;
 ```
 
-This is one of the reasons why the [Filter step](/docs/creating-information/entity-processing/) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
+This is one of the reasons why the [Filter step](/docs/creating-information/entity-processing/#first-pass-filter) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
 
 ## The role of the filter step
 
@@ -546,14 +546,14 @@ Third, deletes are very hard to track unless they have been architecturally mana
 
 When these conditions are absent, tracking change becomes complex or even impossible.
 
-This is one reason pipelines often begin with a [Filter step](/docs/creating-information/entity-processing/) that keeps transformation minimal. The Filter step is the first controlled interaction with the source data. It extracts the necessary rows and columns, then annotates them with pipeline-managed architectural columns. It also tracks deletes.
+This is one reason pipelines often begin with a [Filter step](/docs/creating-information/entity-processing/#first-pass-filter) that keeps transformation minimal. The Filter step is the first controlled interaction with the source data. It extracts the necessary rows and columns, then annotates them with pipeline-managed architectural columns. It also tracks deletes.
 
 The Filter step may look like low-value work because it performs little transformation. But it provides a critical foundation. Once source data has passed through a properly designed load process, downstream tables can rely on `[Row insert datetime]`, `[Row update datetime]`, and `[Row delete datetime]` to track change.
 
 The optimal case is:
 
 1. incoming data is incrementally extracted using source change detection or polling tables;
-2. the Filter step applies [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/) to detect genuine change;
+2. the Filter step applies [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#check-for-genuine-changes) to detect genuine change;
 3. the resulting pipeline table has reliable row change datetimes, and deleted rows are stored in a history table;
 4. downstream tables can process incrementally using those pipeline-managed datetimes.
 

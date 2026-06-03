@@ -14,7 +14,7 @@ This approach is **fragment modelling**.
 
 This chapter closes the section on creating information by making fragment modelling explicit. It steps back from those specific patterns and names the broader practice. It then introduces additional fragment patterns that commonly appear in real business pipelines: milestones, current-version selectors, timelines, mappings, distribution weights, and hubs.
 
-The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/):
+The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/#fragment-modelling):
 
 > Instead of building giant tables, create meaningful fragments.
 
@@ -343,7 +343,7 @@ This is one case where fragment modelling can reduce immediate expressiveness if
 
 When entities change over time, users often need consistent point-in-time views. This can be error-prone for users when the attributes are spread across multiple tables, because joins require careful handling of time conditions. The data engineer can make these results easily accessible through corresponding fragments.
 
-The relevant fragments—timelines and end-of-period tables— are discussed in [Entity tracking](/docs/creating-information/entity-tracking/).
+The relevant fragments—timelines and end-of-period tables— are discussed in [Entity tracking](/docs/creating-information/entity-tracking/#second-pass-build-the-timeline).
 
 ### Mapping
 

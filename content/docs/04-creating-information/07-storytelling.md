@@ -55,7 +55,7 @@ As a simplified example, a `Cake.Production` process may contain inspection resu
 
 The source system may record production events and inspection notes, but the business needs to see whether a production run failed and why. The data engineer creates that interpretation as a reusable fragment.
 
-The definition of good and bad can be a significant point of debate in a complex organisation with different business viewpoints. In these situations, it can be extremely challenging to arrive at a consensus. Many organisations fail to do so, crippling their ability to see issues consistently. In this case, it is often [the creativity and technical expertise of the data engineer](/docs/foundations/data-and-organisations/) that can broker between parties by showing the way forward.
+The definition of good and bad can be a significant point of debate in a complex organisation with different business viewpoints. In these situations, it can be extremely challenging to arrive at a consensus. Many organisations fail to do so, crippling their ability to see issues consistently. In this case, it is often [the creativity and technical expertise of the data engineer](/docs/foundations/data-and-organisations/#implications-for-data-engineering) that can broker between parties by showing the way forward.
 
 ## Trading detail for insight
 
@@ -211,7 +211,7 @@ The business no longer needs to inspect every individual inspection result. The 
 
 A storytelling dimension brings multiple acts of interpretation together into a single reusable business view.
 
-Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through [reference data](/docs/creating-information/reference-data/) rather than in the transaction table itself.
+Categories, combinations, special cases, and journeys can each be useful individually. A storytelling dimension combines them into a coherent way of seeing the entity. The aim is to tell the overall story of the entity. This means stepping back from what is written in the database and asking what kind of journey the entity undertook through business processes. The emphasis is on the business view of the situation. The story is then expressed through [reference data](/docs/creating-information/reference-data/#a-point-of-reference) rather than in the transaction table itself.
 
 Continuing the help desk example:
 
@@ -327,7 +327,7 @@ Once the storytelling dimension exists, the entity of interest can be mapped to 
 | H1003 | 7 |
 | H1004 | 2 |
 
-The calculation should be done at the grain of the entity of interest during the reduce stage of the pipeline, as described in the chapter on [Entity Processing](/docs/creating-information/entity-processing/).
+The calculation should be done at the grain of the entity of interest during the reduce stage of the pipeline, as described in the chapter on [Entity Processing](/docs/creating-information/entity-processing/#third-pass-reduce).
 
 The calculation can be added to an existing aggregation table if appropriate or implemented as a new fragment. Continuing the help desk example, this would result in a `Helpdesk.CaseEscalation` table paired with `Helpdesk.RefCaseEscalation`.
 **Example result after joining to `Helpdesk.RefCaseEscalation`**
@@ -371,7 +371,7 @@ Storytelling is important because correctness is not enough. A table can be accu
 
 The data engineer’s task is to create forms of information that make the business visible: its outcomes, patterns, and journeys. 
 
-This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](/docs/foundations/data-and-organisations/), and where the data engineer plays an influential role in how organisation understands its own business.
+This involves decisions and compromise: details to discard, or journeys to emphasise. Consequently, storytelling is a central place where the [organisation negotiates meaning](/docs/foundations/data-and-organisations/#implications-for-data-engineering), and where the data engineer plays an influential role in how organisation understands its own business.
 
 
 
