@@ -87,6 +87,7 @@ This book covers topics such as:
 - [What is data, really?](../docs/foundations/what-is-data/)
 - [A fundamental difference between mutable and immutable entities](../docs/creating-information/mapping-the-data-world/)
 - [Three steps to modelling any system](../docs/creating-information/entity-processing/)
+- [Dealing with multiple timelines while staying sane](/docs/creating-information/entity-tracking/)
 - [Powerful storytelling techniques that make sense for your business](../docs/creating-information/storytelling/)
 - [Building a data product that can answer any question](../docs/modelling-reality/anticipating-questions/)
 - [Treating dimensional modelling like UX, and not static reports like it is the 90s](../docs/presenting-insights/dimensional-modelling-for-ux/)
@@ -115,6 +116,8 @@ While the book is best read sequentially, the six sections are loosely independe
 4. [**Quality & reliability**](../docs/quality-reliability/)—move beyond generic data quality language into practical methods for metadata, testing, assumptions, human curation, precise rules, and fuzzy logic.
 5. [**Efficient & stable pipeline**](../docs/efficient-stable-pipeline/)—build pipelines that are efficient, stable, observable, and maintainable, including incremental processing and programmatic orchestration patterns.
 6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/)—learn the senior craft: working with stakeholders, planning uncertain delivery, and diagnosing root causes when things go wrong.
+
+One way to use the book is to feed it to Codex, Claude Code or similar tool, and let it write code dbt or SQL code according to the patterns.
 
 ## Comments welcome
 
