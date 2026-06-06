@@ -41,9 +41,11 @@ Data representations that survive real systems.
 
 Data representations that stop organisations from guessing.
 
-## For senior leaders
+## Data Without Guessing
 
-If you are a senior leader, read this instead: [Unglamorous data](https://irisnotes.com/posts/unglamorous-data/), a three-minute summary of the book.
+This book is provided as part of [Data Without Guessing](https://datawithoutguessing.com).
+
+If you are a senior leader, read the article [Unglamorous data](https://datawithoutguessing.com/articles/unglamorous-data/) for a three-minute summary of the book.
 
 ## Download the book
 
@@ -87,7 +89,7 @@ This book covers topics such as:
 - [What is data, really?](../docs/foundations/what-is-data/)
 - [A fundamental difference between mutable and immutable entities](../docs/creating-information/mapping-the-data-world/)
 - [Three steps to modelling any system](../docs/creating-information/entity-processing/)
-- [Dealing with multiple timelines while staying sane](/docs/creating-information/entity-tracking/)
+- [Multiple timelines while staying sane](/docs/creating-information/entity-tracking/)
 - [Powerful storytelling techniques that make sense for your business](../docs/creating-information/storytelling/)
 - [Building a data product that can answer any question](../docs/modelling-reality/anticipating-questions/)
 - [Treating dimensional modelling like UX, and not static reports like it is the 90s](../docs/presenting-insights/dimensional-modelling-for-ux/)
@@ -121,4 +123,4 @@ One way to use the book is to feed it to Codex, Claude Code or similar tool, and
 
 ## Comments welcome
 
-Comments are welcome, see [author page](/docs/about/the-author/) for contact information.
+Comments and questions are welcome, see [*Data Without Guessing*](https://datawithoutguessing.com/principles-of-data-engineering/) for contact information.

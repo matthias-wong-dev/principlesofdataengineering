@@ -7,127 +7,148 @@ body,
 .book-toc,
 .book-search input,
 .book-brand {
-  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: Inter, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
 .book-menu .book-menu-content,
 .book-toc .book-toc-content {
-  background: #eef3f8;
-  border-inline-end: 1px solid rgba(58, 95, 133, 0.08);
+  background: #dce6ee;
+  border-inline-end: 1px solid rgba(9, 40, 88, 0.16);
 }
 
 .book-page {
-  background: #fbfcfe;
+  background: #fff;
 }
 
 .book-menu a.active,
 .book-toc a:hover,
 .book-toc a.active {
-  color: #3a5f85;
+  color: #1a488f;
 }
 
 .book-toc {
-  color: #708197;
+  color: #385b9f;
 }
 
 .book-brand,
 .book-menu {
-  color: #25364a;
+  color: #092858;
+}
+
+.book-brand {
+  font-weight: 800;
+}
+
+.book-menu,
+.book-toc {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.book-menu a,
+.book-toc a {
+  border-radius: var(--border-radius);
+}
+
+.book-menu a[href]:hover,
+.book-toc a[href]:hover {
+  color: #092858;
+  opacity: 1;
 }
 
 .chapter-intro {
-  margin: 0 0 2.5rem;
-  padding: 1.25rem 1.5rem 1.4rem;
-  border-top: 1px solid rgba(58, 95, 133, 0.12);
-  border-bottom: 1px solid rgba(58, 95, 133, 0.08);
-  background: #f3f7fb;
+  margin: 0 0 2.75rem;
+  padding: 1.45rem 1.6rem 1.6rem;
+  border-top: 1px solid rgba(9, 40, 88, 0.18);
+  border-bottom: 1px solid rgba(9, 40, 88, 0.12);
+  background: #dce6ee;
 }
 
 .chapter-intro__eyebrow {
   margin: 0 0 0.15rem;
-  color: #71829a;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  color: #385b9f;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .chapter-intro__title {
   margin: 0;
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", "Times New Roman", serif;
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+  font-size: clamp(2.8rem, 5vw, 4.8rem);
+  line-height: 0.96;
+  letter-spacing: 0;
   max-width: none;
-  color: #1f2d3a;
+  color: #092858;
 }
 
 .chapter-intro__lede {
   margin: 0.65rem 0 0;
-  max-width: 40rem;
-  color: #546477;
-  font-size: 1.15rem;
+  max-width: 44rem;
+  color: #385b9f;
+  font-size: 1.2rem;
   line-height: 1.45;
 }
 
 .markdown {
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", "Times New Roman", serif;
-  font-size: 1.075rem;
-  line-height: 1.72;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+  font-size: 1.2rem;
+  line-height: 1.74;
 }
 
 .markdown h2,
 .markdown h3 {
-  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-  color: #3a5f85;
+  font-family: Inter, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #1a488f;
 }
 
 .markdown h2 {
   margin-top: 1.8em;
   margin-bottom: 0.8rem;
   padding-bottom: 0.25rem;
-  font-size: 1.3rem;
-  font-weight: 500;
+  font-size: 1.42rem;
+  font-weight: 700;
   letter-spacing: 0;
-  border-bottom: 1px solid rgba(58, 95, 133, 0.1);
+  border-bottom: 1px solid rgba(9, 40, 88, 0.16);
 }
 
 .markdown h3 {
   margin-top: 1.4em;
   margin-bottom: 0.45rem;
-  font-size: 1.06rem;
-  font-weight: 600;
-  color: #527392;
-  letter-spacing: 0.02em;
+  font-size: 1.14rem;
+  font-weight: 700;
+  color: #385b9f;
+  letter-spacing: 0;
 }
 
 .markdown h4 {
   margin-top: 1.2em;
   margin-bottom: 0.35rem;
-  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: Inter, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.98rem;
   font-weight: 700;
-  color: #25364a;
+  color: #092858;
 }
 
 .markdown p,
 .markdown ul,
 .markdown ol,
 .markdown blockquote {
-  max-width: 42rem;
+  max-width: 44rem;
 }
 
 .markdown > table {
   width: 100%;
-  max-width: 42rem;
-  font-size: 0.9rem;
-  line-height: 1.45;
+  max-width: 44rem;
+  font-size: 1.04rem;
+  line-height: 1.55;
   background: transparent;
 }
 
 .markdown > table tr th,
 .markdown > table tr td {
-  padding: 0.45rem 0.6rem;
+  padding: 0.55rem 0.7rem;
   background: transparent;
 }
 
@@ -138,31 +159,31 @@ body,
 .markdown > svg {
   display: block;
   width: 100%;
-  max-width: 42rem;
+  max-width: 44rem;
   height: auto;
 }
 
 .markdown .book-codeblock-with-toggle {
-  max-width: 42rem;
+  max-width: 44rem;
 }
 
 .markdown pre,
 .markdown .highlight {
-  max-width: 42rem;
+  max-width: 44rem;
   box-sizing: border-box;
 }
 
 .markdown code {
-  background: #f1f4f7;
-  border-color: #d7e0e8;
-  color: #17202a;
+  background: #dce6ee;
+  border-color: #a8bcd9;
+  color: #092858;
 }
 
 .markdown pre,
 .markdown .highlight pre {
-  background: #f6f8fa !important;
-  border-color: #c9d3dd;
-  color: #17202a;
+  background: #fbfdff !important;
+  border-color: #a8bcd9;
+  color: #092858;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
@@ -194,8 +215,8 @@ body,
 }
 
 .markdown .chroma {
-  background: #f6f8fa;
-  color: #17202a;
+  background: #fbfdff;
+  color: #092858;
 }
 
 .markdown .chroma span {
@@ -208,7 +229,7 @@ body,
 
 .markdown .chroma .cl,
 .markdown .chroma .line {
-  color: #17202a;
+  color: #092858;
 }
 
 .markdown .chroma .c,
@@ -216,7 +237,7 @@ body,
 .markdown .chroma .cm,
 .markdown .chroma .cp,
 .markdown .chroma .cs {
-  color: #6f7f90;
+  color: #385b9f;
 }
 
 .markdown .chroma .k,
@@ -226,7 +247,7 @@ body,
 .markdown .chroma .kp,
 .markdown .chroma .kr,
 .markdown .chroma .kt {
-  color: #345f86;
+  color: #1a488f;
   font-weight: 600;
 }
 
@@ -243,7 +264,7 @@ body,
 .markdown .chroma .sr,
 .markdown .chroma .ss,
 .markdown .chroma .sx {
-  color: #7a4e2f;
+  color: #8b5b24;
 }
 
 .markdown .chroma .m,
@@ -253,42 +274,42 @@ body,
 .markdown .chroma .mi,
 .markdown .chroma .mo,
 .markdown .chroma .il {
-  color: #72558a;
+  color: #385b9f;
 }
 
 .markdown .chroma .nf,
 .markdown .chroma .fm {
-  color: #4b647e;
+  color: #1a488f;
 }
 
 .markdown .chroma .o,
 .markdown .chroma .ow,
 .markdown .chroma .p {
-  color: #5f6b78;
+  color: #385b9f;
 }
 
 .markdown .chroma .err {
-  color: #8b5e66;
+  color: #9a344f;
   background: transparent;
 }
 
 .markdown code.language-dax .dax-keyword,
 .markdown code.language-dax .dax-function {
-  color: #345f86;
+  color: #1a488f;
   font-weight: 600;
 }
 
 .markdown code.language-dax .dax-comment {
-  color: #6f7f90;
+  color: #385b9f;
 }
 
 .markdown code.language-dax .dax-string,
 .markdown code.language-dax .dax-table {
-  color: #7a4e2f;
+  color: #8b5b24;
 }
 
 .markdown code.language-dax .dax-number {
-  color: #72558a;
+  color: #385b9f;
 }
 
 .markdown code.language-dax .dax-identifier {
@@ -296,27 +317,27 @@ body,
 }
 
 .markdown .book-codeblock-filename {
-  border-color: #c9d3dd;
-  background: #edf2f6;
-  color: #435266;
+  border-color: #a8bcd9;
+  background: #dce6ee;
+  color: #385b9f;
 }
 
 .markdown .book-codeblock-wrap-toggle {
   display: block;
   margin: 1rem 0 -0.5rem auto;
   padding: 0.2rem 0.55rem;
-  border: 1px solid #c9d3dd;
+  border: 1px solid #a8bcd9;
   border-radius: var(--border-radius);
-  background: #f6f8fa;
-  color: #3a5f85;
-  font-family: "Aptos", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: #fbfdff;
+  color: #1a488f;
+  font-family: Inter, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 0.75rem;
   line-height: 1.25;
   cursor: pointer;
 }
 
 .markdown .book-codeblock-wrap-toggle:hover {
-  background: #eef3f8;
+  background: #dce6ee;
 }
 
 .markdown .book-codeblock-with-toggle.is-wrapped pre {
@@ -331,10 +352,10 @@ body,
 .markdown blockquote {
   padding-top: 0.35rem;
   padding-bottom: 0.35rem;
-  border-inline-start-color: rgba(18, 63, 107, 0.35);
+  border-inline-start-color: rgba(9, 40, 88, 0.48);
   background: transparent;
-  font-style: bold;
-  // color: #435266;
+  color: #092858;
+  font-weight: 600;
 }
 
 .markdown blockquote.book-hint {
@@ -349,11 +370,70 @@ body,
 }
 
 .markdown hr {
-  border-bottom-color: rgba(58, 95, 133, 0.12);
+  border-bottom-color: rgba(9, 40, 88, 0.16);
 }
 
 .book-article > h1:first-child {
   display: none;
+}
+
+.book-kind-home .book-page {
+  padding-top: clamp(1.5rem, 4vw, 4rem);
+}
+
+.book-kind-home .markdown > h2:first-child {
+  max-width: 48rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+  border-bottom: 0;
+  color: #092858;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+  font-size: clamp(2.9rem, 6.8vw, 5.25rem);
+  font-weight: 700;
+  line-height: 0.96;
+}
+
+.book-kind-home .markdown > h2:first-child + p {
+  max-width: 48rem;
+  color: #092858;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  line-height: 1.32;
+}
+
+.book-kind-home .markdown > h2:first-child + p strong {
+  color: #1a488f;
+}
+
+.book-kind-home .markdown > blockquote:first-of-type {
+  margin: 1.4rem 0;
+  padding: 0.85rem 1.15rem;
+  border-left-width: 0.35rem;
+  background: #dce6ee;
+  box-shadow: 0 16px 40px rgba(9, 40, 88, 0.1);
+}
+
+.book-kind-home .markdown a[href$=".pdf"],
+.book-kind-home .markdown a[href$=".epub"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.65rem;
+  margin: 0.15rem 0;
+  padding: 0 0.95rem;
+  border: 1px solid #1a488f;
+  border-radius: 0.35rem;
+  background: #1a488f;
+  color: #fff;
+  font-family: Inter, "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.book-kind-home .markdown a[href$=".pdf"]:hover,
+.book-kind-home .markdown a[href$=".epub"]:hover {
+  background: #092858;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 56rem) {
