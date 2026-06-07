@@ -144,6 +144,7 @@ The mindset here is storytelling. The data engineer should not be limited by sou
 
 The guiding question is:
 
+> [!SHARE:valuable-pieces-information]
 > What valuable pieces of information would be useful for business insight?
 
 Often, this information is latent in the data and must be explicitly calculated. For example, the concept of a non-compliant transaction may not be stated in the source data. It must be inferred.

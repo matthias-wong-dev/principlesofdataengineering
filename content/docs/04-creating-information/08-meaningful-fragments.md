@@ -16,6 +16,7 @@ This chapter closes the section on creating information by making fragment model
 
 The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/#fragment-modelling):
 
+> [!SHARE:instead-building-giant]
 > Instead of building giant tables, create meaningful fragments.
 
 ## Why giant tables fail
@@ -34,6 +35,7 @@ Fragment modelling takes the opposite approach.
 
 A **meaningful fragment** is a narrow table that packages one reusable piece of business meaning. Each fragment should answer a clear question:
 
+> [!SHARE:information-table-create]
 > What information does this table create?
 
 The fragment then isolates the calculation of this information to its own table, and gives the table an expressive name. 

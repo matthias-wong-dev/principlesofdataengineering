@@ -22,6 +22,7 @@ This chapter introduces efficiency and stability as two disciplines for preservi
 
 This is also the fourth principle of data engineering:
 
+> [!SHARE:instead-wholesale-response]
 > Instead of wholesale response, maintain proportionate change.
 
 ## Efficiency

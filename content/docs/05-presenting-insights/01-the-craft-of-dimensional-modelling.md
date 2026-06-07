@@ -40,6 +40,7 @@ The hard question is therefore not only: "How do I build the dimensional model?"
 
 It is also:
 
+> [!SHARE:dimensional-model-behave]
 > How should the dimensional model behave to anticipate user needs?
 
 Three guiding questions organise the chapters in this section:

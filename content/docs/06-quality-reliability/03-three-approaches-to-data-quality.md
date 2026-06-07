@@ -25,6 +25,7 @@ The same data element—personal income—therefore has different quality implic
 
 All three may prefer perfect accuracy. But none takes the same approach when under constraint.
 
+> [!SHARE:no-accuracy-without]
 > There is no accuracy without margin of error, no margin of error without a risk threshold, and no risk threshold without an articulation of business intent.
 
 Consequently, data quality is not merely data versus reality. It is data versus business intent.

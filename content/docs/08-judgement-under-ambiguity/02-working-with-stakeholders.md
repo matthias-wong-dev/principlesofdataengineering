@@ -192,6 +192,7 @@ There are several reasons for this.
 
 Without trust, no data project can succeed. After each engagement, the question should not be “Do we know more about the requirements?” but:
 
+> [!SHARE:do-our-stakeholders]
 > Do our stakeholders trust us more?
 
 The best ways to grow trust are transparency and active listening.
@@ -331,6 +332,7 @@ Why expect stakeholders to work with a team without showing a solution hypothesi
 
 When projects meander, it is often because direction is unclear. The best advice for such situations is simple:
 
+> [!SHARE:project-stuck-draw]
 > When the project is stuck, draw a picture of the solution.
 
 The best way to refine the solution hypothesis is through an open workbench format. In an open workbench, the delivery team and stakeholders meet regularly to explore the data model, experiment with new features, test definitions, and provide feedback for the next iteration. Stakeholders may come from different business areas, making the data model a centre for converging perspectives.

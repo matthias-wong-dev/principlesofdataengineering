@@ -15,6 +15,7 @@ That second step depends on query logic.
 
 The central problem is this:
 
+> [!SHARE:source-inserts-updates]
 > Source inserts, updates, and deletes do not necessarily become target inserts, updates, and deletes.
 
 **Responding to change** is the discipline of translating upstream source changes into the smallest correct set of target actions.
@@ -50,6 +51,7 @@ Suppose `Bank.GoldCustomer` contains customers whose account balance exceeds a t
 
 These examples are simple, but the general lesson is that:
 
+> [!SHARE:target-response-determined]
 > The target response is determined by the query.
 
 ## Analysing the query
@@ -111,6 +113,7 @@ A common mistake is to over-delete with the intention of reinserting extra recor
 
 The rule is:
 
+> [!SHARE:upsert-drivers-conservative]
 > Upsert drivers may be conservative and include some extra keys. Delete drivers should contain only rows that no longer satisfy the target query’s presence rule.
 
 ## Worked examples

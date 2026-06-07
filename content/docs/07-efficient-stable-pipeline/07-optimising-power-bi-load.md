@@ -15,6 +15,7 @@ New technologies such as DirectLake promise to remove traditional import refresh
 
 When refreshing Power BI, the core idea is:
 
+> [!SHARE:power-bi-assemble]
 > Power BI should assemble information, not manufacture it.
 
 This is why Power BI performance depends on decisions made far earlier in the pipeline. If upstream data has been shaped into meaningful fragments, if change has been tracked carefully, and if downstream tables respond proportionately to change, then Power BI can load efficiently. If those things have not been done, Power BI refresh becomes the place where all upstream disorder is paid for.
@@ -73,6 +74,7 @@ Materialisation of the view is sometimes necessary to ensure the source table lo
 
 In short:
 
+> [!SHARE:power-bi-source]
 > Power BI source views or tables should be tuned specifically for fast retrieval, not burdened with complex logic.
 
 ## Partitioning the model

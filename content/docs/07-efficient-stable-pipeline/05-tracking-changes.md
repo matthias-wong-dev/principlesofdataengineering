@@ -19,6 +19,7 @@ Doing this well requires systematic change tracking.
 
 Tracking change is the discipline of establishing a reliable relationship between source change and the pipeline’s own processing state, so we can answer the question:
 
+> [!SHARE:source-records-changed]
 > What source records may have changed since this target table last loaded successfully?
 
 
@@ -26,6 +27,7 @@ Tracking change is the discipline of establishing a reliable relationship betwee
 
 Incremental loading depends on a deceptively simple question:
 
+> [!SHARE:changed-table-last]
 > What has changed since this table was last processed?
 
 The difficulty is that this question does not refer to one time. It refers to a relationship between two states.
@@ -47,6 +49,7 @@ A time is out-of-sync when it belongs to another system and may lag behind, arri
 
 The question:
 
+> [!SHARE:source-rows-changed]
 > Which source rows changed after the target last loaded successfully?
 
 is only safe when the source change time is in-sync with the target’s processing time.
@@ -244,6 +247,7 @@ The refresh bookmark datetime of `Curated.Event` is now in-sync with `[Refresh d
 
 With the polling table as the bridge, we can now ask:
 
+> [!SHARE:target-last-refreshed]
 > When the target last refreshed, how far through the source’s update timeline had the source safely arrived?
 
 Suppose `Curated.Event` last successfully started at `2026-05-01 08:01`.

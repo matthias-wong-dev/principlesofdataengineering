@@ -21,6 +21,7 @@ What improves reuse can also reduce stability.
 
 Therefore:
 
+> [!SHARE:dependency-trade-reuse]
 > Every dependency is a trade-off between reuse, efficiency, and stability.
 
 The data engineer therefore has to decide when a dependency is worth creating.
@@ -56,6 +57,7 @@ Recalculation avoids coupling, but may repeat logic or waste compute. Reuse impr
 
 The decision depends on whether the value of reuse exceeds the cost of coupling. This can be determined by the rule:
 
+> [!SHARE:dependency-valuable-targeted]
 > A dependency should be valuable, targeted, and stable.
 
 | Criterion | Question |
@@ -82,6 +84,7 @@ Another example is the use of standard default values. Suppose the surrogate key
 
 The principle is simple:
 
+> [!SHARE:not-create-dependency]
 > Do not create a dependency for information that is cheap, obvious, and stable enough to calculate locally.
 
 Dependencies should be reserved for information that is worth propagating.
@@ -132,6 +135,7 @@ A better design may be to create `Cake.RefSaleSeason`, keyed by `[First date of 
 
 The principle is:
 
+> [!SHARE:dependency-point-smallest]
 > A dependency should point to the smallest meaningful fragment that carries the required information.
 
 ## Stable dependencies
@@ -193,6 +197,7 @@ The mitigation is to separate change detection from business meaning. If a volat
 
 The principle is:
 
+> [!SHARE:not-propagate-volatile]
 > Do not propagate volatile columns unless their volatility is meaningful to the downstream table.
 
 ## The case of surrogate keys
@@ -239,6 +244,7 @@ This approach only works when the surrogate key can be computed safely and perma
 
 The principle is:
 
+> [!SHARE:surrogate-key-dependency]
 > A surrogate key dependency is justified when the value of the simplified key exceeds the coupling risk created by the lookup.
 
 ## Views as an alternative

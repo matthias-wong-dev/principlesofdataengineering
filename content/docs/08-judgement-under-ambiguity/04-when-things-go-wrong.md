@@ -15,6 +15,7 @@ Data engineering is fundamentally different.
 
 The central premise of data engineering is that:
 
+> [!SHARE:data-fragment-reality]
 > Data is a fragment of reality captured by process.
 
 The data world is an imperfect projection of the business world, which the data engineer reshapes in light of intent.
@@ -29,6 +30,7 @@ But a production failure is only the clearest instance of a wider discipline. It
 
 The sixth and final principle of data engineering is this:
 
+> [!SHARE:instead-stopping-symptoms]
 > Instead of stopping at the symptoms, diagnose the root cause.
 
 This applies to the whole book. Troubleshooting a production failure is simply a crystallised instance of the discipline.
@@ -212,6 +214,7 @@ One engineer may think one event or condition is the root cause, while another e
 
 One way to distinguish root cause from trigger is that:
 
+> [!SHARE:root-cause-issues]
 > Root cause issues are those that violate design principles.
 
 For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/#monitored-assumptions-surfacing-records-that-require-attention).
@@ -241,6 +244,7 @@ Instead, checking the final effect includes:
 
 Ultimately, the final effect that needs to be checked is always:
 
+> [!SHARE:business-receives-information]
 > The business receives the information it needs to make the decision.
 
 ### Example: false deletions after a partial source extract

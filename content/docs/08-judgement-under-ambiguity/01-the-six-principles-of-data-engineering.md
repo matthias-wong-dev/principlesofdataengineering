@@ -23,6 +23,7 @@ The challenge is the fluid nature of data engineering:
 
 But throughout this book, we have seen that the business is not the problem.
 
+> [!SHARE:data-engineer-greatest]
 > The data engineer’s greatest enemy is not the stakeholder asking for shortcuts, but the engineer’s own willingness to provide them.
 
 The business will often ask for the fastest and easiest outcome. This is to be expected. It is the data engineer who must decide how to respond.

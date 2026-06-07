@@ -13,6 +13,7 @@ A data product is not trustworthy merely because it is correct today. It is trus
 
 This is the third principle of data engineering: 
 
+> [!SHARE:instead-stopping-works]
 > Instead of stopping with what works now, anticipate errors that may occur.
 
 The principle follows from two facts.
@@ -29,6 +30,7 @@ A silent error allows a data product to remain polished and apparently authorita
 
 Therefore: 
 
+> [!SHARE:data-engineering-not]
 > Data engineering is not only building the transformation that works. It is building the means by which failure becomes visible.
 
 This chapter covers two such mechanisms:
@@ -73,6 +75,7 @@ A thoughtful test maximises the difference in logic between expected and actual 
 
 The way to write a good test is to ask:
 
+> [!SHARE:complex-fragile-part]
 > Where is the most complex or fragile part of the transformation, and how can this result be calculated in a different way?
 
 The following examples are not exhaustive. They illustrate the mindset of checking weak points by calculating the same result through a different path.

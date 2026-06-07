@@ -212,6 +212,7 @@ Precomputation can be overdone. If the data engineer precomputes too much, the m
 
 The rule is not “precompute everything.” The rule is:
 
+> [!SHARE:precompute-business-interpretation]
 > Precompute business interpretation when doing so preserves interactivity and simplifies the model.
 
 The data engineer should understand the filtering behaviour of Power BI well enough to know which logic belongs in the pipeline and which logic belongs in a measure.

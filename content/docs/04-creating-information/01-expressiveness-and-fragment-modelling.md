@@ -16,6 +16,7 @@ How does the data engineer do this effectively?
 
 This book introduces six principles of data engineering. The first two are **expressiveness** and **fragment modelling**. The two principles are:
 
+> [!SHARE:instead-accepting-garbage]
 > Instead of accepting garbage-in, garbage-out with raw data, add value through expressive entities.
 > 
 > Instead of building giant tables, create meaningful fragments.
@@ -56,6 +57,7 @@ A data engineering approach focused on creating such a store is **fragment model
 
 Modularity of code is a cornerstone in software engineering. Fragment modelling applies this concept to the modularity of information creation in a data pipeline. The result, as in software engineering, is clarity, flexibility, and reuse.
 
+> [!SHARE:data-engineer-sees]
 > The data engineer therefore sees the pipeline primarily as software code, and tables as functions.
 
 A good table in a pipeline performs a defined transformation—it accepts upstream data, applies a specific piece of business meaning, and produces an output that can be reused downstream. 
