@@ -14,11 +14,9 @@ Complex data projects are rarely clear at the beginning. The business intent may
 A weak team responds to this uncertainty in one of two ways. It either meanders, waiting for clarity before moving, or it overcorrects by imposing a rigid plan that cannot survive discovery.
 
 However: 
-> Ambiguity does not justify meandering. 
 
-and
-
-> Order does not require rigidity.
+> [!SHARE:ambiguity-and-order]
+> Ambiguity does not justify meandering. Order does not require rigidity.
 
 A data engineer is responsible for shaping movement through uncertain work. This is the purpose of the **construction plan**. A construction plan gives uncertain work enough order to proceed and enough flexibility to adapt.
 
