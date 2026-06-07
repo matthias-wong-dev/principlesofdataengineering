@@ -27,7 +27,10 @@ The world is not so straightforward. The most difficult part of a data project i
 
 Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, stakeholders uncover what they need to see from the data to achieve business outcomes. These discovered needs—not an initial list—are the real requirements.
 
-The fifth principle of data engineering is therefore: instead of waiting for clarity, **illuminate ambiguity**.
+The fifth principle of data engineering is therefore: 
+
+> [!SHARE:fifth-principle]
+> Instead of waiting for clarity, **illuminate ambiguity**.
 
 In stakeholder work, this means guiding stakeholders through ambiguity until unclear needs become shared understanding.
 
