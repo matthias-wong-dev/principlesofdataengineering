@@ -126,7 +126,8 @@ First, recorded data is not simply “what is in the system.” It is downstream
 
 Second, the data engineer’s work itself is not neutral. The output of data engineering is often the first time an organisation encounters the outcome of its own work in a stable form. For this reason, the output may be contested, especially when multiple business areas are involved. Interpretation becomes inseparable from the work: what is good, what is bad, what is reportable, what is not, which record is authoritative, and which definition should be canonical?
 
-Organisations do not simply use data. Data is also where meaning is negotiated.
+> [!SHARE:meaning-negotiation]
+> Organisations do not simply use data. Data is also where meaning is negotiated.
 
 The data engineer cannot stand outside this negotiation. The engineer can help the organisation navigate meaning with expertise, defer to consensus without judgement, or allow the work to fail because meaning was never clear.
 

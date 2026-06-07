@@ -12,6 +12,7 @@ The aim of data engineering is insight.
 
 But what is insight? Insight is information analysed in the light of intent. 
 
+> [!SHARE:data-engineering-definition]
 > Data engineering, therefore, is an activity in which business intent is applied to data to create first information, then insight.
 
 ## Why is it engineering
