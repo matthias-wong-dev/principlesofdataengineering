@@ -20,22 +20,34 @@ document.addEventListener("DOMContentLoaded", () => {
     button.textContent = "Share";
 
     button.addEventListener("click", async () => {
-      const text = quote.innerText.replace("Share", "").trim();
+      const quoteText = Array.from(quote.querySelectorAll("p"))
+        .map((p) => p.textContent.trim())
+        .filter(Boolean)
+        .join("\n\n");
+
+      const chapterTitle =
+        document.querySelector("h1")?.textContent?.trim() || document.title;
+
+      const workTitle = "Principles of Data Engineering";
       const url = `${window.location.origin}${window.location.pathname}#${id}`;
+
+      const shareText = `“${quoteText}”\n\n— ${chapterTitle}, ${workTitle}`;
 
       try {
         if (navigator.share) {
           await navigator.share({
-            title: document.title,
-            text,
+            title: `${chapterTitle} | ${workTitle}`,
+            text: shareText,
             url
           });
         } else {
-          await navigator.clipboard.writeText(`${text}\n\n${url}`);
+          await navigator.clipboard.writeText(`${shareText}\n${url}`);
           button.textContent = "Copied";
           setTimeout(() => button.textContent = "Share", 1500);
         }
-      } catch {}
+      } catch {
+        // User cancelled native share, or browser blocked it.
+      }
     });
 
     quote.appendChild(button);
