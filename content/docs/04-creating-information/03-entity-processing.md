@@ -35,7 +35,10 @@ The first task is to identify the **entity of interest**.
 
 Usually this is clear. Sometimes it is not. A sales transaction may have multiple line items. Depending on the business question, the transaction may be the entity of interest, or each line item may be the entity of interest.
 
-The correct lens is the one that supports business action.
+
+> [!SHARE:correct-lens]
+> The correct lens is the one that supports business action.
+
 
 Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](/docs/creating-information/expressiveness-and-fragment-modelling/#fragment-modelling) is suited to this task because different aspects of the entity can be maintained in different fragments.
 
@@ -144,7 +147,6 @@ The mindset here is storytelling. The data engineer should not be limited by sou
 
 The guiding question is:
 
-> [!SHARE:valuable-pieces-information]
 > What valuable pieces of information would be useful for business insight?
 
 Often, this information is latent in the data and must be explicitly calculated. For example, the concept of a non-compliant transaction may not be stated in the source data. It must be inferred.

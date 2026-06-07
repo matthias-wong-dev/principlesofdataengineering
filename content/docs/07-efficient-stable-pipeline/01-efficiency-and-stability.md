@@ -22,7 +22,6 @@ This chapter introduces efficiency and stability as two disciplines for preservi
 
 This is also the fourth principle of data engineering:
 
-> [!SHARE:instead-wholesale-response]
 > Instead of wholesale response, maintain proportionate change.
 
 ## Efficiency
@@ -58,7 +57,9 @@ Some performance factors sit outside the data engineer’s immediate control: se
 
 **Stability** is closely related to efficiency.
 
-Stability means that small changes in the business world should produce proportionate changes in the data world.
+> [!SHARE:proportionate-change]
+> Stability means that small changes in the business world should produce proportionate changes in the data world.
+
 
 An unstable pipeline amplifies change. A small input change creates a large output change.
 

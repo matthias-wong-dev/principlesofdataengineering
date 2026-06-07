@@ -16,7 +16,6 @@ How does the data engineer do this effectively?
 
 This book introduces six principles of data engineering. The first two are **expressiveness** and **fragment modelling**. The two principles are:
 
-> [!SHARE:instead-accepting-garbage]
 > Instead of accepting garbage-in, garbage-out with raw data, add value through expressive entities.
 > 
 > Instead of building giant tables, create meaningful fragments.
@@ -49,7 +48,9 @@ The [fluid nature of business insight](/docs/foundations/what-is-data-engineerin
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 
-This is why the goal of a data engineer is not only to build complete data products, but to produce reusable blocks of information.
+> [!SHARE:reusable-information-blocks]
+> This is why the goal of a data engineer is not only to build complete data products, but to produce reusable blocks of information.
+
 
 When the data engineer shifts focus from building complete products to creating blocks that can be reused for multiple products, the warehouse is no longer seen merely as a repository of data models. It becomes a fragment store of valuable information.
 

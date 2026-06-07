@@ -35,7 +35,6 @@ Fragment modelling takes the opposite approach.
 
 A **meaningful fragment** is a narrow table that packages one reusable piece of business meaning. Each fragment should answer a clear question:
 
-> [!SHARE:information-table-create]
 > What information does this table create?
 
 The fragment then isolates the calculation of this information to its own table, and gives the table an expressive name. 
@@ -60,7 +59,11 @@ Creating a fragment and giving it a name elevates a concept into a first-class o
 
 For example, milestone datetimes could be implemented as additional columns within `Cake.Sales`. While technically correct, users browsing the warehouse may not realise that milestone information has been prepared and curated. By creating a dedicated `Cake.SalesMilestone` fragment, the concept becomes visible. The table name itself communicates that milestones are important and available for use.
 
-In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
+In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. 
+
+> [!SHARE:warehouse-map-concepts]
+> A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
+
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg"

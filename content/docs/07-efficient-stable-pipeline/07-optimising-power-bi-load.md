@@ -74,7 +74,6 @@ Materialisation of the view is sometimes necessary to ensure the source table lo
 
 In short:
 
-> [!SHARE:power-bi-source]
 > Power BI source views or tables should be tuned specifically for fast retrieval, not burdened with complex logic.
 
 ## Partitioning the model

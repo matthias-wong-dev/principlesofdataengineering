@@ -331,7 +331,10 @@ A measure of measures is not a slicer trick. It is a modelling technique for exp
 - build structured visuals by metric and process;
 - define derived measures without duplication.
 
-Without anchor in business meaning, dynamic measure selection can easily become frustrating. The model may become clever, but not clearer.
+
+> [!SHARE:clever-not-clearer]
+> Without anchor in business meaning, dynamic reports can easily become frustrating. The model may become clever, but not clearer.
+
 
 
 

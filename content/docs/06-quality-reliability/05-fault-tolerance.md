@@ -16,7 +16,8 @@ The goal is not to ignore errors. The goal is to keep the rest of the data produ
 
 On the other hand, surfacing failure is not the same as producing endless alerts.
 
-If the same warning appears every day and no one knows what to do with it, the warning becomes background noise rather than a warning.
+> [!SHARE:warning-to-noise]
+> If the same warning appears every day and no one knows what to do with it, the warning becomes background noise rather than a warning.
 
 This is the cry-wolf problem of monitoring. Repeated, unactionable alerts train people to ignore the pipeline.
 
@@ -247,7 +248,10 @@ It is not useful to enumerate every possible fault.
 
 The important thing is the mindset: anticipating errors.
 
-The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
+
+> [!SHARE:world-might-do]
+> The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
+
 
 This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
 

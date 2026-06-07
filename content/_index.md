@@ -1,5 +1,5 @@
 ---
-title: Welcome
+title: A Guide to Enterprise Data Engineering
 bookCollapseSection: false
 bookToC: false
 ---

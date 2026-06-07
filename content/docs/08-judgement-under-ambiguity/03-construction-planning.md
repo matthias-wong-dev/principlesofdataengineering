@@ -38,7 +38,10 @@ Projects can succeed or fail depending on the data engineer’s plan. It is one 
 
 A construction plan lays out, in sequence, the components the data engineer will build and gives the team a forecast of what will arrive when. It includes user-facing features as well as non-feature work such as unit tests, technical debt clean-up, metadata, and performance tuning.
 
-A plan is effective if it gives the project confidence and momentum. For this purpose, sequence matters more than precise dates. Timelines should not blow out, but the deeper issue is whether the team can keep delivering one sensible step after another.
+> [!SHARE:sensible-step-after]
+> A plan is effective if it gives the project confidence and momentum. For this purpose, sequence matters more than precise dates. 
+
+Timelines should not blow out, but the deeper issue is whether the team can keep delivering one sensible step after another.
 
 An effective plan is like a travel itinerary for exploring a new country. An itinerary is not effective merely because it meets a predefined schedule. It is effective when it moves forward logically, gives the traveller a quality experience, and avoids wasting time.
 

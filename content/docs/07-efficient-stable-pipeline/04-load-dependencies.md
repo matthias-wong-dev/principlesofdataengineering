@@ -84,7 +84,6 @@ Another example is the use of standard default values. Suppose the surrogate key
 
 The principle is simple:
 
-> [!SHARE:not-create-dependency]
 > Do not create a dependency for information that is cheap, obvious, and stable enough to calculate locally.
 
 Dependencies should be reserved for information that is worth propagating.
@@ -135,7 +134,6 @@ A better design may be to create `Cake.RefSaleSeason`, keyed by `[First date of 
 
 The principle is:
 
-> [!SHARE:dependency-point-smallest]
 > A dependency should point to the smallest meaningful fragment that carries the required information.
 
 ## Stable dependencies
@@ -197,7 +195,6 @@ The mitigation is to separate change detection from business meaning. If a volat
 
 The principle is:
 
-> [!SHARE:not-propagate-volatile]
 > Do not propagate volatile columns unless their volatility is meaningful to the downstream table.
 
 ## The case of surrogate keys
@@ -244,7 +241,6 @@ This approach only works when the surrogate key can be computed safely and perma
 
 The principle is:
 
-> [!SHARE:surrogate-key-dependency]
 > A surrogate key dependency is justified when the value of the simplified key exceeds the coupling risk created by the lookup.
 
 ## Views as an alternative
@@ -301,7 +297,9 @@ Dependencies are how the warehouse accumulates meaning.
 
 A source system with 10 to 20 raw tables may produce 5 or 6 layers of dependency in the transformation pipeline. A larger system with 30 to 50 tables, especially when integrated with other systems, may produce 10 or more layers.
 
-The aim is not to minimise dependencies, but to create the right ones.
+> [!SHARE:right-dependencies]
+> The aim is not to minimise dependencies, but to create the right ones.
+
 
 A healthy dependency is valuable, targeted, and stable. It propagates meaningful information without creating unnecessary ripple effects.
 

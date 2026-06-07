@@ -15,7 +15,6 @@ Data engineering is fundamentally different.
 
 The central premise of data engineering is that:
 
-> [!SHARE:data-fragment-reality]
 > Data is a fragment of reality captured by process.
 
 The data world is an imperfect projection of the business world, which the data engineer reshapes in light of intent.
@@ -30,7 +29,6 @@ But a production failure is only the clearest instance of a wider discipline. It
 
 The sixth and final principle of data engineering is this:
 
-> [!SHARE:instead-stopping-symptoms]
 > Instead of stopping at the symptoms, diagnose the root cause.
 
 This applies to the whole book. Troubleshooting a production failure is simply a crystallised instance of the discipline.
@@ -227,7 +225,11 @@ This also affects the final step.
 
 The doctor finishes, not when the symptoms have disappeared, but when the patient is well.
 
-The final effect is the only confirmation of the diagnosis. Importantly, the final effect is not the absence of the symptom.
+
+The final effect is the only confirmation of the diagnosis. Importantly:
+
+> [!SHARE:final-effect-not-absence]
+> The final effect is not the absence of the symptom.
 
 The equivalent is much harder for data engineers.
 
@@ -244,7 +246,6 @@ Instead, checking the final effect includes:
 
 Ultimately, the final effect that needs to be checked is always:
 
-> [!SHARE:business-receives-information]
 > The business receives the information it needs to make the decision.
 
 ### Example: false deletions after a partial source extract

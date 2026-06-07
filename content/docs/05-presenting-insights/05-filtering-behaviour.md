@@ -15,7 +15,10 @@ Many engineers stop too early, treating the job as complete once the correct ans
 
 That is not enough.
 
-A self-service model is not a puzzle for the user to solve. The user should not have to discover the one valid route through the model. They should be able to approach the model from different directions—starting with a date, a product, an ID, a measure, or a business process—and still receive sensible results at each step.
+> [!SHARE:not-a-puzzle]
+> A self-service model is not a puzzle for the user to solve.
+
+The user should not have to discover the one valid route through the model. They should be able to approach the model from different directions—starting with a date, a product, an ID, a measure, or a business process—and still receive sensible results at each step.
 
 The data engineer’s task is therefore not only to make the correct answer possible. It is to anticipate how users will try to reach that answer. More generally, it is to anticipate what buttons the user will click, and what effects the model should produce.
 

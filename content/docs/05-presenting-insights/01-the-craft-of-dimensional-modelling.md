@@ -18,7 +18,8 @@ Modern data engineers may present insights through a variety of ways. Yet one me
 
 In the Microsoft ecosystem, Power BI semantic models make dimensional modelling especially important because they provide the layer through which many business users interact with data.
 
-A dimensional model in Power BI is therefore best understood as a product interface.
+> [!SHARE:product-interface]
+> A dimensional model in Power BI is therefore best understood as a product interface.
 
 ## The craft
 
@@ -40,7 +41,6 @@ The hard question is therefore not only: "How do I build the dimensional model?"
 
 It is also:
 
-> [!SHARE:dimensional-model-behave]
 > How should the dimensional model behave to anticipate user needs?
 
 Three guiding questions organise the chapters in this section:

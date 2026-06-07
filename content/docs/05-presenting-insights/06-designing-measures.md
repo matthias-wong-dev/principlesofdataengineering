@@ -40,7 +40,8 @@ Every aspect of a measure should reflect business meaning. This includes its def
 
 A measure should align with real-world events.
 
-A common mistake is to count a database key and assume that the result is a meaningful business metric.
+> [!SHARE:common-mistake]
+> A common mistake is to count a database key and assume that the result is a meaningful business metric.
 
 For example, a data engineer might define `[Inspection count]` as a distinct count of `[Inspection ID]` in the `'Inspection'` fact table. That may be fine if `[Inspection ID]` corresponds to a real inspection. But in many systems, `[Inspection ID]` is only a system-generated record key. It may exist for retrieval, workflow, or database convenience.
 
