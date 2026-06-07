@@ -12,6 +12,7 @@ Insight is information analysed in the light of intent. However, the data engine
 
 Data is what is given before interpretation. It has no fixed meaning by itself, and is not yet information. More precisely:
 
+> [!SHARE:data-fragment]
 > Data is a fragment of reality captured by process.
 
 Consider a customer whose seat is cancelled because a flight was overbooked. The experience is real, but it is internal to the customer. The decision-maker does not know about it unless the experience is captured as data and made available to someone who was not there.
@@ -43,7 +44,6 @@ Data is therefore never a simple copy of the world. It is an imperfect projectio
 Data is captured by business processes. Once collected, it can be used to return understanding to the business. 
 
 In this perspective, data engineering is the task of taking data projected by business processes and reshaping it into a form required by business intent. This can be summarised in Figure 1.
-
 
 {{< svg >}}
 <svg xmlns="http://www.w3.org/2000/svg"

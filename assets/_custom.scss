@@ -436,6 +436,29 @@ body,
   text-decoration: none;
 }
 
+.share-block {
+  position: relative;
+}
+
+.share-quote {
+  display: block;
+  margin: 0.5rem 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.share-quote:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+
 @media screen and (max-width: 56rem) {
   .chapter-intro {
     margin-bottom: 2rem;
