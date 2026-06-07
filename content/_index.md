@@ -4,7 +4,7 @@ bookCollapseSection: false
 bookToC: false
 ---
 
-## Make business reality visible
+## Business reality made visible
 
 **Principles of Data Engineering** is a guide to building data representations that make business reality visible.
 
