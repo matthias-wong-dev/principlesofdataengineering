@@ -197,7 +197,7 @@ The principle is:
 
 > Do not propagate volatile columns unless their volatility is meaningful to the downstream table.
 
-## The case of surrogate keys
+## The case of surrogate keys {#surrogate-key-encoding}
 
 Surrogate keys are a special case of dependency.
 
@@ -235,7 +235,33 @@ If each column is either `0` or `1`, the surrogate key can be calculated with a 
 
 `[SK] = 1 + [Is A] + 2 * [Is B] + 4 * [Is C] + 8 * [Is D] + 16 * [Is E]`
 
-This gives each combination a stable integer without requiring a lookup. The downstream table gets the benefit of a surrogate key without forming a dependency on a generated key table.
+The same principle can be extended beyond binary flags. The weights are calculated cumulatively. The first field has weight `1`. Each later field has a weight equal to the number of combinations created by all the fields before it.
+
+For example, suppose a dimension contains:
+
+- `[Is A]`, with values `0` and `1`
+- `[Is B]`, with values `0` and `1`
+- `[Apple]`, with values `0`, `1`, and `2`
+- `[Orange]`, with values `0`, `1`, and `2`
+
+The cardinalities are `2`, `2`, `3`, and `3`.
+
+The weights are:
+
+| Field | Cardinality | Weight |
+|---|---:|---:|
+| `[Is A]` | 2 | 1 |
+| `[Is B]` | 2 | 2 |
+| `[Apple]` | 3 | 4 |
+| `[Orange]` | 3 | 12 |
+
+The surrogate key can therefore be calculated as:
+
+`[SK] = 1 + [Is A] + 2 * [Is B] + 4 * [Apple] + 12 * [Orange]`
+
+This produces `2 × 2 × 3 × 3 = 36` possible keys, from `1` to `36`, with no collisions.
+
+This method—called mixed radix key—gives each combination a stable integer without requiring a lookup. The downstream table gets the benefit of a surrogate key without forming a dependency on a generated key table.
 
 This approach only works when the surrogate key can be computed safely and permanently. Many surrogate keys cannot be managed this way. But when the logic is simple and stable, calculation may be better than lookup.
 
