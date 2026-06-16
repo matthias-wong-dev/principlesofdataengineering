@@ -24,12 +24,12 @@ It is to make reality legible to business.
 
 The book is organised around [six principles](../docs/judgement-under-ambiguity/the-six-principles-of-data-engineering/):
 
-1. **Expressive entities**—make data recognisable as the business world.
-2. **Meaningful fragments**—compose information from reusable, purposeful parts.
-3. **Anticipate errors**—design for the failures real systems produce.
-4. **Proportionate change**—keep computation aligned with informational change.
-5. **Illuminate ambiguity**—turn ambiguous business intent into ordered progress.
-6. **Diagnose root causes**—act on the conditions that make problems recur.
+1. **Expressive entities**
+2. **Meaningful fragments**
+3. **Anticipate errors**
+4. **Proportionate change**
+5. **Illuminate ambiguity**
+6. **Diagnose root causes**
 
 This book is written from deep delivery experience and focuses on patterns tested for complexity.
 
