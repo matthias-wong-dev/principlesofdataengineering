@@ -59,20 +59,22 @@ The first pass removes noise, establishes keys, and builds the basic semantic ma
 
 For attribute tracking, this pass also introduces **temporal compression**. Temporal compression collapses consecutive rows that carry identical information across adjacent time periods. It is akin to run-length encoding.
 
+Throughout this chapter, validity periods use half-open intervals: `[Start date]` is inclusive and `[End date]` is exclusive. The end of one period therefore equals the start of the next, avoiding both gaps and overlapping boundary values.
+
 Consider a bank account whose attributes are recorded over time.
 
 **Example before compression**
 
 | Account ID | Start date | End date | Account type | Account level | Account status |
 |---|---|---|---|---|---|
-| 12345 | 2022-01-01 | 2022-06-30 | Savings | Silver | Active |
-| 12345 | 2022-07-01 | 2023-06-30 | Savings | Silver | Active |
+| 12345 | 2022-01-01 | 2022-07-01 | Savings | Silver | Active |
+| 12345 | 2022-07-01 | 2023-07-01 | Savings | Silver | Active |
 
 **After compression**
 
 | Account ID | Start date | End date | Account type | Account level | Account status |
 |---|---|---|---|---|---|
-| 12345 | 2022-01-01 | 2023-06-30 | Savings | Silver | Active |
+| 12345 | 2022-01-01 | 2023-07-01 | Savings | Silver | Active |
 
 In addition to compression, the first pass should assign a surrogate key to each validity period. For example, `[Account SK]` may represent the combination of `[Account ID]` and `[Start date]`.
 
@@ -110,8 +112,8 @@ The goal is to create `Bank.AccountTimeline`, which expresses the valid combinat
 
 | Account ID | Account type SK | Account level SK | Account status SK | Start date | End date |
 |---|---|---|---|---|---|
-| 12345 | 1 | 1 | 1 | 2022-01-01 | 2023-06-30 |
-| 12345 | 1 | 2 | 1 | 2023-07-01 | 2024-12-31 |
+| 12345 | 1 | 1 | 1 | 2022-01-01 | 2023-07-01 |
+| 12345 | 1 | 2 | 1 | 2023-07-01 | 2025-01-01 |
 
 The core SQL pattern is an interval overlap join.
 

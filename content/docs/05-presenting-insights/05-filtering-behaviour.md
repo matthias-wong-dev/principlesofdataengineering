@@ -715,11 +715,13 @@ Consider an organisation’s HR system. The model contains:
 - An end-of-month fact table `'Employee end of month'` stores the employee’s attributes at the end of each month.
 
 
+The Type II examples in this chapter use half-open validity periods: `[Start date]` is inclusive and `[End date]` is exclusive. The end of one period therefore equals the start of the next.
+
 **Example structure of `'Employee'`**
 
 | Employee SK | Employee ID | Start date | End date | Employee name | Role |
 |---:|---|---|---|---|---|
-| 1 | E1001 | 2023-01-01 | 2023-06-30 | Alice Chen | Data analyst |
+| 1 | E1001 | 2023-01-01 | 2023-07-01 | Alice Chen | Data analyst |
 | 2 | E1001 | 2023-07-01 | 9999-12-31 | Alice Chen | Senior analyst |
 | 3 | E1002 | 2023-01-01 | 9999-12-31 | Ben Smith | Finance officer |
 
@@ -800,7 +802,7 @@ Consider employees and organisation units. The fact table `'Employee end of mont
 
 | Team unit SK | Team unit ID | Start date | End date | Team name | Group name |
 |---:|---|---|---|---|---|
-| 1 | T1001 | 2023-01-01 | 2023-06-30 | Data engineering | Group A |
+| 1 | T1001 | 2023-01-01 | 2023-07-01 | Data engineering | Group A |
 | 2 | T1001 | 2023-07-01 | 9999-12-31 | Data engineering | Group B |
 | 3 | T1002 | 2023-01-01 | 9999-12-31 | Finance operations | Group A |
 
