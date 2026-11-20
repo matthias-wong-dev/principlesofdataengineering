@@ -344,7 +344,7 @@ After rejection, `Sales.Order_upsert` contains only safe rows to apply.
 
 The table is now safe to load.
 
-### Step 3—Apply the changes
+### Step 3—Apply the changes {#step-3-apply-the-changes}
 
 After the Check step, the pipeline has separated incoming data into the actions it needs to take:
 

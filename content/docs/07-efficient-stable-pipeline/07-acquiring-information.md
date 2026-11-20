@@ -131,6 +131,8 @@ This is a case where [source changes are not target actions](/docs/efficient-sta
 
 The answer is to keep one copy per edition. Each new edition is added to what the warehouse already holds. Nothing is removed because it has dropped out of the publisher’s window.
 
+Each edition repeats the periods still in the window, so the same period is delivered several times. Whether users see one current value per period or every edition’s value is a design choice, covered in [Files that repeat older data](/docs/efficient-stable-pipeline/acquiring-information/#files-that-repeat-older-data).
+
 ## Retaining what was retrieved
 
 The third question is what to keep. The answer is to keep what was retrieved, as it was retrieved, alongside a record of how it was acquired.
@@ -154,7 +156,7 @@ If the retrieved content is identical to the stored copy, nothing should be writ
 
 This applies to the record as well as the content. Updating the retrieved datetime on every run would make every item look changed, and every downstream table would respond. This is the [`[Today’s date]` problem](/docs/quality-reliability/fault-tolerance/#stability) in another form.
 
-When content genuinely changes, the record should change with it, in the same way that [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#step-3apply-the-changes) updates `[Row update datetime]` only for genuine change. Because the record changes only with content, its first retrieved datetime and retrieved datetime serve as the stored file’s pipeline-managed change datetimes, equivalent to `[Row insert datetime]` and `[Row update datetime]`.
+When content genuinely changes, the record should change with it, in the same way that [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#step-3-apply-the-changes) updates `[Row update datetime]` only for genuine change. Because the record changes only with content, its first retrieved datetime and retrieved datetime serve as the stored file’s pipeline-managed change datetimes, equivalent to `[Row insert datetime]` and `[Row update datetime]`.
 
 ### Never discard what cannot be retrieved again
 

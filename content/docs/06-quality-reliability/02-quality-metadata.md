@@ -104,7 +104,7 @@ A column such as `[Is non-compliant]` should describe what non-compliance means 
 
 Data engineers and stakeholders often slip into using system names as shorthand for business concepts. Descriptions should refer to business entities and business processes, not merely the systems that implement them.
 
-There will be cases where system names or technical implementation details are necessary for transparency. These should be included as supplementary information, not as standalone descriptions. Supplementary information carries derivation and technical detail. It is not a place for limitations: a limitation changes how the artefact can be used, so it belongs in the description.
+There will be cases where system names or technical implementation details are necessary for transparency. These should be included as supplementary information, not as standalone descriptions.
 
 For example, the description for `[Is non-compliant]` may be:
 
@@ -120,7 +120,7 @@ For example:
 This column is derived from the inspection result and officer notes. It is true if the inspection outcome was "Spoiled cake" or "Not tasty", and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the [Inspection outcome] measure using a combination of result codes and officer certification status.
 ```
 
-Limitations should also be framed in terms of business interpretation.
+Limitations should also be framed in terms of business interpretation. An important limitation belongs in the description, stated in the context of how the artefact is used. It should help the user apply the data, not hedge against misuse.
 
 “The column can have a null value” is not a useful limitation by itself.
 
@@ -147,10 +147,10 @@ The description should therefore make acquisition legible. A user should be able
 For example, the description of `Cake.InspectionResult` may be:
 
 ```md
-Results of food safety inspections published by the regional food authority. New inspection rounds are discovered by reading the authority’s publication listing from January 2020 onwards. The authority revises results after appeal, so rounds from the previous twelve months are retrieved again each day and compared with the stored copy. Older rounds are treated as final and are not retrieved again. Revisions to older rounds will not appear.
+Results of food safety inspections published by the regional food authority. New inspection rounds are discovered by reading the authority’s publication listing from January 2020 onwards. The authority revises results after appeal, so rounds from the previous twelve months are retrieved again each day and compared with the stored copy. Older rounds are treated as final, so the table reflects appeals decided within twelve months of each round.
 ```
 
-This tells the user how current the table can be, and which revisions it can miss. It also records the assumptions the pipeline relies on, so they can be challenged when the source behaves differently. Acquisition itself is covered in [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
+This tells the user how current the table can be, and how far it reflects appeals. It also records the assumptions the pipeline relies on, so they can be challenged when the source behaves differently. Acquisition itself is covered in [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
 
 ## Keys answer: how does this relate?
 
