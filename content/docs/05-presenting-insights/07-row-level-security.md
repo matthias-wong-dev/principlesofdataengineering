@@ -3,7 +3,7 @@ title: Interactive row level security
 url: /docs/presenting-insights/interactive-row-level-security/
 description: Learn how to preserve unit-record interactivity and population context when implementing row level security in Power BI.
 lede: RLS should limit access without destroying unit-record interactivity.
-weight: 8
+weight: 7
 # draft: true
 ---
 

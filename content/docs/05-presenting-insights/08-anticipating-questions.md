@@ -3,7 +3,7 @@ title: Anticipating questions
 url: /docs/presenting-insights/anticipating-questions/
 description: Shows how to design a Power BI dimensional model that preserves enough business structure to answer future questions, not only current requirements.
 lede: A strong dimensional model preserves the structure needed to answer questions before they are formally asked.
-weight: 2
+weight: 8
 # draft: true
 ---
 
@@ -382,7 +382,7 @@ The three steps and their artefacts can be summarised in a table like this:
 
 Following these three steps ensures the full range of information is preserved, and questions relating to this information can be answered because the relationships exist in the model.
 
-This breadth of information requires a variety of modelling techniques. The later chapters in this section explain how filtering, measures, measure families, and security patterns make the preserved structure usable.
+This breadth of information requires a variety of modelling techniques. The preceding chapters in this section explain how filtering, measures, measure families, and security patterns make the preserved structure usable.
 
 In future, when a user asks a different question, the model can answer it if the relevant information has already been articulated in the dimensional model.
 
