@@ -44,6 +44,6 @@ It is also:
 
 Three guiding questions organise the chapters in this section:
 
-- How do we know what the user will do with the model?
 - What does a good dimensional model look and feel like?
 - What modelling tools are available to anticipate a range of user behaviours?
+- How do we know what the user will do with the model?

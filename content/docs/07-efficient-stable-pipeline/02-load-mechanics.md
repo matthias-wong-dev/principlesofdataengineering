@@ -344,7 +344,7 @@ After rejection, `Sales.Order_upsert` contains only safe rows to apply.
 
 The table is now safe to load.
 
-### Step 3—Apply the changes
+### Step 3—Apply the changes {#step-3-apply-the-changes}
 
 After the Check step, the pipeline has separated incoming data into the actions it needs to take:
 
@@ -394,6 +394,10 @@ The history table preserves previous versions of updated and deleted rows.
 |---|---|---|---|---:|---|---|---|
 | O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 | 2025-05-01 08:00 |
 | O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 | 2025-05-01 08:00 |
+
+Row change datetimes matter most where data first enters the warehouse. Data acquired from an external source carries no pipeline-managed datetimes of its own. Acquisition must therefore assign them, usually in the [Filter step](/docs/creating-information/entity-processing/#first-pass-filter). Otherwise every downstream table must reinterpret the source’s timeline to find out what changed.
+
+The same holds for acquired files. Each stored file needs the equivalent of `[Row insert datetime]` and `[Row update datetime]`: when it was first retrieved, and when its content last genuinely changed. This is covered in [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
 
 ## After the load
 

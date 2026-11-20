@@ -96,6 +96,10 @@ A good description should explain:
 
 A useful description carries the interpretation that would otherwise have to be supplied by tribal knowledge or guesswork.
 
+A description should begin with what the artefact is: the business reality it represents and what it contains. The opening sentence is often the only one a user reads.
+
+It should not be spent on the row grain, such as “One row per sale”, or on what the artefact is not. The grain is carried by the primary key, and exclusions make sense only once the user knows what is included.
+
 A column such as `[Is non-compliant]` should describe what non-compliance means in business terms, not merely say “if the result code is `F`.”
 
 Data engineers and stakeholders often slip into using system names as shorthand for business concepts. Descriptions should refer to business entities and business processes, not merely the systems that implement them.
@@ -116,7 +120,7 @@ For example:
 This column is derived from the inspection result and officer notes. It is true if the inspection outcome was "Spoiled cake" or "Not tasty", and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the [Inspection outcome] measure using a combination of result codes and officer certification status.
 ```
 
-Limitations should also be framed in terms of business interpretation.
+Limitations should also be framed in terms of business interpretation. An important limitation belongs in the description, stated in the context of how the artefact is used. It should help the user apply the data, not hedge against misuse.
 
 “The column can have a null value” is not a useful limitation by itself.
 
@@ -129,6 +133,24 @@ The inspector may not record a result if there are no issues. This means it is n
 Clear statements of limitation are essential for transparency and reliable application of business insight. They tell the user not only what the artefact means, but when it becomes dangerous to rely on it.
 
 This is where descriptions protect users from misuse. They do not merely explain what an artefact means in normal cases; they mark the boundary beyond which that meaning breaks down.
+
+Descriptions must also say where the data came from.
+
+For data acquired from outside the warehouse, the mechanics of acquisition, such as addresses, file formats, and checksums, belong in supplementary information. Their consequences belong in the description. A user cannot judge whether a table is complete or current without knowing how it was acquired.
+
+The description should therefore make acquisition legible. A user should be able to see at once:
+
+- the source, and how new items are discovered;
+- how change at the source is detected, and whether items are immutable once published;
+- how far back data is retrieved again.
+
+For example, the description of `Cake.InspectionResult` may be:
+
+```md
+Results of food safety inspections published by the regional food authority. New inspection rounds are discovered by reading the authority’s publication listing from January 2020 onwards. The authority revises results after appeal, so rounds from the previous twelve months are retrieved again each day and compared with the stored copy. Older rounds are treated as final, so the table reflects appeals decided within twelve months of each round.
+```
+
+This tells the user how current the table can be, and how far it reflects appeals. It also records the assumptions the pipeline relies on, so they can be challenged when the source behaves differently. Acquisition itself is covered in [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
 
 ## Keys answer: how does this relate?
 
@@ -182,5 +204,7 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 > Without descriptions, artefacts become incomprehensible.
 >
 > Without keys, artefacts become lost.
+>
+> A description should begin with what an artefact is, and show how its data was acquired.
 >
 > Metadata should be stored and treated as data.
