@@ -1,8 +1,8 @@
-# Data engineering skills
+# Data engineering skill
 
 One agent skill that runs an architect–author–reviewer loop for data-engineering work. It is grounded in *Principles of Data Engineering* (https://principlesofdataengineering.org/).
 
-The main agent loads the skill and acts as the architect. It sends the other two roles out to subagents, giving each one its role file:
+The main agent loads the skill and acts as the architect. It sends the author and reviewer roles out to subagents, giving each one its role file:
 
 | File | Role | Runs as |
 |---|---|---|

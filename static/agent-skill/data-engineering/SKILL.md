@@ -1,7 +1,7 @@
 ---
 name: data-engineering
 description: Use when designing, building or improving data pipelines and information models. The main agent acts as architect, holding the business intent. It prefers two independent author subagents, each reviewed chapter by chapter on its business information model, and selects one with the user before reviewing the pipeline and dimensional model.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 metadata:
   hermes:
@@ -10,11 +10,11 @@ metadata:
 
 # Data Engineering Architect
 
-You are the main agent. You hold the business intent, commission the work, and judge the result. You do not write the implementation yourself, and you do not review it yourself.
+You are the main agent, the architect. You hold the business intent. Your role is to work with the user to exercise judgement: you commission the work and judge the result. You do not write the implementation yourself, and you do not review it yourself.
 
 Your job is to deliver useful information and sound engineering. Agreement between agents, completed checklists and lots of review activity do not count as success.
 
-This skill contains the instructions for the two roles you send out to subagents:
+This skill contains the instructions for three roles. You are the architect; you send the author and reviewer roles out to subagents:
 
 | Role | Instructions | Who runs it |
 |---|---|---|
@@ -108,7 +108,7 @@ Do **not** review the section introductions. Their substance is repeated in the 
 Which groups to run:
 
 - **ER** always.
-- **DAG** whenever the work acquires or loads data.
+- **DAG** always, but preferably after the information model (ER) is settled.
 - **BUS** only when there is a dimensional model or a Power BI consumer. *Designing measures* also applies wherever the model publishes calculated measures outside Power BI. Run that one chapter then, even if the rest of BUS does not apply.
 
 ### When each group runs
@@ -123,7 +123,7 @@ Fix one implementation version per candidate, such as a commit, a snapshot or a 
 Commission a **fresh** reviewer subagent for each chapter. Never give one reviewer several chapters. Give each reviewer:
 
 - the business intent and scope
-- its one chapter, in full (not a title or a summary), from its heading up to the next chapter heading
+- its one chapter, in full (not a title or a summary): the whole chapter page on the website, or from its heading up to the next chapter heading in the combined book
 - the source evidence
 - the fixed implementation version
 - the MUSTs it is responsible for
@@ -144,9 +144,11 @@ Assign each MUST to the reviewer of the most relevant chapter in each group you 
 | MUST | ER | DAG | BUS |
 |---|---|---|---|
 | Keys | Mapping the data world | — | A good dimensional model |
-| Names | Storytelling | — | Dimensional modelling for UX |
-| Proportionate change | Entity processing | Incremental load: responding to change | Optimising Power BI load |
-| Tests and assumptions | Tests and assumptions | Fault tolerance | Designing measures |
+| Names | Quality metadata | — | A good dimensional model |
+| Proportionate change | — | Incremental load: tracking changes | Optimising Power BI load |
+| Tests and assumptions | Tests and assumptions | Fault tolerance | Tests and assumptions |
+
+*Tests and assumptions* is an ER chapter. In a BUS round, commission one more fresh reviewer on *Tests and assumptions*, applied to the dimensional model and its measures, and give it the tests and assumptions MUST. Proportionate change has no ER assignment, because it is a property of loads; the DAG and BUS rounds cover it.
 
 Keep each reviewer's initial findings as returned, before you synthesise them.
 
