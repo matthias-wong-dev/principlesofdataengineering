@@ -845,6 +845,8 @@ The complexity comes from analysing the query. Generative AI is helpful for this
 
 Together, the two steps—tracking changes and responding to change—apply the principle of proportionate change.
 
+Both steps depend on how information first entered the warehouse. That foundation is the subject of [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
+
 > [!NOTE]
 > **Key ideas**
 >
