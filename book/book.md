@@ -11118,19 +11118,40 @@ AI agents can now write pipelines, queries, tests, and semantic models in minute
 
 This changes the speed of implementation. It does not change the nature of the work.
 
-As [The six principles of data engineering](#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering) explains, the data engineer’s greatest enemy is the willingness to provide easy substitutes. An agent has that willingness without limit. Asked for a report, it will map the source, apply the stated requirements, and load a few large tables. The result may look technically correct. It is shallow curation, produced faster.
-
 An agent does not need to be told to work harder. It needs to be steered: given the same judgement this book asks of the data engineer, and placed in a way of working where that judgement is applied and checked.
 
-This chapter describes one way to do that: an **agent skill** published with this book.
+This chapter describes one way to do that: an **agent skill** published with this book. Nothing in the skill is a new rule. Each part applies a chapter of this book.
 
-Nothing in the skill is a new rule. Each part applies a chapter of this book.
+## The tendencies of AI agents {#docs-judgement-under-ambiguity-steering-ai-agents-the-tendencies-of-ai-agents}
+
+AI agents learn from the code that already exists. Most of that code is not good data engineering. It is written to meet a deadline, to satisfy a ticket, or to look careful in review. Agents absorb its habits along with its syntax.
+
+Four tendencies stand out.
+
+| Tendency | What it looks like |
+|---|---|
+| Source-in-source-out | Source tables are mirrored, columns are renamed, and the stated requirements are applied. No new information is created. |
+| Overengineering | Frameworks, configuration layers, and machinery for cases that are merely imaginable. |
+| Needless caution | Defensive checks on every column, monitors that protect nothing meaningful, and fallbacks that hide failure. |
+| A deluge of caveats | Every description, summary, and answer buried under qualifications. |
+
+Each tendency is a familiar substitute for judgement.
+
+Source-in-source-out is the [shallow curation](#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering) this book warns against. The data engineer’s greatest enemy is the willingness to provide easy substitutes, and an agent has that willingness without limit.
+
+Overengineering and needless caution look like diligence. But they mistake activity for quality. A monitor that fires every day becomes [background noise](#docs-quality-reliability-fault-tolerance-containing-failure), and machinery built for an imagined case is code that must still be understood, tested, and maintained.
+
+A deluge of caveats looks like honesty. But a limitation that matters is lost among the ones that do not. As [Quality metadata](#docs-quality-reliability-quality-metadata) explains, an important limitation should be stated in the context of how the information is used.
+
+Out of the box, these tendencies make an agent close to unusable for serious data engineering. The work looks complete, and much of the user’s time goes into stripping out what is not needed and asking for what is missing.
+
+The tendencies are not corrected by instruction alone. They are corrected by giving the agent the principles that tell good work from its substitutes, and by checking its work against them independently. This is why a skill is necessary.
 
 ## The data engineering skill {#docs-judgement-under-ambiguity-steering-ai-agents-the-data-engineering-skill}
 
 A skill is a folder of instructions that an AI agent loads when a task matches its purpose. Many agents, such as Claude Code, support skills written as a `SKILL.md` file with supporting files alongside it.
 
-The data engineering skill is at version 1.0.0.
+The data engineering skill is at version 1.1.0.
 
 - [Download the skill](https://principlesofdataengineering.org/downloads/data-engineering-skill.zip?utm_source=pde_book)
 - [Browse its files](https://principlesofdataengineering.org/agent-skill/data-engineering/SKILL.md?utm_source=pde_book)
@@ -11151,7 +11172,7 @@ Where no subagents are available, the skill says so plainly, rather than present
 
 ## Architect, authors and reviewers {#docs-judgement-under-ambiguity-steering-ai-agents-architect-authors-and-reviewers}
 
-The **architect** holds the business intent. It clarifies what the business is trying to understand, achieve or decide, what is in and out of scope, and what “done for now” means. It commissions the work and judges the result.
+The **architect** holds the business intent. Its role is to work with the user to exercise judgement. It clarifies what the business is trying to understand, achieve or decide, what is in and out of scope, and what “done for now” means. It commissions the work and judges the result.
 
 The architect does not implement the work, and it does not review it.
 
@@ -11167,15 +11188,13 @@ The **reviewer** examines one chapter of this book against the implementation. I
 
 The skill arranges the chapters of this book into three groups. Each group is a phase of the work, reviewed against the chapters written for that phase.
 
-| Phase | Covers | Chapters drawn from |
-|---|---|---|
-| **ER**: business information model | Entities, keys, relationships, reference data, names, and the quality of the information itself. | Creating information and Quality & reliability, except Fault tolerance |
-| **DAG**: pipeline | Acquisition, loading, dependencies, failure, and change over time. | Efficient & stable pipeline, except Optimising Power BI load, with Fault tolerance |
-| **BUS**: dimensional model and Power BI | Facts, dimensions, measures, and the semantic layer. | Presenting insights, with Optimising Power BI load |
+| Phase | Core artefact | Covers | Chapters drawn from |
+|---|---|---|---|
+| **ER** | Business information model | Entities, keys, relationships, reference data, names, and the quality of the information itself. | Creating information and Quality & reliability, except Fault tolerance |
+| **DAG** | Pipeline | Acquisition, loading, dependencies, failure, and change over time. | Efficient & stable pipeline, except Optimising Power BI load, with Fault tolerance |
+| **BUS** | Dimensional model and Power BI | Facts, dimensions, measures, and the semantic layer. | Presenting insights, with Optimising Power BI load |
 
-ER always applies, because every piece of work creates information. DAG applies whenever the work acquires or loads data. BUS applies only when there is a dimensional model or a Power BI consumer.
-
-The phases follow the order of the work: what the business world is, how information moves, and how it is presented.
+ER and DAG always apply. It is preferable to settle the information model first, because the pipeline follows from it. BUS applies only when there is a dimensional model or a Power BI consumer. The phases follow the order of the work: what the business world is, how information moves, and how it is presented.
 
 The section introductions are not reviewed. Their substance is repeated in the chapters that follow.
 
@@ -11270,11 +11289,13 @@ Each MUST is assigned to the reviewer of the most relevant chapter in each phase
 | MUST | ER | DAG | BUS |
 |---|---|---|---|
 | Keys | Mapping the data world | — | A good dimensional model |
-| Names and descriptions | Storytelling | — | Dimensional modelling for UX |
-| Proportionate change | Entity processing | Incremental load: responding to change | Optimising Power BI load |
-| Tests and assumptions | Tests and assumptions | Fault tolerance | Designing measures |
+| Names and descriptions | Quality metadata | — | A good dimensional model |
+| Proportionate change | — | Incremental load: tracking changes | Optimising Power BI load |
+| Tests and assumptions | Tests and assumptions | Fault tolerance | Tests and assumptions |
 
-None falls through the gaps, and none is repeated in every review.
+*Tests and assumptions* belongs to the ER phase, so a BUS round commissions one more fresh reviewer on that chapter, applied to the dimensional model and its measures. Proportionate change has no ER assignment, because it is a property of loads.
+
+None falls through the gaps, and no single reviewer carries all four.
 
 ## Tools for agents {#docs-judgement-under-ambiguity-steering-ai-agents-tools-for-agents}
 
@@ -11290,21 +11311,31 @@ It helps when agents have a desktop command-line interface that gives them feedb
 
 Weaver is one platform designed this way. See [Using Weaver with AI agents](https://docs.weaverstack.dev/reference/ai-agents/).
 
-## Conclusion {#docs-judgement-under-ambiguity-steering-ai-agents-conclusion}
+## Data engineering in the world of AI {#docs-judgement-under-ambiguity-steering-ai-agents-data-engineering-in-the-world-of-ai}
 
-AI agents make implementation fast. As [Construction planning](#docs-judgement-under-ambiguity-construction-planning-conclusion) observes, success depends less on development as development becomes routine. With agents, this is more true, not less.
+In the world of AI, the data engineer may seem redundant. An agent writes code faster than any person.
 
-What remains is judgement: holding the business intent, choosing between candidate designs, deciding which findings matter, and knowing when the work is done for now.
+But the data engineer is redundant only if data engineering is writing code to move data from A to B.
 
-The data engineering skill does not replace that judgement. It gives the agent a way of working in which the principles of this book are applied, checked independently, and weighed before anything changes.
+It is not. As [What is data engineering?](#docs-foundations-what-is-data-engineering) set out at the start of this book, data engineering is an activity in which business intent is applied to data to create first information, then insight. Code is how that work is expressed. It was never the work itself. As [Construction planning](#docs-judgement-under-ambiguity-construction-planning-conclusion) observes, development is the smallest share of success.
+
+This is why the book has focused on principles rather than tools. **Expressive entities**, **meaningful fragments**, **anticipate errors**, **proportionate change**, **illuminate ambiguity**, and **root cause** were true before AI agents, and they remain true now. Agents change how quickly the work is done. They do not change what good work is.
+
+Coupled with AI agents, a modern data engineer can do far more than before. One engineer can explore several designs, build them in parallel, and have each checked independently, in the time it once took to build one.
+
+But only if the engineer inhabits the principles.
+
+An agent amplifies the judgement it is given. Steered by an engineer who knows what good information looks like, it builds it quickly. Steered by an engineer who does not, it produces shallow curation at a scale no team could produce by hand. The skill can carry the principles into the agent’s instructions. It cannot supply the judgement of the person who decides what is done.
 
 > **Key ideas.**
 >
 > An AI agent can build quickly. Judgement still decides whether it builds information.
 >
+> Out of the box, AI agents tend toward source-in-source-out, overengineering, needless caution, and a deluge of caveats.
+>
 > The data engineering skill applies the principles of this book to steer agents. Nothing in it is a new rule.
 >
-> The architect holds the business intent, commissions the work, and judges it. It does not implement or review.
+> The architect holds the business intent and works with the user to exercise judgement. It does not implement or review.
 >
 > The work is reviewed in three phases: the business information model, the pipeline, and the dimensional model.
 >
@@ -11317,6 +11348,8 @@ The data engineering skill does not replace that judgement. It gives the agent a
 > A hygiene gate checks the basics mechanically, so review can focus on judgement.
 >
 > Agents need control of the platform to build, run, test, and query, and to see the work as a user would.
+>
+> In the world of AI, data engineering is not redundant. Agents amplify the judgement of an engineer who inhabits the principles.
 
 \newpage
 
