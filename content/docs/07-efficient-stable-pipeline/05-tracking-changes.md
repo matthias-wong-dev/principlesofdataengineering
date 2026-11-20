@@ -524,6 +524,28 @@ where
 
 This is one of the reasons why the [Filter step](/docs/creating-information/entity-processing/#first-pass-filter) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
 
+## Detecting change at the source
+
+The patterns so far assume that source rows are already visible to the warehouse. Often they are not. The source may be a publisher’s website, a file share, or an API, and the data must be retrieved before it can be compared.
+
+In these cases, tracking change should begin before anything is retrieved.
+
+Retrieval is often the most expensive and least reliable part of the load. It depends on another system’s availability, it may be rate-limited, and the source may not keep what it published yesterday. A pipeline that retrieves everything to find out what changed has already done most of the work it was trying to avoid.
+
+The question is the same: *What may have changed since the last successful retrieval?* The signals are different.
+
+| Signal | What it can tell the pipeline |
+|---|---|
+| Listing | Which items the source currently publishes, and which are new. |
+| Item name | Whether an item is a new release or an existing item that may have been revised. |
+| Source change metadata | Whether a known item may have changed, through a modified date, size, or version. |
+
+These signals belong to the source, not the pipeline. A modified date on a publisher’s website is out-of-sync in the same way as a source `[Update datetime]`: it identifies candidates for change. Genuine change is confirmed by comparing the retrieved content with the stored copy, in the same way that [load mechanics](/docs/efficient-stable-pipeline/load-mechanics/#check-for-genuine-changes) compares rows.
+
+Once retrieved content has been stored with pipeline-managed datetimes, the patterns above apply unchanged. Downstream tables read only the items that changed after their refresh bookmark.
+
+How to discover, retrieve, and store external data is covered in [Acquiring information](/docs/efficient-stable-pipeline/acquiring-information/).
+
 ## The role of the filter step
 
 Three themes occur when tracking inserts, updates, and deletes.
@@ -559,6 +581,8 @@ In this way, the Filter step converts fragile or out-of-sync source change signa
 > Source change detection columns can be in-sync or out-of-sync with the pipeline’s processing time.
 >
 > Polling tables map out-of-sync source timestamps to in-sync pipeline timestamps.
+>
+> When the source sits outside the warehouse, tracking change should begin before anything is retrieved.
 >
 > Inserts and updates are easier to track than deletes because deleted rows disappear.
 >
