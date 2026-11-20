@@ -66,7 +66,7 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 
 Matthias holds a PhD in Computational Mathematics.
 
-For contact information, see the author's website: [matthiaswong.me](https://matthiaswong.me/?utm_source=pde_book).
+For more information, see the author's website: [matthiaswong.me](https://matthiaswong.me/?utm_source=pde_book).
 
 \newpage
 
@@ -279,7 +279,7 @@ First, recorded data is not simply “what is in the system.” It is downstream
 
 Second, the data engineer’s work itself is not neutral. The output of data engineering is often the first time an organisation encounters the outcome of its own work in a stable form. For this reason, the output may be contested, especially when multiple business areas are involved. Interpretation becomes inseparable from the work: what is good, what is bad, what is reportable, what is not, which record is authoritative, and which definition should be canonical?
 
-Organisations do not simply use data. Data is also where meaning is negotiated.
+> Organisations do not simply use data. Data is also where meaning is negotiated.
 
 The data engineer cannot stand outside this negotiation. The engineer can help the organisation navigate meaning with expertise, defer to consensus without judgement, or allow the work to fail because meaning was never clear.
 
@@ -349,7 +349,7 @@ The [fluid nature of business insight](#docs-foundations-what-is-data-engineerin
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 
-This is why the goal of a data engineer is not only to build complete data products, but to produce reusable blocks of information.
+> This is why the goal of a data engineer is not only to build complete data products, but to produce reusable blocks of information.
 
 When the data engineer shifts focus from building complete products to creating blocks that can be reused for multiple products, the warehouse is no longer seen merely as a repository of data models. It becomes a fragment store of valuable information.
 
@@ -407,7 +407,9 @@ Consequently, the data engineer sees each data record as an intermediary of the 
 
 A business entity can be a concrete object, such as a customer or a product. It can also be an abstract event, such as a business transaction.
 
-This shift from data record to business entity is the first practical step in expressiveness. For many data engineers, it is also the first threshold: learning to see not the record itself, but the entity behind it.
+This shift from data record to business entity is the first practical step in expressiveness.
+
+> For many data engineers, it is also the first threshold: learning to see not the record itself, but the entity behind it.
 
 For a data engineer who starts with the data and reaches back to the business world, the tool of choice is the primary key.
 
@@ -533,7 +535,7 @@ The first task is to identify the **entity of interest**.
 
 Usually this is clear. Sometimes it is not. A sales transaction may have multiple line items. Depending on the business question, the transaction may be the entity of interest, or each line item may be the entity of interest.
 
-The correct lens is the one that supports business action.
+> The correct lens is the one that supports business action.
 
 Once the entity of interest is identified, the data engineer tells the high-level story of that entity while preserving the necessary detail. [Fragment modelling](#docs-creating-information-expressiveness-and-fragment-modelling-fragment-modelling) is suited to this task because different aspects of the entity can be maintained in different fragments.
 
@@ -801,20 +803,22 @@ The first pass removes noise, establishes keys, and builds the basic semantic ma
 
 For attribute tracking, this pass also introduces **temporal compression**. Temporal compression collapses consecutive rows that carry identical information across adjacent time periods. It is akin to run-length encoding.
 
+Throughout this chapter, validity periods use half-open intervals: `[Start date]` is inclusive and `[End date]` is exclusive. The end of one period therefore equals the start of the next, avoiding both gaps and overlapping boundary values.
+
 Consider a bank account whose attributes are recorded over time.
 
 **Example before compression**
 
 | Account ID | Start date | End date | Account type | Account level | Account status |
 |---|---|---|---|---|---|
-| 12345 | 2022-01-01 | 2022-06-30 | Savings | Silver | Active |
-| 12345 | 2022-07-01 | 2023-06-30 | Savings | Silver | Active |
+| 12345 | 2022-01-01 | 2022-07-01 | Savings | Silver | Active |
+| 12345 | 2022-07-01 | 2023-07-01 | Savings | Silver | Active |
 
 **After compression**
 
 | Account ID | Start date | End date | Account type | Account level | Account status |
 |---|---|---|---|---|---|
-| 12345 | 2022-01-01 | 2023-06-30 | Savings | Silver | Active |
+| 12345 | 2022-01-01 | 2023-07-01 | Savings | Silver | Active |
 
 In addition to compression, the first pass should assign a surrogate key to each validity period. For example, `[Account SK]` may represent the combination of `[Account ID]` and `[Start date]`.
 
@@ -852,8 +856,8 @@ The goal is to create `Bank.AccountTimeline`, which expresses the valid combinat
 
 | Account ID | Account type SK | Account level SK | Account status SK | Start date | End date |
 |---|---|---|---|---|---|
-| 12345 | 1 | 1 | 1 | 2022-01-01 | 2023-06-30 |
-| 12345 | 1 | 2 | 1 | 2023-07-01 | 2024-12-31 |
+| 12345 | 1 | 1 | 1 | 2022-01-01 | 2023-07-01 |
+| 12345 | 1 | 2 | 1 | 2023-07-01 | 2025-01-01 |
 
 The core SQL pattern is an interval overlap join.
 
@@ -1981,7 +1985,9 @@ Creating a fragment and giving it a name elevates a concept into a first-class o
 
 For example, milestone datetimes could be implemented as additional columns within `Cake.Sales`. While technically correct, users browsing the warehouse may not realise that milestone information has been prepared and curated. By creating a dedicated `Cake.SalesMilestone` fragment, the concept becomes visible. The table name itself communicates that milestones are important and available for use.
 
-In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
+In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain.
+
+> A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
 
 ![](book/epub-assets/diagram-006.png)
 
@@ -2298,7 +2304,7 @@ Modern data engineers may present insights through a variety of ways. Yet one me
 
 In the Microsoft ecosystem, Power BI semantic models make dimensional modelling especially important because they provide the layer through which many business users interact with data.
 
-A dimensional model in Power BI is therefore best understood as a product interface.
+> A dimensional model in Power BI is therefore best understood as a product interface.
 
 ## The craft {#docs-presenting-insights-the-craft-of-dimensional-modelling-the-craft}
 
@@ -2324,301 +2330,9 @@ It is also:
 
 Three guiding questions organise the chapters in this section:
 
-- How do we know what the user will do with the model?
 - What does a good dimensional model look and feel like?
 - What modelling tools are available to anticipate a range of user behaviours?
-
-\newpage
-
-# Anticipating questions {#docs-presenting-insights-anticipating-questions}
-
-*A strong dimensional model preserves the structure needed to answer questions before they are formally asked.*
-
-## Designing for questions not yet asked {#docs-presenting-insights-anticipating-questions-designing-for-questions-not-yet-asked}
-
-A good dimensional model does not merely answer the questions already written in requirements. It preserves enough business structure to answer all the questions users are likely to ask during the model’s lifetime.
-
-This expectation can surprise data engineers who come from an application-development background. In application development, the work often begins by defining requirements with stakeholders and building accordingly. Even when development is iterative, it is still usually organised around delivering stated requirements.
-
-That approach has its place, but analytics behaves differently.
-
-In data work, answering one question often creates the next question. Users discover what they want to ask by interacting with the data. They may begin with a simple requirement, such as “show quality-control failures by month”, but once the data is visible, they will ask follow-up questions: Which products failed? Which batches? Which suppliers? Which customers were affected? Did shipping outcomes change afterward?
-
-A data project focused only on stated requirements is therefore likely to frustrate everyone. If stakeholders have little interest, the stated requirements may be shallow. If stakeholders are engaged, the requirements will keep changing as the data reveals new possibilities.
-
-The data engineer cannot predict every future question. But good design can preserve the structure from which future questions can be answered.
-
-This is the purpose of anticipating questions.
-
-Power BI dimensional models are well suited to this task because facts represent business processes, dimensions represent business information, and relationships determine which questions can be answered through filtering.
-
-Instead of ticking off stated requirements, the data engineer should identify the business processes, the information known to those processes, and the information shared across processes. These become the facts, dimensions, and relationships of the dimensional model.
-
-To develop a model that anticipates questions and captures the breadth of information, the data engineer can remember a simple three-step process:
-
-1. All the facts—business processes
-2. All the dimensions—business information
-3. All the relationships—real-world relationships mirrored in the model
-
-Each step has an artefact to help the data engineer and business stakeholders check the comprehensiveness of the model.
-
-## All the facts {#docs-presenting-insights-anticipating-questions-all-the-facts}
-
-The first step to building a dimensional model that can anticipate all reasonable questions is to ensure it captures all the relevant business processes. For ease of memory, this is the step to capture “all the facts.”
-
-This step can be non-trivial for two reasons.
-
-First, in a complex business, many teams work together to complete a single goal. These teams often operate across different business processes. The data engineer and project team are usually working with a particular stakeholder group that focuses on specific processes rather than the full set. For example, some may focus on manufacturing, some on ordering, and others on quality control.
-
-Second, different stakeholders often take different views of the same process. Operational staff may focus on detailed steps, while others take a broader, strategic view. Speaking with any one group always results in a skewed perspective.
-
-In other words, the data engineer faces two challenges—how much to include, and how zoomed out the view should be.
-
-Consider the following example of business processes:
-
-1. Research and development
-2. Sourcing materials
-3. Manufacture
-4. Quality control
-5. Orders
-6. Shipping
-7. Customer feedback
-
-For the question “what are the different business processes to include?”, the data engineer should be as comprehensive as possible during horizon scanning. This means being persistent in asking “where does this come from?” and “where is this going to?” until the end-to-end is covered.
-
-A useful rule of thumb is to trace the process beyond the immediate team: where did the work come from, and where does it go next? For end-to-end process discovery, it can help to ask where the work first enters the organisation and where its effect eventually leaves.
-
-Once all the processes are identified, it becomes easier for stakeholders to collectively decide which ones to include. Usually, there is a shared sense of what is core and what is peripheral. This is a different question from “what are your requirements?”
-
-Requirements tend to narrow the perspective.
-
-For example, a manager of quality control may focus narrowly on their part of the process. If the project is driven by this stakeholder—perhaps because quality control initiated the engagement—the requirements may be framed as “how much is spent on quality control?” or “how many products are failing?” Such a view is unhelpfully narrow.
-
-Instead, the data engineer can help by identifying the full business process. The manager may then recognise that, even though reporting on the cost of manufacture is not a “must-have requirement” for quality control, it is still a core business process.
-
-Research and development, by contrast, may be considered peripheral.
-
-For the question “how zoomed out should the view be?”, the answer is to work at a level that makes sense for decision-making. It does not help to model the lowest-level details such as sending emails or looking up documents. On the other hand, it is also not helpful to see manufacturing and quality control as one large step.
-
-Zooming out often involves grouping sub-processes into a single process, or denormalising detail rows into header-level structures that expose a broader grain.
-
-For example, the quality control process may involve multiple testing steps for different criteria. Rather than creating one fact table for quality samples and another for quality sample tests, it may be more expressive to model the process as a single fact called `'Quality control'`, with the lower-level testing detail embedded where appropriate.
-
-Power BI’s flexibility with its DAX engine supports this approach. In simple cases, a `distinctcount` can recover the embedded grain, such as counting headers by their ID. In more complex cases, DAX can still retrieve the embedded grain, as explained in [Designing measures](#docs-presenting-insights-designing-measures-advanced-scenario-embedded-grain).
-
-This question often challenges engineers trained in traditional dimensional modelling who are learning Power BI for the first time. The classical approach tends to split facts by grain rather than by business process. This can obscure the business view.
-
-The artefact for this step is the linear process diagram. A linear process diagram is a business process diagram using only linear steps with no branching, cycles, or decision trees. Readers find linear diagrams much easier to understand than diagrams with arrows pointing in all directions. The constraint of linearity forces the business analyst to abstract the process to a level that is useful for themselves and others. This is especially true for executive audiences.
-
-It can also be helpful to categorise the business processes into higher-level categories.
-
-Continuing with the example above:
-
-- Design—Research and development
-- Production—Sourcing, Manufacturing, Quality control
-- Sales—Orders, Shipping, Customer feedback
-
-![](book/epub-assets/diagram-007.png)
-
-*Figure 1. Linear process diagram. Business processes are arranged in chronological order and grouped into Design, Production, and Sales.*
-
-Making linear process diagrams does not mean that business analysts cannot create more complex diagrams for other purposes. However, these are not linear process diagrams for model planning.
-
-The identified business processes form the facts of the dimensional model. Hence this step can be remembered as “all the facts.” The processes selected for the model define its scope. For example, if the decision is to focus on manufacturing onwards, then questions about research and development or sourcing will fall outside the model’s scope.
-
-Identifying the business processes is the hardest part of anticipating questions. It involves making business decisions and requires a high degree of judgement and practical experience. Once the processes are identified, the next step of identifying the business information follows more mechanically.
-
-## All the dimensions {#docs-presenting-insights-anticipating-questions-all-the-dimensions}
-
-The second step, after identifying the business processes in scope, is to identify all the business information known to those processes. This ensures that all reasonable questions about the processes included in the model can be answered. For ease of memory, this is the step to capture “all the dimensions.”
-
-The key distinction is between information a process captures and information a process knows.
-
-This step is more straightforward than identifying the processes. Business stakeholders usually know what information is captured. While there may be debate about the relative importance of one attribute over another, the answer is often that they are all important. If they were not, they would not be captured in the first place.
-
-The nuance for the data engineer is to distinguish between what is captured by a business process and what is known to it. The general rule is that downstream processes inherit information from upstream ones.
-
-Consider the following example. Suppose each process captures the following information:
-
-- Manufacturing—Product type, Manufacture details (date, batch number)
-- Quality control—Testing details (manufacture sample, date, criteria, results)
-- Orders—Product type, Customer, Order details (date, order units, sales amount, order number), Order status
-- Shipping—Shipping order (order number, line items), Shipping logistics (shipping method, shipping company), Shipping status (date, status)
-- Customer feedback—Customer, Product type, Feedback details (method, star rating, comments)
-
-In this example, the order process captures product type, customer and order units.
-
-The shipping process does not capture these directly but knows them through the order number. This is inheritance. However, not all downstream processes inherit everything.
-
-For example, customer feedback may not record the order number and may only capture the product type. In that case, it does not know the order date, even though it is downstream.
-
-Once the information is identified, it can be presented using a cumulative information diagram. This is a table with business information as rows and business processes as columns, both listed in chronological order. The diagram is cumulative because information typically accumulates downstream through inheritance.
-
-Rows are business information. Columns are business processes. `C` means the process captures the information directly. `I` means the process inherits the information from an upstream process.
-
-It is also helpful to annotate the diagram with where the information is physically stored—which database or table holds each attribute. This helps assess what can be reasonably answered and informs project planning.
-
-The example below shows what information is known to each business process.
-
-The linear process diagram describes the real-world business processes. The cumulative information diagram builds on the linear process diagram by showing how information flows through those processes and where it is stored in the database world.
-
-| Business information | Manufacture | Quality control | Orders | Shipping | Customer feedback |
-|---|---|---|---|---|---|
-| Product type | C | I | C | I | C |
-| Manufacturing details | C | I | | | |
-| Testing details | | C | | | |
-| Order status | | | C | I | |
-| Order details | | | C | I | |
-| Customer | | | C | I | C |
-| Shipping order | | | | C | |
-| Shipping logistics | | | | C | |
-| Shipping status | | | | C | |
-| Feedback details | | | | | C |
-| Database storage | XYZ SQL database | ABC diagnostics database | XYZ SAP ERP | XYZ SAP ERP | Salesforce analytics |
-
-In other words, the cumulative information diagram maps real-world processes to database storage.
-
-Since business information becomes dimensions in a dimensional model, this step can be remembered as “all the dimensions.”
-
-## All the relationships {#docs-presenting-insights-anticipating-questions-all-the-relationships}
-
-The final step is to ensure that the business processes and their known information are reflected in the dimensional model through filtering relationships. If all relevant processes are captured, all relevant information is identified, and valid relationships are correctly implemented, then the model can anticipate all reasonable questions.
-
-A relationship is not only a technical join. In a Power BI model, a relationship is a path by which a user’s question can reach a fact.
-
-The rule of thumb is simple. If a business process knows a piece of information, whether by direct capture or by inheritance, then the corresponding dimension should filter that fact table.
-
-Continuing with the earlier example, suppose `'Order ID'`, `'Order calendar'`, and `'Customer'` are dimensions, and `'Orders'` is the fact table. These dimensions should directly filter `'Orders'`. The `'Shipping'` fact table should also be filtered by `'Order ID'`, since shipping needs to know the order number. In this case, `'Order ID'` is a conformed ID dimension for both processes. The `'Order calendar'` and `'Customer'` dimensions should also filter `'Shipping'`, because this process inherits them through the order number.
-
-New data engineers often forget about inheritance. This creates a frustrating experience for users who expect to retrieve all shipments for a customer but find the model does not support the question due to a missing relationship.
-
-There are exceptions to inheritance. Sometimes an upstream process has a zero-to-many relationship with a downstream one. In these cases, including the upstream information as a filter may be problematic.
-
-For example, suppose the quality control process usually tests manufactured batches, but sometimes tests other aspects not tied to a specific batch, such as testing factory equipment itself. In this case, `'Manufacture ID'` should filter `'Quality control'` so users can look up testing for a batch. However, it may be better not to implement a filtering relationship between `'Manufacture calendar'` and `'Quality control'`. In Power BI, if a user selects a manufacture date, this relationship will also filter `'Quality control'` and affect any measures, even when the test was unrelated to a batch.
-
-It may be sufficient to use a role-playing `'Reporting calendar'` that filters `'Manufacture'` on manufacture date and `'Quality control'` on testing date. This avoids misleading results. If the relationship is implemented, the report design must be careful not to mislead users with incorrect numbers caused by unintended filters.
-
-Usually, upstream processes tend not to know about downstream processes. This means that `'Customer'` should not filter `'Manufacture'` because this information does not exist at the time of manufacture. However, the data engineer has the benefit of hindsight, so some information can be brought back to the earlier process. For example, while the quality-control results of a manufactured batch are not known at the time of manufacture, the result can be associated to the batch number afterwards.
-
-To express this at the batch-number grain, multiple quality control criteria may need to be rolled back to the batch for an overall pass or fail. A dimension for `'Batch quality outcome'` can be used to filter `'Manufacture'`. In general, storytelling dimensions summarise the journey of an entity through the whole business process and can be associated to all steps of the process in hindsight.
-
-The artefact for this step is the chronological bus. A bus matrix is a table that lists dimensions as rows and facts as columns, showing which dimensions filter which facts. In Power BI, this should reflect the actual filtering relationships, including their cardinality. A chronological bus matrix is one where the facts and dimensions are sorted in chronological order of their occurrence in the business.
-
-The chronological bus is the main planning artefact of the dimensional model. It shows, at a glance, which information can filter which business processes.
-
-The diagram for our example is below. The symbol `1 -> *` is used to indicate one-to-many, while `* -> *`, which is used for product type and customer feedback, indicates a many-to-many relationship. The latter means one customer-feedback record may relate to several products at once.
-
-| Dimension | Manufacture | Quality control | Orders | Shipping | Customer feedback |
-|---|---|---|---|---|---|
-| Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Manufacture ID | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
-| Manufacture calendar | 1 -> * | | 1 -> * | 1 -> * | |
-| Batch number | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
-| Batch quality outcome | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
-| Product type | 1 -> * | 1 -> * | 1 -> * | 1 -> * | * -> * |
-| Testing ID | | 1 -> * | | | |
-| Testing date | | 1 -> * | | | |
-| Quality criteria | | 1 -> * | | | |
-| Testing result | | 1 -> * | | | |
-| Order ID | | | 1 -> * | 1 -> * | |
-| Order calendar | | | 1 -> * | 1 -> * | |
-| Customer | | | 1 -> * | 1 -> * | 1 -> * |
-| Order status | | | 1 -> * | 1 -> * | |
-| Shipping calendar | | | | 1 -> * | |
-| Shipping company | | | | 1 -> * | |
-| Shipping status | | | | 1 -> * | |
-| Arrival date | | | | 1 -> * | |
-| Feedback calendar | | | | | 1 -> * |
-| Feedback sentiment (star ratings) | | | | | 1 -> * |
-
-The chronological bus can be used to evaluate what questions are answered by the model.
-
-In the above example, because `'Customer'` is a conformed dimension for `'Orders'`, `'Shipping'`, and `'Customer feedback'`, it is possible to identify customers by the volume of orders, shipping delays, and feedback results.
-
-Because `'Product type'` is a conformed dimension on all processes, it is the attribute that the model can answer most questions for, such as comparing quality-control results with customer feedback. Note, however, the many-to-many relationship between `'Product type'` and `'Customer feedback'` indicates that any assignment of feedback to product is approximate and may double-count.
-
-Because `'Manufacture ID'` is a conformed ID dimension from `'Manufacture'` to `'Shipping'`, the model can support traceback of faulty products that have been shipped.
-
-On the other hand, it is not possible to directly analyse the effect of shipping on customer feedback because shipping information does not filter the customer-feedback fact.
-
-Such analysis may be possible indirectly through `'Reporting calendar'`, `'Product type'` and `'Customer'`, which together may narrow the transactions down to a segment that correlates shipping status and shipping company with feedback sentiment. If this can be done systematically, it can be introduced as precomputed information in the data pipeline.
-
-Ensuring that the model’s relationships match the real-world flow of information means the model behaves in ways users intuitively expect. Downstream processes tend to inherit from upstream ones. By default, upstream processes do not know downstream outcomes. When downstream outcomes are brought back upstream, they should be deliberately modelled.
-
-As a result, the chronological bus is typically dense in the upper right. This structure makes gaps easy to spot. These gaps may be accidental, reflect a limitation in the source system, or be a deliberate design choice.
-
-In the example above, `'Manufacture calendar'` does not filter `'Quality control'`. This is a design decision. It does not filter `'Customer feedback'` either, which is a limitation because the information is not recorded. This example does not have any accidental gaps. If there were, they would stand out.
-
-The chronological bus only works if the data engineer has modelled information as dimensions, processes as facts, and listed them in chronological order.
-
-The same information becomes much less useful when sorted alphabetically:
-
-| Dimension | Customer feedback | Manufacture | Orders | Quality control | Shipping |
-|---|---|---|---|---|---|
-| Arrival date | | | | | 1 -> * |
-| Batch number | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Batch quality outcome | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Customer | 1 -> * | | 1 -> * | | 1 -> * |
-| Feedback calendar | 1 -> * | | | | |
-| Feedback sentiment (star ratings) | 1 -> * | | | | |
-| Manufacture calendar | | 1 -> * | 1 -> * | | 1 -> * |
-| Manufacture ID | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Order calendar | | | 1 -> * | | |
-| Order ID | | | 1 -> * | | 1 -> * |
-| Order status | | | 1 -> * | | 1 -> * |
-| Product type | * -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Quality criteria | | | | 1 -> * | |
-| Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
-| Shipping calendar | | | | | 1 -> * |
-| Shipping company | | | | | 1 -> * |
-| Shipping status | | | | | 1 -> * |
-| Testing date | | | | 1 -> * | |
-| Testing ID | | | | 1 -> * | |
-| Testing result | | | | 1 -> * | |
-
-In comparison, this matrix is difficult to read. This remains true even though the dimension names have been deliberately prefixed to group similar attributes together, and “Manufacture”, “Order” and “Shipping” happen to sort roughly chronologically. In any other instance, the bus matrix would be incomprehensible.
-
-Consequently, the three-step process of linear process diagram, cumulative information diagram, and chronological bus is not an accident. It is designed to make it simple for the data engineer to keep track of information, visualise what questions can be answered, and thus accomplish the goal of anticipating questions.
-
-The bus matrix is also a chance to check naming. Dimensions should be nouns because they represent business attributes or information. Fact names should usually be process-oriented because facts represent business processes.
-
-The relationship between business information and business processes is mirrored in the relationship between dimensions and facts. Hence this step can be remembered as “all the relationships.”
-
-## Conclusion {#docs-presenting-insights-anticipating-questions-conclusion}
-
-The three-step approach guides the data engineer to work on the information captured in business processes, rather than the stated requirements of “I would like to see X by Y”. The focus is on preserving information, not on answering specific questions.
-
-The three steps and their artefacts can be summarised in a table like this:
-
-| Step | Content | Artefact |
-|---|---|---|
-| All the facts | Identify all the business processes. | Linear process diagram. Shows all the major steps in a business, set at a level that makes sense to decision-making. |
-| All the dimensions | Identify all the information captured or inherited by the processes. | Cumulative information diagram. Shows all the information relevant to the business, how it flows, and where it is physically stored. Used to inform what can be reasonably answered. |
-| All the relationships | Relate information to its processes in the dimensional model. | Chronological bus. Shows the dimensional model that is implemented. Used to identify which possible questions can or cannot be answered, particularly any gaps. |
-
-Following these three steps ensures the full range of information is preserved, and questions relating to this information can be answered because the relationships exist in the model.
-
-This breadth of information requires a variety of modelling techniques. The later chapters in this section explain how filtering, measures, measure families, and security patterns make the preserved structure usable.
-
-In future, when a user asks a different question, the model can answer it if the relevant information has already been articulated in the dimensional model.
-
-This is how the data engineer anticipates questions.
-
-> **Key ideas.**
->
-> A strong dimensional model preserves enough business structure to answer all reasonable future questions.
->
-> Requirements tend to narrow attention; analytical modelling must preserve the structure from which follow-up questions can be answered.
->
-> “All the facts” means identifying the business processes that should become fact tables.
->
-> “All the dimensions” means identifying the information captured or inherited by those processes.
->
-> “All the relationships” means implementing the filtering paths that mirror what each process knows.
->
-> The three planning artefacts are the linear process diagram, the cumulative information diagram, and the chronological bus.
->
-> The chronological bus shows which questions the model can and cannot answer.
+- How do we know what the user will do with the model?
 
 \newpage
 
@@ -2697,7 +2411,9 @@ Most queries should return in under a second. Complex or infrequent queries shou
 
 Performance is not merely a user-experience consideration. It can also signal deeper issues in the articulation of information.
 
-A slow model often indicates that key information has not been pre-computed through [meaningful fragments](#docs-creating-information-meaningful-fragments). The model is then forced to compensate with work at query time. In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
+A slow model often indicates that key information has not been pre-computed through [meaningful fragments](#docs-creating-information-meaningful-fragments). The model is then forced to compensate with work at query time.
+
+> In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
 
 ## What are the signs of a good model? {#docs-presenting-insights-a-good-dimensional-model-what-are-the-signs-of-a-good-model}
 
@@ -3263,7 +2979,9 @@ This is the same underlying structure expressed for different usage scenarios.
 
 Computationally these are low costs and low complexity translations.
 
-The key is to recognise the underlying axes of binary choice. Once those axes are identified, the data engineer can express them in different dimensional forms depending on the interaction the user needs. Thus, the data engineer is not merely arranging tables, but recognising the latent structure of interaction in the business problem.
+The key is to recognise the underlying axes of binary choice. Once those axes are identified, the data engineer can express them in different dimensional forms depending on the interaction the user needs.
+
+> Thus, the data engineer is not merely arranging tables, but recognising the latent structure of interaction in the business problem.
 
 ### Storytelling dimension {#docs-presenting-insights-dimensional-modelling-for-ux-storytelling-dimension}
 
@@ -3273,7 +2991,9 @@ This pattern is used when the raw process is too detailed for the user’s first
 
 Where a Sankey dimension shows movement, a storytelling dimension translates these movements into manageable categories that are business-meaningful.
 
-For example, the [Storytelling](#docs-creating-information-storytelling-storytelling-dimensions) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order. The point is not merely to record the path a case took, but to express what that path means to the business.
+For example, the [Storytelling](#docs-creating-information-storytelling-storytelling-dimensions) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order.
+
+> The point is not merely to record the path a case took, but to express what that path means to the business.
 
 A storytelling dimension is created when the data engineer steps back from raw data and asks how the business understands the movement of the entity.
 
@@ -3354,7 +3074,7 @@ One common theme in this chapter is the movement from information at a finer gra
 
 Combination dimensions, choice dimensions, Sankey dimensions, and storytelling dimensions all follow this pattern.
 
-![](book/epub-assets/diagram-008.png)
+![](book/epub-assets/diagram-007.png)
 
 *Figure 1. Lower-grain detail is pushed back to the entity grain, then exposed as a dimension value that users can interact with safely.*
 
@@ -3400,7 +3120,9 @@ Many engineers stop too early, treating the job as complete once the correct ans
 
 That is not enough.
 
-A self-service model is not a puzzle for the user to solve. The user should not have to discover the one valid route through the model. They should be able to approach the model from different directions—starting with a date, a product, an ID, a measure, or a business process—and still receive sensible results at each step.
+> A self-service model is not a puzzle for the user to solve.
+
+The user should not have to discover the one valid route through the model. They should be able to approach the model from different directions—starting with a date, a product, an ID, a measure, or a business process—and still receive sensible results at each step.
 
 The data engineer’s task is therefore not only to make the correct answer possible. It is to anticipate how users will try to reach that answer. More generally, it is to anticipate what buttons the user will click, and what effects the model should produce.
 
@@ -4069,11 +3791,13 @@ Consider an organisation’s HR system. The model contains:
 - `[Employee SK]` is used as the surrogate key for Power BI relationships.
 - An end-of-month fact table `'Employee end of month'` stores the employee’s attributes at the end of each month.
 
+The Type II examples in this chapter use half-open validity periods: `[Start date]` is inclusive and `[End date]` is exclusive. The end of one period therefore equals the start of the next.
+
 **Example structure of `'Employee'`**
 
 | Employee SK | Employee ID | Start date | End date | Employee name | Role |
 |---:|---|---|---|---|---|
-| 1 | E1001 | 2023-01-01 | 2023-06-30 | Alice Chen | Data analyst |
+| 1 | E1001 | 2023-01-01 | 2023-07-01 | Alice Chen | Data analyst |
 | 2 | E1001 | 2023-07-01 | 9999-12-31 | Alice Chen | Senior analyst |
 | 3 | E1002 | 2023-01-01 | 9999-12-31 | Ben Smith | Finance officer |
 
@@ -4153,7 +3877,7 @@ Consider employees and organisation units. The fact table `'Employee end of mont
 
 | Team unit SK | Team unit ID | Start date | End date | Team name | Group name |
 |---:|---|---|---|---|---|
-| 1 | T1001 | 2023-01-01 | 2023-06-30 | Data engineering | Group A |
+| 1 | T1001 | 2023-01-01 | 2023-07-01 | Data engineering | Group A |
 | 2 | T1001 | 2023-07-01 | 9999-12-31 | Data engineering | Group B |
 | 3 | T1002 | 2023-01-01 | 9999-12-31 | Finance operations | Group A |
 
@@ -4346,7 +4070,7 @@ Every aspect of a measure should reflect business meaning. This includes its def
 
 A measure should align with real-world events.
 
-A common mistake is to count a database key and assume that the result is a meaningful business metric.
+> A common mistake is to count a database key and assume that the result is a meaningful business metric.
 
 For example, a data engineer might define `[Inspection count]` as a distinct count of `[Inspection ID]` in the `'Inspection'` fact table. That may be fine if `[Inspection ID]` corresponds to a real inspection. But in many systems, `[Inspection ID]` is only a system-generated record key. It may exist for retrieval, workflow, or database convenience.
 
@@ -5323,7 +5047,7 @@ A measure of measures is not a slicer trick. It is a modelling technique for exp
 - build structured visuals by metric and process;
 - define derived measures without duplication.
 
-Without anchor in business meaning, dynamic measure selection can easily become frustrating. The model may become clever, but not clearer.
+> Without anchor in business meaning, dynamic reports can easily become frustrating. The model may become clever, but not clearer.
 
 > **Key ideas.**
 >
@@ -5622,6 +5346,298 @@ The choice between anonymous population facts and pseudonymous dimensions is not
 
 \newpage
 
+# Anticipating questions {#docs-presenting-insights-anticipating-questions}
+
+*A strong dimensional model preserves the structure needed to answer questions before they are formally asked.*
+
+## Designing for questions not yet asked {#docs-presenting-insights-anticipating-questions-designing-for-questions-not-yet-asked}
+
+A good dimensional model does not merely answer the questions already written in requirements. It preserves enough business structure to answer all the questions users are likely to ask during the model’s lifetime.
+
+This expectation can surprise data engineers who come from an application-development background. In application development, the work often begins by defining requirements with stakeholders and building accordingly. Even when development is iterative, it is still usually organised around delivering stated requirements.
+
+That approach has its place, but analytics behaves differently.
+
+In data work, answering one question often creates the next question. Users discover what they want to ask by interacting with the data. They may begin with a simple requirement, such as “show quality-control failures by month”, but once the data is visible, they will ask follow-up questions: Which products failed? Which batches? Which suppliers? Which customers were affected? Did shipping outcomes change afterward?
+
+A data project focused only on stated requirements is therefore likely to frustrate everyone. If stakeholders have little interest, the stated requirements may be shallow. If stakeholders are engaged, the requirements will keep changing as the data reveals new possibilities.
+
+The data engineer cannot predict every future question. But good design can preserve the structure from which future questions can be answered.
+
+This is the purpose of anticipating questions.
+
+Power BI dimensional models are well suited to this task because facts represent business processes, dimensions represent business information, and relationships determine which questions can be answered through filtering.
+
+Instead of ticking off stated requirements, the data engineer should identify the business processes, the information known to those processes, and the information shared across processes. These become the facts, dimensions, and relationships of the dimensional model.
+
+To develop a model that anticipates questions and captures the breadth of information, the data engineer can remember a simple three-step process:
+
+1. All the facts—business processes
+2. All the dimensions—business information
+3. All the relationships—real-world relationships mirrored in the model
+
+Each step has an artefact to help the data engineer and business stakeholders check the comprehensiveness of the model.
+
+## All the facts {#docs-presenting-insights-anticipating-questions-all-the-facts}
+
+The first step to building a dimensional model that can anticipate all reasonable questions is to ensure it captures all the relevant business processes. For ease of memory, this is the step to capture “all the facts.”
+
+This step can be non-trivial for two reasons.
+
+First, in a complex business, many teams work together to complete a single goal. These teams often operate across different business processes. The data engineer and project team are usually working with a particular stakeholder group that focuses on specific processes rather than the full set. For example, some may focus on manufacturing, some on ordering, and others on quality control.
+
+Second, different stakeholders often take different views of the same process. Operational staff may focus on detailed steps, while others take a broader, strategic view. Speaking with any one group always results in a skewed perspective.
+
+In other words, the data engineer faces two challenges—how much to include, and how zoomed out the view should be.
+
+Consider the following example of business processes:
+
+1. Research and development
+2. Sourcing materials
+3. Manufacture
+4. Quality control
+5. Orders
+6. Shipping
+7. Customer feedback
+
+For the question “what are the different business processes to include?”, the data engineer should be as comprehensive as possible during horizon scanning. This means being persistent in asking “where does this come from?” and “where is this going to?” until the end-to-end is covered.
+
+A useful rule of thumb is to trace the process beyond the immediate team: where did the work come from, and where does it go next? For end-to-end process discovery, it can help to ask where the work first enters the organisation and where its effect eventually leaves.
+
+Once all the processes are identified, it becomes easier for stakeholders to collectively decide which ones to include. Usually, there is a shared sense of what is core and what is peripheral. This is a different question from “what are your requirements?”
+
+Requirements tend to narrow the perspective.
+
+For example, a manager of quality control may focus narrowly on their part of the process. If the project is driven by this stakeholder—perhaps because quality control initiated the engagement—the requirements may be framed as “how much is spent on quality control?” or “how many products are failing?” Such a view is unhelpfully narrow.
+
+Instead, the data engineer can help by identifying the full business process. The manager may then recognise that, even though reporting on the cost of manufacture is not a “must-have requirement” for quality control, it is still a core business process.
+
+Research and development, by contrast, may be considered peripheral.
+
+For the question “how zoomed out should the view be?”, the answer is to work at a level that makes sense for decision-making. It does not help to model the lowest-level details such as sending emails or looking up documents. On the other hand, it is also not helpful to see manufacturing and quality control as one large step.
+
+Zooming out often involves grouping sub-processes into a single process, or denormalising detail rows into header-level structures that expose a broader grain.
+
+For example, the quality control process may involve multiple testing steps for different criteria. Rather than creating one fact table for quality samples and another for quality sample tests, it may be more expressive to model the process as a single fact called `'Quality control'`, with the lower-level testing detail embedded where appropriate.
+
+Power BI’s flexibility with its DAX engine supports this approach. In simple cases, a `distinctcount` can recover the embedded grain, such as counting headers by their ID. In more complex cases, DAX can still retrieve the embedded grain, as explained in [Designing measures](#docs-presenting-insights-designing-measures-advanced-scenario-embedded-grain).
+
+This question often challenges engineers trained in traditional dimensional modelling who are learning Power BI for the first time. The classical approach tends to split facts by grain rather than by business process. This can obscure the business view.
+
+The artefact for this step is the linear process diagram. A linear process diagram is a business process diagram using only linear steps with no branching, cycles, or decision trees. Readers find linear diagrams much easier to understand than diagrams with arrows pointing in all directions. The constraint of linearity forces the business analyst to abstract the process to a level that is useful for themselves and others. This is especially true for executive audiences.
+
+It can also be helpful to categorise the business processes into higher-level categories.
+
+Continuing with the example above:
+
+- Design—Research and development
+- Production—Sourcing, Manufacturing, Quality control
+- Sales—Orders, Shipping, Customer feedback
+
+![](book/epub-assets/diagram-008.png)
+
+*Figure 1. Linear process diagram. Business processes are arranged in chronological order and grouped into Design, Production, and Sales.*
+
+Making linear process diagrams does not mean that business analysts cannot create more complex diagrams for other purposes. However, these are not linear process diagrams for model planning.
+
+The identified business processes form the facts of the dimensional model. Hence this step can be remembered as “all the facts.” The processes selected for the model define its scope. For example, if the decision is to focus on manufacturing onwards, then questions about research and development or sourcing will fall outside the model’s scope.
+
+Identifying the business processes is the hardest part of anticipating questions. It involves making business decisions and requires a high degree of judgement and practical experience. Once the processes are identified, the next step of identifying the business information follows more mechanically.
+
+## All the dimensions {#docs-presenting-insights-anticipating-questions-all-the-dimensions}
+
+The second step, after identifying the business processes in scope, is to identify all the business information known to those processes. This ensures that all reasonable questions about the processes included in the model can be answered. For ease of memory, this is the step to capture “all the dimensions.”
+
+The key distinction is between information a process captures and information a process knows.
+
+This step is more straightforward than identifying the processes. Business stakeholders usually know what information is captured. While there may be debate about the relative importance of one attribute over another, the answer is often that they are all important. If they were not, they would not be captured in the first place.
+
+The nuance for the data engineer is to distinguish between what is captured by a business process and what is known to it. The general rule is that downstream processes inherit information from upstream ones.
+
+Consider the following example. Suppose each process captures the following information:
+
+- Manufacturing—Product type, Manufacture details (date, batch number)
+- Quality control—Testing details (manufacture sample, date, criteria, results)
+- Orders—Product type, Customer, Order details (date, order units, sales amount, order number), Order status
+- Shipping—Shipping order (order number, line items), Shipping logistics (shipping method, shipping company), Shipping status (date, status)
+- Customer feedback—Customer, Product type, Feedback details (method, star rating, comments)
+
+In this example, the order process captures product type, customer and order units.
+
+The shipping process does not capture these directly but knows them through the order number. This is inheritance. However, not all downstream processes inherit everything.
+
+For example, customer feedback may not record the order number and may only capture the product type. In that case, it does not know the order date, even though it is downstream.
+
+Once the information is identified, it can be presented using a cumulative information diagram. This is a table with business information as rows and business processes as columns, both listed in chronological order. The diagram is cumulative because information typically accumulates downstream through inheritance.
+
+Rows are business information. Columns are business processes. `C` means the process captures the information directly. `I` means the process inherits the information from an upstream process.
+
+It is also helpful to annotate the diagram with where the information is physically stored—which database or table holds each attribute. This helps assess what can be reasonably answered and informs project planning.
+
+The example below shows what information is known to each business process.
+
+The linear process diagram describes the real-world business processes. The cumulative information diagram builds on the linear process diagram by showing how information flows through those processes and where it is stored in the database world.
+
+| Business information | Manufacture | Quality control | Orders | Shipping | Customer feedback |
+|---|---|---|---|---|---|
+| Product type | C | I | C | I | C |
+| Manufacturing details | C | I | | | |
+| Testing details | | C | | | |
+| Order status | | | C | I | |
+| Order details | | | C | I | |
+| Customer | | | C | I | C |
+| Shipping order | | | | C | |
+| Shipping logistics | | | | C | |
+| Shipping status | | | | C | |
+| Feedback details | | | | | C |
+| Database storage | XYZ SQL database | ABC diagnostics database | XYZ SAP ERP | XYZ SAP ERP | Salesforce analytics |
+
+In other words, the cumulative information diagram maps real-world processes to database storage.
+
+Since business information becomes dimensions in a dimensional model, this step can be remembered as “all the dimensions.”
+
+## All the relationships {#docs-presenting-insights-anticipating-questions-all-the-relationships}
+
+The final step is to ensure that the business processes and their known information are reflected in the dimensional model through filtering relationships. If all relevant processes are captured, all relevant information is identified, and valid relationships are correctly implemented, then the model can anticipate all reasonable questions.
+
+A relationship is not only a technical join. In a Power BI model, a relationship is a path by which a user’s question can reach a fact.
+
+The rule of thumb is simple. If a business process knows a piece of information, whether by direct capture or by inheritance, then the corresponding dimension should filter that fact table.
+
+Continuing with the earlier example, suppose `'Order ID'`, `'Order calendar'`, and `'Customer'` are dimensions, and `'Orders'` is the fact table. These dimensions should directly filter `'Orders'`. The `'Shipping'` fact table should also be filtered by `'Order ID'`, since shipping needs to know the order number. In this case, `'Order ID'` is a conformed ID dimension for both processes. The `'Order calendar'` and `'Customer'` dimensions should also filter `'Shipping'`, because this process inherits them through the order number.
+
+New data engineers often forget about inheritance. This creates a frustrating experience for users who expect to retrieve all shipments for a customer but find the model does not support the question due to a missing relationship.
+
+There are exceptions to inheritance. Sometimes an upstream process has a zero-to-many relationship with a downstream one. In these cases, including the upstream information as a filter may be problematic.
+
+For example, suppose the quality control process usually tests manufactured batches, but sometimes tests other aspects not tied to a specific batch, such as testing factory equipment itself. In this case, `'Manufacture ID'` should filter `'Quality control'` so users can look up testing for a batch. However, it may be better not to implement a filtering relationship between `'Manufacture calendar'` and `'Quality control'`. In Power BI, if a user selects a manufacture date, this relationship will also filter `'Quality control'` and affect any measures, even when the test was unrelated to a batch.
+
+It may be sufficient to use a role-playing `'Reporting calendar'` that filters `'Manufacture'` on manufacture date and `'Quality control'` on testing date. This avoids misleading results. If the relationship is implemented, the report design must be careful not to mislead users with incorrect numbers caused by unintended filters.
+
+Usually, upstream processes tend not to know about downstream processes. This means that `'Customer'` should not filter `'Manufacture'` because this information does not exist at the time of manufacture. However, the data engineer has the benefit of hindsight, so some information can be brought back to the earlier process. For example, while the quality-control results of a manufactured batch are not known at the time of manufacture, the result can be associated to the batch number afterwards.
+
+To express this at the batch-number grain, multiple quality control criteria may need to be rolled back to the batch for an overall pass or fail. A dimension for `'Batch quality outcome'` can be used to filter `'Manufacture'`. In general, storytelling dimensions summarise the journey of an entity through the whole business process and can be associated to all steps of the process in hindsight.
+
+The artefact for this step is the chronological bus. A bus matrix is a table that lists dimensions as rows and facts as columns, showing which dimensions filter which facts. In Power BI, this should reflect the actual filtering relationships, including their cardinality. A chronological bus matrix is one where the facts and dimensions are sorted in chronological order of their occurrence in the business.
+
+The chronological bus is the main planning artefact of the dimensional model. It shows, at a glance, which information can filter which business processes.
+
+The diagram for our example is below. The symbol `1 -> *` is used to indicate one-to-many, while `* -> *`, which is used for product type and customer feedback, indicates a many-to-many relationship. The latter means one customer-feedback record may relate to several products at once.
+
+| Dimension | Manufacture | Quality control | Orders | Shipping | Customer feedback |
+|---|---|---|---|---|---|
+| Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Manufacture ID | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
+| Manufacture calendar | 1 -> * | | 1 -> * | 1 -> * | |
+| Batch number | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
+| Batch quality outcome | 1 -> * | 1 -> * | 1 -> * | 1 -> * | |
+| Product type | 1 -> * | 1 -> * | 1 -> * | 1 -> * | * -> * |
+| Testing ID | | 1 -> * | | | |
+| Testing date | | 1 -> * | | | |
+| Quality criteria | | 1 -> * | | | |
+| Testing result | | 1 -> * | | | |
+| Order ID | | | 1 -> * | 1 -> * | |
+| Order calendar | | | 1 -> * | 1 -> * | |
+| Customer | | | 1 -> * | 1 -> * | 1 -> * |
+| Order status | | | 1 -> * | 1 -> * | |
+| Shipping calendar | | | | 1 -> * | |
+| Shipping company | | | | 1 -> * | |
+| Shipping status | | | | 1 -> * | |
+| Arrival date | | | | 1 -> * | |
+| Feedback calendar | | | | | 1 -> * |
+| Feedback sentiment (star ratings) | | | | | 1 -> * |
+
+The chronological bus can be used to evaluate what questions are answered by the model.
+
+In the above example, because `'Customer'` is a conformed dimension for `'Orders'`, `'Shipping'`, and `'Customer feedback'`, it is possible to identify customers by the volume of orders, shipping delays, and feedback results.
+
+Because `'Product type'` is a conformed dimension on all processes, it is the attribute that the model can answer most questions for, such as comparing quality-control results with customer feedback. Note, however, the many-to-many relationship between `'Product type'` and `'Customer feedback'` indicates that any assignment of feedback to product is approximate and may double-count.
+
+Because `'Manufacture ID'` is a conformed ID dimension from `'Manufacture'` to `'Shipping'`, the model can support traceback of faulty products that have been shipped.
+
+On the other hand, it is not possible to directly analyse the effect of shipping on customer feedback because shipping information does not filter the customer-feedback fact.
+
+Such analysis may be possible indirectly through `'Reporting calendar'`, `'Product type'` and `'Customer'`, which together may narrow the transactions down to a segment that correlates shipping status and shipping company with feedback sentiment. If this can be done systematically, it can be introduced as precomputed information in the data pipeline.
+
+Ensuring that the model’s relationships match the real-world flow of information means the model behaves in ways users intuitively expect. Downstream processes tend to inherit from upstream ones. By default, upstream processes do not know downstream outcomes. When downstream outcomes are brought back upstream, they should be deliberately modelled.
+
+As a result, the chronological bus is typically dense in the upper right. This structure makes gaps easy to spot. These gaps may be accidental, reflect a limitation in the source system, or be a deliberate design choice.
+
+In the example above, `'Manufacture calendar'` does not filter `'Quality control'`. This is a design decision. It does not filter `'Customer feedback'` either, which is a limitation because the information is not recorded. This example does not have any accidental gaps. If there were, they would stand out.
+
+The chronological bus only works if the data engineer has modelled information as dimensions, processes as facts, and listed them in chronological order.
+
+The same information becomes much less useful when sorted alphabetically:
+
+| Dimension | Customer feedback | Manufacture | Orders | Quality control | Shipping |
+|---|---|---|---|---|---|
+| Arrival date | | | | | 1 -> * |
+| Batch number | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Batch quality outcome | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Customer | 1 -> * | | 1 -> * | | 1 -> * |
+| Feedback calendar | 1 -> * | | | | |
+| Feedback sentiment (star ratings) | 1 -> * | | | | |
+| Manufacture calendar | | 1 -> * | 1 -> * | | 1 -> * |
+| Manufacture ID | | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Order calendar | | | 1 -> * | | |
+| Order ID | | | 1 -> * | | 1 -> * |
+| Order status | | | 1 -> * | | 1 -> * |
+| Product type | * -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Quality criteria | | | | 1 -> * | |
+| Reporting calendar | 1 -> * | 1 -> * | 1 -> * | 1 -> * | 1 -> * |
+| Shipping calendar | | | | | 1 -> * |
+| Shipping company | | | | | 1 -> * |
+| Shipping status | | | | | 1 -> * |
+| Testing date | | | | 1 -> * | |
+| Testing ID | | | | 1 -> * | |
+| Testing result | | | | 1 -> * | |
+
+In comparison, this matrix is difficult to read. This remains true even though the dimension names have been deliberately prefixed to group similar attributes together, and “Manufacture”, “Order” and “Shipping” happen to sort roughly chronologically. In any other instance, the bus matrix would be incomprehensible.
+
+Consequently, the three-step process of linear process diagram, cumulative information diagram, and chronological bus is not an accident. It is designed to make it simple for the data engineer to keep track of information, visualise what questions can be answered, and thus accomplish the goal of anticipating questions.
+
+The bus matrix is also a chance to check naming. Dimensions should be nouns because they represent business attributes or information. Fact names should usually be process-oriented because facts represent business processes.
+
+The relationship between business information and business processes is mirrored in the relationship between dimensions and facts. Hence this step can be remembered as “all the relationships.”
+
+## Conclusion {#docs-presenting-insights-anticipating-questions-conclusion}
+
+The three-step approach guides the data engineer to work on the information captured in business processes, rather than the stated requirements of “I would like to see X by Y”. The focus is on preserving information, not on answering specific questions.
+
+The three steps and their artefacts can be summarised in a table like this:
+
+| Step | Content | Artefact |
+|---|---|---|
+| All the facts | Identify all the business processes. | Linear process diagram. Shows all the major steps in a business, set at a level that makes sense to decision-making. |
+| All the dimensions | Identify all the information captured or inherited by the processes. | Cumulative information diagram. Shows all the information relevant to the business, how it flows, and where it is physically stored. Used to inform what can be reasonably answered. |
+| All the relationships | Relate information to its processes in the dimensional model. | Chronological bus. Shows the dimensional model that is implemented. Used to identify which possible questions can or cannot be answered, particularly any gaps. |
+
+Following these three steps ensures the full range of information is preserved, and questions relating to this information can be answered because the relationships exist in the model.
+
+This breadth of information requires a variety of modelling techniques. The preceding chapters in this section explain how filtering, measures, measure families, and security patterns make the preserved structure usable.
+
+In future, when a user asks a different question, the model can answer it if the relevant information has already been articulated in the dimensional model.
+
+This is how the data engineer anticipates questions.
+
+> **Key ideas.**
+>
+> A strong dimensional model preserves enough business structure to answer all reasonable future questions.
+>
+> Requirements tend to narrow attention; analytical modelling must preserve the structure from which follow-up questions can be answered.
+>
+> “All the facts” means identifying the business processes that should become fact tables.
+>
+> “All the dimensions” means identifying the information captured or inherited by those processes.
+>
+> “All the relationships” means implementing the filtering paths that mirror what each process knows.
+>
+> The three planning artefacts are the linear process diagram, the cumulative information diagram, and the chronological bus.
+>
+> The chronological bus shows which questions the model can and cannot answer.
+
+\newpage
+
 \thispagestyle{empty}
 \phantomsection
 \hypertarget{docs-quality-reliability}{}
@@ -5701,7 +5717,7 @@ Because of these changes, a trustworthy data product cannot depend on everything
 
 ## When metadata is missing {#docs-quality-reliability-quality-metadata-when-metadata-is-missing}
 
-Metadata is the place where meaning is either carried by the data product or abandoned to the user.
+> Metadata is the place where meaning is either carried by the data product or abandoned to the user.
 
 Data quality issues reflect the gap between the business world and the data world. Metadata helps bridge that gap by adding the interpretative context that connects the user to the business reality behind the data.
 
@@ -5787,6 +5803,10 @@ A good description should explain:
 
 A useful description carries the interpretation that would otherwise have to be supplied by tribal knowledge or guesswork.
 
+A description should begin with what the artefact is: the business reality it represents and what it contains. The opening sentence is often the only one a user reads.
+
+It should not be spent on the row grain, such as “One row per sale”, or on what the artefact is not. The grain is carried by the primary key, and exclusions make sense only once the user knows what is included.
+
 A column such as `[Is non-compliant]` should describe what non-compliance means in business terms, not merely say “if the result code is `F`.”
 
 Data engineers and stakeholders often slip into using system names as shorthand for business concepts. Descriptions should refer to business entities and business processes, not merely the systems that implement them.
@@ -5796,7 +5816,7 @@ There will be cases where system names or technical implementation details are n
 For example, the description for `[Is non-compliant]` may be:
 
 ```md
-True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the ResultCode field in the source system, where F indicates failure.
+True if the transaction failed to meet the minimum regulatory requirements for importation, based on the department’s published compliance criteria. This includes both automatic and manual assessments. Transactions flagged by automated rules are included regardless of whether they were later manually overridden. This column does not include cases where compliance was not assessed. The result code is derived from the "ResultCode" field in the source system, where "F" indicates failure.
 ```
 
 The same principle applies to transformation logic. The transformation should be stated in business terms. Technical statements can be included as elaboration, but not as a substitute for meaning.
@@ -5804,10 +5824,10 @@ The same principle applies to transformation logic. The transformation should be
 For example:
 
 ```md
-This column is derived from the inspection result and officer notes. It is true if the inspection outcome was Spoiled cake or Not tasty, and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the InspectionOutcomeFlag measure using a combination of result codes and officer certification status.
+This column is derived from the inspection result and officer notes. It is true if the inspection outcome was "Spoiled cake" or "Not tasty", and the inspection was conducted by a certified officer. It excludes inspections conducted during training. The logic is implemented in the [Inspection outcome] measure using a combination of result codes and officer certification status.
 ```
 
-Limitations should also be framed in terms of business interpretation.
+Limitations should also be framed in terms of business interpretation. An important limitation belongs in the description, stated in the context of how the artefact is used. It should help the user apply the data, not hedge against misuse.
 
 “The column can have a null value” is not a useful limitation by itself.
 
@@ -5820,6 +5840,24 @@ The inspector may not record a result if there are no issues. This means it is n
 Clear statements of limitation are essential for transparency and reliable application of business insight. They tell the user not only what the artefact means, but when it becomes dangerous to rely on it.
 
 This is where descriptions protect users from misuse. They do not merely explain what an artefact means in normal cases; they mark the boundary beyond which that meaning breaks down.
+
+Descriptions must also say where the data came from.
+
+For data acquired from outside the warehouse, the mechanics of acquisition, such as addresses, file formats, and checksums, belong in supplementary information. Their consequences belong in the description. A user cannot judge whether a table is complete or current without knowing how it was acquired.
+
+The description should therefore make acquisition legible. A user should be able to see at once:
+
+- the source, and how new items are discovered;
+- how change at the source is detected, and whether items are immutable once published;
+- how far back data is retrieved again.
+
+For example, the description of `Cake.InspectionResult` may be:
+
+```md
+Results of food safety inspections published by the regional food authority. New inspection rounds are discovered by reading the authority’s publication listing from January 2020 onwards. The authority revises results after appeal, so rounds from the previous twelve months are retrieved again each day and compared with the stored copy. Older rounds are treated as final, so the table reflects appeals decided within twelve months of each round.
+```
+
+This tells the user how current the table can be, and how far it reflects appeals. It also records the assumptions the pipeline relies on, so they can be challenged when the source behaves differently. Acquisition itself is covered in [Acquiring information](#docs-efficient-stable-pipeline-acquiring-information).
 
 ## Keys answer: how does this relate? {#docs-quality-reliability-quality-metadata-keys-answer-how-does-this-relate}
 
@@ -5853,7 +5891,7 @@ The primary purpose of metadata is not governance, tagging, discoverability, or 
 
 Metadata should be understood in the context of the data engineer’s task: shaping data in light of business intent. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business reality.
 
-Without this context, the data engineer is abandoning the user to guess.
+> Without metadata context, the data engineer is abandoning the user to guess.
 
 Finally, whether metadata describes names, descriptions, or keys, it should be stored and made available as data.
 
@@ -5870,6 +5908,8 @@ Instead of recording metadata only in diagrams, specialist tools, or database co
 > Without descriptions, artefacts become incomprehensible.
 >
 > Without keys, artefacts become lost.
+>
+> A description should begin with what an artefact is, and show how its data was acquired.
 >
 > Metadata should be stored and treated as data.
 
@@ -7226,7 +7266,7 @@ The goal is not to ignore errors. The goal is to keep the rest of the data produ
 
 On the other hand, surfacing failure is not the same as producing endless alerts.
 
-If the same warning appears every day and no one knows what to do with it, the warning becomes background noise rather than a warning.
+> If the same warning appears every day and no one knows what to do with it, the warning becomes background noise rather than a warning.
 
 This is the cry-wolf problem of monitoring. Repeated, unactionable alerts train people to ignore the pipeline.
 
@@ -7457,7 +7497,7 @@ It is not useful to enumerate every possible fault.
 
 The important thing is the mindset: anticipating errors.
 
-The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
+> The experienced data engineer designs for what the world might do to the pipeline, not only what the pipeline does to the data.
 
 This is why the data engineer builds with fault tolerance: not every error is fatal, but none should pass silently.
 
@@ -7543,7 +7583,7 @@ Some performance factors sit outside the data engineer’s immediate control: se
 
 **Stability** is closely related to efficiency.
 
-Stability means that small changes in the business world should produce proportionate changes in the data world.
+> Stability means that small changes in the business world should produce proportionate changes in the data world.
 
 An unstable pipeline amplifies change. A small input change creates a large output change.
 
@@ -7866,6 +7906,10 @@ The history table preserves previous versions of updated and deleted rows.
 |---|---|---|---|---:|---|---|---|
 | O1002 | C002 | REF-1002 | Submitted | 95.00 | 2025-04-01 09:05 | 2025-04-01 09:05 | 2025-05-01 08:00 |
 | O1003 | C003 | REF-1003 | Cancelled | 80.00 | 2025-04-01 09:10 | 2025-04-01 09:10 | 2025-05-01 08:00 |
+
+Row change datetimes matter most where data first enters the warehouse. Data acquired from an external source carries no pipeline-managed datetimes of its own. Acquisition must therefore assign them, usually in the [Filter step](#docs-creating-information-entity-processing-first-pass-filter). Otherwise every downstream table must reinterpret the source’s timeline to find out what changed.
+
+The same holds for acquired files. Each stored file needs the equivalent of `[Row insert datetime]` and `[Row update datetime]`: when it was first retrieved, and when its content last genuinely changed. This is covered in [Acquiring information](#docs-efficient-stable-pipeline-acquiring-information).
 
 ## After the load {#docs-efficient-stable-pipeline-load-mechanics-after-the-load}
 
@@ -8620,7 +8664,33 @@ If each column is either `0` or `1`, the surrogate key can be calculated with a 
 
 `[SK] = 1 + [Is A] + 2 * [Is B] + 4 * [Is C] + 8 * [Is D] + 16 * [Is E]`
 
-This gives each combination a stable integer without requiring a lookup. The downstream table gets the benefit of a surrogate key without forming a dependency on a generated key table.
+The same principle can be extended beyond binary flags. The weights are calculated cumulatively. The first field has weight `1`. Each later field has a weight equal to the number of combinations created by all the fields before it.
+
+For example, suppose a dimension contains:
+
+- `[Is A]`, with values `0` and `1`
+- `[Is B]`, with values `0` and `1`
+- `[Apple]`, with values `0`, `1`, and `2`
+- `[Orange]`, with values `0`, `1`, and `2`
+
+The cardinalities are `2`, `2`, `3`, and `3`.
+
+The weights are:
+
+| Field | Cardinality | Weight |
+|---|---:|---:|
+| `[Is A]` | 2 | 1 |
+| `[Is B]` | 2 | 2 |
+| `[Apple]` | 3 | 4 |
+| `[Orange]` | 3 | 12 |
+
+The surrogate key can therefore be calculated as:
+
+`[SK] = 1 + [Is A] + 2 * [Is B] + 4 * [Apple] + 12 * [Orange]`
+
+This produces `2 × 2 × 3 × 3 = 36` possible keys, from `1` to `36`, with no collisions.
+
+This method—called mixed radix key—gives each combination a stable integer without requiring a lookup. The downstream table gets the benefit of a surrogate key without forming a dependency on a generated key table.
 
 This approach only works when the surrogate key can be computed safely and permanently. Many surrogate keys cannot be managed this way. But when the logic is simple and stable, calculation may be better than lookup.
 
@@ -8682,7 +8752,7 @@ Dependencies are how the warehouse accumulates meaning.
 
 A source system with 10 to 20 raw tables may produce 5 or 6 layers of dependency in the transformation pipeline. A larger system with 30 to 50 tables, especially when integrated with other systems, may produce 10 or more layers.
 
-The aim is not to minimise dependencies, but to create the right ones.
+> The aim is not to minimise dependencies, but to create the right ones.
 
 A healthy dependency is valuable, targeted, and stable. It propagates meaningful information without creating unnecessary ripple effects.
 
@@ -8722,15 +8792,11 @@ Efficiency improves when downstream tables can reliably identify the records tha
 
 Doing this well requires systematic change tracking.
 
-Tracking change is the discipline of establishing a reliable relationship between source change and the pipeline’s own processing state, so we can answer the question:
-
-> What source records may have changed since this target table last loaded successfully?
+Tracking change is the discipline of establishing a reliable relationship between source change and the pipeline’s own processing state, so we can answer the question: *What source records may have changed since this target table last loaded successfully?*
 
 ## The problem of time {#docs-efficient-stable-pipeline-tracking-changes-the-problem-of-time}
 
-Incremental loading depends on a deceptively simple question:
-
-> What has changed since this table was last processed?
+Incremental loading depends on a deceptively simple question: *What has changed since this table was last processed?*
 
 The difficulty is that this question does not refer to one time. It refers to a relationship between two states.
 
@@ -8749,11 +8815,7 @@ A time is in-sync when it is created by the pipeline or can be safely compared f
 
 A time is out-of-sync when it belongs to another system and may lag behind, arrive late, or reflect a different notion of change.
 
-The question:
-
-> Which source rows changed after the target last loaded successfully?
-
-is only safe when the source change time is in-sync with the target’s processing time.
+The question: *Which source rows changed after the target last loaded successfully?* is only safe when the source change time is in-sync with the target’s processing time.
 
 Doing this systematically and accurately requires additional artefacts: refresh bookmarks and polling tables.
 
@@ -8945,9 +9007,7 @@ The columns have different meanings:
 
 The refresh bookmark datetime of `Curated.Event` is now in-sync with `[Refresh datetime]` in `Raw.Bookmark` because they are both managed by the pipeline. `Raw.Bookmark[Refresh datetime]` is linked to the source system’s update timeline through `Raw.Bookmark[Bookmark datetime]`.
 
-With the polling table as the bridge, we can now ask:
-
-> When the target last refreshed, how far through the source’s update timeline had the source safely arrived?
+With the polling table as the bridge, we can now ask: *When the target last refreshed, how far through the source’s update timeline had the source safely arrived?*
 
 Suppose `Curated.Event` last successfully started at `2026-05-01 08:01`.
 
@@ -9058,6 +9118,28 @@ In this case, the target’s refresh bookmark can be compared directly against t
 
 This is one of the reasons why the [Filter step](#docs-creating-information-entity-processing-first-pass-filter) is important. Once external source data has passed through a controlled pipeline load, it receives architectural row change datetimes that are in-sync with the pipeline. Downstream tables can then process incrementally without needing to reinterpret the source system’s update timeline.
 
+## Detecting change at the source {#docs-efficient-stable-pipeline-tracking-changes-detecting-change-at-the-source}
+
+The patterns so far assume that source rows are already visible to the warehouse. Often they are not. The source may be a publisher’s website, a file share, or an API, and the data must be retrieved before it can be compared.
+
+In these cases, tracking change should begin before anything is retrieved.
+
+Retrieval is often the most expensive and least reliable part of the load. It depends on another system’s availability, it may be rate-limited, and the source may not keep what it published yesterday. A pipeline that retrieves everything to find out what changed has already done most of the work it was trying to avoid.
+
+The question is the same: *What may have changed since the last successful retrieval?* The signals are different.
+
+| Signal | What it can tell the pipeline |
+|---|---|
+| Listing | Which items the source currently publishes, and which are new. |
+| Item name | Whether an item is a new release or an existing item that may have been revised. |
+| Source change metadata | Whether a known item may have changed, through a modified date, size, or version. |
+
+These signals belong to the source, not the pipeline. A modified date on a publisher’s website is out-of-sync in the same way as a source `[Update datetime]`: it identifies candidates for change. Genuine change is confirmed by comparing the retrieved content with the stored copy, in the same way that [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes) compares rows.
+
+Once retrieved content has been stored with pipeline-managed datetimes, the patterns above apply unchanged. Downstream tables read only the items that changed after their refresh bookmark.
+
+How to discover, retrieve, and store external data is covered in [Acquiring information](#docs-efficient-stable-pipeline-acquiring-information).
+
 ## The role of the filter step {#docs-efficient-stable-pipeline-tracking-changes-the-role-of-the-filter-step}
 
 Three themes occur when tracking inserts, updates, and deletes.
@@ -9092,6 +9174,8 @@ In this way, the Filter step converts fragile or out-of-sync source change signa
 > Source change detection columns can be in-sync or out-of-sync with the pipeline’s processing time.
 >
 > Polling tables map out-of-sync source timestamps to in-sync pipeline timestamps.
+>
+> When the source sits outside the warehouse, tracking change should begin before anything is retrieved.
 >
 > Inserts and updates are easier to track than deletes because deleted rows disappear.
 >
@@ -9791,6 +9875,8 @@ The complexity comes from analysing the query. Generative AI is helpful for this
 
 Together, the two steps—tracking changes and responding to change—apply the principle of proportionate change.
 
+Both steps depend on how information first entered the warehouse. That foundation is the subject of [Acquiring information](#docs-efficient-stable-pipeline-acquiring-information).
+
 > **Key ideas.**
 >
 > Tracking change identifies which source rows have changed. Responding to change determines what those source changes mean after they pass through the target query.
@@ -9806,6 +9892,276 @@ Together, the two steps—tracking changes and responding to change—apply the 
 > Delete drivers identify rows that no longer satisfy the target query’s presence rule. They must be exact.
 >
 > The goal of an incremental load is to apply proportionate computational change.
+
+\newpage
+
+# Acquiring information {#docs-efficient-stable-pipeline-acquiring-information}
+
+*Efficient acquisition retrieves only what may have changed, and keeps what cannot be retrieved again.*
+
+## The first contact {#docs-efficient-stable-pipeline-acquiring-information-the-first-contact}
+
+[Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) and [Responding to change](#docs-efficient-stable-pipeline-responding-to-change) explained how incremental load works between tables. Both depend on a foundation laid at the start of the pipeline, when information is first acquired.
+
+Acquisition is the first contact between the business world and the data world. Every incremental load downstream inherits what happened there. This is why acquisition deserves a special study.
+
+The source may be an operational database, a publisher’s website, a file share, or an API. Whatever its form, the source is not under the pipeline’s control. It publishes on its own schedule, revises on its own terms, and may not keep what it published yesterday.
+
+Acquisition is where proportionate change is first won or lost. If the pipeline cannot tell what changed at the source, it must retrieve everything. If it retrieves everything, every downstream table must work out for itself what changed. The inefficiency at the edge spreads through the whole pipeline.
+
+Acquisition is also where information is most easily lost. A row that is transformed badly can be transformed again. A file that was overwritten, after the publisher withdrew it, cannot be retrieved again.
+
+Acquiring information well means answering three questions:
+
+| Question | Concern |
+|---|---|
+| Discovery | What does the source publish, and what is new? |
+| Change detection | Which known items may have changed, and how far back can they change? |
+| Retention | What must be kept, because it cannot be retrieved again? |
+
+This chapter uses published files as the main example, because they make each question visible. The same questions apply to tables and APIs.
+
+## Discovering new items {#docs-efficient-stable-pipeline-acquiring-information-discovering-new-items}
+
+The first question is what the source currently publishes.
+
+A common approach is to predict where each item will be. If a flour supplier publishes one price list per week under a predictable name, the pipeline can work out each week’s name and try to retrieve it.
+
+This works until the pattern changes. Publishers rename files, reorganise what they publish, and change numbering schemes between years. A pipeline that works out names from a list of known years will quietly stop discovering new price lists when the first list of a new year is published. Nothing fails. The data simply stops arriving.
+
+A more reliable approach is to read the source’s own listing.
+
+Most sources maintain a list of what is available. Reading the listing lets the source say what exists, rather than the pipeline guessing. New items are discovered because they appear, not because the pipeline predicted their names.
+
+The listing should be read from a **start period**. The start period is a deliberate decision about how much history the warehouse needs. Items before it are ignored, even if the listing still shows them.
+
+| Discovery approach | Strength | Risk |
+|---|---|---|
+| Predicted names | Works when no listing exists. | Silently stops when the naming pattern changes. |
+| Listing from a start period | Discovers what the source actually publishes. | Depends on the listing being complete. |
+
+Where no listing exists, predicted names may be unavoidable. In that case, the naming pattern is an assumption about the source, and it should be monitored like one.
+
+### Absence is not failure {#docs-efficient-stable-pipeline-acquiring-information-absence-is-not-failure}
+
+When an expected item is missing, the pipeline has to decide what the absence means.
+
+Usually, the item has not been published yet. Next week’s price list is missing because next week has not happened. This is ordinary, and it should not fail the load.
+
+The source may also be briefly unavailable. This says nothing about the item, and the stored copy remains the best available.
+
+In both cases, the stored copy is kept and the item is tried again on the next run. At most, the load for that source fails. The absence should not spread beyond it. This is the same mindset as [Fault tolerance](#docs-quality-reliability-fault-tolerance).
+
+But absence should not pass silently forever. A source that has stopped publishing looks the same, on any one run, as a source that has not published yet. Absence is ordinary only for as long as it is expected. Once an item is overdue, it should be surfaced as a [monitored assumption](#docs-quality-reliability-tests-and-assumptions-is-source-data-up-to-date).
+
+| Absence | Meaning | Response |
+|---|---|---|
+| Item not yet due | Not yet published. | Try again next run. |
+| Source briefly unavailable | Nothing is known about the item. | Keep the stored copy and try again next run. |
+| Item overdue, or source unavailable for several runs | The source may have changed. | Surface for attention. |
+
+## Detecting change before retrieval {#docs-efficient-stable-pipeline-acquiring-information-detecting-change-before-retrieval}
+
+Once an item is known, the next question is whether it may have changed.
+
+As explained in [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes-detecting-change-at-the-source), change tracking at an external source should begin before anything is retrieved. The right approach depends on how the source behaves.
+
+| Source behaviour | Approach |
+|---|---|
+| Immutable items | Retrieve once by name, then never again. |
+| Revisable items | Retrieve again within a revision window. |
+| Current-state items | Check on every run, then compare content. |
+| Rolling publication windows | Keep one copy per edition, so older periods are not lost. |
+
+Each approach is an assumption about the source. It should be stated in the table’s [description](#docs-quality-reliability-quality-metadata-descriptions-answer-what-does-this-mean), so that users know what the table can miss.
+
+### Immutable items {#docs-efficient-stable-pipeline-acquiring-information-immutable-items}
+
+Some sources never change what they have published. A weekly price list labelled with its week, or a monthly statement labelled with its month, is published once and left alone.
+
+For immutable items, the name is enough. If the warehouse already holds an item with that name, there is nothing to do. The pipeline reads the listing, finds no new names, and finishes without retrieving anything.
+
+This is the cheapest possible acquisition. When nothing new has been published, the run does no work.
+
+Immutability is still an assumption. A publisher that corrects an item may publish the correction under a new name rather than the old one. A new name for an existing period should therefore be treated as a new release of that period, not ignored.
+
+### Revision windows {#docs-efficient-stable-pipeline-acquiring-information-revision-windows}
+
+Other sources revise recent items. A bakery association may amend its monthly market sales figures for some months after they are first published, as late returns arrive.
+
+For these sources, the pipeline retrieves recent items again within a **revision window**. Items older than the window are treated as final.
+
+For example, each monthly market sales file may be retrieved again each day for six months, then left alone. As at June 2026:
+
+| Period | Within revision window | Action |
+|---|---|---|
+| 2026-05 | Yes | Retrieve again and compare. |
+| 2026-01 | Yes | Retrieve again and compare. |
+| 2025-09 | No | Treat as final. |
+
+The window is a trade-off. A longer window catches more revisions but retrieves more data. A shorter window is cheaper but misses late revisions. The length should be based on how the source has actually revised in the past, not on convenience.
+
+The window can be measured from the period an item describes, or from when the item was first retrieved. Measuring from first retrieval is safer when publication lags the period, because a late-published item still receives its full window. The first retrieved datetime must then survive each revision. Otherwise every revision restarts the window, and it never closes.
+
+A retrieved item is not necessarily a changed item. A file may be republished with the same figures but a new creation date. Comparing the whole file would report a change. Comparing the figures would not. The comparison should be on the information, not on the packaging.
+
+### Current-state items {#docs-efficient-stable-pipeline-acquiring-information-current-state-items}
+
+Some items describe the current state of something, such as a register of approved suppliers, and are republished under the same name whenever the state changes.
+
+For current-state items, the name says nothing about change. The pipeline must check on every run.
+
+Some sources provide change metadata, such as a modified date or version marker, that says whether an item may have changed since the stored copy was retrieved. This identifies a candidate. Genuine change is still confirmed by comparing content. Where there is no such metadata, the pipeline retrieves the item on every run and compares it with the stored copy.
+
+### Rolling publication windows {#docs-efficient-stable-pipeline-acquiring-information-rolling-publication-windows}
+
+Some sources show only a recent window. A supplier may offer only the last eighteen months of weekly price lists. A quarterly market report may carry only the last eight quarters.
+
+A rolling window looks like a full extract, but it is not one. If it is loaded as a full extract, periods that fall out of the window will be treated as deletes, and the warehouse will remove information that is still true.
+
+This is a case where [source changes are not target actions](#docs-efficient-stable-pipeline-responding-to-change-source-changes-are-not-target-actions). Absence from the window means the publisher no longer shows the period, not that the period no longer exists.
+
+The answer is to keep one copy per edition. Each new edition is added to what the warehouse already holds. Nothing is removed because it has dropped out of the publisher’s window.
+
+Each edition repeats the periods still in the window, so the same period is delivered several times. Whether users see one current value per period or every edition’s value is a design choice, covered in [Files that repeat older data](#docs-efficient-stable-pipeline-acquiring-information-files-that-repeat-older-data).
+
+## Retaining what was retrieved {#docs-efficient-stable-pipeline-acquiring-information-retaining-what-was-retrieved}
+
+The third question is what to keep. The answer is to keep what was retrieved, as it was retrieved, alongside a record of how it was acquired.
+
+**Example structure of an acquisition record**
+
+| Field | Meaning |
+|---|---|
+| Source location | Where the item was retrieved from, and the listing it was discovered on. |
+| First retrieved datetime | When the warehouse first held this item. |
+| Retrieved datetime | When the current content was retrieved. |
+| Checksum | A fingerprint of the content, used to detect genuine change. |
+| Source version | The edition, release, or version the source assigns, if any. |
+| Source change metadata | The source’s own modified date, size, or version marker, if provided. |
+
+The record serves three purposes. It lets the next run decide whether anything changed. It gives downstream tables the provenance they need. It lets the data engineer answer what the source said, and when, long after the source has moved on.
+
+### Write only on genuine change {#docs-efficient-stable-pipeline-acquiring-information-write-only-on-genuine-change}
+
+If the retrieved content is identical to the stored copy, nothing should be written.
+
+This applies to the record as well as the content. Updating the retrieved datetime on every run would make every item look changed, and every downstream table would respond. This is the [`[Today’s date]` problem](/docs/quality-reliability/fault-tolerance/#stability) in another form.
+
+When content genuinely changes, the record should change with it, in the same way that [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-step-3-apply-the-changes) updates `[Row update datetime]` only for genuine change. Because the record changes only with content, its first retrieved datetime and retrieved datetime serve as the stored file’s pipeline-managed change datetimes, equivalent to `[Row insert datetime]` and `[Row update datetime]`.
+
+### Never discard what cannot be retrieved again {#docs-efficient-stable-pipeline-acquiring-information-never-discard-what-cannot-be-retrieved-again}
+
+A transformed table can be rebuilt from its inputs. Acquired data cannot.
+
+This changes how acquired data should be treated.
+
+First, a replaced item should not be overwritten. When a revised version arrives, the previous version should be kept, for example under its checksum. Otherwise the warehouse loses the ability to show what the source said before the revision.
+
+Second, acquired data should be protected from rebuild. Rebuilding a transformed table restores the same result. Rebuilding acquired data retrieves the source as it is today, which may be different. Once the source has withdrawn an item or moved its rolling window, a rebuild would delete information.
+
+> Acquired data cannot be rebuilt. It can only be retrieved again, and the source may have moved on.
+
+## Reading only what changed {#docs-efficient-stable-pipeline-acquiring-information-reading-only-what-changed}
+
+Once acquisition writes only on genuine change, downstream tables can read only what changed.
+
+The pattern is the same as for tables. Each acquisition run records which items were added or changed. A downstream table looks up its [refresh bookmark](#docs-efficient-stable-pipeline-tracking-changes-refresh-bookmarks) and reads only the items that changed after it.
+
+If nothing changed, nothing was recorded. The downstream table finds no items to read, and finishes without doing any work.
+
+| Acquisition run | Items changed | Downstream work |
+|---|---|---|
+| New weekly price list published | 1 insert | Read one file. |
+| Recent market sales file revised | 1 update | Read one file and apply genuine changes. |
+| No new or changed items | None | None. |
+
+Disappearance deserves the same caution as deletes in [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-instability). An item that disappears from the source, or a revised item that drops keys it used to contain, is a large change at the source. It may be a genuine withdrawal, or it may be a publishing error. Either way, it should be checked before it is allowed to spread.
+
+## Files that repeat older data {#docs-efficient-stable-pipeline-acquiring-information-files-that-repeat-older-data}
+
+Some sources repeat older data in every file. A quarterly market report may carry a time series for the last eight quarters. An annual release may restate every previous year.
+
+The same value therefore arrives many times. This creates a tension between two needs.
+
+The first is provenance. The user should be able to see which file a value came from.
+
+The second is stability. If a value has not changed, receiving it again should not change the warehouse.
+
+Suppose `Cake.MarketSales` is loaded from quarterly editions of the market report, keyed by `[Quarter]`, with `[Source edition]` recording the edition each value came from.
+
+**Current `Cake.MarketSales`**
+
+| Quarter | Market cake sales | Source edition |
+|---|---:|---|
+| 2025-Q3 | 120,400 | 2025-Q4 |
+| 2025-Q4 | 121,100 | 2025-Q4 |
+
+The next edition repeats both quarters and adds a new one. 2025-Q4 has been revised.
+
+**Incoming from edition 2026-Q1**
+
+| Quarter | Market cake sales | Source edition |
+|---|---:|---|
+| 2025-Q3 | 120,400 | 2026-Q1 |
+| 2025-Q4 | 121,300 | 2026-Q1 |
+| 2026-Q1 | 121,900 | 2026-Q1 |
+
+If `[Source edition]` is included when [load mechanics checks for genuine change](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes), every repeated row becomes an update. 2025-Q3 is updated even though its value is unchanged. With eight quarters per file, every edition updates eight rows to add one. Downstream tables respond to changes that did not happen.
+
+Provenance columns should therefore be **excluded from the comparison**.
+
+The comparison asks whether the information changed. `[Source edition]` does not describe the information. It describes the delivery. A repeated delivery of the same value is not a change in the business world, so it should not be a change in the data world.
+
+**Updated `Cake.MarketSales`**
+
+| Quarter | Market cake sales | Source edition |
+|---|---:|---|
+| 2025-Q3 | 120,400 | 2025-Q4 |
+| 2025-Q4 | 121,300 | 2026-Q1 |
+| 2026-Q1 | 121,900 | 2026-Q1 |
+
+2025-Q3 is unchanged, and still shows the edition that first delivered its value. 2025-Q4 was genuinely revised, so its value and its provenance change together. 2026-Q1 is new.
+
+Excluding provenance from the comparison does not lose provenance. Each row shows the edition that delivered its current value. When the value is revised, the provenance moves with it. When the value is merely repeated, the row keeps pointing to its original source.
+
+There is a second design choice. The table above keeps only the current value for each quarter. An alternative is to include `[Source edition]` in the primary key, keeping every edition’s value as a separate row. This preserves the full revision history, at the cost of volume and a more complex model for users. Both are valid. The choice depends on whether users need to see how the figures were revised, and it should be stated in the description.
+
+## Database replication {#docs-efficient-stable-pipeline-acquiring-information-database-replication}
+
+When the source is an operational database, acquisition is usually configured rather than built. Change data capture, mirroring, and other replication technologies copy inserts, updates, and deletes into the warehouse.
+
+This removes much of the work of discovery and retrieval. It does not remove the problem of time.
+
+Replicated change datetimes may be the source’s commit time or the replication tool’s apply time, and replication may lag or re-synchronise whole tables. Unless the replication itself stamps changes in pipeline time, those datetimes are out-of-sync. The principles of [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes-the-problem-of-time) therefore apply unchanged. A re-synchronisation is candidate change, not genuine change, and a [Filter step](#docs-creating-information-entity-processing-first-pass-filter) assigns pipeline-managed row change datetimes.
+
+Replication is valuable because it captures deletes, which are otherwise hard to track. The pipeline should preserve them rather than discard them at the first load.
+
+## Conclusion {#docs-efficient-stable-pipeline-acquiring-information-conclusion}
+
+Acquisition is the first load in the pipeline, and the one with the least control.
+
+The source decides what to publish, when to revise it, and when to withdraw it. The pipeline cannot change this. It can only observe the source carefully, retrieve no more than necessary, and keep what it cannot retrieve again.
+
+Done well, acquisition gives the rest of the pipeline what it needs: stored content with pipeline-managed change datetimes, provenance for every item, and a record of what changed in each run. Every incremental load downstream builds on that foundation.
+
+> **Key ideas.**
+>
+> Efficient acquisition retrieves only what may have changed, and keeps what cannot be retrieved again.
+>
+> Discover new items from the source’s own listing, from a deliberate start period, rather than predicting their names.
+>
+> A missing item is usually not yet published. Contain its absence, but surface it once it is overdue.
+>
+> Immutable items are retrieved once. Revisable items are retrieved again within a revision window. Rolling publication windows are kept one edition at a time.
+>
+> Compare content, not packaging, and write only on genuine change.
+>
+> Acquired data cannot be rebuilt. Replaced versions should be kept, and acquired data protected from rebuild.
+>
+> Database replication still needs the principles of tracking changes, because the source’s time is not the pipeline’s time.
+>
+> When files repeat older data, provenance columns should be excluded from the comparison, so repeated delivery does not cause churn.
 
 \newpage
 
@@ -10201,7 +10557,8 @@ The world is not so straightforward. The most difficult part of a data project i
 
 Instead, in a successful project, the delivery team guides stakeholders to express their intent, then works together to explore the data in light of that business intent. Through this process, stakeholders uncover what they need to see from the data to achieve business outcomes. These discovered needs—not an initial list—are the real requirements.
 
-The fifth principle of data engineering is therefore: instead of waiting for clarity, **illuminate ambiguity**.
+The fifth principle of data engineering is therefore:
+> Instead of waiting for clarity, **illuminate ambiguity**.
 
 In stakeholder work, this means guiding stakeholders through ambiguity until unclear needs become shared understanding.
 
@@ -10285,6 +10642,8 @@ By responding to stakeholder initiatives, the delivery team is, in reality, lead
 There will be times when the team needs to correct an error, redirect focus, or counter unconscious bias. This principle still applies. A common scenario is when stakeholders describe solutions before the problem is fully explored—for example, asking for a detailed data dump dashboard when analysis suggests a summarised view would better serve the intent.
 
 Saying “Let’s focus on requirements instead of jumping to the solution” sounds natural but often feels dismissive. For stakeholders, the solution is the requirement.
+
+> For stakeholders, the solution is the requirement.
 
 Regardless of content, stakeholders are trying to communicate something important.
 
@@ -10498,11 +10857,8 @@ Complex data projects are rarely clear at the beginning. The business intent may
 A weak team responds to this uncertainty in one of two ways. It either meanders, waiting for clarity before moving, or it overcorrects by imposing a rigid plan that cannot survive discovery.
 
 However:
-> Ambiguity does not justify meandering.
 
-and
-
-> Order does not require rigidity.
+> Ambiguity does not justify meandering. Order does not require rigidity.
 
 A data engineer is responsible for shaping movement through uncertain work. This is the purpose of the **construction plan**. A construction plan gives uncertain work enough order to proceed and enough flexibility to adapt.
 
@@ -10524,7 +10880,9 @@ Projects can succeed or fail depending on the data engineer’s plan. It is one 
 
 A construction plan lays out, in sequence, the components the data engineer will build and gives the team a forecast of what will arrive when. It includes user-facing features as well as non-feature work such as unit tests, technical debt clean-up, metadata, and performance tuning.
 
-A plan is effective if it gives the project confidence and momentum. For this purpose, sequence matters more than precise dates. Timelines should not blow out, but the deeper issue is whether the team can keep delivering one sensible step after another.
+> A plan is effective if it gives the project confidence and momentum. For this purpose, sequence matters more than precise dates.
+
+Timelines should not blow out, but the deeper issue is whether the team can keep delivering one sensible step after another.
 
 An effective plan is like a travel itinerary for exploring a new country. An itinerary is not effective merely because it meets a predefined schedule. It is effective when it moves forward logically, gives the traveller a quality experience, and avoids wasting time.
 
@@ -10882,7 +11240,9 @@ This also affects the final step.
 
 The doctor finishes, not when the symptoms have disappeared, but when the patient is well.
 
-The final effect is the only confirmation of the diagnosis. Importantly, the final effect is not the absence of the symptom.
+The final effect is the only confirmation of the diagnosis. Importantly:
+
+> The final effect is not the absence of the symptom.
 
 The equivalent is much harder for data engineers.
 
