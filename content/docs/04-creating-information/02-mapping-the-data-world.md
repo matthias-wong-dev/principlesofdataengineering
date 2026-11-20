@@ -18,7 +18,6 @@ A business entity can be a concrete object, such as a customer or a product. It 
 
 This shift from data record to business entity is the first practical step in expressiveness. 
 
-> [!SHARE:see-the-entity]
 > For many data engineers, it is also the first threshold: learning to see not the record itself, but the entity behind it.
 
 

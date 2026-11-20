@@ -57,7 +57,6 @@ Some performance factors sit outside the data engineer’s immediate control: se
 
 **Stability** is closely related to efficiency.
 
-> [!SHARE:proportionate-change]
 > Stability means that small changes in the business world should produce proportionate changes in the data world.
 
 

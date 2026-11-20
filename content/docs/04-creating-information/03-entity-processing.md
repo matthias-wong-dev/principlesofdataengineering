@@ -36,7 +36,6 @@ The first task is to identify the **entity of interest**.
 Usually this is clear. Sometimes it is not. A sales transaction may have multiple line items. Depending on the business question, the transaction may be the entity of interest, or each line item may be the entity of interest.
 
 
-> [!SHARE:correct-lens]
 > The correct lens is the one that supports business action.
 
 

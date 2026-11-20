@@ -48,7 +48,6 @@ The [fluid nature of business insight](/docs/foundations/what-is-data-engineerin
 
 At a micro level, this applies to a single data engineering project. Requirements shift as information becomes visible and stakeholders encounter their own business through data. At a macro level, discovering business insight can be a journey of years over multiple teams. In a large organisation, different teams will also want to see the same information in different ways to reflect specific business interests.
 
-> [!SHARE:reusable-information-blocks]
 > This is why the goal of a data engineer is not only to build complete data products, but to produce reusable blocks of information.
 
 
@@ -58,7 +57,6 @@ A data engineering approach focused on creating such a store is **fragment model
 
 Modularity of code is a cornerstone in software engineering. Fragment modelling applies this concept to the modularity of information creation in a data pipeline. The result, as in software engineering, is clarity, flexibility, and reuse.
 
-> [!SHARE:data-engineer-sees]
 > The data engineer therefore sees the pipeline primarily as software code, and tables as functions.
 
 A good table in a pipeline performs a defined transformation—it accepts upstream data, applies a specific piece of business meaning, and produces an output that can be reused downstream. 

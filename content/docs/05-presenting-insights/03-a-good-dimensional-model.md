@@ -80,7 +80,6 @@ Performance is not merely a user-experience consideration. It can also signal de
 
 A slow model often indicates that key information has not been pre-computed through [meaningful fragments](/docs/creating-information/meaningful-fragments/). The model is then forced to compensate with work at query time.
 
-> [!SHARE:slow-model-expressiveness]
 > In this sense, a slow model may be a concern of business expressiveness, not only technical performance.
 
 

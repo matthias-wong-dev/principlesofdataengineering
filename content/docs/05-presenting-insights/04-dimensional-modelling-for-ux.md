@@ -436,7 +436,6 @@ Computationally these are low costs and low complexity translations.
 
 The key is to recognise the underlying axes of binary choice. Once those axes are identified, the data engineer can express them in different dimensional forms depending on the interaction the user needs. 
 
-> [!SHARE:latent-interaction-structure]
 > Thus, the data engineer is not merely arranging tables, but recognising the latent structure of interaction in the business problem.
 
 
@@ -456,7 +455,6 @@ Where a Sankey dimension shows movement, a storytelling dimension translates the
 
 For example, the [Storytelling](/docs/creating-information/storytelling/#storytelling-dimensions) chapter describes a help desk escalation dimension that combines tier combinations, highest escalation, escalation path, escalation summary, and display order.
 
-> [!SHARE:path-means-business]
 > The point is not merely to record the path a case took, but to express what that path means to the business.
 
 

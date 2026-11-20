@@ -12,7 +12,6 @@ Insight is information analysed in the light of intent. However, the data engine
 
 Data is what is given before interpretation. It has no fixed meaning by itself, and is not yet information. More precisely:
 
-> [!SHARE:data-fragment]
 > Data is a fragment of reality captured by process.
 
 Consider a customer whose seat is cancelled because a flight was overbooked. The experience is real, but it is internal to the customer. The decision-maker does not know about it unless the experience is captured as data and made available to someone who was not there.

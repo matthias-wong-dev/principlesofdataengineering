@@ -16,7 +16,6 @@ This chapter closes the section on creating information by making fragment model
 
 The key idea is summarised by the [second principle of data engineering](/docs/creating-information/expressiveness-and-fragment-modelling/#fragment-modelling):
 
-> [!SHARE:instead-building-giant]
 > Instead of building giant tables, create meaningful fragments.
 
 ## Why giant tables fail
@@ -61,7 +60,6 @@ For example, milestone datetimes could be implemented as additional columns with
 
 In this sense, fragments do more than package information for easy operability. They help communicate the structure of the business domain. 
 
-> [!SHARE:warehouse-map-concepts]
 > A well-designed warehouse is not merely a collection of tables, but a map of the concepts that the organisation has chosen to recognise.
 
 

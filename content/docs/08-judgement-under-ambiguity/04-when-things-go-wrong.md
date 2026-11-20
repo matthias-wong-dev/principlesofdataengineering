@@ -212,7 +212,6 @@ One engineer may think one event or condition is the root cause, while another e
 
 One way to distinguish root cause from trigger is that:
 
-> [!SHARE:root-cause-issues]
 > Root cause issues are those that violate design principles.
 
 For example, a table load failed when a column received an unexpected value from the source system. At first glance, it may seem that the root cause is the system changing its list of defined values. But if that table is a list of port codes and the violation is an unexpected port code, then the root cause is not the system’s addition at all, but a violation of reference data design principles and a failure to implement [assumption monitoring](/docs/quality-reliability/tests-and-assumptions/#monitored-assumptions-surfacing-records-that-require-attention).
@@ -228,7 +227,6 @@ The doctor finishes, not when the symptoms have disappeared, but when the patien
 
 The final effect is the only confirmation of the diagnosis. Importantly:
 
-> [!SHARE:final-effect-not-absence]
 > The final effect is not the absence of the symptom.
 
 The equivalent is much harder for data engineers.

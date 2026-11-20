@@ -40,7 +40,6 @@ Every aspect of a measure should reflect business meaning. This includes its def
 
 A measure should align with real-world events.
 
-> [!SHARE:common-mistake]
 > A common mistake is to count a database key and assume that the result is a meaningful business metric.
 
 For example, a data engineer might define `[Inspection count]` as a distinct count of `[Inspection ID]` in the `'Inspection'` fact table. That may be fine if `[Inspection ID]` corresponds to a real inspection. But in many systems, `[Inspection ID]` is only a system-generated record key. It may exist for retrieval, workflow, or database convenience.
@@ -213,7 +212,6 @@ Precomputation can be overdone. If the data engineer precomputes too much, the m
 
 The rule is not “precompute everything.” The rule is:
 
-> [!SHARE:precompute-business-interpretation]
 > Precompute business interpretation when doing so preserves interactivity and simplifies the model.
 
 The data engineer should understand the filtering behaviour of Power BI well enough to know which logic belongs in the pipeline and which logic belongs in a measure.

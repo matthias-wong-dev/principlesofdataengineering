@@ -9,7 +9,6 @@ weight: 2
 
 ## When metadata is missing
 
-> [!SHARE:metadata-carries-meaning]
 > Metadata is the place where meaning is either carried by the data product or abandoned to the user.
 
 
@@ -163,7 +162,6 @@ The primary purpose of metadata is not governance, tagging, discoverability, or 
 
 Metadata should be understood in the context of the data engineer’s task: shaping data in light of business intent. From this perspective, the primary purpose of metadata is to add interpretative context that aligns the data world to its underlying business reality.
 
-> [!SHARE:abandon-user]
 > Without metadata context, the data engineer is abandoning the user to guess.
 
 Finally, whether metadata describes names, descriptions, or keys, it should be stored and made available as data.

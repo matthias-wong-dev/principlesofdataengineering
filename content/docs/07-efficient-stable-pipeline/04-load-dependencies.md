@@ -21,7 +21,6 @@ What improves reuse can also reduce stability.
 
 Therefore:
 
-> [!SHARE:dependency-trade-reuse]
 > Every dependency is a trade-off between reuse, efficiency, and stability.
 
 The data engineer therefore has to decide when a dependency is worth creating.
@@ -57,7 +56,6 @@ Recalculation avoids coupling, but may repeat logic or waste compute. Reuse impr
 
 The decision depends on whether the value of reuse exceeds the cost of coupling. This can be determined by the rule:
 
-> [!SHARE:dependency-valuable-targeted]
 > A dependency should be valuable, targeted, and stable.
 
 | Criterion | Question |
@@ -323,7 +321,6 @@ Dependencies are how the warehouse accumulates meaning.
 
 A source system with 10 to 20 raw tables may produce 5 or 6 layers of dependency in the transformation pipeline. A larger system with 30 to 50 tables, especially when integrated with other systems, may produce 10 or more layers.
 
-> [!SHARE:right-dependencies]
 > The aim is not to minimise dependencies, but to create the right ones.
 
 
