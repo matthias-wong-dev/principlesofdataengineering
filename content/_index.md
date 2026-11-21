@@ -117,9 +117,17 @@ While the book is best read sequentially, the six sections are loosely independe
 3. [**Presenting insights**](../docs/presenting-insights/)—treat dimensional modelling as user experience, not report production; build semantic models that let users ask real business questions without guessing.
 4. [**Quality & reliability**](../docs/quality-reliability/)—move beyond generic data quality language into practical methods for metadata, testing, assumptions, human curation, precise rules, and fuzzy logic.
 5. [**Efficient & stable pipeline**](../docs/efficient-stable-pipeline/)—build pipelines that are efficient, stable, observable, and maintainable, including incremental processing and programmatic orchestration patterns.
-6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/)—learn the senior craft: working with stakeholders, planning uncertain delivery, and diagnosing root causes when things go wrong.
+6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/)—learn the senior craft: working with stakeholders, planning uncertain delivery, steering AI agents, and diagnosing root causes when things go wrong.
 
-One way to use the book is to feed it to Codex, Claude Code or similar tool, and let it write code dbt or SQL code according to the patterns.
+## Use the book as an agent skill
+
+The book is also published as a skill for AI agents such as Claude Code. An architect holds the business intent, independent authors build, and a fresh reviewer for each chapter checks the work.
+
+Read how it works in [Steering AI agents](../docs/judgement-under-ambiguity/steering-ai-agents/).
+
+<ul>
+  <li><a href="/downloads/data-engineering-skill.zip" download="data-engineering-skill.zip">Download the skill</a></li>
+</ul>
 
 ## Comments welcome
 

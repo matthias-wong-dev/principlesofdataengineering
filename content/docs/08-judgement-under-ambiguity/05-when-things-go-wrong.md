@@ -3,7 +3,7 @@ title: "When things go wrong"
 url: /docs/judgement-under-ambiguity/when-things-go-wrong/
 description: Explains why data engineering is always troubleshooting and how mature engineers diagnose symptoms, triggers, root causes, and final effects.
 lede: All data engineering is troubleshooting.
-weight: 4
+weight: 5
 # draft: true
 ---
 
