@@ -10829,7 +10829,9 @@ AI agents can now write pipelines, queries, tests, and semantic models in minute
 
 This changes the speed of implementation. It does not change the nature of the work.
 
-An agent does not need to be told to work harder. It needs to be steered: given the same judgement this book asks of the data engineer, and placed in a way of working where that judgement is applied and checked.
+As [The six principles of data engineering](#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering) explains, the data engineer’s greatest enemy is the willingness to provide easy substitutes. An agent has that willingness without limit.
+
+It does not need to be told to work harder. It needs to be steered: given the same judgement this book asks of the data engineer, and placed in a way of working where that judgement is applied and checked.
 
 This chapter describes one way to do that: an **agent skill** published with this book. Nothing in the skill is a new rule. Each part applies a chapter of this book.
 
@@ -10848,11 +10850,13 @@ Four tendencies stand out.
 
 Each tendency is a familiar substitute for judgement.
 
-Source-in-source-out is the [shallow curation](#docs-judgement-under-ambiguity-the-six-principles-of-data-engineering) this book warns against. The data engineer’s greatest enemy is the willingness to provide easy substitutes, and an agent has that willingness without limit.
+Source-in-source-out is the shallow curation this book warns against.
 
 Overengineering and needless caution look like diligence. But they mistake activity for quality. A monitor that fires every day becomes [background noise](#docs-quality-reliability-fault-tolerance-containing-failure), and machinery built for an imagined case is code that must still be understood, tested, and maintained.
 
 A deluge of caveats looks like honesty. But a limitation that matters is lost among the ones that do not. As [Quality metadata](#docs-quality-reliability-quality-metadata) explains, an important limitation should be stated in the context of how the information is used.
+
+The net outcome of all four is exactly source-in-source-out. The source is copied, then wrapped in machinery, defensive checks, and qualifications. It looks like more work. It is no more information.
 
 Out of the box, these tendencies make an agent close to unusable for serious data engineering. The work looks complete, and much of the user’s time goes into stripping out what is not needed and asking for what is missing.
 
