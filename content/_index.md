@@ -61,9 +61,9 @@ That's why they are implemented in [Weaver](https://weaverstack.dev), an open-so
 - **Testing:** data and calculation tests in Python, SQL and DAX, including unit tests of semantic model measures against independently calculated results.
 - **Stage and merge:** a SELECT becomes a managed Warehouse table, with a load procedure, staging and reconciliation on a declared key.
 - **Fault tolerance:** rejected rows are kept, unusually large updates or deletes are stopped before they reach your tables, and a failed step does not stop unrelated work.
-- **Incremental loading:** each table or folder tracks its own progress, and `load --stale` reruns only the loads that need attention.
+- **Incremental loading:** every table and folder comes with bookmarks and update datetimes, so it can handle true incremental problems.
 - **Measure selectors:** created from standard TMDL annotations, alongside shared modelling standards across semantic models.
-- **Metadata as data:** deployed items, dependencies, run results and change statistics are recorded in an ordinary Fabric Warehouse.
+- **Metadata as data:** table, column and measure descriptions, primary keys and foreign keys are all stored as metadata tables.
 - **Orchestration:** one dependency graph across Python, Spark SQL, T-SQL, semantic models and reports, loaded in the right order.
 
 ## Demonstrated on I Love Gov
@@ -72,7 +72,11 @@ The principles in this book are demonstrated through [I Love Gov](https://iloveg
 
 If anything is fragmented and hard to understand, it is government. That's why government is one of the best places to show how data can make business reality visible.
 
-I Love Gov puts together public data from across government into one place, refreshed daily and built on Microsoft Fabric with Weaver. From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I Love Gov demonstrates every principle in this book.
+I Love Gov brings public data from every department into one connected view of government, including the budget, who government hires, what it pays others to provide, who it funds, and who it directly supports. It refreshes every night.
+
+From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I Love Gov demonstrates every principle in this book.
+
+It, too, is built on Weaver, using the same AI agent skills published with this book. See [how it's built](https://ilovegov.datawithoutguessing.com/au/how-its-built/).
 
 ## Some ideas inside
 
