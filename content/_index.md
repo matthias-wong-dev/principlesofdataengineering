@@ -46,24 +46,6 @@ The book is also published as a skill for AI agents such as Claude Code. An arch
   <li><a href="/downloads/data-engineering-skill.zip" download="data-engineering-skill.zip">Download the skill</a></li>
 </ul>
 
-## Some ideas inside
-
-- [What is data, really?](../docs/foundations/what-is-data/)
-- [A fundamental difference between mutable and immutable entities](../docs/creating-information/mapping-the-data-world/)
-- [Three steps to modelling any system](../docs/creating-information/entity-processing/)
-- [Multiple timelines while staying sane](../docs/creating-information/entity-tracking/)
-- [Powerful storytelling techniques that make sense for your business](../docs/creating-information/storytelling/)
-- [Building a data product that can answer any question](../docs/presenting-insights/anticipating-questions/)
-- [Treating dimensional modelling like UX, and not static reports like it is the 90s](../docs/presenting-insights/dimensional-modelling-for-ux/)
-- [A row-level security pattern that is simple enough to implement but sophisticated enough to handle anything](../docs/presenting-insights/interactive-row-level-security/)
-- [Metadata that is not compliance theatre](../docs/quality-reliability/quality-metadata/)
-- [How not to get into a mess with incremental load and messy times](../docs/efficient-stable-pipeline/tracking-changes/)
-- [Parallel load orchestration that does not cost you a cent](../docs/efficient-stable-pipeline/load-orchestration/)
-- [Why stakeholder confusion is not a defect](../docs/judgement-under-ambiguity/working-with-stakeholders/)
-- [Why you cannot rely on the project manager](../docs/judgement-under-ambiguity/construction-planning/)
-- [Four steps out of any disaster scenario](../docs/judgement-under-ambiguity/when-things-go-wrong/)
-- [A manifesto for your team](../docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/)
-
 ## Applied to Microsoft Fabric
 
 The principles are technology-agnostic. This book applies them to Microsoft Fabric.
@@ -84,26 +66,26 @@ That's why they are implemented in [Weaver](https://weaverstack.dev), an open-so
 - **Metadata as data:** deployed items, dependencies, run results and change statistics are recorded in an ordinary Fabric Warehouse.
 - **Orchestration:** one dependency graph across Python, Spark SQL, T-SQL, semantic models and reports, loaded in the right order.
 
-## Who is this book for?
+## Some ideas inside
 
-- **New data engineers** who want to think like principal architects from day one.
-- **Mid-level engineers** who can already write pipelines, SQL, Spark jobs or semantic models, and want a deeper framework for systems that stay understandable, testable and useful.
-- **Senior engineers, architects and data leaders** who are tired of explaining the same lessons to every new team.
-- **Senior leaders:** read [Unglamorous data](https://datawithoutguessing.com/articles/unglamorous-data/) for a three-minute summary.
-
-The book is prescriptive and opinionated. It teaches practices learned from production scars, in plain language.
-
-## How to read this site
-
-Read it in order, or start with any of the six sections:
-
-1. [**Foundations**](../docs/foundations/): what data is, and what data engineering is for.
-2. [**Creating information**](../docs/creating-information/): turning operational traces into expressive entities and meaningful fragments.
-3. [**Presenting insights**](../docs/presenting-insights/): dimensional modelling as user experience.
-4. [**Quality & reliability**](../docs/quality-reliability/): metadata, testing and fault tolerance.
-5. [**Efficient & stable pipeline**](../docs/efficient-stable-pipeline/): incremental processing and load orchestration.
-6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/): stakeholders, planning, AI agents and root causes.
+- [What is data, really?](../docs/foundations/what-is-data/)
+- [A fundamental difference between mutable and immutable entities](../docs/creating-information/mapping-the-data-world/)
+- [Three steps to modelling any system](../docs/creating-information/entity-processing/)
+- [Multiple timelines while staying sane](../docs/creating-information/entity-tracking/)
+- [Powerful storytelling techniques that make sense for your business](../docs/creating-information/storytelling/)
+- [Building a data product that can answer any question](../docs/presenting-insights/anticipating-questions/)
+- [Treating dimensional modelling like UX, and not static reports like it is the 90s](../docs/presenting-insights/dimensional-modelling-for-ux/)
+- [A row-level security pattern that is simple enough to implement but sophisticated enough to handle anything](../docs/presenting-insights/interactive-row-level-security/)
+- [Metadata that is not compliance theatre](../docs/quality-reliability/quality-metadata/)
+- [How not to get into a mess with incremental load and messy times](../docs/efficient-stable-pipeline/tracking-changes/)
+- [Parallel load orchestration that does not cost you a cent](../docs/efficient-stable-pipeline/load-orchestration/)
+- [Why stakeholder confusion is not a defect](../docs/judgement-under-ambiguity/working-with-stakeholders/)
+- [Why you cannot rely on the project manager](../docs/judgement-under-ambiguity/construction-planning/)
+- [Four steps out of any disaster scenario](../docs/judgement-under-ambiguity/when-things-go-wrong/)
+- [A manifesto for your team](../docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/)
 
 ## Data Without Guessing
 
-This book is provided as part of [Data Without Guessing](https://datawithoutguessing.com). Comments and questions are welcome: see [*Data Without Guessing*](https://datawithoutguessing.com/principles-of-data-engineering/) for contact information.
+This book is provided as part of [Data Without Guessing](https://datawithoutguessing.com). If you are a senior leader, read [Unglamorous data](https://datawithoutguessing.com/articles/unglamorous-data/) for a three-minute summary of the book.
+
+Comments and questions are welcome: see [*Data Without Guessing*](https://datawithoutguessing.com/principles-of-data-engineering/) for contact information.
