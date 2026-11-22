@@ -1,8 +1,6 @@
 ---
 title: Quality metadata
 url: /docs/quality-reliability/quality-metadata/
-aliases:
-  - /docs/quality-reliability/metadata/
 description: Explains how names, descriptions, and keys provide the interpretative context that makes data products understandable, trustworthy, and usable.
 lede: Without metadata, everyone is guessing.
 weight: 2
