@@ -66,6 +66,14 @@ That's why they are implemented in [Weaver](https://weaverstack.dev), an open-so
 - **Metadata as data:** deployed items, dependencies, run results and change statistics are recorded in an ordinary Fabric Warehouse.
 - **Orchestration:** one dependency graph across Python, Spark SQL, T-SQL, semantic models and reports, loaded in the right order.
 
+## Demonstrated on I Love Gov
+
+The principles in this book are demonstrated through [I Love Gov](https://ilovegov.datawithoutguessing.com).
+
+If anything is fragmented and hard to understand, it is government. That's why government is one of the best places to show how data can make business reality visible.
+
+I Love Gov puts together public data from across government into one place, refreshed daily and built on Microsoft Fabric with Weaver. From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I Love Gov demonstrates every principle in this book.
+
 ## Some ideas inside
 
 - [What is data, really?](../docs/foundations/what-is-data/)
