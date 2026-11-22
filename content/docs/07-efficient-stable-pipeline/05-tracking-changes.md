@@ -1,6 +1,8 @@
 ---
 title: "Incremental load: tracking changes"
 url: /docs/efficient-stable-pipeline/tracking-changes/
+aliases:
+  - /docs/efficient-stable-pipeline/incremental-processing/
 description: Explains how to detect source inserts, updates, and deletes using refresh bookmarks, polling tables, and change detection columns.
 lede: Incremental work begins with reliable knowledge of what changed.
 weight: 5

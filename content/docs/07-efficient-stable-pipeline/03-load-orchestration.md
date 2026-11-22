@@ -1,6 +1,8 @@
 ---
 title: Load orchestration
 url: /docs/efficient-stable-pipeline/load-orchestration/
+aliases:
+  - /docs/efficient-stable-pipeline/programmatic-load-stack/
 description: Explains how to manage dependency-constrained parallel loads using a visible load stack, load candidates, and workers.
 lede: Load dependencies are one of the first bottlenecks in a growing warehouse.
 weight: 3

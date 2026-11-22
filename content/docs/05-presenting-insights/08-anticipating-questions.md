@@ -1,6 +1,8 @@
 ---
 title: Anticipating questions
 url: /docs/presenting-insights/anticipating-questions/
+aliases:
+  - /docs/modelling-reality/anticipating-questions/
 description: Shows how to design a Power BI dimensional model that preserves enough business structure to answer future questions, not only current requirements.
 lede: A strong dimensional model preserves the structure needed to answer questions before they are formally asked.
 weight: 8
