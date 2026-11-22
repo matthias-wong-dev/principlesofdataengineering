@@ -8,7 +8,7 @@ bookToC: false
 
 **Principles of Data Engineering** is a guide to building data representations that make business reality visible.
 
-Most data engineering books teach pipelines, platforms, and tools. This book is about something more fundamental. It explains what data engineering is really for: turning fragments of reality into reliable information that organisations can use to understand, decide, and act.
+Most data engineering books teach pipelines, platforms, and tools. This book is about something more fundamental: turning fragments of reality into reliable information that organisations can use to understand, decide, and act.
 
 The recurring theme of the book is:
 
@@ -18,9 +18,7 @@ It is underpinned by a central premise:
 
 > Data is a fragment of reality.
 
-That's why data engineering is not about moving records from point A to point B.
-
-It is to make reality legible to business.
+That's why data engineering is not about moving records from point A to point B. It is to make reality legible to business.
 
 The book is organised around [six principles](../docs/judgement-under-ambiguity/the-six-principles-of-data-engineering/):
 
@@ -31,65 +29,61 @@ The book is organised around [six principles](../docs/judgement-under-ambiguity/
 5. **Illuminate ambiguity**
 6. **Diagnose root causes**
 
-This book is written from deep delivery experience and focuses on patterns tested for complexity.
-
-It is for organisations that want data representations that do more than run.
-
-Data representations that make reality visible.
-
-Data representations that survive real systems.
-
-Data representations that stop organisations from guessing.
-
-## Data Without Guessing
-
-This book is provided as part of [Data Without Guessing](https://datawithoutguessing.com).
-
-If you are a senior leader, read the article [Unglamorous data](https://datawithoutguessing.com/articles/unglamorous-data/) for a three-minute summary of the book.
+Data representations that make reality visible. Data representations that survive real systems. Data representations that stop organisations from guessing.
 
 ## Download the book
-
-The book is available for offline reading:
 
 <ul>
   <li><a href="/downloads/Principles%20of%20Data%20Engineering.pdf" download="Principles of Data Engineering.pdf">Download the PDF</a></li>
   <li><a href="/downloads/Principles%20of%20Data%20Engineering.epub" download="Principles of Data Engineering.epub">Download the ePub</a></li>
 </ul>
 
+## Use the book with AI agents
 
-## Who is this book for?
+The book is also published as a skill for AI agents such as Claude Code. An architect holds the business intent, independent authors build, and a fresh reviewer for each chapter checks the work. Read how it works in [Steering AI agents](../docs/judgement-under-ambiguity/steering-ai-agents/).
 
-This book is for **new data engineers** who want to think like principal architects from day one. It explains not only what to build, but why good data engineers build in a particular way.
+<ul>
+  <li><a href="/downloads/data-engineering-skill.zip" download="data-engineering-skill.zip">Download the skill</a></li>
+</ul>
 
-It is for **mid-level engineers** who can already write pipelines, SQL, dbt models, Spark jobs, semantic models, or orchestration code, but want a deeper framework for designing systems that remain understandable, testable, and useful over time.
+## Applied to Microsoft Fabric
 
-It is for **senior engineers, architects, and data leaders** who are tired of explaining the same lessons to every new team. This book gives language, diagrams, and patterns for teaching the craft clearly.
+The principles are technology-agnostic. This book applies them to Microsoft Fabric.
 
-It is for **analytics engineers and data engineers** who want a technology-agnostic view of the discipline. Tools change. dbt, Spark, SQL, Fabric, Airflow, Power BI, and whatever comes next all matter. But the underlying judgement carries across a whole career.
+Many of the book's core patterns need to be automated: [automated testing](../docs/quality-reliability/tests-and-assumptions/), [stage-and-merge loading](../docs/efficient-stable-pipeline/load-mechanics/), [fault tolerance](../docs/quality-reliability/fault-tolerance/), [incremental bookmarks](../docs/efficient-stable-pipeline/tracking-changes/), [dynamic measure selectors](../docs/presenting-insights/measure-of-measures/), [metadata as data](../docs/quality-reliability/quality-metadata/), and [dependency-aware load orchestration](../docs/efficient-stable-pipeline/load-orchestration/).
 
+Moreover, a table is a table, whether it is loaded by SQL or by Python. Robust data engineering should not be limited to SQL transforms. Engineers loading files and tables in Python need the same guarantees.
 
-## What to expect
+These are fundamental, and data engineers should not have to hand-roll them on every project.
 
-This book is prescriptive and opinionated.
+That's why they are implemented in [Weaver](https://weaverstack.dev), an open-source framework for Microsoft Fabric:
 
-It does not try to be neutral about every possible pattern. It teaches hard-earned practices learned from production scars: how to model business entities, how to avoid pipeline mess, how to detect and mitigate errors, how to do incremental transformation properly, and how to work with stakeholders when nobody yet knows exactly what should be built.
+- **Testing:** data and calculation tests in Python, SQL and DAX, including unit tests of semantic model measures against independently calculated results.
+- **Stage and merge:** a SELECT becomes a managed Warehouse table, with a load procedure, staging and reconciliation on a declared key.
+- **Fault tolerance:** rejected rows are kept, unusually large updates or deletes are stopped before they reach your tables, and a failed step does not stop unrelated work.
+- **Incremental loading:** every table and folder comes with bookmarks and update datetimes, so it can handle true incremental problems.
+- **Measure selectors:** created from standard TMDL annotations, alongside shared modelling standards across semantic models.
+- **Metadata as data:** table, column and measure descriptions, primary keys and foreign keys are all stored as metadata tables.
+- **Orchestration:** one dependency graph across Python, Spark SQL, T-SQL, semantic models and reports, loaded in the right order.
 
-The book explains advanced concepts in plain language. It assumes the reader is serious, but not that the reader already knows the vocabulary of data architecture.
+## Demonstrated on I Love Gov
 
-Most of the material is technology-agnostic. The only strongly technology-specific sections are the chapters on Power BI, where the book explains dimensional modelling, semantic models, user experience, and row-level security in a practical enterprise context.
+The principles in this book are demonstrated through [I Love Gov](https://ilovegov.datawithoutguessing.com).
 
-The goal is not to optimise for a particular tool stack.
+If anything is fragmented and hard to understand, it is government. That's why government is one of the best places to show how data can make business reality visible.
 
-The goal is principles that last.
+I Love Gov brings public data from every department into one connected view of government, including the budget, who government hires, what it pays others to provide, who it funds, and who it directly supports. It refreshes every night.
+
+From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I Love Gov demonstrates every principle in this book.
+
+It, too, is built on Weaver, using the same AI agent skills published with this book. See [how it's built](https://ilovegov.datawithoutguessing.com/au/how-its-built/).
 
 ## Some ideas inside
-
-This book covers topics such as:
 
 - [What is data, really?](../docs/foundations/what-is-data/)
 - [A fundamental difference between mutable and immutable entities](../docs/creating-information/mapping-the-data-world/)
 - [Three steps to modelling any system](../docs/creating-information/entity-processing/)
-- [Multiple timelines while staying sane](/docs/creating-information/entity-tracking/)
+- [Multiple timelines while staying sane](../docs/creating-information/entity-tracking/)
 - [Powerful storytelling techniques that make sense for your business](../docs/creating-information/storytelling/)
 - [Building a data product that can answer any question](../docs/presenting-insights/anticipating-questions/)
 - [Treating dimensional modelling like UX, and not static reports like it is the 90s](../docs/presenting-insights/dimensional-modelling-for-ux/)
@@ -102,33 +96,8 @@ This book covers topics such as:
 - [Four steps out of any disaster scenario](../docs/judgement-under-ambiguity/when-things-go-wrong/)
 - [A manifesto for your team](../docs/judgement-under-ambiguity/closing-essay-hallmarks-of-quality/)
 
-## How to read this site
+## Data Without Guessing
 
-Start with the foundations:
+This book is provided as part of [Data Without Guessing](https://datawithoutguessing.com). If you are a senior leader, read [Unglamorous data](https://datawithoutguessing.com/articles/unglamorous-data/) for a three-minute summary of the book.
 
-- [What is data engineering?](../docs/foundations/what-is-data-engineering/)
-- [What is data?](../docs/foundations/what-is-data/)
-- [Data and organisations](../docs/foundations/data-and-organisations/)
-
-While the book is best read sequentially, the six sections are loosely independent and can be read on their own:
-
-1. [**Foundations**](../docs/foundations/)—start here for the core argument: what data is, what data engineering is for, and why organisations need data to make reality legible.
-2. [**Creating information**](../docs/creating-information/)—learn the central craft of the book: turning raw operational traces into expressive entities, meaningful fragments, reference data, conformed systems, and reusable information.
-3. [**Presenting insights**](../docs/presenting-insights/)—treat dimensional modelling as user experience, not report production; build semantic models that let users ask real business questions without guessing.
-4. [**Quality & reliability**](../docs/quality-reliability/)—move beyond generic data quality language into practical methods for metadata, testing, assumptions, human curation, precise rules, and fuzzy logic.
-5. [**Efficient & stable pipeline**](../docs/efficient-stable-pipeline/)—build pipelines that are efficient, stable, observable, and maintainable, including incremental processing and programmatic orchestration patterns.
-6. [**Judgement under ambiguity**](../docs/judgement-under-ambiguity/)—learn the senior craft: working with stakeholders, planning uncertain delivery, steering AI agents, and diagnosing root causes when things go wrong.
-
-## Use the book as an agent skill
-
-The book is also published as a skill for AI agents such as Claude Code. An architect holds the business intent, independent authors build, and a fresh reviewer for each chapter checks the work.
-
-Read how it works in [Steering AI agents](../docs/judgement-under-ambiguity/steering-ai-agents/).
-
-<ul>
-  <li><a href="/downloads/data-engineering-skill.zip" download="data-engineering-skill.zip">Download the skill</a></li>
-</ul>
-
-## Comments welcome
-
-Comments and questions are welcome, see [*Data Without Guessing*](https://datawithoutguessing.com/principles-of-data-engineering/) for contact information.
+Comments and questions are welcome: see [*Data Without Guessing*](https://datawithoutguessing.com/principles-of-data-engineering/) for contact information.
