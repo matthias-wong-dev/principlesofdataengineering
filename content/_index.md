@@ -40,7 +40,11 @@ Data representations that make reality visible. Data representations that surviv
 
 ## Use the book with AI agents
 
-The book is also published as a skill for AI agents such as Claude Code. An architect holds the business intent, independent authors build, and a fresh reviewer for each chapter checks the work. Read how it works in [Steering AI agents](../docs/judgement-under-ambiguity/steering-ai-agents/).
+This book is available as agent skills, for example for Claude Code.
+
+Increasingly, data engineering work is being done by AI. Does that mean data engineers are obsolete?
+
+On the contrary. The principles of this book show why human guidance is critical to making AI agents effective. The chapter [Steering AI agents](../docs/judgement-under-ambiguity/steering-ai-agents/) shows how the modern data engineer can steer AI agents by understanding and applying the principles of this book.
 
 <ul>
   <li><a href="/downloads/data-engineering-skill.zip" download="data-engineering-skill.zip">Download the skill</a></li>
@@ -66,15 +70,15 @@ That's why they are implemented in [Weaver](https://weaverstack.dev), an open-so
 - **Metadata as data:** table, column and measure descriptions, primary keys and foreign keys are all stored as metadata tables.
 - **Orchestration:** one dependency graph across Python, Spark SQL, T-SQL, semantic models and reports, loaded in the right order.
 
-## Demonstrated on I Love Gov
+## Demonstrated on I <span class="heart" style="color:#c9162f" aria-label="love">♥</span> Gov
 
-The principles in this book are demonstrated through [I Love Gov](https://ilovegov.datawithoutguessing.com).
+The principles in this book are demonstrated through [I <span class="heart" style="color:#c9162f" aria-label="love">♥</span> Gov](https://ilovegov.datawithoutguessing.com).
 
 If anything is fragmented and hard to understand, it is government. That's why government is one of the best places to show how data can make business reality visible.
 
-I Love Gov brings public data from every department into one connected view of government, including the budget, who government hires, what it pays others to provide, who it funds, and who it directly supports. It refreshes every night.
+I <span class="heart" style="color:#c9162f" aria-label="love">♥</span> Gov brings public data from every department into one connected view of government, including the budget, who government hires, what it pays others to provide, who it funds, and who it directly supports. It refreshes every night.
 
-From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I Love Gov demonstrates every principle in this book.
+From making government easy to understand through expressive entities, to dealing with breaking changes in government sources, I <span class="heart" style="color:#c9162f" aria-label="love">♥</span> Gov demonstrates every principle in this book.
 
 It, too, is built on Weaver, using the same AI agent skills published with this book. See [how it's built](https://ilovegov.datawithoutguessing.com/au/how-its-built/).
 
