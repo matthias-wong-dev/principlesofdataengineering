@@ -9897,62 +9897,263 @@ Both steps depend on how information first entered the warehouse. That foundatio
 
 # Acquiring information {#docs-efficient-stable-pipeline-acquiring-information}
 
-*Efficient acquisition retrieves only what may have changed, and keeps what cannot be retrieved again.*
+*Effectively acquiring information is the foundation for an efficient pipeline.*
 
 ## The first contact {#docs-efficient-stable-pipeline-acquiring-information-the-first-contact}
 
-[Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) and [Responding to change](#docs-efficient-stable-pipeline-responding-to-change) explained how incremental load works between tables. Both depend on a foundation laid at the start of the pipeline, when information is first acquired.
+[Tracking changes](#docs-efficient-stable-pipeline-tracking-changes) and [Responding to change](#docs-efficient-stable-pipeline-responding-to-change) explained how incremental load works between tables in the warehouse. Both depend on how information first entered the warehouse.
 
-Acquisition is the first contact between the business world and the data world. Every incremental load downstream inherits what happened there. This is why acquisition deserves a special study.
+Acquisition is the first contact between the business world and the data world. Whatever happens there is inherited by every incremental load downstream.
 
-The source may be an operational database, a publisher’s website, a file share, or an API. Whatever its form, the source is not under the pipeline’s control. It publishes on its own schedule, revises on its own terms, and may not keep what it published yesterday.
+The source is not under the data engineer’s control. Its owners publish on their own schedule, revise on their own terms, and may not keep what they published yesterday.
 
-Acquisition is where proportionate change is first won or lost. If the pipeline cannot tell what changed at the source, it must retrieve everything. If it retrieves everything, every downstream table must work out for itself what changed. The inefficiency at the edge spreads through the whole pipeline.
+Proportionate change is first won or lost at acquisition. If there is no way to tell what changed at the source, everything must be retrieved. If everything is retrieved, every downstream table must work out for itself what changed. Inefficiency at the edge is carried through the whole pipeline.
 
-Acquisition is also where information is most easily lost. A row that is transformed badly can be transformed again. A file that was overwritten, after the publisher withdrew it, cannot be retrieved again.
+Information is also most easily lost at acquisition. A row that is transformed badly can be transformed again. A file that was overwritten after the publisher withdrew it cannot be retrieved again.
 
-Acquiring information well means answering three questions:
+There are three common types of source:
 
-| Question | Concern |
+| Source | Examples |
 |---|---|
-| Discovery | What does the source publish, and what is new? |
-| Change detection | Which known items may have changed, and how far back can they change? |
-| Retention | What must be kept, because it cannot be retrieved again? |
+| Databases | A transactional system, such as the bakery’s order system, or a logging system. |
+| APIs | A delivery platform that sells the bakery’s cakes and exposes its orders over the web. |
+| Files | Excel workbooks, CSV files, and PDFs, in a file store or on a webpage. |
 
-This chapter uses published files as the main example, because they make each question visible. The same questions apply to tables and APIs.
+For each type, the same question arises in a different form: *What has changed since the last acquisition?* Whether information can be acquired incrementally, or must be acquired in full each time, depends on the answer.
 
-## Discovering new items {#docs-efficient-stable-pipeline-acquiring-information-discovering-new-items}
+## Databases {#docs-efficient-stable-pipeline-acquiring-information-databases}
 
-The first question is what the source currently publishes.
+Databases are the most common source of large volumes of data, whether from transactional systems or from logging.
 
-A common approach is to predict where each item will be. If a flour supplier publishes one price list per week under a predictable name, the pipeline can work out each week’s name and try to retrieve it.
+The approach depends on what is available from the source system. There are three things to look for.
 
-This works until the pattern changes. Publishers rename files, reorganise what they publish, and change numbering schemes between years. A pipeline that works out names from a list of known years will quietly stop discovering new price lists when the first list of a new year is published. Nothing fails. The data simply stops arriving.
+### Replication and change data capture {#docs-efficient-stable-pipeline-acquiring-information-replication-and-change-data-capture}
 
-A more reliable approach is to read the source’s own listing.
+The best case is that replication or change data capture (CDC) is available. With mirroring and similar technologies, inserts, updates, and deletes are copied from the source into the warehouse as they happen.
 
-Most sources maintain a list of what is available. Reading the listing lets the source say what exists, rather than the pipeline guessing. New items are discovered because they appear, not because the pipeline predicted their names.
+Here, capturing change is the platform’s responsibility. The data engineer’s responsibility is to monitor it: to detect failure and lag, and to recover when replication stops or re-synchronises.
 
-The listing should be read from a **start period**. The start period is a deliberate decision about how much history the warehouse needs. Items before it are ignored, even if the listing still shows them.
+In a re-synchronisation, whole tables are copied again. This is candidate change, not genuine change.
 
-| Discovery approach | Strength | Risk |
+The datetimes that come with replicated rows are not the pipeline’s own either. They may be the source’s commit time or the replication tool’s apply time. As explained in [The problem of time](#docs-efficient-stable-pipeline-tracking-changes-the-problem-of-time), they are out-of-sync with the pipeline.
+
+Replication is especially valuable for deletes, which are otherwise hard to track. The data engineer should keep them, not discard them at the first load.
+
+### Audit columns {#docs-efficient-stable-pipeline-acquiring-information-audit-columns}
+
+Where there is no replication, the source table may still have audit columns, such as `[Created datetime]` and `[Update datetime]`. With these, the data engineer can extract only the rows that changed since the last extract.
+
+The data engineer’s task here is to understand how these columns are populated. This is a question about the business process, not the schema.
+
+| How the column is maintained | Reliability |
+|---|---|
+| By the database, such as a trigger or default | Usually reliable, unless bulk fixes bypass it. |
+| By application logic | Reliable only if every path that writes the row also sets the column. |
+| By users | Unreliable for change tracking. |
+
+Suppose the bakery’s order system sets `[Update datetime]` whenever an order is saved on screen. Each night, a correction script adjusts the prices of orders placed with an expired discount. The script writes directly to the table, and leaves `[Update datetime]` alone.
+
+If orders are extracted on `[Update datetime]`, those corrections are never picked up. Nothing fails. The old prices simply remain in the warehouse.
+
+Where the gaps are known and limited, a periodic full extract can catch what the incremental extract misses. The data engineer might extract all orders each Sunday, compare them with the warehouse, and apply only genuine change. The weekday extracts stay small, and no missed correction survives more than a week.
+
+Where the gaps are unknown, the column cannot be relied on, and a full extract is needed each time.
+
+Even a reliable column is set by the source’s clock, so each extract should start far enough back to allow for [the source time problem](#docs-efficient-stable-pipeline-tracking-changes-the-source-time-problem).
+
+### Deletes {#docs-efficient-stable-pipeline-acquiring-information-deletes}
+
+Even where audit columns are reliable, deletes may not be visible. A deleted row has no `[Update datetime]`, because it is no longer there.
+
+Deletes are visible in some sources, depending on how they are managed:
+
+| Delete handling | What is available |
+|---|---|
+| Soft delete | Rows are flagged as deleted and keep their `[Update datetime]`. They are extracted like any other update. |
+| Archive table | Deleted rows are moved to a separate table, which can be extracted incrementally. |
+| Delete audit | A log records the keys of deleted rows, and when they were deleted. |
+| None of these | Deletes cannot be seen directly. |
+
+When deletes cannot be seen, the data engineer can extract the full list of primary keys from the source, and [anti-join](#docs-efficient-stable-pipeline-responding-to-change-worked-example-3-anti-join) it with the warehouse. Keys in the warehouse that are no longer in the source have been deleted. Extracting keys alone is much cheaper than extracting full rows.
+
+### Choosing the approach {#docs-efficient-stable-pipeline-acquiring-information-choosing-the-approach}
+
+The approach follows from what is available:
+
+| Available from the source | Approach |
+|---|---|
+| Replication or CDC | Use it, and monitor it. |
+| Reliable audit columns and visible deletes | Incremental extract. |
+| Reliable audit columns, but no visible deletes | Incremental extract, with a full key extract and anti-join for deletes. |
+| Audit columns with known, limited gaps | Incremental extract, with a periodic full extract to catch what it misses. |
+| No reliable audit columns | Full extract each time. |
+
+A full extract is not a full load. The extracted rows are still compared with what the warehouse holds, and only genuine change is written, as in [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes).
+
+## APIs {#docs-efficient-stable-pipeline-acquiring-information-apis}
+
+Compared to a database, an API is a two-edged sword.
+
+An API developer has usually thought about how others will use the data. The data is therefore more likely to be presented in a meaningful form, with the business rules already applied.
+
+But the developer also controls access. If the API is incomplete or incorrect, there is usually no way around it. A database can be queried in ways its designers did not anticipate. An API can only be called in the ways its developer intended.
+
+### Modified since {#docs-efficient-stable-pipeline-acquiring-information-modified-since}
+
+The equivalent of `[Update datetime]` is a *modified since* parameter. The data engineer supplies a datetime, and the API returns only the records changed after it.
+
+In this case, the data engineer can call the API regularly, and save each response in a folder named for when it was retrieved. Each call resumes from the last successful retrieval.
+
+```
+orders/
+    2025-11-13 06-00-00/
+    2025-11-14 06-00-00/
+    2025-11-15 06-00-00/
+```
+
+The folders are a record of what the API returned, and when. If a load fails, it can be rerun from the saved responses, without calling the API again.
+
+Once saved, the responses are files. What follows about keeping, checking, and tracing acquired data applies to them as much as to files from a publisher.
+
+The same caution applies as for audit columns. The modified datetime belongs to the source. The data engineer should understand which changes it reflects, and which it does not.
+
+For example, the delivery platform’s orders API may return only the latest state of each order. An order that was placed, amended, and amended again between two calls appears once, in its final form. The intermediate amendments are never seen. If they matter, the data engineer must fetch each changed order again by its ID, to retrieve its full history.
+
+This is where the developer’s control is felt again. Many APIs limit how many requests can be made in a period, and some charge for them. Fetching every changed order by its ID may take thousands of requests on the first run. A request budget, such as a thousand requests on the first run and a hundred on each run after, keeps the acquisition within those limits. Orders not reached in one run are fetched in the next.
+
+### No reliable modified datetime {#docs-efficient-stable-pipeline-acquiring-information-no-reliable-modified-datetime}
+
+Without a reliable modified datetime, the data engineer must pull all records each time. Where that is too expensive, the alternative is to pull records as far back as practical against another date, such as the order date, to capture as much change as possible.
+
+How far back is a judgement about how long records keep changing. Changes to older records will be missed, and this should be stated in the description.
+
+### Deletes {#docs-efficient-stable-pipeline-acquiring-information-deletes-2}
+
+Deletes are rarely available from an API. It is unusual for an API to offer a *deleted since* call.
+
+The ideal case is that the source system does not allow deletes, and records a deletion as an update, such as a change of status to cancelled. A *modified since* call then returns deletions along with every other change.
+
+Where records are genuinely deleted, the only option may be to fetch far enough back to see which records are missing. Even then, a record that is missing may have been deleted, or may simply have fallen outside the period requested. It is not always possible to tell which.
+
+## Files {#docs-efficient-stable-pipeline-acquiring-information-files}
+
+Files include Excel workbooks, CSV files, and PDFs, published in a file store or on a webpage. They often arrive periodically, such as a new price list each week.
+
+Files are often less well managed than databases and APIs. Their structure is not enforced, and publishers rename and reorganise them freely. But because files are simple, they can be easier to deal with.
+
+### Discovering new files {#docs-efficient-stable-pipeline-acquiring-information-discovering-new-files}
+
+The first question is what the publisher currently provides.
+
+A common approach is to predict where each file will be. If a flour supplier publishes one price list per week under a predictable name, the data engineer can work out the name for each week and request the file.
+
+This works until the pattern changes. Publishers rename files, reorganise their pages, and change numbering schemes between years. If the names are worked out from a list of known years, the first price list of a new year is never requested. No error is raised. The data simply stops arriving.
+
+A more reliable approach is to read the publisher’s own listing, such as the page that links to each file. New files are then discovered because they appear, not because their names were predicted.
+
+The listing should be read from a **start period**. The start period is a deliberate decision about how much history the warehouse needs. Files before it are ignored, even if they are still listed.
+
+Where there is no listing, predicted names may be unavoidable. In that case, the naming pattern is an assumption about the source, and it should be monitored like one.
+
+### Immutable files {#docs-efficient-stable-pipeline-acquiring-information-immutable-files}
+
+The next question is whether each file is immutable. Once a file is published, can it be changed?
+
+If files are immutable, that is ideal. Acquisition can be done incrementally by name alone. On each run, it is enough to compare the names available with those already acquired, and fetch only the new ones. When nothing new has been published, there is no work to do.
+
+Immutability is still an assumption. A publisher that corrects a file may publish the correction under a new name rather than the old one. A new file for a period that is already held should be treated as a new release of that period, not ignored.
+
+### Mutable files {#docs-efficient-stable-pipeline-acquiring-information-mutable-files}
+
+If files can be changed after release, the data engineer must decide how far back to fetch again.
+
+Suppose the regional food authority publishes the results of each inspection round. The authority revises results after appeal, so the data engineer retrieves rounds from the previous twelve months again each day. Older rounds are treated as final.
+
+Often there is no agreed date after which a file is final. The length of this **revision window** is a matter of practical judgement, and should be based on how the publisher has revised in the past, not on convenience. With a longer window, more revisions are caught, but more data is retrieved.
+
+The window can be measured from the period a file describes, or from when the file was first retrieved. Measuring from first retrieval is safer when publication lags the period, because a late-published file still has its full window. The first retrieved datetime must then be kept through each revision. Otherwise the window restarts with every revision, and never closes.
+
+Some files describe the current state of something, such as the authority’s register of licensed bakeries. They are republished under the same name whenever the state changes, so nothing about change can be learnt from the name. These files must be checked on every run. Where the web server reports a modified date or version marker, the data engineer can identify a candidate for change without downloading the file.
+
+A file that is retrieved again has not necessarily changed. A workbook may be saved again with the same figures but a new creation date. If the data engineer keeps a hash of each file, and checks it before loading, a file that has not genuinely changed is not loaded again. For a workbook, the hash is best taken over the cell values rather than the file itself, so that a new creation date is not mistaken for new information.
+
+### Files that overlap {#docs-efficient-stable-pipeline-acquiring-information-files-that-overlap}
+
+A related question is whether each file contains only new data, or repeats data from earlier files.
+
+Some publishers provide the whole history in every release. Suppose the bakery association publishes a monthly workbook of market sales, covering every month of the year to date.
+
+**From the March workbook**
+
+| Month | Market cake sales |
+|---|---:|
+| 2026-01 | 40,100 |
+| 2026-02 | 39,800 |
+| 2026-03 | 41,200 |
+
+**From the April workbook**
+
+| Month | Market cake sales |
+|---|---:|
+| 2026-01 | 40,100 |
+| 2026-02 | 39,950 |
+| 2026-03 | 41,200 |
+| 2026-04 | 41,700 |
+
+In the April workbook, one month is added and February is revised. January and March are repeated without change.
+
+Other publishers show only a recent window. The flour supplier may offer only the last eighteen months of price lists. Such a window looks like a full extract, but it is not one. If it is loaded as a full extract, months that fall out of the window will be treated as deletes, and the warehouse will remove information that is still true.
+
+This is a case where [source changes are not target actions](#docs-efficient-stable-pipeline-responding-to-change-source-changes-are-not-target-actions). A month missing from the window means the publisher no longer shows it, not that it no longer exists.
+
+### Load all rows, or only the changes {#docs-efficient-stable-pipeline-acquiring-information-load-all-rows-or-only-the-changes}
+
+Once a file is acquired, the data engineer must decide what to load into the database.
+
+| Approach | What happens | Consequence |
 |---|---|---|
-| Predicted names | Works when no listing exists. | Silently stops when the naming pattern changes. |
-| Listing from a start period | Discovers what the source actually publishes. | Depends on the listing being complete. |
+| Load all rows | The entire file is inserted each time. | Every repeated row is duplicated. Users must work out which copy is current. |
+| Load only the changes | Incoming rows are compared with existing rows, and only genuine change is applied, as in [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes). | One current row per month. Overwritten values are kept in history. |
 
-Where no listing exists, predicted names may be unavoidable. In that case, the naming pattern is an assumption about the source, and it should be monitored like one.
+Loading all rows looks safer, because nothing is overwritten. But every user and every downstream table must then work out which copy is current. Loading only the changes is usually more helpful and more meaningful. One revised month means one changed row.
 
-### Absence is not failure {#docs-efficient-stable-pipeline-acquiring-information-absence-is-not-failure}
+The real safety lies in keeping the acquired file. If every file is kept as it was retrieved, the information is preserved, and the rows in the database are free to be useful rather than also serving as the archive.
 
-When an expected item is missing, the pipeline has to decide what the absence means.
+## Across all sources {#docs-efficient-stable-pipeline-acquiring-information-across-all-sources}
+
+The remaining sections apply whatever the source: a database extract, a saved API response, or a downloaded file.
+
+### Syncing to data pipeline time {#docs-efficient-stable-pipeline-acquiring-information-syncing-to-data-pipeline-time}
+
+Every source keeps its own time. A replication commit time, an `[Update datetime]`, a *modified since* value, and a file’s modified date all belong to the source. As explained in [The problem of time](#docs-efficient-stable-pipeline-tracking-changes-the-problem-of-time), they are out-of-sync with the pipeline.
+
+The first task, once information arrives, is to map it into the data pipeline’s own time. Each acquired row is given pipeline-managed `[Row insert datetime]`, `[Row update datetime]`, and `[Row delete datetime]`, recording when the warehouse first held it, last saw it genuinely change, and saw it deleted. These are in-sync times.
+
+This is the same translation described for [polling tables](#docs-efficient-stable-pipeline-tracking-changes-polling-tables), from source time to pipeline time, applied at the point of entry. It is usually done in the [Filter step](#docs-creating-information-entity-processing-first-pass-filter), where incoming rows are compared with what the warehouse already holds, and only genuine change is stamped.
+
+Once information is in pipeline time, every downstream table can respond to it appropriately. Whether replication, audit columns, a *modified since* call, or none of these was available at the source, downstream tables see one consistent timeline. Each table can use its [refresh bookmark](#docs-efficient-stable-pipeline-tracking-changes-refresh-bookmarks) to process only what genuinely changed, without knowing how the source behaved. When nothing changed at the source, nothing is stamped, and there is no work downstream.
+
+This is where [efficiency and stability](#docs-efficient-stable-pipeline-efficiency-and-stability) begin. A small change at the source becomes a small change in pipeline time, and the rest of the pipeline does only the work that change requires.
+
+### Checking before accepting {#docs-efficient-stable-pipeline-acquiring-information-checking-before-accepting}
+
+Acquired data can arrive damaged. A download may be cut short. An API may return an error message in place of data. A publisher may replace a workbook with an error page that has the same name.
+
+If such an item is accepted, a good copy is replaced with a bad one, and every row from the good copy appears to be deleted.
+
+Each item should therefore be checked before it is accepted. Does it open, or parse? Does it have the expected sheets, columns, or fields? Is the row count plausible compared with the previous copy? An item that fails these checks is rejected, and the stored copy is kept. This is the same mindset as [Fault tolerance](#docs-quality-reliability-fault-tolerance).
+
+### When a source is missing {#docs-efficient-stable-pipeline-acquiring-information-when-a-source-is-missing}
+
+When an expected file or response is missing, the data engineer has to decide what the absence means.
 
 Usually, the item has not been published yet. Next week’s price list is missing because next week has not happened. This is ordinary, and it should not fail the load.
 
-The source may also be briefly unavailable. This says nothing about the item, and the stored copy remains the best available.
+The source may also be briefly unavailable. Nothing is learnt about the item, and the stored copy remains the best available.
 
-In both cases, the stored copy is kept and the item is tried again on the next run. At most, the load for that source fails. The absence should not spread beyond it. This is the same mindset as [Fault tolerance](#docs-quality-reliability-fault-tolerance).
+In both cases, the stored copy is kept and the item is tried again on the next run. At most, the load for that source fails. The absence should not spread beyond it.
 
-But absence should not pass silently forever. A source that has stopped publishing looks the same, on any one run, as a source that has not published yet. Absence is ordinary only for as long as it is expected. Once an item is overdue, it should be surfaced as a [monitored assumption](#docs-quality-reliability-tests-and-assumptions-is-source-data-up-to-date).
+But absence should not pass unnoticed forever. A publisher that has stopped publishing looks the same, on any one run, as a publisher that has not published yet. Absence is ordinary only while it is expected. Once an item is overdue, it should be surfaced as a [monitored assumption](#docs-quality-reliability-tests-and-assumptions-is-source-data-up-to-date).
 
 | Absence | Meaning | Response |
 |---|---|---|
@@ -9960,208 +10161,92 @@ But absence should not pass silently forever. A source that has stopped publishi
 | Source briefly unavailable | Nothing is known about the item. | Keep the stored copy and try again next run. |
 | Item overdue, or source unavailable for several runs | The source may have changed. | Surface for attention. |
 
-## Detecting change before retrieval {#docs-efficient-stable-pipeline-acquiring-information-detecting-change-before-retrieval}
-
-Once an item is known, the next question is whether it may have changed.
-
-As explained in [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes-detecting-change-at-the-source), change tracking at an external source should begin before anything is retrieved. The right approach depends on how the source behaves.
-
-| Source behaviour | Approach |
-|---|---|
-| Immutable items | Retrieve once by name, then never again. |
-| Revisable items | Retrieve again within a revision window. |
-| Current-state items | Check on every run, then compare content. |
-| Rolling publication windows | Keep one copy per edition, so older periods are not lost. |
-
-Each approach is an assumption about the source. It should be stated in the table’s [description](#docs-quality-reliability-quality-metadata-descriptions-answer-what-does-this-mean), so that users know what the table can miss.
-
-### Immutable items {#docs-efficient-stable-pipeline-acquiring-information-immutable-items}
-
-Some sources never change what they have published. A weekly price list labelled with its week, or a monthly statement labelled with its month, is published once and left alone.
-
-For immutable items, the name is enough. If the warehouse already holds an item with that name, there is nothing to do. The pipeline reads the listing, finds no new names, and finishes without retrieving anything.
-
-This is the cheapest possible acquisition. When nothing new has been published, the run does no work.
-
-Immutability is still an assumption. A publisher that corrects an item may publish the correction under a new name rather than the old one. A new name for an existing period should therefore be treated as a new release of that period, not ignored.
-
-### Revision windows {#docs-efficient-stable-pipeline-acquiring-information-revision-windows}
-
-Other sources revise recent items. A bakery association may amend its monthly market sales figures for some months after they are first published, as late returns arrive.
-
-For these sources, the pipeline retrieves recent items again within a **revision window**. Items older than the window are treated as final.
-
-For example, each monthly market sales file may be retrieved again each day for six months, then left alone. As at June 2026:
-
-| Period | Within revision window | Action |
-|---|---|---|
-| 2026-05 | Yes | Retrieve again and compare. |
-| 2026-01 | Yes | Retrieve again and compare. |
-| 2025-09 | No | Treat as final. |
-
-The window is a trade-off. A longer window catches more revisions but retrieves more data. A shorter window is cheaper but misses late revisions. The length should be based on how the source has actually revised in the past, not on convenience.
-
-The window can be measured from the period an item describes, or from when the item was first retrieved. Measuring from first retrieval is safer when publication lags the period, because a late-published item still receives its full window. The first retrieved datetime must then survive each revision. Otherwise every revision restarts the window, and it never closes.
-
-A retrieved item is not necessarily a changed item. A file may be republished with the same figures but a new creation date. Comparing the whole file would report a change. Comparing the figures would not. The comparison should be on the information, not on the packaging.
-
-### Current-state items {#docs-efficient-stable-pipeline-acquiring-information-current-state-items}
-
-Some items describe the current state of something, such as a register of approved suppliers, and are republished under the same name whenever the state changes.
-
-For current-state items, the name says nothing about change. The pipeline must check on every run.
-
-Some sources provide change metadata, such as a modified date or version marker, that says whether an item may have changed since the stored copy was retrieved. This identifies a candidate. Genuine change is still confirmed by comparing content. Where there is no such metadata, the pipeline retrieves the item on every run and compares it with the stored copy.
-
-### Rolling publication windows {#docs-efficient-stable-pipeline-acquiring-information-rolling-publication-windows}
-
-Some sources show only a recent window. A supplier may offer only the last eighteen months of weekly price lists. A quarterly market report may carry only the last eight quarters.
-
-A rolling window looks like a full extract, but it is not one. If it is loaded as a full extract, periods that fall out of the window will be treated as deletes, and the warehouse will remove information that is still true.
-
-This is a case where [source changes are not target actions](#docs-efficient-stable-pipeline-responding-to-change-source-changes-are-not-target-actions). Absence from the window means the publisher no longer shows the period, not that the period no longer exists.
-
-The answer is to keep one copy per edition. Each new edition is added to what the warehouse already holds. Nothing is removed because it has dropped out of the publisher’s window.
-
-Each edition repeats the periods still in the window, so the same period is delivered several times. Whether users see one current value per period or every edition’s value is a design choice, covered in [Files that repeat older data](#docs-efficient-stable-pipeline-acquiring-information-files-that-repeat-older-data).
-
-## Retaining what was retrieved {#docs-efficient-stable-pipeline-acquiring-information-retaining-what-was-retrieved}
-
-The third question is what to keep. The answer is to keep what was retrieved, as it was retrieved, alongside a record of how it was acquired.
-
-**Example structure of an acquisition record**
-
-| Field | Meaning |
-|---|---|
-| Source location | Where the item was retrieved from, and the listing it was discovered on. |
-| First retrieved datetime | When the warehouse first held this item. |
-| Retrieved datetime | When the current content was retrieved. |
-| Checksum | A fingerprint of the content, used to detect genuine change. |
-| Source version | The edition, release, or version the source assigns, if any. |
-| Source change metadata | The source’s own modified date, size, or version marker, if provided. |
-
-The record serves three purposes. It lets the next run decide whether anything changed. It gives downstream tables the provenance they need. It lets the data engineer answer what the source said, and when, long after the source has moved on.
-
-### Write only on genuine change {#docs-efficient-stable-pipeline-acquiring-information-write-only-on-genuine-change}
-
-If the retrieved content is identical to the stored copy, nothing should be written.
-
-This applies to the record as well as the content. Updating the retrieved datetime on every run would make every item look changed, and every downstream table would respond. This is the [`[Today’s date]` problem](/docs/quality-reliability/fault-tolerance/#stability) in another form.
-
-When content genuinely changes, the record should change with it, in the same way that [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-step-3-apply-the-changes) updates `[Row update datetime]` only for genuine change. Because the record changes only with content, its first retrieved datetime and retrieved datetime serve as the stored file’s pipeline-managed change datetimes, equivalent to `[Row insert datetime]` and `[Row update datetime]`.
-
-### Never discard what cannot be retrieved again {#docs-efficient-stable-pipeline-acquiring-information-never-discard-what-cannot-be-retrieved-again}
+### Keeping what was acquired {#docs-efficient-stable-pipeline-acquiring-information-keeping-what-was-acquired}
 
 A transformed table can be rebuilt from its inputs. Acquired data cannot.
 
-This changes how acquired data should be treated.
-
-First, a replaced item should not be overwritten. When a revised version arrives, the previous version should be kept, for example under its checksum. Otherwise the warehouse loses the ability to show what the source said before the revision.
-
-Second, acquired data should be protected from rebuild. Rebuilding a transformed table restores the same result. Rebuilding acquired data retrieves the source as it is today, which may be different. Once the source has withdrawn an item or moved its rolling window, a rebuild would delete information.
-
 > Acquired data cannot be rebuilt. It can only be retrieved again, and the source may have moved on.
 
-## Reading only what changed {#docs-efficient-stable-pipeline-acquiring-information-reading-only-what-changed}
+Acquired data should therefore be treated differently.
 
-Once acquisition writes only on genuine change, downstream tables can read only what changed.
+First, a replaced item should not be overwritten. When a revised version arrives, the previous version should be kept, for example under its hash. Otherwise there is no way to show what the source said before the revision.
 
-The pattern is the same as for tables. Each acquisition run records which items were added or changed. A downstream table looks up its [refresh bookmark](#docs-efficient-stable-pipeline-tracking-changes-refresh-bookmarks) and reads only the items that changed after it.
+Second, acquired data should be protected from rebuild. When a transformed table is rebuilt, the same result is restored. When acquired data is rebuilt, the source is retrieved as it is today. Once a publisher has withdrawn a file or moved its window, information would be lost in a rebuild.
 
-If nothing changed, nothing was recorded. The downstream table finds no items to read, and finishes without doing any work.
+## Provenance {#docs-efficient-stable-pipeline-acquiring-information-provenance}
 
-| Acquisition run | Items changed | Downstream work |
-|---|---|---|
-| New weekly price list published | 1 insert | Read one file. |
-| Recent market sales file revised | 1 update | Read one file and apply genuine changes. |
-| No new or changed items | None | None. |
+When data is acquired by API or from files, a reasonable record of where it came from should be kept, and carried down to the rows loaded from it.
 
-Disappearance deserves the same caution as deletes in [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-instability). An item that disappears from the source, or a revised item that drops keys it used to contain, is a large change at the source. It may be a genuine withdrawal, or it may be a publishing error. Either way, it should be checked before it is allowed to spread.
+For each acquired file, this usually means its address, when it was first retrieved, when its content last changed, and its hash. The two datetimes are the file’s equivalent of `[Row insert datetime]` and `[Row update datetime]`. Like them, they should change only when the content genuinely changes. If they were updated on every run, every file would look changed, and every downstream table would respond. This is the [`[Today’s date]` problem](/docs/quality-reliability/fault-tolerance/#stability) in another form.
 
-## Files that repeat older data {#docs-efficient-stable-pipeline-acquiring-information-files-that-repeat-older-data}
+The rows loaded from a file should carry at least its address, in a column such as `[Source URL]`. A user can then trace each value back to the file it came from.
 
-Some sources repeat older data in every file. A quarterly market report may carry a time series for the last eight quarters. An annual release may restate every previous year.
+Provenance is harder to record for overlapping and mutable files. If the March workbook has three months and the April workbook has four, with one revised, which workbook is the source of each month? The latest, or the earliest?
 
-The same value therefore arrives many times. This creates a tension between two needs.
+Under the principle of proportionate change, the answer is the earliest workbook that delivered the current value. The provenance is updated only when the value changes.
 
-The first is provenance. The user should be able to see which file a value came from.
+**`Cake.MarketSales` after the April workbook**
 
-The second is stability. If a value has not changed, receiving it again should not change the warehouse.
-
-Suppose `Cake.MarketSales` is loaded from quarterly editions of the market report, keyed by `[Quarter]`, with `[Source edition]` recording the edition each value came from.
-
-**Current `Cake.MarketSales`**
-
-| Quarter | Market cake sales | Source edition |
+| Month | Market cake sales | Source URL |
 |---|---:|---|
-| 2025-Q3 | 120,400 | 2025-Q4 |
-| 2025-Q4 | 121,100 | 2025-Q4 |
+| 2026-01 | 40,100 | …/market-sales-2026-03.xlsx |
+| 2026-02 | 39,950 | …/market-sales-2026-04.xlsx |
+| 2026-03 | 41,200 | …/market-sales-2026-03.xlsx |
+| 2026-04 | 41,700 | …/market-sales-2026-04.xlsx |
 
-The next edition repeats both quarters and adds a new one. 2025-Q4 has been revised.
+January and March are unchanged, so they are still attributed to the workbook that first delivered their values. February was revised, so its value and its provenance change together. April is new.
 
-**Incoming from edition 2026-Q1**
+The comparison described in [load mechanics](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes) is needed, with one difference. The provenance column must be *excluded from the comparison*. Otherwise every repeated row would look changed, because each workbook has a different address, and every row would be updated on every load.
 
-| Quarter | Market cake sales | Source edition |
-|---|---:|---|
-| 2025-Q3 | 120,400 | 2026-Q1 |
-| 2025-Q4 | 121,300 | 2026-Q1 |
-| 2026-Q1 | 121,900 | 2026-Q1 |
+Provenance is about the delivery, not the information. A repeated delivery of the same value is not a change in the business world, so it should not be a change in the data world.
 
-If `[Source edition]` is included when [load mechanics checks for genuine change](#docs-efficient-stable-pipeline-load-mechanics-check-for-genuine-changes), every repeated row becomes an update. 2025-Q3 is updated even though its value is unchanged. With eight quarters per file, every edition updates eight rows to add one. Downstream tables respond to changes that did not happen.
+There is a second design choice. `Cake.MarketSales` keeps only the current value for each month. Alternatively, `[Source URL]` can be included in the primary key, with every workbook’s value kept as a separate row. The full revision history is then preserved, at the cost of volume and a more complex model for users. Both are valid. The choice depends on whether users need to see how the figures were revised.
 
-Provenance columns should therefore be **excluded from the comparison**.
+## Describing the acquisition {#docs-efficient-stable-pipeline-acquiring-information-describing-the-acquisition}
 
-The comparison asks whether the information changed. `[Source edition]` does not describe the information. It describes the delivery. A repeated delivery of the same value is not a change in the business world, so it should not be a change in the data world.
+The interpretation of information depends materially on how it was acquired. This is especially so where a judgement was made, such as how far back to fetch. A revision older than the window will be missed, and users should know that.
 
-**Updated `Cake.MarketSales`**
+As explained in [Quality metadata](#docs-quality-reliability-quality-metadata-descriptions-answer-what-does-this-mean), the acquisition logic should be stated clearly and briefly in the table’s description. For example:
 
-| Quarter | Market cake sales | Source edition |
-|---|---:|---|
-| 2025-Q3 | 120,400 | 2025-Q4 |
-| 2025-Q4 | 121,300 | 2026-Q1 |
-| 2026-Q1 | 121,900 | 2026-Q1 |
+```md
+Weekly flour price lists published by the supplier. Published price lists do not change, so only price lists not already held are fetched.
+```
 
-2025-Q3 is unchanged, and still shows the edition that first delivered its value. 2025-Q4 was genuinely revised, so its value and its provenance change together. 2026-Q1 is new.
+```md
+Monthly market sales published by the bakery association, covering the year to date. Earlier months can be revised as late returns arrive. The latest six workbooks are fetched each day, and only genuine changes are loaded.
+```
 
-Excluding provenance from the comparison does not lose provenance. Each row shows the edition that delivered its current value. When the value is revised, the provenance moves with it. When the value is merely repeated, the row keeps pointing to its original source.
+```md
+Orders extracted incrementally from the order system using [Update datetime], which is set by the application when an order is saved. Prices corrected by the nightly discount script do not update this column, so a full extract is taken each Sunday. Deletes are detected by comparing the full list of order IDs each night.
+```
 
-There is a second design choice. The table above keeps only the current value for each quarter. An alternative is to include `[Source edition]` in the primary key, keeping every edition’s value as a separate row. This preserves the full revision history, at the cost of volume and a more complex model for users. Both are valid. The choice depends on whether users need to see how the figures were revised, and it should be stated in the description.
-
-## Database replication {#docs-efficient-stable-pipeline-acquiring-information-database-replication}
-
-When the source is an operational database, acquisition is usually configured rather than built. Change data capture, mirroring, and other replication technologies copy inserts, updates, and deletes into the warehouse.
-
-This removes much of the work of discovery and retrieval. It does not remove the problem of time.
-
-Replicated change datetimes may be the source’s commit time or the replication tool’s apply time, and replication may lag or re-synchronise whole tables. Unless the replication itself stamps changes in pipeline time, those datetimes are out-of-sync. The principles of [Tracking changes](#docs-efficient-stable-pipeline-tracking-changes-the-problem-of-time) therefore apply unchanged. A re-synchronisation is candidate change, not genuine change, and a [Filter step](#docs-creating-information-entity-processing-first-pass-filter) assigns pipeline-managed row change datetimes.
-
-Replication is valuable because it captures deletes, which are otherwise hard to track. The pipeline should preserve them rather than discard them at the first load.
+In each description, the assumption behind the acquisition is stated. If the source starts to behave differently, the assumption can be checked, and users can see what may have been missed.
 
 ## Conclusion {#docs-efficient-stable-pipeline-acquiring-information-conclusion}
 
 Acquisition is the first load in the pipeline, and the one with the least control.
 
-The source decides what to publish, when to revise it, and when to withdraw it. The pipeline cannot change this. It can only observe the source carefully, retrieve no more than necessary, and keep what it cannot retrieve again.
+Different signals of change are available from databases, APIs, and files. With replication, audit columns, *modified since* calls, or immutable file names, incremental acquisition is possible. Where these are absent or unreliable, more must be fetched, and the data engineer must judge how far back change can reach.
 
-Done well, acquisition gives the rest of the pipeline what it needs: stored content with pipeline-managed change datetimes, provenance for every item, and a record of what changed in each run. Every incremental load downstream builds on that foundation.
+Whatever the source, the outcome should be the same. Acquired content is kept as it was retrieved, rows are synced to pipeline time, provenance changes only when the information does, and the description states how the information was acquired. That is the foundation for every incremental load downstream.
 
 > **Key ideas.**
 >
-> Efficient acquisition retrieves only what may have changed, and keeps what cannot be retrieved again.
+> Acquisition is where proportionate change is first won or lost, and where information is most easily lost.
 >
-> Discover new items from the source’s own listing, from a deliberate start period, rather than predicting their names.
+> The approach to acquiring from a database depends on what is available: replication, reliable audit columns, and visible deletes. Without them, more must be extracted and compared.
 >
-> A missing item is usually not yet published. Contain its absence, but surface it once it is overdue.
+> An API is usually more deliberate than a database, but its gaps cannot be worked around. Deletes are rarely available from an API.
 >
-> Immutable items are retrieved once. Revisable items are retrieved again within a revision window. Rolling publication windows are kept one edition at a time.
+> Immutable files can be acquired by name alone. Mutable and overlapping files are fetched again within a revision window chosen by judgement.
 >
-> Compare content, not packaging, and write only on genuine change.
+> Acquired information is synced to pipeline time on arrival, so that every downstream table can respond to genuine change efficiently and stably.
 >
-> Acquired data cannot be rebuilt. Replaced versions should be kept, and acquired data protected from rebuild.
+> Acquired data cannot be rebuilt, so replaced versions are kept and protected from rebuild.
 >
-> Database replication still needs the principles of tracking changes, because the source’s time is not the pipeline’s time.
+> Provenance is recorded from the earliest delivery of the current value, and excluded from the change comparison, so that repeated delivery does not cause churn.
 >
-> When files repeat older data, provenance columns should be excluded from the comparison, so repeated delivery does not cause churn.
+> The acquisition logic belongs in the table’s description, so that users know what the table can miss.
 
 \newpage
 

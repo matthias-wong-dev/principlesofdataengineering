@@ -243,7 +243,7 @@ No rows.
 
 This example shows that a source delete can become a target update. Aggregations turn row-level changes into value changes at a higher grain.
 
-### Worked example 3—Anti-join
+### Worked example 3—Anti-join {#worked-example-3-anti-join}
 
 Suppose the target table contains headers in `X` that do not have any matching rows in `Y`.
 
