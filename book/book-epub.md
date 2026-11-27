@@ -31,6 +31,10 @@ Matthias holds a PhD in Computational Mathematics.
 
 For more information, see the author's website: [matthiaswong.me](https://matthiaswong.me/?utm_source=pde_book).
 
+Matthias welcomes conversation and questions.
+
+Contact: [matthias@datawithoutguessing.com](mailto:matthias@datawithoutguessing.com).
+
 # The book {#docs-about-the-book}
 
 *The context, origin, and attribution of this work.*

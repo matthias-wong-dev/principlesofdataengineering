@@ -19,3 +19,7 @@ He is especially passionate about uplifting staff from junior to advanced capabi
 Matthias holds a PhD in Computational Mathematics.
 
 For more information, see the author's website: [matthiaswong.me](https://matthiaswong.me).
+
+Matthias welcomes conversation and questions.
+
+Contact: [matthias@datawithoutguessing.com](mailto:matthias@datawithoutguessing.com).
