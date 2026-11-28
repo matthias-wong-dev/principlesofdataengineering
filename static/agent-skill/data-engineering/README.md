@@ -2,23 +2,27 @@
 
 One agent skill that runs an architect–author–reviewer loop for data-engineering work. It is grounded in *Principles of Data Engineering* (https://principlesofdataengineering.org/).
 
-The main agent loads the skill and acts as the architect. It sends the author and reviewer roles out to subagents, giving each one its role file:
+The main agent loads the skill and acts as the architect. It sends the other roles out to subagents, giving each one its role file:
 
 | File | Role | Runs as |
 |---|---|---|
 | `SKILL.md` | Architect: holds the business intent, commissions the author and reviewers, synthesises findings, and decides what is done | Main agent |
 | `roles/author.md` | Author: designs and implements pipelines and information models | Two independent subagents (preferred), or one |
 | `roles/reviewer.md` | Reviewer: independently reviews one book chapter against four MUSTs: keys, names, proportionate change, tests and assumptions | One fresh subagent per chapter |
+| `roles/simplifier.md` | Simplifier: proposes how to cut the code by a set target without losing information, by finding overdefensiveness, unclear rationale, entities to restructure and incidental concerns | One fresh subagent, after the chapter rounds |
+| `roles/business-reviewer.md` | Business reviewer: a business user with basic SQL who never reads code, answers its own questions from the metadata and data, and checks the model against published figures. The final test | One fresh subagent, last |
 
 ## Flow
 
 1. The architect clarifies the intent, scope and stopping condition.
 2. The architect commissions two author subagents to build the model independently (preferred), or one. Two independent builds are a test: two ways of doing the same thing.
-3. For each candidate, the architect fixes a version and commissions one fresh reviewer per chapter of the **ER** group (business information model). Reviewers don't see each other's findings, the author's self-assessment or the other candidate.
+3. For each candidate, the architect fixes a version and commissions one fresh reviewer per chapter of the **ER** group (business information model). Reviewers don't see each other's findings, the author's self-assessment or the other candidate, and the architect doesn't seed them with its own concerns.
 4. The architect synthesises each candidate from its own reviews, briefs its author on material changes, and has fresh reviewers recheck only the affected findings.
 5. The architect and the user select one candidate.
 6. The selected candidate is reviewed on the **DAG** group (pipeline) and, where there is a dimensional model or Power BI consumer, the **BUS** group, then synthesised, repaired and rechecked.
-7. The architect verifies the result against the real execution path and reports.
+7. A simplification reviewer, given a target and no earlier findings, proposes cuts; the architect synthesises them and the author makes them.
+8. A business reviewer, who sees only the metadata and the data, tries to answer real questions and to reproduce published figures. This is the final test: the architect repairs what it finds and runs it again until no material trap remains.
+9. The architect verifies the result against the real execution path and reports.
 
 Section introductions are not reviewed. `SKILL.md` lists the chapters in each group and the default MUST assignments.
 
