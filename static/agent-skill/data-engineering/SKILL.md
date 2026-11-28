@@ -1,7 +1,7 @@
 ---
 name: data-engineering
-description: Use when designing, building or improving data pipelines and information models. The main agent acts as architect, holding the business intent. It prefers two independent author subagents, each reviewed chapter by chapter on its business information model, and selects one with the user before reviewing the pipeline and dimensional model.
-version: 1.1.0
+description: Use when designing, building or improving data pipelines and information models. The main agent acts as architect, holding the business intent. It prefers two independent author subagents, each reviewed chapter by chapter on its business information model, and selects one with the user before reviewing the pipeline and dimensional model. A simplification review then cuts the code, and a business review that sees only metadata and data is the final test.
+version: 1.2.0
 license: MIT
 metadata:
   hermes:
@@ -14,13 +14,15 @@ You are the main agent, the architect. You hold the business intent. Your role i
 
 Your job is to deliver useful information and sound engineering. Agreement between agents, completed checklists and lots of review activity do not count as success.
 
-This skill contains the instructions for three roles. You are the architect; you send the author and reviewer roles out to subagents:
+This skill contains the instructions for five roles. You are the architect; you send the others out to subagents:
 
 | Role | Instructions | Who runs it |
 |---|---|---|
 | Architect | this file | You, the main agent |
 | Author | `roles/author.md` | Two independent author subagents (preferred), or one |
 | Reviewer | `roles/reviewer.md` | One fresh reviewer subagent **per chapter** |
+| Simplifier | `roles/simplifier.md` | One fresh subagent, after the chapter rounds |
+| Business reviewer | `roles/business-reviewer.md` | One fresh subagent, last: the final test |
 
 ## Commissioning subagents
 
@@ -32,9 +34,10 @@ Use whatever isolated-worker mechanism your environment provides:
 
 In every commission:
 
-1. Tell the subagent to read and follow its role file. Give it the absolute path to `roles/author.md` or `roles/reviewer.md` in this skill's folder. If the subagent cannot read files, paste the role file's full text into the brief.
+1. Tell the subagent to read and follow its role file. Give it the absolute path to its role file in this skill's folder. If the subagent cannot read files, paste the role file's full text into the brief.
 2. Give it the brief described below and nothing else that would compromise its role.
 3. State its authority: what it may read, change, run or deploy. Reviewers are read-only unless you say otherwise.
+4. Give it the operational context it can't read from the code: how the platform is actually run in production (scheduler, failure handling, what runs daily), which environments exist and what each may touch. Write this down once and include it in every brief. An agent that has only the framework's source reasons about how it *could* run, not how it *does*.
 
 If no subagent mechanism is available, tell the user. You may do the author role yourself by following `roles/author.md`, but say plainly that the review was not independent. Never present a self-review as an independent review.
 
@@ -128,7 +131,7 @@ Commission a **fresh** reviewer subagent for each chapter. Never give one review
 - the fixed implementation version
 - the MUSTs it is responsible for
 
-Do **not** give reviewers the author's self-assessment, earlier verdicts, other reviewers' findings or anything from the other candidate. Run reviews in parallel where you can and one after another where you can't. Independence does not require running at the same time.
+Do **not** give reviewers the author's self-assessment, earlier verdicts, other reviewers' findings or anything from the other candidate. Don't seed them either: no concerns carried over from earlier rounds, no hypotheses of your own, no "judge whether X". The intent may say what matters; it must not say where you suspect it breaks. Seeded reviewers echo the seed, and their agreement then means nothing. Keep carried concerns in your own synthesis, and count a reviewer as agreeing only when it got there unprompted. Run reviews in parallel where you can and one after another where you can't. Independence does not require running at the same time.
 
 ### The MUSTs
 
@@ -151,6 +154,23 @@ Assign each MUST to the reviewer of the most relevant chapter in each group you 
 *Tests and assumptions* is an ER chapter. In a BUS round, commission one more fresh reviewer on *Tests and assumptions*, applied to the dimensional model and its measures, and give it the tests and assumptions MUST. Proportionate change has no ER assignment, because it is a property of loads; the DAG and BUS rounds cover it.
 
 Keep each reviewer's initial findings as returned, before you synthesise them.
+
+### After the chapter rounds: simplification, then the business review
+
+Chapter reviews ask what is wrong, so repairs tend to add code, and fixes breed fixes. No chapter owns the whole model's shape, its simplicity, or whether a user can actually use it. Two more reviews cover that. Run them after the last chapter round's repairs and rechecks, in this order.
+
+**Simplification review** (`roles/simplifier.md`), one fresh subagent.
+- Give it a target as a share of the model code, for example "propose a way to cut the model code by 30% by identifying overdefensiveness, unclear rationale, restructured entities and incidental concerns".
+- Give it the intent, the code and how the platform runs, but **no** reviews, syntheses or reports. It judges the code as it stands, not the reasons it was written.
+- Its cuts carry the same weight as any chapter's findings. Synthesise them in step 4. Where a cut conflicts with a recent repair, prefer the simpler mechanism that still meets the repair's requirement.
+- Cuts that change what consumers see belong with the user's decisions on the model's shape, not with a mechanical cut.
+
+**Business review** (`roles/business-reviewer.md`), one fresh subagent. **This is the final test.**
+- It is a business user with basic SQL. It writes its own questions from the intent before seeing the model, answers them with queries, and checks the model against figures the publishers print.
+- **It never reads code.** Prepare a metadata file for it: every business-facing object's names, column names and types, descriptions, lineage text, keys and relationships, and test names and descriptions, with no definitions. Check the file holds no code before handing it over.
+- It may fetch independent published results to check against.
+- Where the metadata can't carry the meaning, that is the finding. A trap here, a plausible answer that is wrong, outranks any chapter finding.
+- Repair what it finds (often descriptions), then run it again on the repaired version until no material trap remains.
 
 ## 4. Synthesise before acting
 
@@ -204,7 +224,7 @@ Then run **DAG** and, where it applies, **BUS** on the selected candidate, and r
 
 ## 7. Verify and conclude
 
-Re-run the hygiene gate on the final version. Then check that the changes resolve the underlying concerns, preserve necessary information, and work through the real execution path to the real consumer.
+Re-run the hygiene gate on the final version. The business review is the final test: don't conclude while it still finds a material trap. Then check that the changes resolve the underlying concerns, preserve necessary information, and work through the real execution path to the real consumer.
 
 Passing tests support a judgement. On their own, they do not establish business usefulness or architectural quality.
 
